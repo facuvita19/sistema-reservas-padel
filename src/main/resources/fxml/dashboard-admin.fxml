@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.DashboardAdminController"
+            styleClass="dashboard-root">
+    <left>
+        <VBox prefWidth="245.0" spacing="8.0" styleClass="sidebar">
+            <padding>
+                <Insets top="28.0" right="18.0" bottom="24.0" left="18.0" />
+            </padding>
+            <children>
+                <Label text="PADEL RESERVAS" styleClass="sidebar-brand" />
+                <Label text="Administración" styleClass="sidebar-caption" />
+                <Region prefHeight="24.0" />
+                <Button text="Inicio" maxWidth="Infinity" styleClass="nav-button, nav-button-active" />
+                <Button text="Calendario" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Reservas" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Canchas" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Clientes" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Pagos" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Bloqueos" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Estadísticas" maxWidth="Infinity" styleClass="nav-button" />
+                <Region VBox.vgrow="ALWAYS" />
+                <Separator />
+                <Button text="Configuración" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Cerrar sesión"
+                        maxWidth="Infinity"
+                        onAction="#cerrarSesion"
+                        styleClass="nav-button, logout-button" />
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox spacing="24.0" styleClass="dashboard-content">
+            <padding>
+                <Insets top="30.0" right="34.0" bottom="30.0" left="34.0" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT">
+                    <children>
+                        <VBox spacing="4.0">
+                            <children>
+                                <Label text="Resumen del complejo" styleClass="page-title" />
+                                <Label fx:id="etiquetaFecha" styleClass="page-subtitle" />
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <VBox alignment="CENTER_RIGHT" spacing="2.0">
+                            <children>
+                                <Label text="Sesión activa" styleClass="small-caption" />
+                                <Label fx:id="etiquetaUsuario" styleClass="user-name" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+
+                <GridPane hgap="16.0" vgap="16.0">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS" />
+                        <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS" />
+                        <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS" />
+                        <ColumnConstraints percentWidth="25.0" hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <children>
+                        <VBox GridPane.columnIndex="0" spacing="8.0" styleClass="metric-card">
+                            <children>
+                                <Label text="RESERVAS DE HOY" styleClass="metric-label" />
+                                <Label text="0" styleClass="metric-value" />
+                                <Label text="Sin actividad registrada" styleClass="metric-detail" />
+                            </children>
+                        </VBox>
+                        <VBox GridPane.columnIndex="1" spacing="8.0" styleClass="metric-card">
+                            <children>
+                                <Label text="CANCHAS ACTIVAS" styleClass="metric-label" />
+                                <Label text="0" styleClass="metric-value" />
+                                <Label text="Configurá la primera cancha" styleClass="metric-detail" />
+                            </children>
+                        </VBox>
+                        <VBox GridPane.columnIndex="2" spacing="8.0" styleClass="metric-card">
+                            <children>
+                                <Label text="INGRESOS DEL MES" styleClass="metric-label" />
+                                <Label text="ARS 0" styleClass="metric-value" />
+                                <Label text="Pagos acreditados" styleClass="metric-detail" />
+                            </children>
+                        </VBox>
+                        <VBox GridPane.columnIndex="3" spacing="8.0" styleClass="metric-card">
+                            <children>
+                                <Label text="PAGOS PENDIENTES" styleClass="metric-label" />
+                                <Label text="0" styleClass="metric-value" />
+                                <Label text="Sin saldos pendientes" styleClass="metric-detail" />
+                            </children>
+                        </VBox>
+                    </children>
+                </GridPane>
+
+                <HBox spacing="18.0" VBox.vgrow="ALWAYS">
+                    <children>
+                        <VBox spacing="14.0" HBox.hgrow="ALWAYS" styleClass="content-card">
+                            <children>
+                                <Label text="Próximas reservas" styleClass="section-title" />
+                                <Label text="La agenda diaria aparecerá en este espacio."
+                                       styleClass="empty-state" />
+                            </children>
+                        </VBox>
+                        <VBox prefWidth="310.0" spacing="14.0" styleClass="content-card">
+                            <children>
+                                <Label text="Acciones rápidas" styleClass="section-title" />
+                                <Button text="Nueva reserva" maxWidth="Infinity" styleClass="primary-button" />
+                                <Button text="Registrar cancha" maxWidth="Infinity" styleClass="secondary-button" />
+                                <Button text="Registrar cliente" maxWidth="Infinity" styleClass="secondary-button" />
+                                <Button text="Crear bloqueo" maxWidth="Infinity" styleClass="secondary-button" />
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+</BorderPane>
