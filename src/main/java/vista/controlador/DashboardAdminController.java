@@ -185,6 +185,11 @@ public class DashboardAdminController {
 	private void abrirClientes() {
 		Navegacion.mostrarClientes();
 	}
+	
+	@FXML
+	private void abrirAgenda() {
+	    Navegacion.mostrarAgenda();
+	}
 
 	@FXML
 	private void abrirReservas() {

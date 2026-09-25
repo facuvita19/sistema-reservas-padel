@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.AgendaController"
+            styleClass="agenda-root">
+    <top>
+        <VBox spacing="14" styleClass="module-header">
+            <padding>
+                <Insets top="20" right="28" bottom="18" left="28" />
+            </padding>
+            <children>
+                <HBox alignment="CENTER_LEFT" spacing="16">
+                    <children>
+                        <Button text="← Inicio"
+                                onAction="#volver"
+                                styleClass="back-button" />
+                        <VBox spacing="3">
+                            <children>
+                                <Label text="Agenda diaria"
+                                       styleClass="page-title" />
+                                <Label fx:id="etiquetaFecha"
+                                       text="Agenda del complejo"
+                                       styleClass="page-subtitle" />
+                            </children>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="‹"
+                                onAction="#diaAnterior"
+                                styleClass="agenda-nav-button" />
+                        <Button text="HOY"
+                                onAction="#irHoy"
+                                styleClass="secondary-button" />
+                        <Button text="›"
+                                onAction="#diaSiguiente"
+                                styleClass="agenda-nav-button" />
+                        <DatePicker fx:id="selectorFecha"
+                                    prefWidth="150"
+                                    styleClass="modern-date" />
+                        <Button fx:id="botonActualizar"
+                                text="ACTUALIZAR"
+                                onAction="#cargarAgenda"
+                                styleClass="primary-button" />
+                    </children>
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT" spacing="14">
+                    <children>
+                        <ProgressIndicator fx:id="indicadorCarga"
+                                           visible="false"
+                                           maxWidth="18"
+                                           maxHeight="18" />
+                        <Label fx:id="etiquetaEstado"
+                               text="Preparando agenda..."
+                               styleClass="agenda-status" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <HBox spacing="10" alignment="CENTER_RIGHT">
+                            <children>
+                                <Label text="Disponible" styleClass="legend-item, legend-disponible" />
+                                <Label text="Pendiente" styleClass="legend-item, legend-pendiente" />
+                                <Label text="Confirmada" styleClass="legend-item, legend-confirmada" />
+                                <Label text="Completada" styleClass="legend-item, legend-completada" />
+                                <Label text="Ausente" styleClass="legend-item, legend-ausente" />
+                                <Label text="Bloqueada" styleClass="legend-item, legend-bloqueada" />
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </top>
+
+    <center>
+        <StackPane styleClass="agenda-content">
+            <padding>
+                <Insets top="20" right="24" bottom="24" left="24" />
+            </padding>
+            <children>
+                <ScrollPane fx:id="scrollAgenda"
+                            fitToHeight="false"
+                            fitToWidth="false"
+                            pannable="true"
+                            styleClass="agenda-scroll">
+                    <content>
+                        <GridPane fx:id="grillaAgenda"
+                                  hgap="1"
+                                  vgap="1"
+                                  styleClass="agenda-grid" />
+                    </content>
+                </ScrollPane>
+
+                <VBox fx:id="contenedorSinCanchas"
+      alignment="CENTER"
+      spacing="10"
+      visible="false"
+      managed="false"
+      mouseTransparent="true">
+    <children>
+        <Label text="No hay canchas activas para mostrar."
+               styleClass="agenda-empty-title" />
+
+        <Label text="Registrá o activá una cancha para comenzar a usar la agenda."
+               styleClass="agenda-empty-copy" />
+    </children>
+</VBox>
+            </children>
+        </StackPane>
+    </center>
+</BorderPane>

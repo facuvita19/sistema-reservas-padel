@@ -9,8 +9,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import negocio.Usuario;
 import negocio.ConfiguracionComplejo;
+import negocio.Usuario;
 import servicio.ConfiguracionComplejoService;
 
 public final class Navegacion {
@@ -25,7 +25,8 @@ public final class Navegacion {
 	private static final String CSS_ESTADISTICAS = "/css/estadisticas.css";
 	private static final String CSS_CONFIGURACION = "/css/configuracion.css";
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
-    private static ConfiguracionComplejo configuracionActual = new ConfiguracionComplejo();
+	private static ConfiguracionComplejo configuracionActual = new ConfiguracionComplejo();
+	private static final String CSS_AGENDA = "/css/agenda.css";
 
 	private static Stage escenario;
 	private static Usuario usuarioActual;
@@ -42,29 +43,26 @@ public final class Navegacion {
 		escenario.setTitle("Padel Reservas");
 		escenario.setMinWidth(980);
 		escenario.setMinHeight(660);
-		
+
 		recargarConfiguracion();
 	}
-	
+
 	public static void recargarConfiguracion() {
-	    try {
-	        configuracionActual = configuracionService.obtener();
+		try {
+			configuracionActual = configuracionService.obtener();
 
-	        if (escenario != null && escenario.getScene() != null) {
-	            TemaDinamico.aplicar(
-	                    escenario.getScene().getRoot(),
-	                    configuracionActual
-	            );
-	        }
+			if (escenario != null && escenario.getScene() != null) {
+				TemaDinamico.aplicar(escenario.getScene().getRoot(), configuracionActual);
+			}
 
-	    } catch (RuntimeException exception) {
-	        exception.printStackTrace();
-	        configuracionActual = new ConfiguracionComplejo();
-	    }
+		} catch (RuntimeException exception) {
+			exception.printStackTrace();
+			configuracionActual = new ConfiguracionComplejo();
+		}
 	}
-	
+
 	public static ConfiguracionComplejo getConfiguracionActual() {
-	    return configuracionActual;
+		return configuracionActual;
 	}
 
 	public static void mostrarLogin() {
@@ -127,6 +125,14 @@ public final class Navegacion {
 		escenario.setTitle("Padel Reservas - Configuración");
 	}
 
+	public static void mostrarAgenda() {
+		verificarSesion();
+
+		mostrarVista("/fxml/agenda.fxml", 1380, 840, true);
+
+		escenario.setTitle(configuracionActual.getNombreComercial() + " - Agenda");
+	}
+
 	public static Usuario getUsuarioActual() {
 		return usuarioActual;
 	}
@@ -147,13 +153,9 @@ public final class Navegacion {
 
 			FXMLLoader cargador = new FXMLLoader(ubicacion);
 			Parent raiz = cargador.load();
-			
-			TemaDinamico.aplicar(
-			        raiz,
-			        configuracionActual
-			);
-			
-			
+
+			TemaDinamico.aplicar(raiz, configuracionActual);
+
 			Scene escena = new Scene(raiz, ancho, alto);
 			agregarCssObligatorio(escena, CSS_GLOBAL);
 			agregarCssOpcional(escena, CSS_CANCHAS);
@@ -164,6 +166,7 @@ public final class Navegacion {
 			agregarCssOpcional(escena, CSS_DASHBOARD);
 			agregarCssOpcional(escena, CSS_ESTADISTICAS);
 			agregarCssOpcional(escena, CSS_CONFIGURACION);
+			agregarCssOpcional(escena, CSS_AGENDA);
 
 			Rectangle2D areaVisible = Screen.getPrimary().getVisualBounds();
 

@@ -19,6 +19,7 @@
                 <Region prefHeight="24.0" />
                 <Button text="Inicio" maxWidth="Infinity"
                         styleClass="nav-button, nav-button-active" />
+                <Button text="Agenda" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="nav-button" />       
                 <Button text="Reservas" maxWidth="Infinity"
                         onAction="#abrirReservas" styleClass="nav-button" />
                 <Button text="Canchas" maxWidth="Infinity"
@@ -168,6 +169,7 @@
                                 <Button text="Registrar pago" maxWidth="Infinity"
                                         onAction="#abrirPagos"
                                         styleClass="secondary-button" />
+                                <Button text="Ver agenda diaria" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="secondary-button" />
                                 <Button text="Crear bloqueo" maxWidth="Infinity"
                                         onAction="#abrirBloqueos"
                                         styleClass="secondary-button" />
