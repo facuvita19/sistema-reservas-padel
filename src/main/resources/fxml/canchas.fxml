@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.CanchasController"
+            styleClass="module-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="module-header">
+            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+            <children>
+                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <VBox spacing="3">
+                    <children>
+                        <Label text="Gestión de canchas" styleClass="page-title" />
+                        <Label text="Configurá disponibilidad, horarios y precios."
+                               styleClass="page-subtitle" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="NUEVA CANCHA" onAction="#nuevo" styleClass="primary-button" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.57" styleClass="module-split">
+            <items>
+                <VBox spacing="16" styleClass="list-panel">
+                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                    <children>
+                        <HBox spacing="10">
+                            <children>
+                                <TextField fx:id="campoBuscar"
+                                           promptText="Buscar por nombre, tipo o superficie..."
+                                           HBox.hgrow="ALWAYS"
+                                           styleClass="modern-field" />
+                                <Button text="Actualizar" onAction="#cargarCanchas"
+                                        styleClass="secondary-button" />
+                            </children>
+                        </HBox>
+                        <TableView fx:id="tablaCanchas" VBox.vgrow="ALWAYS"
+                                   styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="165" />
+                                <TableColumn fx:id="columnaTipo" text="TIPO" prefWidth="110" />
+                                <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="130" />
+                                <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="115" />
+                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="90" />
+                            </columns>
+                            <placeholder>
+                                <Label text="Todavía no hay canchas registradas."
+                                       styleClass="empty-state" />
+                            </placeholder>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                    <content>
+                        <VBox spacing="15" styleClass="form-card">
+                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                            <children>
+                                <Label fx:id="tituloFormulario" text="Nueva cancha"
+                                       styleClass="section-title" />
+                                <Label text="Los campos con * son obligatorios."
+                                       styleClass="small-caption" />
+
+                                <Label text="Nombre *" styleClass="field-label" />
+                                <TextField fx:id="campoNombre" promptText="Ejemplo: Cancha Central"
+                                           styleClass="modern-field" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                            <children>
+                                                <Label text="Tipo *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboTipo" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                            <children>
+                                                <Label text="Superficie" styleClass="field-label" />
+                                                <TextField fx:id="campoSuperficie"
+                                                           styleClass="modern-field" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <CheckBox fx:id="checkIluminacion" text="Tiene iluminación"
+                                          styleClass="modern-check" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                            <children>
+                                                <Label text="Apertura *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboApertura" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                            <children>
+                                                <Label text="Cierre *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboCierre" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="2">
+                                            <children>
+                                                <Label text="Duración (min) *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboDuracion" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <Label text="Precio por reserva (ARS) *" styleClass="field-label" />
+                                <TextField fx:id="campoPrecio" promptText="Ejemplo: 25000"
+                                           styleClass="modern-field" />
+
+                                <Label text="Días disponibles *" styleClass="field-label" />
+                                <FlowPane hgap="13" vgap="10">
+                                    <children>
+                                        <CheckBox fx:id="checkLunes" text="Lun" styleClass="day-check" />
+                                        <CheckBox fx:id="checkMartes" text="Mar" styleClass="day-check" />
+                                        <CheckBox fx:id="checkMiercoles" text="Mié" styleClass="day-check" />
+                                        <CheckBox fx:id="checkJueves" text="Jue" styleClass="day-check" />
+                                        <CheckBox fx:id="checkViernes" text="Vie" styleClass="day-check" />
+                                        <CheckBox fx:id="checkSabado" text="Sáb" styleClass="day-check" />
+                                        <CheckBox fx:id="checkDomingo" text="Dom" styleClass="day-check" />
+                                    </children>
+                                </FlowPane>
+
+                                <Label text="Descripción" styleClass="field-label" />
+                                <TextArea fx:id="campoDescripcion" prefRowCount="3" wrapText="true"
+                                          promptText="Información adicional de la cancha..."
+                                          styleClass="modern-area" />
+
+                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+
+                                <HBox spacing="10">
+                                    <children>
+                                        <Button fx:id="botonGuardar" text="GUARDAR CANCHA"
+                                                onAction="#guardar" HBox.hgrow="ALWAYS"
+                                                maxWidth="Infinity" styleClass="primary-button" />
+                                        <Button fx:id="botonDesactivar" text="DESACTIVAR"
+                                                onAction="#desactivar"
+                                                styleClass="danger-button" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

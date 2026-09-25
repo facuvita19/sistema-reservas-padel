@@ -20,7 +20,7 @@
                 <Button text="Inicio" maxWidth="Infinity" styleClass="nav-button, nav-button-active" />
                 <Button text="Calendario" maxWidth="Infinity" styleClass="nav-button" />
                 <Button text="Reservas" maxWidth="Infinity" styleClass="nav-button" />
-                <Button text="Canchas" maxWidth="Infinity" styleClass="nav-button" />
+                <Button text="Canchas" maxWidth="Infinity" onAction="#abrirCanchas" styleClass="nav-button" />
                 <Button text="Clientes" maxWidth="Infinity" styleClass="nav-button" />
                 <Button text="Pagos" maxWidth="Infinity" styleClass="nav-button" />
                 <Button text="Bloqueos" maxWidth="Infinity" styleClass="nav-button" />
@@ -112,7 +112,7 @@
                             <children>
                                 <Label text="Acciones rápidas" styleClass="section-title" />
                                 <Button text="Nueva reserva" maxWidth="Infinity" styleClass="primary-button" />
-                                <Button text="Registrar cancha" maxWidth="Infinity" styleClass="secondary-button" />
+                                <Button text="Registrar cancha" maxWidth="Infinity" onAction="#abrirCanchas" styleClass="secondary-button" />
                                 <Button text="Registrar cliente" maxWidth="Infinity" styleClass="secondary-button" />
                                 <Button text="Crear bloqueo" maxWidth="Infinity" styleClass="secondary-button" />
                             </children>
