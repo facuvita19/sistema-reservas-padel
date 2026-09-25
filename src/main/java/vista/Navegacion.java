@@ -27,6 +27,7 @@ public final class Navegacion {
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 	private static ConfiguracionComplejo configuracionActual = new ConfiguracionComplejo();
 	private static final String CSS_AGENDA = "/css/agenda.css";
+	private static SolicitudReservaAgenda solicitudReservaAgenda;
 
 	private static Stage escenario;
 	private static Usuario usuarioActual;
@@ -131,6 +132,26 @@ public final class Navegacion {
 		mostrarVista("/fxml/agenda.fxml", 1380, 840, true);
 
 		escenario.setTitle(configuracionActual.getNombreComercial() + " - Agenda");
+	}
+
+	public static void mostrarNuevaReservaDesdeAgenda(java.time.LocalDate fecha, long canchaId,
+			java.time.LocalTime horaInicio) {
+
+		solicitudReservaAgenda = SolicitudReservaAgenda.nueva(fecha, canchaId, horaInicio);
+
+		mostrarReservas();
+	}
+
+	public static void mostrarReservaDesdeAgenda(long reservaId) {
+		solicitudReservaAgenda = SolicitudReservaAgenda.existente(reservaId);
+
+		mostrarReservas();
+	}
+
+	public static SolicitudReservaAgenda consumirSolicitudReservaAgenda() {
+		SolicitudReservaAgenda solicitud = solicitudReservaAgenda;
+		solicitudReservaAgenda = null;
+		return solicitud;
 	}
 
 	public static Usuario getUsuarioActual() {

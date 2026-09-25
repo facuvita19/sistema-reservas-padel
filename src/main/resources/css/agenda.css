@@ -65,14 +65,13 @@
 }
 
 .agenda-cell {
-	-fx-min-height: 42;
-	-fx-pref-height: 42;
 	-fx-background-color: #121c26;
 	-fx-text-fill: #93a4b0;
-	-fx-font-size: 11px;
-	-fx-font-weight: 650;
-	-fx-padding: 5 9;
+	-fx-font-size: 12px;
+	-fx-font-weight: 600;
+	-fx-padding: 9 12;
 	-fx-cursor: hand;
+	-fx-alignment: center-left;
 }
 
 .agenda-cell:hover {
@@ -81,13 +80,16 @@
 }
 
 .agenda-disponible {
-	-fx-background-color: #14212b;
-	-fx-text-fill: #7894a6;
+	-fx-background-color: #172631;
+	-fx-text-fill: #9bb2c1;
+	-fx-border-color: #304959;
+	-fx-border-width: 1;
 }
 
 .agenda-disponible:hover {
 	-fx-background-color: -color-principal-transparente;
-	-fx-text-fill: #d8e6ef;
+	-fx-text-fill: #eef6fa;
+	-fx-border-color: -color-principal;
 }
 
 .agenda-pendiente {
@@ -129,7 +131,7 @@
 
 .agenda-cancelada, .agenda-no-disponible, .agenda-pasada {
 	-fx-background-color: #10171e;
-	-fx-text-fill: #4f5d67;
+	-fx-text-fill: transparent;
 	-fx-cursor: default;
 }
 
@@ -141,7 +143,7 @@
 	-fx-background-radius: 14;
 	-fx-border-radius: 14;
 	-fx-font-size: 10px;
-	-fx-font-weight: 750;
+	-fx-font-weight: 700;
 	-fx-padding: 5 9;
 }
 

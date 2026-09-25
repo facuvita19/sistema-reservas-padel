@@ -79,3 +79,29 @@
     -fx-background-color: transparent;
     -fx-text-fill: #eef2f6;
 }
+
+.reservation-date-button {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-pref-height: 42;
+    -fx-background-color: #1d2935;
+    -fx-background-radius: 9;
+    -fx-border-color: #30414f;
+    -fx-border-radius: 9;
+    -fx-text-fill: #cbd7df;
+    -fx-font-size: 21px;
+    -fx-font-weight: 700;
+    -fx-cursor: hand;
+}
+
+.reservation-date-button:hover {
+    -fx-background-color: #293b49;
+    -fx-border-color: -color-principal;
+}
+
+.reservation-date-label {
+    -fx-text-fill: #afc0cc;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 0 0 5;
+}

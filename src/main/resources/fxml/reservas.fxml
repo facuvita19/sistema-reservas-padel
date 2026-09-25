@@ -33,22 +33,57 @@
                 <VBox spacing="16" styleClass="list-panel">
                     <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
                     <children>
-                        <HBox spacing="10">
-                            <children>
-                                <TextField fx:id="campoBuscar"
-                                           promptText="Buscar por cliente, cancha o estado..."
-                                           HBox.hgrow="ALWAYS"
-                                           styleClass="modern-field" />
-                                <ComboBox fx:id="filtroEstado"
-                                          promptText="Todos los estados"
-                                          prefWidth="180"
-                                          styleClass="modern-combo" />
-                                <Button text="Limpiar" onAction="#limpiarFiltros"
-                                        styleClass="secondary-button" />
-                                <Button text="Actualizar" onAction="#cargarReservas"
-                                        styleClass="secondary-button" />
-                            </children>
-                        </HBox>
+                        <VBox spacing="12">
+    <children>
+        <HBox alignment="CENTER_LEFT" spacing="10">
+            <children>
+                <Button text="‹"
+                        onAction="#diaAnterior"
+                        styleClass="reservation-date-button" />
+
+                <Button text="HOY"
+                        onAction="#irHoy"
+                        styleClass="secondary-button" />
+
+                <Button text="›"
+                        onAction="#diaSiguiente"
+                        styleClass="reservation-date-button" />
+
+                <DatePicker fx:id="filtroFecha"
+                            prefWidth="155"
+                            styleClass="modern-date" />
+
+                <Label fx:id="etiquetaFechaSeleccionada"
+                       text="Reservas de hoy"
+                       styleClass="reservation-date-label" />
+
+                <Region HBox.hgrow="ALWAYS" />
+
+                <Button text="Actualizar"
+                        onAction="#cargarReservas"
+                        styleClass="secondary-button" />
+            </children>
+        </HBox>
+
+        <HBox spacing="10">
+            <children>
+                <TextField fx:id="campoBuscar"
+                           promptText="Buscar por cliente, cancha o estado..."
+                           HBox.hgrow="ALWAYS"
+                           styleClass="modern-field" />
+
+                <ComboBox fx:id="filtroEstado"
+                          promptText="Todos los estados"
+                          prefWidth="180"
+                          styleClass="modern-combo" />
+
+                <Button text="Limpiar filtros"
+                        onAction="#limpiarFiltros"
+                        styleClass="secondary-button" />
+            </children>
+        </HBox>
+    </children>
+</VBox>
 
                         <TableView fx:id="tablaReservas" VBox.vgrow="ALWAYS"
                                    styleClass="modern-table">
