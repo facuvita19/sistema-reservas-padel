@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.ReservasController"
+            styleClass="module-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
+            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+            <children>
+                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <VBox spacing="3">
+                    <children>
+                        <Label text="Gestión de reservas" styleClass="page-title" />
+                        <Label text="Consultá disponibilidad y administrá la agenda del complejo."
+                               styleClass="page-subtitle" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="NUEVA RESERVA" onAction="#nuevaReserva"
+                        styleClass="primary-button" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.64" styleClass="module-split">
+            <items>
+                <VBox spacing="16" styleClass="list-panel">
+                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                    <children>
+                        <HBox spacing="10">
+                            <children>
+                                <TextField fx:id="campoBuscar"
+                                           promptText="Buscar por cliente, cancha o estado..."
+                                           HBox.hgrow="ALWAYS"
+                                           styleClass="modern-field" />
+                                <ComboBox fx:id="filtroEstado"
+                                          promptText="Todos los estados"
+                                          prefWidth="180"
+                                          styleClass="modern-combo" />
+                                <Button text="Limpiar" onAction="#limpiarFiltros"
+                                        styleClass="secondary-button" />
+                                <Button text="Actualizar" onAction="#cargarReservas"
+                                        styleClass="secondary-button" />
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tablaReservas" VBox.vgrow="ALWAYS"
+                                   styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="columnaFecha" text="FECHA" prefWidth="96" />
+                                <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="115" />
+                                <TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="145" />
+                                <TableColumn fx:id="columnaCliente" text="CLIENTE" prefWidth="175" />
+                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="115" />
+                                <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="105" />
+                            </columns>
+                            <placeholder>
+                                <Label text="Todavía no hay reservas registradas."
+                                       styleClass="empty-state" />
+                            </placeholder>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                    <content>
+                        <VBox spacing="14" styleClass="form-card">
+                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                            <children>
+                                <Label fx:id="tituloFormulario" text="Nueva reserva"
+                                       styleClass="section-title" />
+                                <Label text="La hora final y el precio se calculan automáticamente."
+                                       styleClass="small-caption" />
+
+                                <Label text="Cliente *" styleClass="field-label" />
+                                <ComboBox fx:id="comboCliente" maxWidth="Infinity"
+                                          promptText="Seleccionar cliente"
+                                          styleClass="modern-combo" />
+
+                                <Label text="Cancha *" styleClass="field-label" />
+                                <ComboBox fx:id="comboCancha" maxWidth="Infinity"
+                                          promptText="Seleccionar cancha"
+                                          styleClass="modern-combo" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                            <children>
+                                                <Label text="Fecha *" styleClass="field-label" />
+                                                <DatePicker fx:id="selectorFecha" maxWidth="Infinity"
+                                                            styleClass="modern-date" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                            <children>
+                                                <Label text="Horario disponible *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboHorario" maxWidth="Infinity"
+                                                          promptText="Seleccionar"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <HBox alignment="CENTER_LEFT" spacing="12" styleClass="price-summary">
+                                    <children>
+                                        <VBox spacing="3">
+                                            <children>
+                                                <Label text="PRECIO DE LA RESERVA" styleClass="metric-label" />
+                                                <Label fx:id="etiquetaPrecio" text="ARS 0"
+                                                       styleClass="reservation-price" />
+                                            </children>
+                                        </VBox>
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <VBox spacing="5" alignment="CENTER_RIGHT">
+                                            <children>
+                                                <Label text="JUGADORES" styleClass="metric-label" />
+                                                <Spinner fx:id="spinnerJugadores" prefWidth="100"
+                                                         editable="false" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <Label text="Comentarios del cliente" styleClass="field-label" />
+                                <TextArea fx:id="campoComentarios" prefRowCount="2"
+                                          wrapText="true"
+                                          promptText="Ejemplo: partido amistoso..."
+                                          styleClass="modern-area" />
+
+                                <Label text="Observaciones administrativas" styleClass="field-label" />
+                                <TextArea fx:id="campoObservaciones" prefRowCount="2"
+                                          wrapText="true"
+                                          promptText="Información privada para el personal..."
+                                          styleClass="modern-area" />
+
+                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+
+                                <Button text="GUARDAR RESERVA" onAction="#guardar"
+                                        maxWidth="Infinity" styleClass="primary-button" />
+
+                                <HBox spacing="10">
+                                    <children>
+                                        <Button text="CONFIRMAR" onAction="#confirmarReserva"
+                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                                styleClass="status-confirm-button" />
+                                        <Button text="CANCELAR" onAction="#cancelarReserva"
+                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                                styleClass="danger-button" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

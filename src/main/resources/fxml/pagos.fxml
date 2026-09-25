@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.PagosController"
+            styleClass="module-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
+            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+            <children>
+                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <VBox spacing="3">
+                    <children>
+                        <Label text="Gestión de pagos" styleClass="page-title" />
+                        <Label text="Registrá señas, pagos completos, anulaciones y reembolsos."
+                               styleClass="page-subtitle" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="NUEVO MOVIMIENTO" onAction="#nuevoPago"
+                        styleClass="primary-button" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.64" styleClass="module-split">
+            <items>
+                <VBox spacing="16" styleClass="list-panel">
+                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                    <children>
+                        <HBox spacing="10">
+                            <children>
+                                <TextField fx:id="campoBuscar"
+                                           promptText="Buscar por reserva, cliente, método o referencia..."
+                                           HBox.hgrow="ALWAYS" styleClass="modern-field" />
+                                <ComboBox fx:id="filtroEstado" prefWidth="165"
+                                          promptText="Todos los estados"
+                                          styleClass="modern-combo" />
+                                <Button text="Limpiar" onAction="#limpiarFiltros"
+                                        styleClass="secondary-button" />
+                                <Button text="Actualizar" onAction="#cargarPagos"
+                                        styleClass="secondary-button" />
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tablaPagos" VBox.vgrow="ALWAYS"
+                                   styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="columnaReserva" text="RESERVA" prefWidth="180" />
+                                <TableColumn fx:id="columnaImporte" text="IMPORTE" prefWidth="110" />
+                                <TableColumn fx:id="columnaMetodo" text="MÉTODO" prefWidth="120" />
+                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="115" />
+                                <TableColumn fx:id="columnaFecha" text="REGISTRADO" prefWidth="135" />
+                                <TableColumn fx:id="columnaReferencia" text="REFERENCIA" prefWidth="165" />
+                            </columns>
+                            <placeholder>
+                                <Label text="Todavía no hay movimientos registrados."
+                                       styleClass="empty-state" />
+                            </placeholder>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                    <content>
+                        <VBox spacing="14" styleClass="form-card">
+                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                            <children>
+                                <Label fx:id="tituloFormulario" text="Nuevo movimiento"
+                                       styleClass="section-title" />
+                                <Label text="Los pagos acreditados reducen inmediatamente el saldo."
+                                       wrapText="true" styleClass="small-caption" />
+
+                                <Label text="Reserva *" styleClass="field-label" />
+                                <ComboBox fx:id="comboReserva" maxWidth="Infinity"
+                                          promptText="Seleccionar reserva"
+                                          styleClass="modern-combo" />
+                                <Label fx:id="etiquetaReservaDetalle"
+                                       text="Seleccioná una reserva para ver el saldo."
+                                       wrapText="true" styleClass="payment-reservation-detail" />
+
+                                <GridPane hgap="10" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="33.33" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="5" GridPane.columnIndex="0" styleClass="payment-summary-card">
+                                            <children>
+                                                <Label text="PRECIO TOTAL" styleClass="metric-label" />
+                                                <Label fx:id="etiquetaPrecioTotal" text="ARS 0"
+                                                       styleClass="payment-summary-value" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="5" GridPane.columnIndex="1" styleClass="payment-summary-card">
+                                            <children>
+                                                <Label text="ACREDITADO" styleClass="metric-label" />
+                                                <Label fx:id="etiquetaTotalAcreditado" text="ARS 0"
+                                                       styleClass="payment-summary-value" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="5" GridPane.columnIndex="2"
+                                              styleClass="payment-summary-card, payment-balance-card">
+                                            <children>
+                                                <Label text="SALDO" styleClass="metric-label" />
+                                                <Label fx:id="etiquetaSaldo" text="ARS 0"
+                                                       styleClass="payment-balance-value" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <Label text="Importe *" styleClass="field-label" />
+                                <TextField fx:id="campoImporte" promptText="Ejemplo: 15000"
+                                           styleClass="modern-field" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                            <children>
+                                                <Label text="Método *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboMetodo" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                            <children>
+                                                <Label text="Estado inicial *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboEstadoInicial" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <Label text="Referencia" styleClass="field-label" />
+                                <TextField fx:id="campoReferencia"
+                                           promptText="Número de transferencia, cupón o detalle..."
+                                           styleClass="modern-field" />
+
+                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+
+                                <Button text="GUARDAR MOVIMIENTO" onAction="#guardar"
+                                        maxWidth="Infinity" styleClass="primary-button" />
+
+                                <HBox spacing="9">
+                                    <children>
+                                        <Button text="ACREDITAR" onAction="#acreditar"
+                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                                styleClass="status-confirm-button" />
+                                        <Button text="ANULAR" onAction="#anular"
+                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                                styleClass="secondary-button" />
+                                        <Button text="REEMBOLSAR" onAction="#reembolsar"
+                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                                styleClass="refund-button" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

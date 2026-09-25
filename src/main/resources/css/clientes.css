@@ -1,0 +1,19 @@
+.client-note {
+    -fx-background-color: #16222d;
+    -fx-background-radius: 10;
+    -fx-border-color: #293b49;
+    -fx-border-radius: 10;
+    -fx-padding: 14;
+}
+
+.client-note-title {
+    -fx-text-fill: #afc4d3;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+.client-note-text {
+    -fx-text-fill: #7f919f;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.ClientesController"
+            styleClass="module-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="module-header">
+            <padding>
+                <Insets top="22" right="28" bottom="22" left="28" />
+            </padding>
+            <children>
+                <Button text="← Inicio"
+                        onAction="#volver"
+                        styleClass="back-button" />
+                <VBox spacing="3">
+                    <children>
+                        <Label text="Gestión de clientes"
+                               styleClass="page-title" />
+                        <Label text="Administrá los datos de contacto y el historial de tus jugadores."
+                               styleClass="page-subtitle" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="NUEVO CLIENTE"
+                        onAction="#nuevo"
+                        styleClass="primary-button" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.63" styleClass="module-split">
+            <items>
+                <VBox spacing="16" styleClass="list-panel">
+                    <padding>
+                        <Insets top="22" right="22" bottom="22" left="28" />
+                    </padding>
+                    <children>
+                        <HBox spacing="10">
+                            <children>
+                                <TextField fx:id="campoBuscar"
+                                           promptText="Buscar por nombre, documento, teléfono o email..."
+                                           HBox.hgrow="ALWAYS"
+                                           styleClass="modern-field" />
+                                <Button text="Actualizar"
+                                        onAction="#cargarClientes"
+                                        styleClass="secondary-button" />
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tablaClientes"
+                                   VBox.vgrow="ALWAYS"
+                                   styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="columnaNombre"
+                                             text="CLIENTE"
+                                             prefWidth="185" />
+                                <TableColumn fx:id="columnaDocumento"
+                                             text="DOCUMENTO"
+                                             prefWidth="115" />
+                                <TableColumn fx:id="columnaTelefono"
+                                             text="TELÉFONO"
+                                             prefWidth="130" />
+                                <TableColumn fx:id="columnaEmail"
+                                             text="EMAIL"
+                                             prefWidth="190" />
+                                <TableColumn fx:id="columnaEstado"
+                                             text="ESTADO"
+                                             prefWidth="90" />
+                            </columns>
+                            <placeholder>
+                                <Label text="Todavía no hay clientes registrados."
+                                       styleClass="empty-state" />
+                            </placeholder>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                    <content>
+                        <VBox spacing="15" styleClass="form-card">
+                            <padding>
+                                <Insets top="24" right="30" bottom="28" left="30" />
+                            </padding>
+                            <children>
+                                <Label fx:id="tituloFormulario"
+                                       text="Nuevo cliente"
+                                       styleClass="section-title" />
+                                <Label text="Los campos con * son obligatorios."
+                                       styleClass="small-caption" />
+
+                                <Label text="Nombre *" styleClass="field-label" />
+                                <TextField fx:id="campoNombre"
+                                           promptText="Ejemplo: Facundo"
+                                           styleClass="modern-field" />
+
+                                <Label text="Apellido *" styleClass="field-label" />
+                                <TextField fx:id="campoApellido"
+                                           promptText="Ejemplo: Vitale"
+                                           styleClass="modern-field" />
+
+                                <Label text="Documento *" styleClass="field-label" />
+                                <TextField fx:id="campoDocumento"
+                                           promptText="Solo números"
+                                           styleClass="modern-field" />
+
+                                <Label text="Teléfono *" styleClass="field-label" />
+                                <TextField fx:id="campoTelefono"
+                                           promptText="Ejemplo: 11 5555-5555"
+                                           styleClass="modern-field" />
+
+                                <Label text="Correo electrónico" styleClass="field-label" />
+                                <TextField fx:id="campoEmail"
+                                           promptText="Ejemplo: cliente@email.com"
+                                           styleClass="modern-field" />
+
+                                <VBox spacing="8" styleClass="client-note">
+                                    <children>
+                                        <Label text="Información de la cuenta"
+                                               styleClass="client-note-title" />
+                                        <Label text="La cuenta de acceso para reservas online se incorporará en una etapa posterior."
+                                               wrapText="true"
+                                               styleClass="client-note-text" />
+                                    </children>
+                                </VBox>
+
+                                <Label fx:id="etiquetaMensaje"
+                                       minHeight="22"
+                                       wrapText="true" />
+
+                                <HBox spacing="10">
+                                    <children>
+                                        <Button fx:id="botonGuardar"
+                                                text="GUARDAR CLIENTE"
+                                                onAction="#guardar"
+                                                HBox.hgrow="ALWAYS"
+                                                maxWidth="Infinity"
+                                                styleClass="primary-button" />
+                                        <Button fx:id="botonDesactivar"
+                                                text="DESACTIVAR"
+                                                onAction="#desactivar"
+                                                styleClass="danger-button" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.BloqueosController"
+            styleClass="module-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
+            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+            <children>
+                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <VBox spacing="3">
+                    <children>
+                        <Label text="Bloqueos de cancha" styleClass="page-title" />
+                        <Label text="Reservá franjas para mantenimiento, torneos y eventos privados."
+                               styleClass="page-subtitle" />
+                    </children>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="NUEVO BLOQUEO" onAction="#nuevo"
+                        styleClass="primary-button" />
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.62" styleClass="module-split">
+            <items>
+                <VBox spacing="16" styleClass="list-panel">
+                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                    <children>
+                        <HBox spacing="10">
+                            <children>
+                                <TextField fx:id="campoBuscar"
+                                           promptText="Buscar por cancha, motivo o fecha..."
+                                           HBox.hgrow="ALWAYS"
+                                           styleClass="modern-field" />
+                                <Button text="Actualizar" onAction="#cargarBloqueos"
+                                        styleClass="secondary-button" />
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tablaBloqueos" VBox.vgrow="ALWAYS"
+                                   styleClass="modern-table">
+                            <columns>
+                                <TableColumn fx:id="columnaFecha" text="FECHA" prefWidth="105" />
+                                <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="125" />
+                                <TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="170" />
+                                <TableColumn fx:id="columnaMotivo" text="MOTIVO" prefWidth="260" />
+                            </columns>
+                            <placeholder>
+                                <Label text="No hay bloqueos registrados."
+                                       styleClass="empty-state" />
+                            </placeholder>
+                        </TableView>
+                    </children>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                    <content>
+                        <VBox spacing="15" styleClass="form-card">
+                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                            <children>
+                                <Label fx:id="tituloFormulario" text="Nuevo bloqueo"
+                                       styleClass="section-title" />
+                                <Label text="El horario bloqueado dejará de aparecer disponible para reservas."
+                                       wrapText="true" styleClass="small-caption" />
+
+                                <Label text="Cancha *" styleClass="field-label" />
+                                <ComboBox fx:id="comboCancha" maxWidth="Infinity"
+                                          promptText="Seleccionar cancha"
+                                          styleClass="modern-combo" />
+
+                                <Label text="Fecha *" styleClass="field-label" />
+                                <DatePicker fx:id="selectorFecha" maxWidth="Infinity"
+                                            styleClass="modern-date" />
+
+                                <GridPane hgap="12" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                    </columnConstraints>
+                                    <children>
+                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                            <children>
+                                                <Label text="Hora inicial *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboHoraInicio" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                            <children>
+                                                <Label text="Hora final *" styleClass="field-label" />
+                                                <ComboBox fx:id="comboHoraFin" maxWidth="Infinity"
+                                                          styleClass="modern-combo" />
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </GridPane>
+
+                                <Label text="Motivo frecuente" styleClass="field-label" />
+                                <ComboBox fx:id="comboMotivoRapido" maxWidth="Infinity"
+                                          promptText="Seleccionar una opción"
+                                          styleClass="modern-combo" />
+
+                                <Label text="Descripción del motivo *" styleClass="field-label" />
+                                <TextArea fx:id="campoMotivo" prefRowCount="4"
+                                          wrapText="true"
+                                          promptText="Describí el motivo del bloqueo..."
+                                          styleClass="modern-area" />
+
+                                <VBox spacing="8" styleClass="block-note">
+                                    <children>
+                                        <Label text="Importante" styleClass="block-note-title" />
+                                        <Label text="El bloqueo no elimina reservas existentes. Antes de bloquear una franja, verificá que no haya reservas activas."
+                                               wrapText="true"
+                                               styleClass="block-note-text" />
+                                    </children>
+                                </VBox>
+
+                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+
+                                <HBox spacing="10">
+                                    <children>
+                                        <Button fx:id="botonGuardar" text="GUARDAR BLOQUEO"
+                                                onAction="#guardar" HBox.hgrow="ALWAYS"
+                                                maxWidth="Infinity" styleClass="primary-button" />
+                                        <Button fx:id="botonEliminar" text="ELIMINAR"
+                                                onAction="#eliminar"
+                                                styleClass="danger-button" />
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+                    </content>
+                </ScrollPane>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

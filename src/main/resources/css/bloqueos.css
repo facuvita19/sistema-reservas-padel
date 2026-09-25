@@ -1,0 +1,19 @@
+.block-note {
+    -fx-background-color: #2b2519;
+    -fx-background-radius: 10;
+    -fx-border-color: #55492d;
+    -fx-border-radius: 10;
+    -fx-padding: 14;
+}
+
+.block-note-title {
+    -fx-text-fill: #d7bd79;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+.block-note-text {
+    -fx-text-fill: #a99b77;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}

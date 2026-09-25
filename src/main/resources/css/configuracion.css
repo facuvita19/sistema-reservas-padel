@@ -1,0 +1,60 @@
+.config-root,
+.config-scroll,
+.config-scroll > .viewport,
+.config-content {
+    -fx-background-color: #0b1017;
+}
+
+.config-card {
+    -fx-background-color: #131d28;
+    -fx-background-radius: 14;
+    -fx-border-color: #24333f;
+    -fx-border-radius: 14;
+    -fx-padding: 20;
+}
+
+.config-example {
+    -fx-background-color: #182936;
+    -fx-background-radius: 9;
+    -fx-border-color: #304b5d;
+    -fx-border-radius: 9;
+    -fx-text-fill: #9db8cb;
+    -fx-font-size: 12px;
+    -fx-padding: 11 13;
+}
+
+.config-note {
+    -fx-background-color: #18232e;
+    -fx-background-radius: 10;
+    -fx-border-color: #2b3c49;
+    -fx-border-radius: 10;
+    -fx-padding: 14;
+}
+
+.config-note-title {
+    -fx-text-fill: #afc4d3;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+.config-note-text {
+    -fx-text-fill: #7f919f;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}
+
+.config-save-button {
+    -fx-pref-height: 50;
+}
+
+.color-picker {
+    -fx-pref-height: 46;
+    -fx-background-color: #1a2531;
+    -fx-background-radius: 10;
+    -fx-border-color: #2d3d4c;
+    -fx-border-radius: 10;
+}
+
+.color-picker .label {
+    -fx-text-fill: #eef2f6;
+}

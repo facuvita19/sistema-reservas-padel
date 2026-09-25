@@ -1,0 +1,20 @@
+.dashboard-status {
+    -fx-text-fill: #728594;
+    -fx-font-size: 12px;
+}
+
+.dashboard-status-ok {
+    -fx-text-fill: #79ad99;
+}
+
+.dashboard-status-error {
+    -fx-text-fill: #df8585;
+}
+
+.dashboard-table {
+    -fx-min-height: 260;
+}
+
+.dashboard-table .table-row-cell {
+    -fx-cell-size: 44;
+}

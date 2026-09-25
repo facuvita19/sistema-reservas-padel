@@ -4,15 +4,28 @@ import java.io.IOException;
 import java.net.URL;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import negocio.Usuario;
+import negocio.ConfiguracionComplejo;
+import servicio.ConfiguracionComplejoService;
 
 public final class Navegacion {
 
 	private static final String CSS_GLOBAL = "/css/tema-padel.css";
 	private static final String CSS_CANCHAS = "/css/canchas.css";
+	private static final String CSS_CLIENTES = "/css/clientes.css";
+	private static final String CSS_RESERVAS = "/css/reservas.css";
+	private static final String CSS_BLOQUEOS = "/css/bloqueos.css";
+	private static final String CSS_PAGOS = "/css/pagos.css";
+	private static final String CSS_DASHBOARD = "/css/dashboard.css";
+	private static final String CSS_ESTADISTICAS = "/css/estadisticas.css";
+	private static final String CSS_CONFIGURACION = "/css/configuracion.css";
+	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
+    private static ConfiguracionComplejo configuracionActual = new ConfiguracionComplejo();
 
 	private static Stage escenario;
 	private static Usuario usuarioActual;
@@ -29,6 +42,29 @@ public final class Navegacion {
 		escenario.setTitle("Padel Reservas");
 		escenario.setMinWidth(980);
 		escenario.setMinHeight(660);
+		
+		recargarConfiguracion();
+	}
+	
+	public static void recargarConfiguracion() {
+	    try {
+	        configuracionActual = configuracionService.obtener();
+
+	        if (escenario != null && escenario.getScene() != null) {
+	            TemaDinamico.aplicar(
+	                    escenario.getScene().getRoot(),
+	                    configuracionActual
+	            );
+	        }
+
+	    } catch (RuntimeException exception) {
+	        exception.printStackTrace();
+	        configuracionActual = new ConfiguracionComplejo();
+	    }
+	}
+	
+	public static ConfiguracionComplejo getConfiguracionActual() {
+	    return configuracionActual;
 	}
 
 	public static void mostrarLogin() {
@@ -53,6 +89,44 @@ public final class Navegacion {
 		escenario.setTitle("Padel Reservas - Canchas");
 	}
 
+	public static void mostrarClientes() {
+		verificarSesion();
+		mostrarVista("/fxml/clientes.fxml", 1360, 820, true);
+		escenario.setTitle("Padel Reservas - Clientes");
+	}
+
+	public static void mostrarReservas() {
+		verificarSesion();
+		mostrarVista("/fxml/reservas.fxml", 1400, 840, true);
+		escenario.setTitle("Padel Reservas - Reservas");
+	}
+
+	public static void mostrarBloqueos() {
+		verificarSesion();
+		mostrarVista("/fxml/bloqueos.fxml", 1360, 820, true);
+		escenario.setTitle("Padel Reservas - Bloqueos");
+	}
+
+	public static void mostrarPagos() {
+		verificarSesion();
+		mostrarVista("/fxml/pagos.fxml", 1420, 850, true);
+		escenario.setTitle("Padel Reservas - Pagos");
+	}
+
+	public static void mostrarEstadisticas() {
+		verificarSesion();
+		mostrarVista("/fxml/estadisticas.fxml", 1320, 780, true);
+		escenario.setTitle("Padel Reservas - Estadísticas");
+	}
+
+	public static void mostrarConfiguracion() {
+		verificarSesion();
+
+		mostrarVista("/fxml/configuracion.fxml", 1280, 800, true);
+
+		escenario.setTitle("Padel Reservas - Configuración");
+	}
+
 	public static Usuario getUsuarioActual() {
 		return usuarioActual;
 	}
@@ -73,15 +147,48 @@ public final class Navegacion {
 
 			FXMLLoader cargador = new FXMLLoader(ubicacion);
 			Parent raiz = cargador.load();
+			
+			TemaDinamico.aplicar(
+			        raiz,
+			        configuracionActual
+			);
+			
+			
 			Scene escena = new Scene(raiz, ancho, alto);
-
 			agregarCssObligatorio(escena, CSS_GLOBAL);
 			agregarCssOpcional(escena, CSS_CANCHAS);
+			agregarCssOpcional(escena, CSS_CLIENTES);
+			agregarCssOpcional(escena, CSS_RESERVAS);
+			agregarCssOpcional(escena, CSS_BLOQUEOS);
+			agregarCssOpcional(escena, CSS_PAGOS);
+			agregarCssOpcional(escena, CSS_DASHBOARD);
+			agregarCssOpcional(escena, CSS_ESTADISTICAS);
+			agregarCssOpcional(escena, CSS_CONFIGURACION);
 
-			escenario.setScene(escena);
+			Rectangle2D areaVisible = Screen.getPrimary().getVisualBounds();
+
+			double anchoSeguro = Math.min(ancho, areaVisible.getWidth() * 0.95);
+
+			double altoSeguro = Math.min(alto, areaVisible.getHeight() * 0.92);
+
+			boolean estabaMaximizada = escenario.isMaximized();
+			boolean estabaVisible = escenario.isShowing();
+
+			escenario.setFullScreen(false);
 			escenario.setResizable(redimensionable);
-			escenario.centerOnScreen();
+			escenario.setScene(escena);
+
+			if (!estabaVisible) {
+				escenario.setWidth(anchoSeguro);
+				escenario.setHeight(altoSeguro);
+				escenario.centerOnScreen();
+			}
+
 			escenario.show();
+
+			if (estabaMaximizada) {
+				escenario.setMaximized(true);
+			}
 
 		} catch (IOException exception) {
 			exception.printStackTrace();
