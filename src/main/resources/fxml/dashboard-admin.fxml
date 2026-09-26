@@ -54,6 +54,10 @@
                                 maxWidth="Infinity"
                                 onAction="#abrirPagos"
                                 styleClass="nav-button" />
+                        <Button text="Cierre de caja"
+                                maxWidth="Infinity"
+                                onAction="#abrirCierreCaja"
+                                styleClass="nav-button" />
                         <Button fx:id="botonBloqueos"
                                 text="Bloqueos"
                                 maxWidth="Infinity"
@@ -150,73 +154,96 @@
                             </children>
                         </HBox>
 
-                        <FlowPane hgap="16"
-                                  vgap="16"
-                                  prefWrapLength="940"
-                                  maxWidth="Infinity">
+                        <VBox spacing="16">
                             <children>
-                                <VBox minWidth="210"
-                                      prefWidth="220"
-                                      spacing="8"
-                                      styleClass="metric-card">
+                                <GridPane hgap="16" vgap="16">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                        <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                    </columnConstraints>
                                     <children>
-                                        <Label text="RESERVAS DE HOY"
-                                               wrapText="true"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaReservasHoy"
-                                               text="0"
-                                               wrapText="true"
-                                               styleClass="metric-value" />
-                                        <Label text="Agenda de la fecha actual"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
+                                        <VBox GridPane.columnIndex="0"
+                                              minWidth="0"
+                                              spacing="8"
+                                              styleClass="metric-card">
+                                            <children>
+                                                <Label text="RESERVAS DE HOY"
+                                                       wrapText="true"
+                                                       styleClass="metric-label" />
+                                                <Label fx:id="etiquetaReservasHoy"
+                                                       text="0"
+                                                       wrapText="true"
+                                                       styleClass="metric-value" />
+                                                <Label text="Agenda de la fecha actual"
+                                                       wrapText="true"
+                                                       styleClass="metric-detail" />
+                                            </children>
+                                        </VBox>
 
-                                <VBox minWidth="210"
-                                      prefWidth="220"
-                                      spacing="8"
-                                      styleClass="metric-card">
-                                    <children>
-                                        <Label text="CANCHAS ACTIVAS"
-                                               wrapText="true"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaCanchasActivas"
-                                               text="0"
-                                               wrapText="true"
-                                               styleClass="metric-value" />
-                                        <Label text="Disponibles para reservas"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
+                                        <VBox GridPane.columnIndex="1"
+                                              minWidth="0"
+                                              spacing="8"
+                                              styleClass="metric-card">
+                                            <children>
+                                                <Label text="CANCHAS ACTIVAS"
+                                                       wrapText="true"
+                                                       styleClass="metric-label" />
+                                                <Label fx:id="etiquetaCanchasActivas"
+                                                       text="0"
+                                                       wrapText="true"
+                                                       styleClass="metric-value" />
+                                                <Label text="Disponibles para reservas"
+                                                       wrapText="true"
+                                                       styleClass="metric-detail" />
+                                            </children>
+                                        </VBox>
 
-                                <VBox minWidth="210"
-                                      prefWidth="220"
-                                      spacing="8"
-                                      styleClass="metric-card">
-                                    <children>
-                                        <Label text="INGRESOS DEL DÍA"
-                                               wrapText="true"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaIngresosDia"
-                                               text="ARS 0"
-                                               wrapText="true"
-                                               styleClass="metric-value" />
-                                        <Label text="Pagos acreditados hoy"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <VBox GridPane.columnIndex="2"
+                                              minWidth="0"
+                                              spacing="8"
+                                              styleClass="metric-card">
+                                            <children>
+                                                <Label text="INGRESOS DEL DÍA"
+                                                       wrapText="true"
+                                                       styleClass="metric-label" />
+                                                <Label fx:id="etiquetaIngresosDia"
+                                                       text="ARS 0"
+                                                       wrapText="true"
+                                                       styleClass="metric-value" />
+                                                <Label text="Pagos acreditados hoy"
+                                                       wrapText="true"
+                                                       styleClass="metric-detail" />
+                                            </children>
+                                        </VBox>
+
+                                        <VBox GridPane.columnIndex="3"
+                                              minWidth="0"
+                                              spacing="8"
+                                              styleClass="metric-card">
+                                            <children>
+                                                <Label text="PAGOS PENDIENTES"
+                                                       wrapText="true"
+                                                       styleClass="metric-label" />
+                                                <Label fx:id="etiquetaPagosPendientes"
+                                                       text="0"
+                                                       wrapText="true"
+                                                       styleClass="metric-value" />
+                                                <Label text="Movimientos sin acreditar"
+                                                       wrapText="true"
+                                                       styleClass="metric-detail" />
+                                            </children>
+                                        </VBox>
                                     </children>
-                                </VBox>
+                                </GridPane>
 
                                 <VBox fx:id="tarjetaIngresosMes"
-                                      minWidth="210"
-                                      prefWidth="220"
+                                      maxWidth="Infinity"
                                       spacing="8"
                                       styleClass="metric-card">
                                     <children>
                                         <Label text="INGRESOS DEL MES"
-                                               wrapText="true"
                                                styleClass="metric-label" />
                                         <Label fx:id="etiquetaIngresosMes"
                                                text="ARS 0"
@@ -227,28 +254,12 @@
                                                styleClass="metric-detail" />
                                     </children>
                                 </VBox>
-
-                                <VBox minWidth="210"
-                                      prefWidth="220"
-                                      spacing="8"
-                                      styleClass="metric-card">
-                                    <children>
-                                        <Label text="PAGOS PENDIENTES"
-                                               wrapText="true"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaPagosPendientes"
-                                               text="0"
-                                               wrapText="true"
-                                               styleClass="metric-value" />
-                                        <Label text="Movimientos sin acreditar"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
                             </children>
-                        </FlowPane>
+                        </VBox>
 
-                        <HBox spacing="18" minHeight="430">
+                        <HBox spacing="18"
+                              minHeight="430"
+                              alignment="TOP_LEFT">
                             <children>
                                 <VBox minWidth="500"
                                       spacing="14"
@@ -297,9 +308,11 @@
                                     </children>
                                 </VBox>
 
-                                <VBox minWidth="260"
+                                <VBox minWidth="280"
                                       prefWidth="310"
+                                      maxWidth="340"
                                       spacing="14"
+                                      alignment="TOP_LEFT"
                                       styleClass="content-card">
                                     <children>
                                         <Label text="Acciones rápidas"
@@ -329,6 +342,11 @@
                                                 maxWidth="Infinity"
                                                 onAction="#abrirBloqueos"
                                                 styleClass="secondary-button" />
+
+                                        <Button text="Cerrar caja del día"
+                                                maxWidth="Infinity"
+                                                onAction="#abrirCierreCaja"
+                                                styleClass="cash-close-dashboard-button" />
                                     </children>
                                 </VBox>
                             </children>

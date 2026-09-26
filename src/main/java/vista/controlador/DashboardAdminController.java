@@ -87,6 +87,7 @@ public class DashboardAdminController {
 
         controlarAcceso(botonBloqueos, true);
     }
+    
 
     private void controlarAcceso(Node nodo, boolean permitido) {
         if (nodo == null) {
@@ -273,6 +274,11 @@ public class DashboardAdminController {
     @FXML
     private void abrirPagos() {
         Navegacion.mostrarPagos();
+    }
+    
+    @FXML
+    private void abrirCierreCaja() {
+        Navegacion.mostrarCierreCaja();
     }
 
     @FXML

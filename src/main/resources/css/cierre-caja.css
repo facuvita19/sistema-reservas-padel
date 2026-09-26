@@ -1,0 +1,22 @@
+
+
+.cash-close-dashboard-button {
+    -fx-pref-height: 42;
+    -fx-background-color: #462a30;
+    -fx-background-radius: 9;
+    -fx-border-color: #75444e;
+    -fx-border-radius: 9;
+    -fx-text-fill: #e7bcc2;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+
+.cash-close-dashboard-button:hover {
+    -fx-background-color: #59343c;
+    -fx-border-color: #9a5a67;
+    -fx-text-fill: #ffe4e8;
+}
+
+.cash-close-dashboard-button:pressed {
+    -fx-background-color: #382127;
+}
