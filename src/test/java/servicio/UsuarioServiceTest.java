@@ -35,8 +35,7 @@ class UsuarioServiceTest {
                 "  Facundo.Vitale  ",
                 "ClaveSegura123",
                 RolUsuario.CLIENTE,
-                20L
-        );
+                20L);
 
         assertTrue(dao.guardarInvocado);
         assertEquals("facundo.vitale", usuario.getNombreUsuario());
@@ -48,20 +47,38 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void registraAdministradorSinCliente() {
-        Usuario usuario = service.registrar(
+    void registraAdministradorYOperadorSinCliente() {
+        Usuario administrador = service.registrar(
                 "administrador2",
                 "ClaveSegura123",
                 RolUsuario.ADMINISTRADOR,
-                null
-        );
+                null);
 
-        assertNull(usuario.getClienteId());
-        assertTrue(usuario.esAdministrador());
+        Usuario operador = service.registrar(
+                "operador1",
+                "ClaveSegura123",
+                RolUsuario.OPERADOR,
+                null);
+
+        assertNull(administrador.getClienteId());
+        assertTrue(administrador.esAdministrador());
+        assertNull(operador.getClienteId());
+        assertTrue(operador.esOperador());
+        assertTrue(operador.esPersonalDelComplejo());
     }
 
     @Test
-    void rechazaNombreDuplicado() {
+    void rechazaPersonalVinculadoACliente() {
+        assertThrows(IllegalArgumentException.class,
+                () -> service.registrar(
+                        "operador1",
+                        "ClaveSegura123",
+                        RolUsuario.OPERADOR,
+                        20L));
+    }
+
+    @Test
+    void rechazaNombreDuplicadoEInvalido() {
         dao.nombreDuplicado = true;
         assertThrows(IllegalArgumentException.class,
                 () -> service.registrar(
@@ -69,10 +86,8 @@ class UsuarioServiceTest {
                         "ClaveSegura123",
                         RolUsuario.CLIENTE,
                         20L));
-    }
 
-    @Test
-    void rechazaNombreInvalido() {
+        dao.nombreDuplicado = false;
         assertThrows(IllegalArgumentException.class,
                 () -> service.registrar(
                         "facundo vitale",
@@ -92,27 +107,17 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void rechazaAdministradorVinculado() {
-        assertThrows(IllegalArgumentException.class,
-                () -> service.registrar(
-                        "administrador2",
-                        "ClaveSegura123",
-                        RolUsuario.ADMINISTRADOR,
-                        20L));
-    }
-
-    @Test
     void iniciaSesionConCredencialesCorrectas() {
         Usuario usuario = crearUsuario(
                 5L,
-                "facundo",
+                "operador1",
                 "ClaveSegura123",
-                RolUsuario.CLIENTE
-        );
+                RolUsuario.OPERADOR,
+                true);
         dao.porNombre = usuario;
 
         Usuario resultado = service.iniciarSesion(
-                " FACUNDO ", "ClaveSegura123");
+                " OPERADOR1 ", "ClaveSegura123");
 
         assertSame(usuario, resultado);
     }
@@ -123,8 +128,8 @@ class UsuarioServiceTest {
                 5L,
                 "facundo",
                 "ClaveSegura123",
-                RolUsuario.CLIENTE
-        );
+                RolUsuario.CLIENTE,
+                true);
 
         assertThrows(IllegalArgumentException.class,
                 () -> service.iniciarSesion(
@@ -132,13 +137,13 @@ class UsuarioServiceTest {
     }
 
     @Test
-    void cambiaPasswordConPasswordActualCorrecta() {
+    void cambiaYRestablecePassword() {
         Usuario usuario = crearUsuario(
                 5L,
-                "facundo",
+                "operador1",
                 "ClaveSegura123",
-                RolUsuario.CLIENTE
-        );
+                RolUsuario.OPERADOR,
+                true);
         dao.buscado = usuario;
 
         service.cambiarPassword(
@@ -146,38 +151,122 @@ class UsuarioServiceTest {
 
         assertTrue(ProtectorPassword.verificar(
                 "ClaveNueva456", usuario.getPasswordHash()));
-        assertFalse(ProtectorPassword.verificar(
-                "ClaveSegura123", usuario.getPasswordHash()));
+
+        service.restablecerPassword(5L, "OtraClave789");
+
+        assertTrue(ProtectorPassword.verificar(
+                "OtraClave789", usuario.getPasswordHash()));
     }
 
     @Test
-    void protegeLaCuentaAdmin() {
+    void impideAutodesactivacion() {
         dao.buscado = crearUsuario(
-                1L,
-                "admin",
+                5L,
+                "operador1",
                 "ClaveSegura123",
-                RolUsuario.ADMINISTRADOR
-        );
+                RolUsuario.OPERADOR,
+                true);
 
         assertThrows(IllegalArgumentException.class,
-                () -> service.eliminar(1L));
+                () -> service.desactivar(5L, 5L));
         assertFalse(dao.eliminarInvocado);
     }
 
     @Test
-    void buscaListaYEliminaUsuarioComun() {
+    void protegeCuentaAdminPrincipal() {
+        dao.buscado = crearUsuario(
+                1L,
+                "admin",
+                "ClaveSegura123",
+                RolUsuario.ADMINISTRADOR,
+                true);
+        dao.administradoresActivos = 2L;
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.desactivar(1L, 9L));
+        assertFalse(dao.eliminarInvocado);
+    }
+
+    @Test
+    void protegeUltimoAdministradorActivo() {
+        dao.buscado = crearUsuario(
+                2L,
+                "administrador2",
+                "ClaveSegura123",
+                RolUsuario.ADMINISTRADOR,
+                true);
+        dao.administradoresActivos = 1L;
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.desactivar(2L, 9L));
+        assertFalse(dao.eliminarInvocado);
+    }
+
+    @Test
+    void permiteDesactivarAdministradorSiExisteOtro() {
+        dao.buscado = crearUsuario(
+                2L,
+                "administrador2",
+                "ClaveSegura123",
+                RolUsuario.ADMINISTRADOR,
+                true);
+        dao.administradoresActivos = 2L;
+
+        service.desactivar(2L, 9L);
+
+        assertTrue(dao.eliminarInvocado);
+    }
+
+    @Test
+    void activaUsuarioInactivo() {
+        dao.buscado = crearUsuario(
+                5L,
+                "operador1",
+                "ClaveSegura123",
+                RolUsuario.OPERADOR,
+                false);
+
+        service.activar(5L);
+
+        assertTrue(dao.activarInvocado);
+    }
+
+    @Test
+    void impideCambiarRolAlUltimoAdministrador() {
+        Usuario original = crearUsuario(
+                2L,
+                "administrador2",
+                "ClaveSegura123",
+                RolUsuario.ADMINISTRADOR,
+                true);
+        dao.buscado = original;
+        dao.administradoresActivos = 1L;
+
+        Usuario modificado = crearUsuario(
+                2L,
+                "administrador2",
+                "ClaveSegura123",
+                RolUsuario.OPERADOR,
+                true);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> service.actualizarDatos(modificado));
+    }
+
+    @Test
+    void buscaListaYDesactivaUsuarioComun() {
         Usuario usuario = crearUsuario(
                 5L,
-                "facundo",
+                "operador1",
                 "ClaveSegura123",
-                RolUsuario.CLIENTE
-        );
+                RolUsuario.OPERADOR,
+                true);
         dao.buscado = usuario;
         dao.usuarios.add(usuario);
 
         assertSame(usuario, service.buscar(5L));
         assertEquals(1, service.listar().size());
-        service.eliminar(5L);
+        service.desactivar(5L, 9L);
         assertTrue(dao.eliminarInvocado);
         assertNull(service.buscar(0L));
     }
@@ -186,8 +275,8 @@ class UsuarioServiceTest {
             long id,
             String nombre,
             String password,
-            RolUsuario rol) {
-
+            RolUsuario rol,
+            boolean activo) {
         Usuario usuario = new Usuario();
         usuario.setId(id);
         usuario.setNombreUsuario(nombre);
@@ -196,14 +285,16 @@ class UsuarioServiceTest {
         usuario.setRol(rol);
         usuario.setClienteId(
                 rol == RolUsuario.CLIENTE ? 20L : null);
-        usuario.setActivo(true);
+        usuario.setActivo(activo);
         return usuario;
     }
 
     private static final class UsuarioDAODoble implements UsuarioDAO {
         private boolean guardarInvocado;
         private boolean eliminarInvocado;
+        private boolean activarInvocado;
         private boolean nombreDuplicado;
+        private long administradoresActivos = 1L;
         private Usuario buscado;
         private Usuario porNombre;
         private final List<Usuario> usuarios = new ArrayList<>();
@@ -216,6 +307,11 @@ class UsuarioServiceTest {
         @Override
         public void eliminar(long id) {
             eliminarInvocado = true;
+        }
+
+        @Override
+        public void activar(long id) {
+            activarInvocado = true;
         }
 
         @Override
@@ -236,6 +332,11 @@ class UsuarioServiceTest {
         @Override
         public boolean existeNombreUsuario(String nombre, long id) {
             return nombreDuplicado;
+        }
+
+        @Override
+        public long contarAdministradoresActivos() {
+            return administradoresActivos;
         }
     }
 }

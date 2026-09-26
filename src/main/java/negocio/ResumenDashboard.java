@@ -6,6 +6,7 @@ public class ResumenDashboard {
 
     private int reservasHoy;
     private int canchasActivas;
+    private BigDecimal ingresosDia = BigDecimal.ZERO;
     private BigDecimal ingresosMes = BigDecimal.ZERO;
     private int pagosPendientes;
 
@@ -23,6 +24,16 @@ public class ResumenDashboard {
 
     public void setCanchasActivas(int canchasActivas) {
         this.canchasActivas = canchasActivas;
+    }
+
+    public BigDecimal getIngresosDia() {
+        return ingresosDia;
+    }
+
+    public void setIngresosDia(BigDecimal ingresosDia) {
+        this.ingresosDia = ingresosDia == null
+                ? BigDecimal.ZERO
+                : ingresosDia;
     }
 
     public BigDecimal getIngresosMes() {

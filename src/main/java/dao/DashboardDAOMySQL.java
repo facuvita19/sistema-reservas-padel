@@ -34,6 +34,10 @@ public class DashboardDAOMySQL implements DashboardDAO {
                     fechaReferencia
             ));
             resumen.setCanchasActivas(contarCanchasActivas(conexion));
+            resumen.setIngresosDia(obtenerIngresosDia(
+                    conexion,
+                    fechaReferencia
+            ));
             resumen.setIngresosMes(obtenerIngresosMes(
                     conexion,
                     fechaReferencia
@@ -76,6 +80,33 @@ public class DashboardDAOMySQL implements DashboardDAO {
         ) {
             resultado.next();
             return resultado.getInt(1);
+        }
+    }
+
+    private BigDecimal obtenerIngresosDia(
+            Connection conexion,
+            LocalDate fechaReferencia) throws SQLException {
+
+        LocalDate diaSiguiente = fechaReferencia.plusDays(1);
+
+        String sql = "SELECT COALESCE(SUM(importe), 0) FROM pagos "
+                + "WHERE estado = 'ACREDITADO' "
+                + "AND fecha_pago >= ? AND fecha_pago < ?";
+
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setTimestamp(
+                    1,
+                    Timestamp.valueOf(fechaReferencia.atStartOfDay())
+            );
+            sentencia.setTimestamp(
+                    2,
+                    Timestamp.valueOf(diaSiguiente.atStartOfDay())
+            );
+
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                return resultado.getBigDecimal(1);
+            }
         }
     }
 

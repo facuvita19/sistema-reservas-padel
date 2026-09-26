@@ -2,6 +2,7 @@ package negocio;
 
 public enum RolUsuario {
     ADMINISTRADOR("Administrador"),
+    OPERADOR("Operador"),
     CLIENTE("Cliente");
 
     private final String descripcion;
@@ -12,6 +13,10 @@ public enum RolUsuario {
 
     public String getDescripcion() {
         return descripcion;
+    }
+
+    public boolean esPersonalDelComplejo() {
+        return this == ADMINISTRADOR || this == OPERADOR;
     }
 
     @Override

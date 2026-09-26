@@ -12,7 +12,6 @@ import util.ProtectorPassword;
 public class UsuarioService {
 
     private static final String USUARIO_ADMIN = "admin";
-
     private final UsuarioDAO usuarioDAO;
 
     public UsuarioService() {
@@ -22,8 +21,7 @@ public class UsuarioService {
     public UsuarioService(UsuarioDAO usuarioDAO) {
         if (usuarioDAO == null) {
             throw new IllegalArgumentException(
-                    "El DAO de usuarios no puede ser nulo."
-            );
+                    "El DAO de usuarios no puede ser nulo.");
         }
         this.usuarioDAO = usuarioDAO;
     }
@@ -33,144 +31,111 @@ public class UsuarioService {
             String password,
             RolUsuario rol,
             Long clienteId) {
-
-        validarDatosRegistro(
-                nombreUsuario,
-                password,
-                rol,
-                clienteId
-        );
-
-        String nombreNormalizado = normalizarNombreUsuario(
-                nombreUsuario
-        );
-
-        if (usuarioDAO.existeNombreUsuario(
-                nombreNormalizado,
-                0L)) {
+        validarDatosRegistro(nombreUsuario, password, rol, clienteId);
+        String nombre = normalizarNombreUsuario(nombreUsuario);
+        if (usuarioDAO.existeNombreUsuario(nombre, 0L)) {
             throw new IllegalArgumentException(
-                    "Ya existe una cuenta con ese nombre de usuario."
-            );
+                    "Ya existe una cuenta con ese nombre de usuario.");
         }
-
         Usuario usuario = new Usuario();
-        usuario.setNombreUsuario(nombreNormalizado);
-        usuario.setPasswordHash(
-                ProtectorPassword.generarHash(password)
-        );
+        usuario.setNombreUsuario(nombre);
+        usuario.setPasswordHash(ProtectorPassword.generarHash(password));
         usuario.setRol(rol);
         usuario.setClienteId(clienteId);
         usuario.setActivo(true);
-
         usuarioDAO.guardar(usuario);
         return usuario;
     }
 
-    public Usuario iniciarSesion(
-            String nombreUsuario,
-            String password) {
-
-        if (nombreUsuario == null
-                || nombreUsuario.isBlank()
-                || password == null
-                || password.isBlank()) {
+    public Usuario iniciarSesion(String nombreUsuario, String password) {
+        if (nombreUsuario == null || nombreUsuario.isBlank()
+                || password == null || password.isBlank()) {
             throw new IllegalArgumentException(
-                    "Debe ingresar el usuario y la contrasena."
-            );
+                    "Debe ingresar el usuario y la contraseña.");
         }
-
         Usuario usuario = usuarioDAO.buscarPorNombreUsuario(
-                normalizarNombreUsuario(nombreUsuario)
-        );
-
+                normalizarNombreUsuario(nombreUsuario));
         if (usuario == null || !usuario.isActivo()
                 || !ProtectorPassword.verificar(
-                        password,
-                        usuario.getPasswordHash())) {
+                        password, usuario.getPasswordHash())) {
             throw new IllegalArgumentException(
-                    "El usuario o la contrasena son incorrectos."
-            );
+                    "El usuario o la contraseña son incorrectos.");
         }
-
         return usuario;
     }
 
     public void actualizarDatos(Usuario usuario) {
         if (usuario == null || usuario.getId() <= 0) {
-            throw new IllegalArgumentException(
-                    "El usuario no es valido."
-            );
+            throw new IllegalArgumentException("El usuario no es válido.");
         }
-
+        Usuario original = obtenerUsuarioObligatorio(usuario.getId(), false);
         validarNombreUsuario(usuario.getNombreUsuario());
         validarVinculacion(usuario.getRol(), usuario.getClienteId());
+        protegerUltimoAdministrador(original, usuario.getRol(), usuario.isActivo());
 
-        String nombreNormalizado = normalizarNombreUsuario(
-                usuario.getNombreUsuario()
-        );
-
-        if (usuarioDAO.existeNombreUsuario(
-                nombreNormalizado,
-                usuario.getId())) {
+        String nombre = normalizarNombreUsuario(usuario.getNombreUsuario());
+        if (usuarioDAO.existeNombreUsuario(nombre, usuario.getId())) {
             throw new IllegalArgumentException(
-                    "Ya existe una cuenta con ese nombre de usuario."
-            );
+                    "Ya existe una cuenta con ese nombre de usuario.");
         }
-
-        usuario.setNombreUsuario(nombreNormalizado);
+        usuario.setNombreUsuario(nombre);
+        usuario.setPasswordHash(null);
         usuarioDAO.guardar(usuario);
     }
 
     public void cambiarPassword(
-            long usuarioId,
-            String passwordActual,
-            String passwordNuevo) {
-
-        Usuario usuario = obtenerUsuarioObligatorio(usuarioId);
-
+            long usuarioId, String passwordActual, String passwordNuevo) {
+        Usuario usuario = obtenerUsuarioObligatorio(usuarioId, true);
         if (!ProtectorPassword.verificar(
-                passwordActual,
-                usuario.getPasswordHash())) {
+                passwordActual, usuario.getPasswordHash())) {
             throw new IllegalArgumentException(
-                    "La contrasena actual es incorrecta."
-            );
+                    "La contraseña actual es incorrecta.");
         }
-
-        if (passwordNuevo != null
-                && passwordNuevo.equals(passwordActual)) {
+        validarPasswordNueva(passwordNuevo);
+        if (passwordNuevo.equals(passwordActual)) {
             throw new IllegalArgumentException(
-                    "La contrasena nueva debe ser diferente."
-            );
+                    "La contraseña nueva debe ser diferente.");
         }
-
-        usuario.setPasswordHash(
-                ProtectorPassword.generarHash(passwordNuevo)
-        );
+        usuario.setPasswordHash(ProtectorPassword.generarHash(passwordNuevo));
         usuarioDAO.guardar(usuario);
     }
 
-    public void restablecerPassword(
-            long usuarioId,
-            String passwordNuevo) {
-
-        Usuario usuario = obtenerUsuarioObligatorio(usuarioId);
-        usuario.setPasswordHash(
-                ProtectorPassword.generarHash(passwordNuevo)
-        );
+    public void restablecerPassword(long usuarioId, String passwordNuevo) {
+        Usuario usuario = obtenerUsuarioObligatorio(usuarioId, false);
+        validarPasswordNueva(passwordNuevo);
+        usuario.setPasswordHash(ProtectorPassword.generarHash(passwordNuevo));
         usuarioDAO.guardar(usuario);
+    }
+
+    public void desactivar(long id, long usuarioActualId) {
+        if (id == usuarioActualId) {
+            throw new IllegalArgumentException(
+                    "No podés desactivar tu propia cuenta.");
+        }
+        Usuario usuario = obtenerUsuarioObligatorio(id, true);
+        if (USUARIO_ADMIN.equalsIgnoreCase(usuario.getNombreUsuario())) {
+            throw new IllegalArgumentException(
+                    "No se puede desactivar la cuenta administrativa principal.");
+        }
+        protegerUltimoAdministrador(usuario, usuario.getRol(), false);
+        usuarioDAO.eliminar(id);
+    }
+
+    public void activar(long id) {
+        Usuario usuario = obtenerUsuarioObligatorio(id, false);
+        if (usuario.isActivo()) {
+            throw new IllegalArgumentException("El usuario ya está activo.");
+        }
+        usuarioDAO.activar(id);
     }
 
     public void eliminar(long id) {
-        Usuario usuario = obtenerUsuarioObligatorio(id);
-
-        if (USUARIO_ADMIN.equalsIgnoreCase(
-                usuario.getNombreUsuario())) {
+        Usuario usuario = obtenerUsuarioObligatorio(id, true);
+        if (USUARIO_ADMIN.equalsIgnoreCase(usuario.getNombreUsuario())) {
             throw new IllegalArgumentException(
-                    "No se puede desactivar la cuenta "
-                            + "administrativa principal."
-            );
+                    "No se puede desactivar la cuenta administrativa principal.");
         }
-
+        protegerUltimoAdministrador(usuario, usuario.getRol(), false);
         usuarioDAO.eliminar(id);
     }
 
@@ -179,90 +144,72 @@ public class UsuarioService {
     }
 
     public Usuario buscarPorNombreUsuario(String nombreUsuario) {
-        if (nombreUsuario == null || nombreUsuario.isBlank()) {
-            return null;
-        }
+        if (nombreUsuario == null || nombreUsuario.isBlank()) return null;
         return usuarioDAO.buscarPorNombreUsuario(
-                normalizarNombreUsuario(nombreUsuario)
-        );
+                normalizarNombreUsuario(nombreUsuario));
     }
 
     public List<Usuario> listar() {
         return usuarioDAO.listar();
     }
 
-    private void validarDatosRegistro(
-            String nombreUsuario,
-            String password,
-            RolUsuario rol,
-            Long clienteId) {
-
-        validarNombreUsuario(nombreUsuario);
-
-        if (password == null || password.isBlank()) {
+    private void protegerUltimoAdministrador(
+            Usuario original, RolUsuario nuevoRol, boolean activoNuevo) {
+        if (original.esAdministrador()
+                && (!activoNuevo || nuevoRol != RolUsuario.ADMINISTRADOR)
+                && usuarioDAO.contarAdministradoresActivos() <= 1) {
             throw new IllegalArgumentException(
-                    "La contrasena es obligatoria."
-            );
+                    "Debe permanecer al menos un administrador activo.");
         }
+    }
 
+    private void validarDatosRegistro(
+            String nombreUsuario, String password,
+            RolUsuario rol, Long clienteId) {
+        validarNombreUsuario(nombreUsuario);
+        validarPasswordNueva(password);
+        validarVinculacion(rol, clienteId);
+    }
+
+    private void validarPasswordNueva(String password) {
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("La contraseña es obligatoria.");
+        }
         if (password.length() < 8) {
             throw new IllegalArgumentException(
-                    "La contrasena debe tener al menos 8 caracteres."
-            );
+                    "La contraseña debe tener al menos 8 caracteres.");
         }
-
-        validarVinculacion(rol, clienteId);
     }
 
     private void validarNombreUsuario(String nombreUsuario) {
         if (nombreUsuario == null || nombreUsuario.isBlank()) {
             throw new IllegalArgumentException(
-                    "El nombre de usuario es obligatorio."
-            );
+                    "El nombre de usuario es obligatorio.");
         }
-
         String limpio = nombreUsuario.trim();
-
         if (limpio.length() < 4 || limpio.length() > 40) {
             throw new IllegalArgumentException(
-                    "El nombre de usuario debe tener entre "
-                            + "4 y 40 caracteres."
-            );
+                    "El nombre de usuario debe tener entre 4 y 40 caracteres.");
         }
-
         if (!limpio.matches("[A-Za-z0-9._-]+")) {
             throw new IllegalArgumentException(
-                    "El nombre de usuario solo puede contener "
-                            + "letras, numeros, puntos, guiones "
-                            + "y guiones bajos."
-            );
+                    "El nombre de usuario solo puede contener letras, "
+                            + "números, puntos, guiones y guiones bajos.");
         }
     }
 
-    private void validarVinculacion(
-            RolUsuario rol,
-            Long clienteId) {
-
+    private void validarVinculacion(RolUsuario rol, Long clienteId) {
         if (rol == null) {
-            throw new IllegalArgumentException(
-                    "El rol es obligatorio."
-            );
+            throw new IllegalArgumentException("El rol es obligatorio.");
         }
-
         if (rol == RolUsuario.CLIENTE
                 && (clienteId == null || clienteId <= 0)) {
             throw new IllegalArgumentException(
-                    "Una cuenta de cliente debe estar vinculada "
-                            + "a una ficha de cliente."
-            );
+                    "Una cuenta de cliente debe estar vinculada a una ficha.");
         }
-
-        if (rol == RolUsuario.ADMINISTRADOR
-                && clienteId != null) {
+        if (rol != RolUsuario.CLIENTE && clienteId != null) {
             throw new IllegalArgumentException(
-                    "Una cuenta administrativa no debe estar "
-                            + "vinculada a un cliente."
-            );
+                    "Una cuenta del personal no debe estar vinculada a un cliente.");
         }
     }
 
@@ -270,21 +217,18 @@ public class UsuarioService {
         return nombreUsuario.trim().toLowerCase(Locale.ROOT);
     }
 
-    private Usuario obtenerUsuarioObligatorio(long usuarioId) {
+    private Usuario obtenerUsuarioObligatorio(
+            long usuarioId, boolean exigirActivo) {
         if (usuarioId <= 0) {
             throw new IllegalArgumentException(
-                    "El ID del usuario no es valido."
-            );
+                    "El ID del usuario no es válido.");
         }
-
         Usuario usuario = usuarioDAO.buscar(usuarioId);
-
-        if (usuario == null || !usuario.isActivo()) {
+        if (usuario == null || (exigirActivo && !usuario.isActivo())) {
             throw new IllegalArgumentException(
-                    "El usuario no existe o esta inactivo."
-            );
+                    "El usuario no existe"
+                            + (exigirActivo ? " o está inactivo." : "."));
         }
-
         return usuario;
     }
 }

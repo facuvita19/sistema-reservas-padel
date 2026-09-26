@@ -29,6 +29,7 @@ public final class Navegacion {
 	private static final String CSS_AGENDA = "/css/agenda.css";
 	private static SolicitudReservaAgenda solicitudReservaAgenda;
 	private static SolicitudPagoReserva solicitudPagoReserva;
+	private static final String CSS_USUARIOS = "/css/usuarios.css";
 
 	private static Stage escenario;
 	private static Usuario usuarioActual;
@@ -170,6 +171,30 @@ public final class Navegacion {
 
 	    return solicitud;
 	}
+	public static void mostrarUsuarios() {
+	    verificarSesion();
+	    verificarAdministrador();
+
+	    mostrarVista(
+	            "/fxml/usuarios.fxml",
+	            1180,
+	            760,
+	            true
+	    );
+
+	    escenario.setTitle(
+	            "Padel Reservas - Usuarios"
+	    );
+	}
+	private static void verificarAdministrador() {
+	    if (usuarioActual == null
+	            || !usuarioActual.esAdministrador()) {
+
+	        throw new IllegalStateException(
+	                "Esta función requiere permisos de administrador."
+	        );
+	    }
+	}
 
 	public static Usuario getUsuarioActual() {
 		return usuarioActual;
@@ -205,6 +230,7 @@ public final class Navegacion {
 			agregarCssOpcional(escena, CSS_ESTADISTICAS);
 			agregarCssOpcional(escena, CSS_CONFIGURACION);
 			agregarCssOpcional(escena, CSS_AGENDA);
+			agregarCssOpcional(escena, CSS_USUARIOS);
 
 			Rectangle2D areaVisible = Screen.getPrimary().getVisualBounds();
 
