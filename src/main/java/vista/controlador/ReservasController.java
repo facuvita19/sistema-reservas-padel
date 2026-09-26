@@ -2,6 +2,7 @@ package vista.controlador;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -13,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -30,6 +32,8 @@ import negocio.EstadoReserva;
 import negocio.Reserva;
 import servicio.CanchaService;
 import servicio.ClienteService;
+import servicio.PagoService;
+import servicio.PoliticaReservaService;
 import servicio.ReservaService;
 import vista.Navegacion;
 import vista.SolicitudReservaAgenda;
@@ -46,6 +50,8 @@ public class ReservasController {
 	private final ObservableList<Reserva> reservas = FXCollections.observableArrayList();
 	private FilteredList<Reserva> reservasFiltradas;
 	private Reserva reservaSeleccionada;
+	private final PagoService pagoService = new PagoService();
+	private final PoliticaReservaService politicaReservaService = new PoliticaReservaService();
 
 	@FXML
 	private TextField campoBuscar;
@@ -73,6 +79,8 @@ public class ReservasController {
 	@FXML
 	private Label etiquetaPrecio;
 	@FXML
+	private Label etiquetaSaldoPendiente;
+	@FXML
 	private ComboBox<Cliente> comboCliente;
 	@FXML
 	private ComboBox<Cancha> comboCancha;
@@ -90,6 +98,12 @@ public class ReservasController {
 	private DatePicker filtroFecha;
 	@FXML
 	private Label etiquetaFechaSeleccionada;
+	@FXML
+	private Button botonAccionPrincipal;
+	@FXML
+	private Button botonPagos;
+	@FXML
+	private Button botonCancelar;
 
 	@FXML
 	private void initialize() {
@@ -124,6 +138,32 @@ public class ReservasController {
 		tablaReservas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, actual) -> {
 			if (actual != null) {
 				mostrarDetalle(actual);
+			}
+		});
+	}
+
+	private void mostrarDialogoCierreTurno() {
+		ButtonType botonCompletada = new ButtonType("Se jugó normalmente");
+
+		ButtonType botonAusente = new ButtonType("No se presentó");
+
+		ButtonType botonVolver = new ButtonType("Volver", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
+
+		Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION, "", botonCompletada, botonAusente, botonVolver);
+
+		dialogo.setTitle("Cerrar turno");
+		dialogo.setHeaderText("¿Cómo finalizó la reserva?");
+
+		dialogo.setContentText(reservaSeleccionada.getNombreCliente() + "\n" + reservaSeleccionada.getNombreCancha()
+				+ "\n" + reservaSeleccionada.getHoraInicio().format(FORMATO_HORA) + " - "
+				+ reservaSeleccionada.getHoraFin().format(FORMATO_HORA));
+
+		dialogo.showAndWait().ifPresent(respuesta -> {
+			if (respuesta == botonCompletada) {
+				cambiarEstadoSeleccionado(EstadoReserva.COMPLETADA);
+
+			} else if (respuesta == botonAusente) {
+				cambiarEstadoSeleccionado(EstadoReserva.AUSENTE);
 			}
 		});
 	}
@@ -311,6 +351,9 @@ public class ReservasController {
 		campoObservaciones.clear();
 		etiquetaPrecio.setText("ARS 0");
 		etiquetaMensaje.setText("");
+		etiquetaSaldoPendiente.setText("ARS 0");
+
+		actualizarAccionesReserva();
 	}
 
 	private void mostrarDetalle(Reserva reserva) {
@@ -329,6 +372,36 @@ public class ReservasController {
 		campoComentarios.setText(reserva.getComentarios());
 		campoObservaciones.setText(reserva.getObservacionesAdministrativas());
 		etiquetaPrecio.setText("ARS " + reserva.getPrecioTotal().toPlainString());
+
+		try {
+			BigDecimal saldo = pagoService.calcularSaldo(reserva.getId());
+
+			etiquetaSaldoPendiente.setText("ARS " + saldo.toPlainString());
+
+		} catch (RuntimeException exception) {
+			etiquetaSaldoPendiente.setText("No disponible");
+		}
+		actualizarAccionesReserva();
+	}
+
+	@FXML
+	private void ejecutarAccionPrincipal() {
+		if (reservaSeleccionada == null) {
+			mostrarError("Seleccioná una reserva de la tabla.");
+			return;
+		}
+
+		if (reservaSeleccionada.getEstado() == EstadoReserva.PENDIENTE) {
+
+			cambiarEstadoSeleccionado(EstadoReserva.CONFIRMADA);
+
+			return;
+		}
+
+		if (reservaSeleccionada.getEstado() == EstadoReserva.CONFIRMADA && turnoFinalizado(reservaSeleccionada)) {
+
+			mostrarDialogoCierreTurno();
+		}
 	}
 
 	private Cliente buscarCliente(long id) {
@@ -369,6 +442,50 @@ public class ReservasController {
 	private void actualizarResumenPrecio() {
 		Cancha cancha = comboCancha.getValue();
 		etiquetaPrecio.setText(cancha == null ? "ARS 0" : "ARS " + cancha.getPrecio().toPlainString());
+	}
+
+	private void actualizarAccionesReserva() {
+		if (reservaSeleccionada == null) {
+			configurarBoton(botonAccionPrincipal, false, false, "CONFIRMAR RESERVA");
+
+			configurarBoton(botonPagos, false, false, "ABRIR PAGOS");
+
+			configurarBoton(botonCancelar, false, false, "CANCELAR RESERVA");
+
+			return;
+		}
+
+		EstadoReserva estado = reservaSeleccionada.getEstado();
+
+		boolean pendiente = estado == EstadoReserva.PENDIENTE;
+		boolean confirmada = estado == EstadoReserva.CONFIRMADA;
+		boolean finalizada = estado == EstadoReserva.COMPLETADA || estado == EstadoReserva.AUSENTE
+				|| estado == EstadoReserva.CANCELADA;
+
+		if (pendiente) {
+			configurarBoton(botonAccionPrincipal, true, true, "CONFIRMAR RESERVA");
+		} else if (confirmada && turnoFinalizado(reservaSeleccionada)) {
+			configurarBoton(botonAccionPrincipal, true, true, "CERRAR TURNO");
+		} else {
+			configurarBoton(botonAccionPrincipal, false, false, "CONFIRMAR RESERVA");
+		}
+
+		configurarBoton(botonPagos, !finalizada || estado == EstadoReserva.COMPLETADA, true, "ABRIR PAGOS");
+
+		configurarBoton(botonCancelar, pendiente || confirmada, true, "CANCELAR RESERVA");
+	}
+
+	private void configurarBoton(Button boton, boolean visible, boolean administrado, String texto) {
+
+		boton.setVisible(visible);
+		boton.setManaged(administrado);
+		boton.setText(texto);
+	}
+
+	private boolean turnoFinalizado(Reserva reserva) {
+		LocalDateTime finalizacion = LocalDateTime.of(reserva.getFecha(), reserva.getHoraFin());
+
+		return !finalizacion.isAfter(LocalDateTime.now());
 	}
 
 	@FXML
@@ -419,6 +536,12 @@ public class ReservasController {
 		if (Navegacion.getUsuarioActual() == null) {
 			throw new IllegalArgumentException("La sesión administrativa finalizó.");
 		}
+		if (reservaSeleccionada == null) {
+		    politicaReservaService.validarAnticipacionMinima(
+		            selectorFecha.getValue(),
+		            comboHorario.getValue()
+		    );
+		}
 	}
 
 	@FXML
@@ -427,8 +550,36 @@ public class ReservasController {
 	}
 
 	@FXML
+	private void completarReserva() {
+		cambiarEstadoSeleccionado(EstadoReserva.COMPLETADA);
+	}
+
+	@FXML
+	private void marcarAusente() {
+		cambiarEstadoSeleccionado(EstadoReserva.AUSENTE);
+	}
+
+	@FXML
 	private void cancelarReserva() {
-		cambiarEstadoSeleccionado(EstadoReserva.CANCELADA);
+	    if (reservaSeleccionada == null) {
+	        mostrarError(
+	                "Seleccioná una reserva de la tabla."
+	        );
+	        return;
+	    }
+
+	    try {
+	        politicaReservaService.validarPlazoCancelacion(
+	                reservaSeleccionada
+	        );
+
+	        cambiarEstadoSeleccionado(
+	                EstadoReserva.CANCELADA
+	        );
+
+	    } catch (IllegalArgumentException exception) {
+	        mostrarError(exception.getMessage());
+	    }
 	}
 
 	@FXML
@@ -510,15 +661,32 @@ public class ReservasController {
 		confirmacion.showAndWait().ifPresent(respuesta -> {
 			if (respuesta == ButtonType.OK) {
 				try {
+					LocalDate fechaReserva = reservaSeleccionada.getFecha();
+
 					reservaService.cambiarEstado(reservaSeleccionada.getId(), estado);
+
 					cargarReservas();
 					nuevaReserva();
+
+					filtroFecha.setValue(fechaReserva);
+					aplicarFiltros();
+
 					mostrarInfo("El estado se actualizó correctamente.");
 				} catch (RuntimeException exception) {
 					mostrarError(exception.getMessage());
 				}
 			}
 		});
+	}
+
+	@FXML
+	private void abrirPagos() {
+		if (reservaSeleccionada == null) {
+			mostrarError("Seleccioná una reserva antes de abrir sus pagos.");
+			return;
+		}
+
+		Navegacion.mostrarPagosDeReserva(reservaSeleccionada.getId());
 	}
 
 	@FXML

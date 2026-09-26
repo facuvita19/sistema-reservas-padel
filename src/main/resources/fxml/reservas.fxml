@@ -152,8 +152,10 @@
                                         <VBox spacing="3">
                                             <children>
                                                 <Label text="PRECIO DE LA RESERVA" styleClass="metric-label" />
-                                                <Label fx:id="etiquetaPrecio" text="ARS 0"
-                                                       styleClass="reservation-price" />
+                                                <Label fx:id="etiquetaPrecio" text="ARS 0" styleClass="reservation-price" />
+                                                <Label text="SALDO PENDIENTE" styleClass="metric-label" />
+                                                
+                                                <Label fx:id="etiquetaSaldoPendiente" text="ARS 0" styleClass="reservation-balance" />
                                             </children>
                                         </VBox>
                                         <Region HBox.hgrow="ALWAYS" />
@@ -184,16 +186,37 @@
                                 <Button text="GUARDAR RESERVA" onAction="#guardar"
                                         maxWidth="Infinity" styleClass="primary-button" />
 
-                                <HBox spacing="10">
-                                    <children>
-                                        <Button text="CONFIRMAR" onAction="#confirmarReserva"
-                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                                styleClass="status-confirm-button" />
-                                        <Button text="CANCELAR" onAction="#cancelarReserva"
-                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                                styleClass="danger-button" />
-                                    </children>
-                                </HBox>
+                                <VBox spacing="9">
+    <children>
+        <VBox spacing="9">
+    <children>
+        <HBox spacing="9">
+            <children>
+                <Button fx:id="botonAccionPrincipal"
+                        text="CONFIRMAR RESERVA"
+                        onAction="#ejecutarAccionPrincipal"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        styleClass="status-confirm-button" />
+
+                <Button fx:id="botonPagos"
+                        text="ABRIR PAGOS"
+                        onAction="#abrirPagos"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        styleClass="payment-button" />
+            </children>
+        </HBox>
+
+        <Button fx:id="botonCancelar"
+                text="CANCELAR RESERVA"
+                onAction="#cancelarReserva"
+                maxWidth="Infinity"
+                styleClass="danger-button" />
+    </children>
+</VBox>
+    </children>
+</VBox>
                             </children>
                         </VBox>
                     </content>

@@ -28,6 +28,7 @@ public final class Navegacion {
 	private static ConfiguracionComplejo configuracionActual = new ConfiguracionComplejo();
 	private static final String CSS_AGENDA = "/css/agenda.css";
 	private static SolicitudReservaAgenda solicitudReservaAgenda;
+	private static SolicitudPagoReserva solicitudPagoReserva;
 
 	private static Stage escenario;
 	private static Usuario usuarioActual;
@@ -152,6 +153,22 @@ public final class Navegacion {
 		SolicitudReservaAgenda solicitud = solicitudReservaAgenda;
 		solicitudReservaAgenda = null;
 		return solicitud;
+	}
+	
+	public static void mostrarPagosDeReserva(long reservaId) {
+	    solicitudPagoReserva =
+	            new SolicitudPagoReserva(reservaId);
+
+	    mostrarPagos();
+	}
+
+	public static SolicitudPagoReserva consumirSolicitudPagoReserva() {
+	    SolicitudPagoReserva solicitud =
+	            solicitudPagoReserva;
+
+	    solicitudPagoReserva = null;
+
+	    return solicitud;
 	}
 
 	public static Usuario getUsuarioActual() {
