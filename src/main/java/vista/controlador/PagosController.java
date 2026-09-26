@@ -381,10 +381,6 @@ public class PagosController {
 		ejecutarCambioEstado("Anular pago", () -> pagoService.anular(pagoSeleccionado.getId()));
 	}
 
-	@FXML
-	private void reembolsar() {
-		ejecutarCambioEstado("Reembolsar pago", () -> pagoService.reembolsar(pagoSeleccionado.getId()));
-	}
 
 	private void ejecutarCambioEstado(String titulo, Runnable accion) {
 		if (pagoSeleccionado == null) {

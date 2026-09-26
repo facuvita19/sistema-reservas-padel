@@ -15,6 +15,7 @@ import dao.ReservaDAOMySQL;
 import negocio.Cancha;
 import negocio.EstadoReserva;
 import negocio.Reserva;
+import negocio.TipoCancelacion;
 
 public class ReservaService {
 
@@ -27,11 +28,9 @@ public class ReservaService {
 	}
 
 	public ReservaService(ReservaDAO reservaDAO, BloqueoCanchaDAO bloqueoDAO, CanchaService canchaService) {
-
 		if (reservaDAO == null || bloqueoDAO == null || canchaService == null) {
 			throw new IllegalArgumentException("Las dependencias de reservas no pueden ser nulas.");
 		}
-
 		this.reservaDAO = reservaDAO;
 		this.bloqueoDAO = bloqueoDAO;
 		this.canchaService = canchaService;
@@ -39,88 +38,97 @@ public class ReservaService {
 
 	public void guardar(Reserva reserva) {
 		validarDatosBasicos(reserva);
-
 		Cancha cancha = obtenerCancha(reserva.getCanchaId());
-		LocalTime horaFin = reserva.getHoraInicio().plusMinutes(cancha.getDuracionReserva());
-
-		reserva.setHoraFin(horaFin);
+		reserva.setHoraFin(reserva.getHoraInicio().plusMinutes(cancha.getDuracionReserva()));
 		reserva.setPrecioTotal(cancha.getPrecio().setScale(2, RoundingMode.HALF_UP));
-
 		validarFechaYHorario(reserva, cancha);
 		validarDisponibilidad(reserva);
 		normalizarTextos(reserva);
-
 		if (reserva.getEstado() == null) {
 			reserva.setEstado(EstadoReserva.PENDIENTE);
 		}
-
 		reservaDAO.guardar(reserva);
 	}
 
 	public List<LocalTime> listarHorariosDisponibles(long canchaId, LocalDate fecha, long reservaExcluidaId) {
-
 		if (fecha == null || fecha.isBefore(LocalDate.now())) {
 			return new ArrayList<>();
 		}
-
 		Cancha cancha = obtenerCancha(canchaId);
-
 		if (!cancha.estaDisponibleElDia(fecha.getDayOfWeek())) {
 			return new ArrayList<>();
 		}
-
 		List<LocalTime> horarios = new ArrayList<>();
 		LocalTime inicio = cancha.getHoraApertura();
-		int duracionReserva = cancha.getDuracionReserva();
-
+		int duracion = cancha.getDuracionReserva();
 		while (inicio.isBefore(cancha.getHoraCierre())
-				&& Duration.between(inicio, cancha.getHoraCierre()).toMinutes() >= duracionReserva) {
-
-			LocalTime fin = inicio.plusMinutes(duracionReserva);
-
-			boolean esPasado = fecha.equals(LocalDate.now()) && !inicio.isAfter(LocalTime.now());
-
+				&& Duration.between(inicio, cancha.getHoraCierre()).toMinutes() >= duracion) {
+			LocalTime fin = inicio.plusMinutes(duracion);
+			boolean pasado = fecha.equals(LocalDate.now()) && !inicio.isAfter(LocalTime.now());
 			boolean ocupado = reservaDAO.horarioOcupado(canchaId, fecha, inicio, fin, reservaExcluidaId);
-
 			boolean bloqueado = bloqueoDAO.horarioBloqueado(canchaId, fecha, inicio, fin, 0L);
-
-			if (!esPasado && !ocupado && !bloqueado) {
+			if (!pasado && !ocupado && !bloqueado)
 				horarios.add(inicio);
-			}
-
 			inicio = fin;
 		}
-
 		return horarios;
 	}
 
 	public void cambiarEstado(long reservaId, EstadoReserva nuevoEstado) {
+		Reserva reserva = obtenerReservaParaCambio(reservaId, nuevoEstado);
+		validarTransicion(reserva, nuevoEstado);
+		if (nuevoEstado == EstadoReserva.CANCELADA) {
+			cancelarNormal(reservaId);
+			return;
+		}
+		reservaDAO.actualizarEstado(reservaId, nuevoEstado);
+	}
 
+	public void cancelarNormal(long reservaId) {
+		Reserva reserva = obtenerReservaParaCambio(reservaId, EstadoReserva.CANCELADA);
+		validarTransicion(reserva, EstadoReserva.CANCELADA);
+		reservaDAO.cancelar(reservaId, TipoCancelacion.CLIENTE, null, LocalDateTime.now(), null);
+	}
+
+	public void cancelarAdministrativamente(long reservaId, String motivo, long usuarioCancelacionId) {
+
+		Reserva reserva = obtenerReservaParaCambio(reservaId, EstadoReserva.CANCELADA);
+		validarTransicion(reserva, EstadoReserva.CANCELADA);
+
+		String motivoNormalizado = limpiarOpcional(motivo);
+		if (motivoNormalizado == null) {
+			throw new IllegalArgumentException("El motivo de la cancelación administrativa es obligatorio.");
+		}
+		if (usuarioCancelacionId <= 0) {
+			throw new IllegalArgumentException("El usuario que cancela es obligatorio.");
+		}
+
+		reservaDAO.cancelar(reservaId, TipoCancelacion.ADMINISTRATIVA, motivoNormalizado, LocalDateTime.now(),
+				usuarioCancelacionId);
+	}
+
+	private Reserva obtenerReservaParaCambio(long reservaId, EstadoReserva nuevoEstado) {
 		if (reservaId <= 0 || nuevoEstado == null) {
 			throw new IllegalArgumentException("La reserva y el nuevo estado son obligatorios.");
 		}
-
 		Reserva reserva = reservaDAO.buscar(reservaId);
-
 		if (reserva == null) {
 			throw new IllegalArgumentException("La reserva no existe.");
 		}
+		return reserva;
+	}
 
+	private void validarTransicion(Reserva reserva, EstadoReserva nuevoEstado) {
 		EstadoReserva actual = reserva.getEstado();
-
 		if (actual == nuevoEstado) {
 			throw new IllegalArgumentException("La reserva ya tiene el estado seleccionado.");
 		}
-
 		if (actual != null && actual.esFinal()) {
 			throw new IllegalArgumentException("No se puede modificar una reserva finalizada.");
 		}
-
 		if (!transicionPermitida(actual, nuevoEstado)) {
-			throw new IllegalArgumentException("El cambio de estado no esta permitido.");
+			throw new IllegalArgumentException("El cambio de estado no está permitido.");
 		}
-
-		reservaDAO.actualizarEstado(reservaId, nuevoEstado);
 	}
 
 	public Reserva buscar(long id) {
@@ -133,7 +141,7 @@ public class ReservaService {
 
 	public List<Reserva> listarPorCliente(long clienteId) {
 		if (clienteId <= 0) {
-			throw new IllegalArgumentException("El ID del cliente no es valido.");
+			throw new IllegalArgumentException("El ID del cliente no es válido.");
 		}
 		return reservaDAO.listarPorCliente(clienteId);
 	}
@@ -149,15 +157,12 @@ public class ReservaService {
 		if (reserva == null) {
 			throw new IllegalArgumentException("La reserva no puede ser nula.");
 		}
-
 		if (reserva.getClienteId() <= 0 || reserva.getCanchaId() <= 0 || reserva.getUsuarioId() <= 0) {
 			throw new IllegalArgumentException("Cliente, cancha y usuario son obligatorios.");
 		}
-
 		if (reserva.getFecha() == null || reserva.getHoraInicio() == null) {
 			throw new IllegalArgumentException("La fecha y la hora de inicio son obligatorias.");
 		}
-
 		if (reserva.getCantidadJugadores() < 1 || reserva.getCantidadJugadores() > 8) {
 			throw new IllegalArgumentException("La cantidad de jugadores debe estar entre 1 y 8.");
 		}
@@ -165,32 +170,25 @@ public class ReservaService {
 
 	private Cancha obtenerCancha(long canchaId) {
 		Cancha cancha = canchaService.buscar(canchaId);
-
 		if (cancha == null || !cancha.isActivo()) {
-			throw new IllegalArgumentException("La cancha no existe o esta inactiva.");
+			throw new IllegalArgumentException("La cancha no existe o está inactiva.");
 		}
-
 		return cancha;
 	}
 
 	private void validarFechaYHorario(Reserva reserva, Cancha cancha) {
-
 		if (reserva.getFecha().isBefore(LocalDate.now())) {
 			throw new IllegalArgumentException("No se puede reservar en una fecha pasada.");
 		}
-
-		LocalDateTime inicioReserva = LocalDateTime.of(reserva.getFecha(), reserva.getHoraInicio());
-
-		if (!inicioReserva.isAfter(LocalDateTime.now())) {
+		LocalDateTime inicio = LocalDateTime.of(reserva.getFecha(), reserva.getHoraInicio());
+		if (!inicio.isAfter(LocalDateTime.now())) {
 			throw new IllegalArgumentException("La reserva debe comenzar en una fecha y hora futura.");
 		}
-
 		if (!cancha.estaDisponibleElDia(reserva.getFecha().getDayOfWeek())) {
-			throw new IllegalArgumentException("La cancha no se encuentra disponible ese dia.");
+			throw new IllegalArgumentException("La cancha no se encuentra disponible ese día.");
 		}
-
 		if (!cancha.contieneHorario(reserva.getHoraInicio(), reserva.getHoraFin())) {
-			throw new IllegalArgumentException("El horario esta fuera de la jornada de la cancha.");
+			throw new IllegalArgumentException("El horario está fuera de la jornada de la cancha.");
 		}
 	}
 
@@ -199,7 +197,6 @@ public class ReservaService {
 				reserva.getHoraFin(), reserva.getId())) {
 			throw new IllegalArgumentException("El horario se superpone con otra reserva.");
 		}
-
 		if (bloqueoDAO.horarioBloqueado(reserva.getCanchaId(), reserva.getFecha(), reserva.getHoraInicio(),
 				reserva.getHoraFin(), 0L)) {
 			throw new IllegalArgumentException("La cancha se encuentra bloqueada en ese horario.");
@@ -216,16 +213,13 @@ public class ReservaService {
 	}
 
 	private boolean transicionPermitida(EstadoReserva actual, EstadoReserva nuevo) {
-
 		if (actual == null || actual == EstadoReserva.PENDIENTE) {
 			return nuevo == EstadoReserva.CONFIRMADA || nuevo == EstadoReserva.CANCELADA;
 		}
-
 		if (actual == EstadoReserva.CONFIRMADA) {
 			return nuevo == EstadoReserva.COMPLETADA || nuevo == EstadoReserva.CANCELADA
 					|| nuevo == EstadoReserva.AUSENTE;
 		}
-
 		return false;
 	}
 }

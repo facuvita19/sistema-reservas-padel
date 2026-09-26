@@ -1,7 +1,7 @@
 package negocio;
 
 public enum EstadoReserva {
-    PENDIENTE("Pendiente"),
+    PENDIENTE("Esperando seña"),
     CONFIRMADA("Confirmada"),
     COMPLETADA("Completada"),
     CANCELADA("Cancelada"),

@@ -1,11 +1,13 @@
 package dao;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 import negocio.EstadoReserva;
 import negocio.Reserva;
+import negocio.TipoCancelacion;
 
 public interface ReservaDAO {
 
@@ -20,6 +22,16 @@ public interface ReservaDAO {
     List<Reserva> listarPorFecha(LocalDate fecha);
 
     void actualizarEstado(long id, EstadoReserva estado);
+
+    default void cancelar(
+            long id,
+            TipoCancelacion tipo,
+            String motivo,
+            LocalDateTime fechaCancelacion,
+            Long usuarioCancelacionId) {
+
+        actualizarEstado(id, EstadoReserva.CANCELADA);
+    }
 
     boolean horarioOcupado(
             long canchaId,

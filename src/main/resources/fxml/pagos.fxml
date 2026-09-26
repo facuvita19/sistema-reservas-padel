@@ -16,8 +16,8 @@
                 <VBox spacing="3">
                     <children>
                         <Label text="Gestión de pagos" styleClass="page-title" />
-                        <Label text="Registrá señas, pagos completos, anulaciones y reembolsos."
-                               styleClass="page-subtitle" />
+                        <Label text="Registrá señas, pagos completos y movimientos administrativos."
+       styleClass="page-subtitle" />
                     </children>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
@@ -161,9 +161,6 @@
                                         <Button text="ANULAR" onAction="#anular"
                                                 HBox.hgrow="ALWAYS" maxWidth="Infinity"
                                                 styleClass="secondary-button" />
-                                        <Button text="REEMBOLSAR" onAction="#reembolsar"
-                                                HBox.hgrow="ALWAYS" maxWidth="Infinity"
-                                                styleClass="refund-button" />
                                     </children>
                                 </HBox>
                             </children>

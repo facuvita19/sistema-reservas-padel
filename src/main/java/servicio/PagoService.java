@@ -79,7 +79,7 @@ public class PagoService {
         pagoDAO.actualizarEstado(pagoId, EstadoPago.ANULADO);
     }
 
-    public void reembolsar(long pagoId) {
+    private void reembolsarMovimiento(long pagoId) {
         Pago pago = obtenerPago(pagoId);
 
         if (pago.getEstado() != EstadoPago.ACREDITADO) {
@@ -88,7 +88,63 @@ public class PagoService {
             );
         }
 
-        pagoDAO.actualizarEstado(pagoId, EstadoPago.REEMBOLSADO);
+        pagoDAO.actualizarEstado(
+                pagoId,
+                EstadoPago.REEMBOLSADO
+        );
+    }
+    
+    public void reembolsarPagosDeReservaAutorizado(
+            long reservaId) {
+
+        validarId(reservaId, "reserva");
+
+        Reserva reserva = obtenerReserva(reservaId);
+
+        if (reserva.getEstado()
+                != EstadoReserva.CANCELADA) {
+
+            throw new IllegalArgumentException(
+                    "La reserva debe estar cancelada "
+                            + "antes de registrar el reembolso."
+            );
+        }
+
+        List<Pago> pagosReserva =
+                pagoDAO.listarPorReserva(reservaId);
+
+        List<Pago> acreditados = pagosReserva.stream()
+                .filter(pago ->
+                        pago.getEstado()
+                                == EstadoPago.ACREDITADO
+                )
+                .toList();
+
+        if (acreditados.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La reserva no tiene pagos acreditados "
+                            + "para reembolsar."
+            );
+        }
+
+        for (Pago pago : acreditados) {
+            reembolsarMovimiento(pago.getId());
+        }
+    }
+    
+    public BigDecimal totalAcreditado(long reservaId) {
+        validarId(reservaId, "reserva");
+
+        return pagoDAO.totalAcreditado(reservaId)
+                .setScale(
+                        2,
+                        RoundingMode.HALF_UP
+                );
+    }
+
+    public boolean tienePagosAcreditados(long reservaId) {
+        return totalAcreditado(reservaId)
+                .compareTo(BigDecimal.ZERO) > 0;
     }
 
     public BigDecimal calcularSaldo(long reservaId) {
