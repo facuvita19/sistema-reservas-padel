@@ -1,171 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.UsuariosController"
-            styleClass="module-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding>
-                <Insets top="22" right="28" bottom="22" left="28" />
-            </padding>
-            <children>
-                <Button text="← Inicio"
-                        onAction="#volver"
-                        styleClass="back-button" />
-                <VBox spacing="3">
-                    <children>
-                        <Label text="Gestión de usuarios"
-                               styleClass="page-title" />
-                        <Label text="Administrá accesos, roles y contraseñas del personal."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button text="NUEVO USUARIO"
-                        onAction="#nuevoUsuario"
-                        styleClass="primary-button" />
-            </children>
-        </HBox>
-    </top>
-
-    <center>
-        <SplitPane dividerPositions="0.62" styleClass="module-split">
-            <items>
-                <VBox spacing="16" styleClass="list-panel">
-                    <padding>
-                        <Insets top="22" right="22" bottom="22" left="28" />
-                    </padding>
-                    <children>
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <children>
-                                <TextField fx:id="campoBuscar"
-                                           promptText="Buscar por usuario, rol o estado..."
-                                           HBox.hgrow="ALWAYS"
-                                           styleClass="modern-field" />
-                                <CheckBox fx:id="checkMostrarInactivos"
-                                          text="Mostrar inactivos"
-                                          styleClass="user-filter-check" />
-                                <Button text="Limpiar"
-                                        onAction="#limpiarFiltros"
-                                        styleClass="secondary-button" />
-                                <Button text="Actualizar"
-                                        onAction="#cargarUsuarios"
-                                        styleClass="secondary-button" />
-                            </children>
-                        </HBox>
-
-                        <TableView fx:id="tablaUsuarios"
-                                   VBox.vgrow="ALWAYS"
-                                   styleClass="modern-table">
-                            <columns>
-                                <TableColumn fx:id="columnaNombre"
-                                             text="USUARIO"
-                                             prefWidth="190" />
-                                <TableColumn fx:id="columnaRol"
-                                             text="ROL"
-                                             prefWidth="145" />
-                                <TableColumn fx:id="columnaActivo"
-                                             text="ESTADO"
-                                             prefWidth="110" />
-                                <TableColumn fx:id="columnaFecha"
-                                             text="CREADO"
-                                             prefWidth="155" />
-                            </columns>
-                            <placeholder>
-                                <Label text="No hay usuarios para mostrar."
-                                       styleClass="empty-state" />
-                            </placeholder>
-                        </TableView>
-                    </children>
-                </VBox>
-
-                <ScrollPane fitToWidth="true" styleClass="form-scroll">
-                    <content>
-                        <VBox spacing="14" styleClass="form-card">
-                            <padding>
-                                <Insets top="24" right="30" bottom="28" left="30" />
-                            </padding>
-                            <children>
-                                <Label fx:id="tituloFormulario"
-                                       text="Nuevo usuario del personal"
-                                       styleClass="section-title" />
-                                <Label text="Los operadores acceden a tareas diarias. Los administradores gestionan configuración y seguridad."
-                                       wrapText="true"
-                                       styleClass="small-caption" />
-
-                                <Label text="Nombre de usuario *"
-                                       styleClass="field-label" />
-                                <TextField fx:id="campoNombreUsuario"
-                                           promptText="Ejemplo: operador.turno"
-                                           styleClass="modern-field" />
-
-                                <Label text="Rol *"
-                                       styleClass="field-label" />
-                                <ComboBox fx:id="comboRol"
-                                          maxWidth="Infinity"
-                                          styleClass="modern-combo" />
-
-                                <VBox spacing="9" styleClass="user-role-note">
-                                    <children>
-                                        <Label text="PERMISOS"
-                                               styleClass="metric-label" />
-                                        <Label text="Administrador: acceso completo.&#10;Operador: agenda, reservas, clientes y pagos."
-                                               wrapText="true"
-                                               styleClass="user-role-copy" />
-                                    </children>
-                                </VBox>
-
-                                <Label text="Contraseña *"
-                                       styleClass="field-label" />
-                                <PasswordField fx:id="campoPassword"
-                                               promptText="Mínimo 8 caracteres"
-                                               styleClass="modern-field" />
-
-                                <Label text="Confirmar contraseña *"
-                                       styleClass="field-label" />
-                                <PasswordField fx:id="campoConfirmarPassword"
-                                               promptText="Repetir contraseña"
-                                               styleClass="modern-field" />
-
-                                <Label fx:id="etiquetaAyudaPassword"
-                                       wrapText="true"
-                                       styleClass="small-caption" />
-
-                                <Label fx:id="etiquetaMensaje"
-                                       minHeight="22"
-                                       wrapText="true" />
-
-                                <Button fx:id="botonGuardar"
-                                        text="CREAR USUARIO"
-                                        onAction="#guardar"
-                                        maxWidth="Infinity"
-                                        styleClass="primary-button" />
-
-                                <Button fx:id="botonRestablecer"
-                                        text="RESTABLECER CONTRASEÑA"
-                                        onAction="#restablecerPassword"
-                                        visible="false"
-                                        managed="false"
-                                        maxWidth="Infinity"
-                                        styleClass="secondary-button" />
-
-                                <Button fx:id="botonEstado"
-                                        text="DESACTIVAR USUARIO"
-                                        onAction="#cambiarEstado"
-                                        visible="false"
-                                        managed="false"
-                                        maxWidth="Infinity"
-                                        styleClass="danger-button" />
-                            </children>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </items>
-        </SplitPane>
-    </center>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.UsuariosController" styleClass="module-root">
+ <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header"><padding><Insets top="22" right="28" bottom="22" left="28"/></padding><Button text="← Inicio" onAction="#volver" styleClass="back-button"/><VBox spacing="3"><Label text="Gestión de usuarios" styleClass="page-title"/><Label text="Administrá accesos, roles y contraseñas del personal." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaSesion" styleClass="user-session-badge"/><Button text="NUEVO USUARIO" onAction="#nuevoUsuario" styleClass="primary-button"/></HBox></top>
+ <center><SplitPane dividerPositions="0.62" styleClass="module-split">
+  <VBox spacing="16" styleClass="list-panel"><padding><Insets top="22" right="22" bottom="22" left="28"/></padding><HBox alignment="CENTER_LEFT" spacing="10"><TextField fx:id="campoBuscar" promptText="Buscar por usuario, rol o estado..." HBox.hgrow="ALWAYS" styleClass="modern-field"/><CheckBox fx:id="checkMostrarInactivos" text="Mostrar inactivos" styleClass="user-filter-check"/><Button text="Limpiar" onAction="#limpiarFiltros" styleClass="secondary-button"/><Button text="Actualizar" onAction="#cargarUsuarios" styleClass="secondary-button"/></HBox>
+   <TableView fx:id="tablaUsuarios" VBox.vgrow="ALWAYS" styleClass="modern-table"><columns><TableColumn fx:id="columnaNombre" text="USUARIO" prefWidth="190"/><TableColumn fx:id="columnaRol" text="ROL" prefWidth="145"/><TableColumn fx:id="columnaActivo" text="ESTADO" prefWidth="110"/><TableColumn fx:id="columnaFecha" text="CREADO" prefWidth="155"/></columns><placeholder><Label text="No hay usuarios para mostrar." styleClass="empty-state"/></placeholder></TableView>
+  </VBox>
+  <ScrollPane fitToWidth="true" styleClass="form-scroll"><VBox spacing="14" styleClass="form-card"><padding><Insets top="24" right="30" bottom="28" left="30"/></padding><Label fx:id="tituloFormulario" text="Nuevo usuario del personal" styleClass="section-title"/><Label text="Creá cuentas individuales para identificar correctamente cada operación y movimiento de auditoría." wrapText="true" styleClass="small-caption"/>
+   <Label text="Nombre de usuario *" styleClass="field-label"/><TextField fx:id="campoNombreUsuario" promptText="Ejemplo: operador.turno" styleClass="modern-field"/>
+   <Label text="Rol *" styleClass="field-label"/><ComboBox fx:id="comboRol" maxWidth="Infinity" styleClass="modern-combo"/>
+   <VBox spacing="8" styleClass="user-role-note"><Label text="PERMISOS DEL ROL" styleClass="metric-label"/><Label fx:id="etiquetaPermisos" wrapText="true" styleClass="user-role-copy"/></VBox>
+   <Label text="Contraseña *" styleClass="field-label"/><PasswordField fx:id="campoPassword" promptText="Mínimo 8 caracteres" styleClass="modern-field"/><Label text="Confirmar contraseña *" styleClass="field-label"/><PasswordField fx:id="campoConfirmarPassword" promptText="Repetir contraseña" styleClass="modern-field"/><Label fx:id="etiquetaAyudaPassword" wrapText="true" styleClass="small-caption"/><Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true"/>
+   <Button fx:id="botonGuardar" text="CREAR USUARIO" onAction="#guardar" maxWidth="Infinity" styleClass="primary-button"/><Button fx:id="botonRestablecer" text="RESTABLECER CONTRASEÑA" onAction="#restablecerPassword" visible="false" managed="false" maxWidth="Infinity" styleClass="secondary-button"/><Button fx:id="botonEstado" text="DESACTIVAR USUARIO" onAction="#cambiarEstado" visible="false" managed="false" maxWidth="Infinity" styleClass="danger-button"/>
+  </VBox></ScrollPane>
+ </SplitPane></center>
 </BorderPane>
