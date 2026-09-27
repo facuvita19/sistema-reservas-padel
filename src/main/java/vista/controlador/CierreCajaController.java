@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
@@ -12,8 +13,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -22,20 +25,28 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import negocio.CierreCaja;
 import negocio.DetalleMedioPago;
+import negocio.DetallePagoCaja;
+import negocio.MetodoPago;
+import negocio.MovimientoCaja;
 import negocio.ResumenCajaDiaria;
+import negocio.TipoMovimientoCaja;
 import negocio.Usuario;
 import servicio.CierreCajaService;
+import servicio.DetallePagoCajaService;
+import servicio.MovimientoCajaService;
 import vista.Navegacion;
 
 public class CierreCajaController {
-
     private static final DateTimeFormatter FORMATO_FECHA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FORMATO_FECHA_HORA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    private final CierreCajaService cierreService =
-            new CierreCajaService();
+    private final CierreCajaService cierreService = new CierreCajaService();
+    private final MovimientoCajaService movimientoService =
+            new MovimientoCajaService();
+    private final DetallePagoCajaService detallePagoService =
+            new DetallePagoCajaService();
 
     private ResumenCajaDiaria resumenActual;
     private CierreCaja cierreExistente;
@@ -50,134 +61,245 @@ public class CierreCajaController {
     @FXML private Label etiquetaReservasCompletadas;
     @FXML private Label etiquetaReservasAusentes;
     @FXML private Label etiquetaReservasCanceladas;
+    @FXML private Label etiquetaIngresosManuales;
+    @FXML private Label etiquetaEgresosManuales;
     @FXML private Label etiquetaDiferencia;
     @FXML private Label etiquetaMensaje;
     @FXML private Label etiquetaDatosCierre;
+    @FXML private Label etiquetaAdvertenciaPendientes;
 
     @FXML private TableView<DetalleMedioPago> tablaMetodos;
     @FXML private TableColumn<DetalleMedioPago, Object> columnaMetodo;
     @FXML private TableColumn<DetalleMedioPago, Integer> columnaMovimientos;
     @FXML private TableColumn<DetalleMedioPago, BigDecimal> columnaTotal;
 
+    @FXML private TableView<DetallePagoCaja> tablaPagosAcreditados;
+    @FXML private TableColumn<DetallePagoCaja, LocalDateTime> columnaPagoAcreditado;
+    @FXML private TableColumn<DetallePagoCaja, String> columnaPagoCliente;
+    @FXML private TableColumn<DetallePagoCaja, Long> columnaPagoReserva;
+    @FXML private TableColumn<DetallePagoCaja, String> columnaPagoTurno;
+    @FXML private TableColumn<DetallePagoCaja, String> columnaPagoCancha;
+    @FXML private TableColumn<DetallePagoCaja, MetodoPago> columnaPagoMetodo;
+    @FXML private TableColumn<DetallePagoCaja, BigDecimal> columnaPagoImporte;
+    @FXML private TableColumn<DetallePagoCaja, String> columnaPagoUsuario;
+    @FXML private TableView<MovimientoCaja> tablaMovimientos;
+    @FXML private TableColumn<MovimientoCaja, LocalDateTime> columnaMovimientoFecha;
+    @FXML private TableColumn<MovimientoCaja, TipoMovimientoCaja> columnaMovimientoTipo;
+    @FXML private TableColumn<MovimientoCaja, String> columnaMovimientoConcepto;
+    @FXML private TableColumn<MovimientoCaja, MetodoPago> columnaMovimientoMedio;
+    @FXML private TableColumn<MovimientoCaja, BigDecimal> columnaMovimientoImporte;
+    @FXML private TableColumn<MovimientoCaja, String> columnaMovimientoUsuario;
+
+    @FXML private ComboBox<TipoMovimientoCaja> comboTipoMovimiento;
+    @FXML private ComboBox<MetodoPago> comboMedioMovimiento;
+    @FXML private TextField campoConceptoMovimiento;
+    @FXML private TextField campoImporteMovimiento;
+    @FXML private TextArea campoObservacionesMovimiento;
+    @FXML private Button botonRegistrarMovimiento;
+
     @FXML private TextField campoEfectivoDeclarado;
     @FXML private TextArea campoObservaciones;
     @FXML private Button botonCerrarCaja;
     @FXML private VBox contenedorCierreExistente;
     @FXML private VBox contenedorFormularioCierre;
+    @FXML private VBox contenedorNuevoMovimiento;
 
     @FXML
     private void initialize() {
-        configurarTabla();
+        configurarTablaMetodos();
+        configurarTablaPagos();
+        configurarTablaMovimientos();
+        configurarFormularioMovimiento();
         configurarFecha();
-        configurarCalculoDiferencia();
+        campoEfectivoDeclarado.textProperty().addListener(
+                (obs, anterior, actual) -> actualizarDiferencia());
         cargarCaja();
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
-    private void configurarTabla() {
-        columnaMetodo.setCellValueFactory(
-                new PropertyValueFactory("metodoPago"));
+    private void configurarTablaMetodos() {
+        columnaMetodo.setCellValueFactory(new PropertyValueFactory("metodoPago"));
         columnaMovimientos.setCellValueFactory(
                 new PropertyValueFactory<>("cantidadMovimientos"));
-        columnaTotal.setCellValueFactory(
-                new PropertyValueFactory<>("total"));
-        columnaTotal.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
+        columnaTotal.setCellValueFactory(new PropertyValueFactory<>("total"));
+        columnaTotal.setCellFactory(columna -> celdaMoneda());
+    }
+
+    private void configurarTablaPagos() {
+        columnaPagoAcreditado.setCellValueFactory(
+                new PropertyValueFactory<>("fechaAcreditacion"));
+        columnaPagoCliente.setCellValueFactory(
+                new PropertyValueFactory<>("nombreCliente"));
+        columnaPagoReserva.setCellValueFactory(
+                new PropertyValueFactory<>("reservaId"));
+        columnaPagoCancha.setCellValueFactory(
+                new PropertyValueFactory<>("nombreCancha"));
+        columnaPagoMetodo.setCellValueFactory(
+                new PropertyValueFactory<>("metodoPago"));
+        columnaPagoImporte.setCellValueFactory(
+                new PropertyValueFactory<>("importe"));
+        columnaPagoUsuario.setCellValueFactory(
+                new PropertyValueFactory<>("nombreUsuario"));
+        columnaPagoTurno.setCellValueFactory(datos ->
+                new javafx.beans.property.SimpleStringProperty(
+                        datos.getValue().getFechaTurno().format(FORMATO_FECHA)
+                        + " " + datos.getValue().getHoraTurno().format(
+                                DateTimeFormatter.ofPattern("HH:mm"))));
+
+        columnaPagoAcreditado.setCellFactory(columna -> new TableCell<>() {
             @Override
-            protected void updateItem(BigDecimal total, boolean vacia) {
+            protected void updateItem(LocalDateTime fecha, boolean vacia) {
+                super.updateItem(fecha, vacia);
+                setText(vacia || fecha == null
+                        ? null : fecha.format(FORMATO_FECHA_HORA));
+            }
+        });
+        columnaPagoImporte.setCellFactory(columna -> new TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal importe, boolean vacia) {
+                super.updateItem(importe, vacia);
+                setText(vacia || importe == null
+                        ? null : formatearMoneda(importe));
+            }
+        });
+        tablaPagosAcreditados.setRowFactory(tabla -> {
+            javafx.scene.control.TableRow<DetallePagoCaja> fila =
+                    new javafx.scene.control.TableRow<>();
+            fila.setOnMouseClicked(evento -> {
+                if (evento.getClickCount() == 2 && !fila.isEmpty()) {
+                    Navegacion.mostrarPagosDeReserva(
+                            fila.getItem().getReservaId());
+                }
+            });
+            return fila;
+        });
+    }
+    private void configurarTablaMovimientos() {
+        columnaMovimientoFecha.setCellValueFactory(
+                new PropertyValueFactory<>("fechaCreacion"));
+        columnaMovimientoTipo.setCellValueFactory(
+                new PropertyValueFactory<>("tipo"));
+        columnaMovimientoConcepto.setCellValueFactory(
+                new PropertyValueFactory<>("concepto"));
+        columnaMovimientoMedio.setCellValueFactory(
+                new PropertyValueFactory<>("medioPago"));
+        columnaMovimientoImporte.setCellValueFactory(
+                new PropertyValueFactory<>("importe"));
+        columnaMovimientoUsuario.setCellValueFactory(
+                new PropertyValueFactory<>("nombreUsuario"));
+        columnaMovimientoFecha.setCellFactory(columna -> new TableCell<>() {
+            @Override protected void updateItem(LocalDateTime fecha, boolean vacia) {
+                super.updateItem(fecha, vacia);
+                setText(vacia || fecha == null ? null : fecha.format(FORMATO_FECHA_HORA));
+            }
+        });
+        columnaMovimientoImporte.setCellFactory(columna -> new TableCell<>() {
+            @Override protected void updateItem(BigDecimal importe, boolean vacia) {
+                super.updateItem(importe, vacia);
+                MovimientoCaja movimiento = vacia || getTableRow() == null
+                        ? null : getTableRow().getItem();
+                if (vacia || importe == null || movimiento == null) {
+                    setText(null);
+                    getStyleClass().removeAll("cash-income", "cash-expense");
+                    return;
+                }
+                setText((movimiento.getTipo() == TipoMovimientoCaja.INGRESO
+                        ? "+" : "-") + formatearMoneda(importe));
+                getStyleClass().removeAll("cash-income", "cash-expense");
+                getStyleClass().add(movimiento.getTipo() == TipoMovimientoCaja.INGRESO
+                        ? "cash-income" : "cash-expense");
+            }
+        });
+    }
+
+    private TableCell<DetalleMedioPago, BigDecimal> celdaMoneda() {
+        return new TableCell<>() {
+            @Override protected void updateItem(BigDecimal total, boolean vacia) {
                 super.updateItem(total, vacia);
                 setText(vacia || total == null ? null : formatearMoneda(total));
             }
-        });
+        };
+    }
+
+    private void configurarFormularioMovimiento() {
+        comboTipoMovimiento.setItems(FXCollections.observableArrayList(
+                TipoMovimientoCaja.values()));
+        comboMedioMovimiento.setItems(FXCollections.observableArrayList(
+                MetodoPago.values()));
+        comboTipoMovimiento.setValue(TipoMovimientoCaja.EGRESO);
+        comboMedioMovimiento.setValue(MetodoPago.EFECTIVO);
     }
 
     private void configurarFecha() {
         Usuario usuario = Navegacion.getUsuarioActual();
-        boolean administrador = usuario != null && usuario.esAdministrador();
-
         selectorFecha.setValue(LocalDate.now());
-        selectorFecha.setDisable(!administrador);
+        selectorFecha.setDisable(usuario == null || !usuario.esAdministrador());
         selectorFecha.setDayCellFactory(control -> new javafx.scene.control.DateCell() {
-            @Override
-            public void updateItem(LocalDate fecha, boolean vacia) {
+            @Override public void updateItem(LocalDate fecha, boolean vacia) {
                 super.updateItem(fecha, vacia);
-                setDisable(vacia || fecha.isAfter(LocalDate.now()));
+                setDisable(vacia || fecha == null || fecha.isAfter(LocalDate.now()));
             }
         });
-        selectorFecha.valueProperty().addListener(
-                (obs, anterior, actual) -> {
-                    if (actual != null) {
-                        cargarCaja();
-                    }
-                });
-    }
-
-    private void configurarCalculoDiferencia() {
-        campoEfectivoDeclarado.textProperty().addListener(
-                (obs, anterior, actual) -> actualizarDiferencia());
+        selectorFecha.valueProperty().addListener((obs, anterior, actual) -> {
+            if (actual != null) cargarCaja();
+        });
     }
 
     @FXML
     private void cargarCaja() {
         LocalDate fecha = selectorFecha.getValue();
-        if (fecha == null) {
-            mostrarError("Seleccioná una fecha.");
-            return;
-        }
-
+        if (fecha == null) { mostrarError("Seleccioná una fecha."); return; }
         try {
             cierreExistente = cierreService.buscarPorFecha(fecha);
             resumenActual = cierreService.obtenerResumen(fecha);
+            tablaPagosAcreditados.setItems(FXCollections.observableArrayList(
+                    detallePagoService.listarAcreditadosPorFecha(fecha)));
+            tablaMovimientos.setItems(FXCollections.observableArrayList(
+                    movimientoService.listarPorFecha(fecha)));
             mostrarResumen(resumenActual);
-
-            if (cierreExistente == null) {
-                mostrarCajaAbierta();
-            } else {
-                mostrarCajaCerrada(cierreExistente);
-            }
+            if (cierreExistente == null) mostrarCajaAbierta();
+            else mostrarCajaCerrada(cierreExistente);
         } catch (RuntimeException exception) {
             mostrarError(exception.getMessage());
         }
     }
 
     private void mostrarResumen(ResumenCajaDiaria resumen) {
-        etiquetaTotalAcreditado.setText(
-                formatearMoneda(resumen.getTotalAcreditado()));
+        etiquetaTotalAcreditado.setText(formatearMoneda(
+                resumen.getTotalAcreditado()
+                        .add(resumen.getIngresosManuales())
+                        .subtract(resumen.getEgresosManuales())));
         etiquetaEfectivoCalculado.setText(
-                formatearMoneda(resumen.getTotalEfectivo()));
+                formatearMoneda(resumen.getEfectivoEsperado()));
         etiquetaTotalReembolsado.setText(
                 formatearMoneda(resumen.getTotalReembolsado()));
+        etiquetaIngresosManuales.setText(
+                formatearMoneda(resumen.getIngresosManuales()));
+        etiquetaEgresosManuales.setText(
+                formatearMoneda(resumen.getEgresosManuales()));
         etiquetaPagosAcreditados.setText(
                 String.valueOf(resumen.getCantidadPagosAcreditados()));
-        etiquetaPagosPendientes.setText(
-                String.valueOf(resumen.getPagosPendientes()));
-        etiquetaReservasCompletadas.setText(
-                String.valueOf(resumen.getReservasCompletadas()));
-        etiquetaReservasAusentes.setText(
-                String.valueOf(resumen.getReservasAusentes()));
-        etiquetaReservasCanceladas.setText(
-                String.valueOf(resumen.getReservasCanceladas()));
-        tablaMetodos.setItems(FXCollections.observableArrayList(
-                resumen.getDetalles()));
+        etiquetaPagosPendientes.setText(String.valueOf(resumen.getPagosPendientes()));
+        etiquetaReservasCompletadas.setText(String.valueOf(resumen.getReservasCompletadas()));
+        etiquetaReservasAusentes.setText(String.valueOf(resumen.getReservasAusentes()));
+        etiquetaReservasCanceladas.setText(String.valueOf(resumen.getReservasCanceladas()));
+        tablaMetodos.setItems(FXCollections.observableArrayList(resumen.getDetalles()));
+        boolean pendientes = resumen.getPagosPendientes() > 0;
+        etiquetaAdvertenciaPendientes.setVisible(pendientes);
+        etiquetaAdvertenciaPendientes.setManaged(pendientes);
+        etiquetaAdvertenciaPendientes.setText(pendientes
+                ? "Atención: hay " + resumen.getPagosPendientes()
+                        + " pago(s) pendientes de acreditar. Revisalos antes del cierre."
+                : "");
     }
 
     private void mostrarCajaAbierta() {
-        etiquetaEstadoCaja.setText("CAJA ABIERTA");
-        etiquetaEstadoCaja.getStyleClass().removeAll(
-                "cash-status-open", "cash-status-closed");
-        etiquetaEstadoCaja.getStyleClass().add("cash-status-open");
-
-        contenedorFormularioCierre.setVisible(true);
-        contenedorFormularioCierre.setManaged(true);
-        contenedorCierreExistente.setVisible(false);
-        contenedorCierreExistente.setManaged(false);
-        campoEfectivoDeclarado.setDisable(false);
-        campoObservaciones.setDisable(false);
-        botonCerrarCaja.setDisable(false);
-
-        campoEfectivoDeclarado.setText(
-                resumenActual.getTotalEfectivo()
-                        .setScale(2, RoundingMode.HALF_UP)
-                        .toPlainString());
+        cambiarEstadoCaja("CAJA ABIERTA", "cash-status-open");
+        mostrar(contenedorFormularioCierre, true);
+        mostrar(contenedorCierreExistente, false);
+        mostrar(contenedorNuevoMovimiento, true);
+        campoEfectivoDeclarado.setText(resumenActual.getEfectivoEsperado()
+                .setScale(2, RoundingMode.HALF_UP).toPlainString());
         campoObservaciones.clear();
         etiquetaDatosCierre.setText("");
         actualizarDiferencia();
@@ -185,50 +307,62 @@ public class CierreCajaController {
     }
 
     private void mostrarCajaCerrada(CierreCaja cierre) {
-        etiquetaEstadoCaja.setText("CAJA CERRADA");
-        etiquetaEstadoCaja.getStyleClass().removeAll(
-                "cash-status-open", "cash-status-closed");
-        etiquetaEstadoCaja.getStyleClass().add("cash-status-closed");
-
-        contenedorFormularioCierre.setVisible(false);
-        contenedorFormularioCierre.setManaged(false);
-        contenedorCierreExistente.setVisible(true);
-        contenedorCierreExistente.setManaged(true);
-
-        String fechaCierre = cierre.getFechaCierre() == null
-                ? "Sin fecha registrada"
+        cambiarEstadoCaja("CAJA CERRADA", "cash-status-closed");
+        mostrar(contenedorFormularioCierre, false);
+        mostrar(contenedorCierreExistente, true);
+        mostrar(contenedorNuevoMovimiento, false);
+        String cerrada = cierre.getFechaCierre() == null ? "Sin fecha registrada"
                 : cierre.getFechaCierre().format(FORMATO_FECHA_HORA);
-
-        etiquetaDatosCierre.setText(
-                "Fecha: " + cierre.getFecha().format(FORMATO_FECHA)
-                        + "\nCerrada: " + fechaCierre
-                        + "\nUsuario ID: " + cierre.getUsuarioCierreId()
-                        + "\nEfectivo calculado: "
-                        + formatearMoneda(cierre.getTotalEfectivoCalculado())
-                        + "\nEfectivo declarado: "
-                        + formatearMoneda(cierre.getEfectivoDeclarado())
-                        + "\nDiferencia: "
-                        + formatearMonedaConSigno(cierre.getDiferenciaEfectivo())
-                        + (cierre.getObservaciones() == null
-                                ? ""
-                                : "\nObservaciones: " + cierre.getObservaciones()));
-
-        etiquetaDiferencia.setText(
-                formatearMonedaConSigno(cierre.getDiferenciaEfectivo()));
+        etiquetaDatosCierre.setText("Fecha: " + cierre.getFecha().format(FORMATO_FECHA)
+                + "\nCerrada: " + cerrada
+                + "\nUsuario ID: " + cierre.getUsuarioCierreId()
+                + "\nEfectivo calculado: " + formatearMoneda(cierre.getTotalEfectivoCalculado())
+                + "\nEfectivo declarado: " + formatearMoneda(cierre.getEfectivoDeclarado())
+                + "\nDiferencia: " + formatearMonedaConSigno(cierre.getDiferenciaEfectivo())
+                + (cierre.getObservaciones() == null ? ""
+                        : "\nObservaciones: " + cierre.getObservaciones()));
+        etiquetaDiferencia.setText(formatearMonedaConSigno(cierre.getDiferenciaEfectivo()));
         actualizarEstiloDiferencia(cierre.getDiferenciaEfectivo());
         mostrarInfo("La caja de esta fecha ya fue cerrada.");
     }
 
-    private void actualizarDiferencia() {
-        if (resumenActual == null) {
-            etiquetaDiferencia.setText(formatearMoneda(BigDecimal.ZERO));
-            return;
-        }
+    private void cambiarEstadoCaja(String texto, String clase) {
+        etiquetaEstadoCaja.setText(texto);
+        etiquetaEstadoCaja.getStyleClass().removeAll(
+                "cash-status-open", "cash-status-closed");
+        etiquetaEstadoCaja.getStyleClass().add(clase);
+    }
 
+    private void mostrar(VBox nodo, boolean visible) {
+        nodo.setVisible(visible); nodo.setManaged(visible);
+    }
+
+    @FXML
+    private void registrarMovimiento() {
+        Usuario usuario = Navegacion.getUsuarioActual();
+        if (usuario == null) { mostrarError("La sesión administrativa finalizó."); return; }
         try {
-            BigDecimal declarado = leerImporte(campoEfectivoDeclarado.getText());
-            BigDecimal diferencia = declarado.subtract(
-                    resumenActual.getTotalEfectivo());
+            movimientoService.registrar(
+                    selectorFecha.getValue(), comboTipoMovimiento.getValue(),
+                    campoConceptoMovimiento.getText(),
+                    leerImporte(campoImporteMovimiento.getText()),
+                    comboMedioMovimiento.getValue(),
+                    campoObservacionesMovimiento.getText(), usuario.getId());
+            campoConceptoMovimiento.clear();
+            campoImporteMovimiento.clear();
+            campoObservacionesMovimiento.clear();
+            cargarCaja();
+            mostrarInfo("El movimiento se registró correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
+    }
+
+    private void actualizarDiferencia() {
+        if (resumenActual == null) return;
+        try {
+            BigDecimal diferencia = leerImporte(campoEfectivoDeclarado.getText())
+                    .subtract(resumenActual.getEfectivoEsperado());
             etiquetaDiferencia.setText(formatearMonedaConSigno(diferencia));
             actualizarEstiloDiferencia(diferencia);
         } catch (IllegalArgumentException exception) {
@@ -241,49 +375,30 @@ public class CierreCajaController {
         etiquetaDiferencia.getStyleClass().removeAll(
                 "cash-difference-ok", "cash-difference-warning");
         etiquetaDiferencia.getStyleClass().add(
-                diferencia != null && diferencia.compareTo(BigDecimal.ZERO) == 0
-                        ? "cash-difference-ok"
-                        : "cash-difference-warning");
+                diferencia != null && diferencia.signum() == 0
+                        ? "cash-difference-ok" : "cash-difference-warning");
     }
 
     @FXML
     private void cerrarCaja() {
-        if (cierreExistente != null) {
-            mostrarError("La caja de esta fecha ya fue cerrada.");
-            return;
-        }
-
+        if (cierreExistente != null) { mostrarError("La caja de esta fecha ya fue cerrada."); return; }
         Usuario usuario = Navegacion.getUsuarioActual();
-        if (usuario == null) {
-            mostrarError("La sesión administrativa finalizó.");
-            return;
-        }
-
+        if (usuario == null) { mostrarError("La sesión administrativa finalizó."); return; }
         try {
-            BigDecimal declarado = leerImporte(
-                    campoEfectivoDeclarado.getText());
-            BigDecimal diferencia = declarado.subtract(
-                    resumenActual.getTotalEfectivo());
-
+            BigDecimal declarado = leerImporte(campoEfectivoDeclarado.getText());
+            BigDecimal diferencia = declarado.subtract(resumenActual.getEfectivoEsperado());
             Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
             confirmacion.setTitle("Confirmar cierre de caja");
-            confirmacion.setHeaderText(
-                    "¿Cerrar definitivamente la caja del "
-                            + selectorFecha.getValue().format(FORMATO_FECHA)
-                            + "?");
-            confirmacion.setContentText(
-                    "Efectivo calculado: "
-                            + formatearMoneda(resumenActual.getTotalEfectivo())
-                            + "\nEfectivo declarado: "
-                            + formatearMoneda(declarado)
-                            + "\nDiferencia: "
-                            + formatearMonedaConSigno(diferencia)
-                            + "\n\nEl cierre no podrá modificarse desde esta pantalla.");
-
+            confirmacion.setHeaderText("¿Cerrar definitivamente la caja del "
+                    + selectorFecha.getValue().format(FORMATO_FECHA) + "?");
+            confirmacion.setContentText("Efectivo esperado: "
+                    + formatearMoneda(resumenActual.getEfectivoEsperado())
+                    + "\nEfectivo declarado: " + formatearMoneda(declarado)
+                    + "\nDiferencia: " + formatearMonedaConSigno(diferencia)
+                    + (resumenActual.getPagosPendientes() > 0
+                            ? "\n\nAdvertencia: hay pagos pendientes de acreditar." : ""));
             confirmacion.showAndWait().ifPresent(respuesta -> {
-                if (respuesta == ButtonType.OK) {
-                    ejecutarCierre(declarado);
-                }
+                if (respuesta == ButtonType.OK) ejecutarCierre(declarado);
             });
         } catch (IllegalArgumentException exception) {
             mostrarError(exception.getMessage());
@@ -292,86 +407,39 @@ public class CierreCajaController {
 
     private void ejecutarCierre(BigDecimal declarado) {
         try {
-            Usuario usuario = Navegacion.getUsuarioActual();
-            cierreService.cerrar(
-                    selectorFecha.getValue(),
-                    declarado,
-                    campoObservaciones.getText(),
-                    usuario.getId());
+            cierreService.cerrar(selectorFecha.getValue(), declarado,
+                    campoObservaciones.getText(), Navegacion.getUsuarioActual().getId());
             cargarCaja();
             mostrarInfo("La caja se cerró correctamente.");
-        } catch (RuntimeException exception) {
-            mostrarError(exception.getMessage());
-        }
+        } catch (RuntimeException exception) { mostrarError(exception.getMessage()); }
     }
 
     private BigDecimal leerImporte(String texto) {
         if (texto == null || texto.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Ingresá el efectivo contado.");
+            throw new IllegalArgumentException("Ingresá un importe.");
         }
-
-        String normalizado = texto.trim()
-                .replace("$", "")
-                .replace("ARS", "")
-                .replace(" ", "");
-
-        if (normalizado.contains(",") && normalizado.contains(".")) {
-            normalizado = normalizado.replace(".", "").replace(",", ".");
-        } else if (normalizado.contains(",")) {
-            normalizado = normalizado.replace(",", ".");
-        }
-
+        String valor = texto.trim().replace("$", "").replace("ARS", "").replace(" ", "");
+        if (valor.contains(",") && valor.contains(".")) valor = valor.replace(".", "").replace(",", ".");
+        else if (valor.contains(",")) valor = valor.replace(",", ".");
         try {
-            BigDecimal valor = new BigDecimal(normalizado)
-                    .setScale(2, RoundingMode.HALF_UP);
-            if (valor.compareTo(BigDecimal.ZERO) < 0) {
-                throw new IllegalArgumentException(
-                        "El efectivo contado no puede ser negativo.");
-            }
-            return valor;
+            BigDecimal importe = new BigDecimal(valor).setScale(2, RoundingMode.HALF_UP);
+            if (importe.signum() < 0) throw new IllegalArgumentException("El importe no puede ser negativo.");
+            return importe;
         } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(
-                    "El efectivo contado no tiene un formato válido.");
+            throw new IllegalArgumentException("El importe no tiene un formato válido.");
         }
     }
 
     private String formatearMoneda(BigDecimal valor) {
-        NumberFormat formato = NumberFormat.getCurrencyInstance(
-                new Locale("es", "AR"));
-        return formato.format(valor == null ? BigDecimal.ZERO : valor);
+        return NumberFormat.getCurrencyInstance(new Locale("es", "AR"))
+                .format(valor == null ? BigDecimal.ZERO : valor);
     }
-
     private String formatearMonedaConSigno(BigDecimal valor) {
         BigDecimal seguro = valor == null ? BigDecimal.ZERO : valor;
-        return (seguro.compareTo(BigDecimal.ZERO) > 0 ? "+" : "")
-                + formatearMoneda(seguro);
+        return (seguro.signum() > 0 ? "+" : "") + formatearMoneda(seguro);
     }
-
-    @FXML
-    private void volver() {
-        Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
-    }
-
-    private void mostrarError(String mensaje) {
-        etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-exito");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-error");
-        }
-    }
-
-    private void mostrarInfo(String mensaje) {
-        etiquetaMensaje.setText(mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-error");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-exito");
-        }
-    }
-
-    private void limpiarMensaje() {
-        etiquetaMensaje.setText("");
-        etiquetaMensaje.getStyleClass().removeAll(
-                "mensaje-error", "mensaje-exito");
-    }
+    @FXML private void volver() { Navegacion.mostrarDashboard(Navegacion.getUsuarioActual()); }
+    private void mostrarError(String mensaje) { etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje); etiquetaMensaje.getStyleClass().remove("mensaje-exito"); if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) etiquetaMensaje.getStyleClass().add("mensaje-error"); }
+    private void mostrarInfo(String mensaje) { etiquetaMensaje.setText(mensaje); etiquetaMensaje.getStyleClass().remove("mensaje-error"); if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) etiquetaMensaje.getStyleClass().add("mensaje-exito"); }
+    private void limpiarMensaje() { etiquetaMensaje.setText(""); etiquetaMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito"); }
 }

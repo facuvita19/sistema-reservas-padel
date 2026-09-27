@@ -1,255 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.CierreCajaController"
-            styleClass="module-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding>
-                <Insets top="22" right="28" bottom="22" left="28" />
-            </padding>
-            <children>
-                <Button text="← Inicio"
-                        onAction="#volver"
-                        styleClass="back-button" />
-                <VBox spacing="3">
-                    <children>
-                        <Label text="Cierre diario de caja"
-                               styleClass="page-title" />
-                        <Label text="Revisá los movimientos y confirmá el efectivo contado."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <DatePicker fx:id="selectorFecha"
-                            prefWidth="155"
-                            styleClass="modern-date" />
-                <Button text="Actualizar"
-                        onAction="#cargarCaja"
-                        styleClass="secondary-button" />
-            </children>
-        </HBox>
-    </top>
-
-    <center>
-        <ScrollPane fitToWidth="true"
-                    hbarPolicy="NEVER"
-                    vbarPolicy="AS_NEEDED"
-                    styleClass="form-scroll">
-            <content>
-                <VBox spacing="18" styleClass="cash-page">
-                    <padding>
-                        <Insets top="24" right="30" bottom="32" left="30" />
-                    </padding>
-                    <children>
-                        <HBox alignment="CENTER_LEFT" spacing="12">
-                            <children>
-                                <Label text="Estado de la jornada"
-                                       styleClass="section-title" />
-                                <Region HBox.hgrow="ALWAYS" />
-                                <Label fx:id="etiquetaEstadoCaja"
-                                       text="CAJA ABIERTA"
-                                       styleClass="cash-status-open" />
-                            </children>
-                        </HBox>
-
-                        <FlowPane hgap="14" vgap="14" prefWrapLength="1050">
-                            <children>
-                                <VBox minWidth="205" prefWidth="220" spacing="6"
-                                      styleClass="cash-summary-card">
-                                    <children>
-                                        <Label text="TOTAL ACREDITADO" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaTotalAcreditado"
-                                               text="ARS 0" wrapText="true"
-                                               styleClass="cash-summary-value" />
-                                        <Label text="Todos los medios" styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
-
-                                <VBox minWidth="205" prefWidth="220" spacing="6"
-                                      styleClass="cash-summary-card, cash-highlight-card">
-                                    <children>
-                                        <Label text="EFECTIVO CALCULADO" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaEfectivoCalculado"
-                                               text="ARS 0" wrapText="true"
-                                               styleClass="cash-summary-value" />
-                                        <Label text="A comparar con la caja física" styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
-
-                                <VBox minWidth="205" prefWidth="220" spacing="6"
-                                      styleClass="cash-summary-card">
-                                    <children>
-                                        <Label text="REEMBOLSADO HOY" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaTotalReembolsado"
-                                               text="ARS 0" wrapText="true"
-                                               styleClass="cash-summary-value" />
-                                        <Label text="Devoluciones registradas" styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
-
-                                <VBox minWidth="205" prefWidth="220" spacing="6"
-                                      styleClass="cash-summary-card">
-                                    <children>
-                                        <Label text="PAGOS ACREDITADOS" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaPagosAcreditados"
-                                               text="0" styleClass="cash-summary-value" />
-                                        <Label text="Cantidad de movimientos" styleClass="metric-detail" />
-                                    </children>
-                                </VBox>
-                            </children>
-                        </FlowPane>
-
-                        <GridPane hgap="16" vgap="16">
-                            <columnConstraints>
-                                <ColumnConstraints percentWidth="60" hgrow="ALWAYS" />
-                                <ColumnConstraints percentWidth="40" hgrow="ALWAYS" />
-                            </columnConstraints>
-                            <children>
-                                <VBox spacing="12" GridPane.columnIndex="0"
-                                      styleClass="content-card">
-                                    <children>
-                                        <Label text="Desglose por medio de pago"
-                                               styleClass="section-title" />
-                                        <TableView fx:id="tablaMetodos"
-                                                   prefHeight="245"
-                                                   VBox.vgrow="ALWAYS"
-                                                   styleClass="modern-table">
-                                            <columns>
-                                                <TableColumn fx:id="columnaMetodo"
-                                                             text="MÉTODO" prefWidth="190" />
-                                                <TableColumn fx:id="columnaMovimientos"
-                                                             text="MOVIMIENTOS" prefWidth="130" />
-                                                <TableColumn fx:id="columnaTotal"
-                                                             text="TOTAL" prefWidth="180" />
-                                            </columns>
-                                            <placeholder>
-                                                <Label text="No hay pagos acreditados para esta fecha."
-                                                       styleClass="empty-state" />
-                                            </placeholder>
-                                        </TableView>
-                                    </children>
-                                </VBox>
-
-                                <VBox spacing="12" GridPane.columnIndex="1"
-                                      styleClass="content-card">
-                                    <children>
-                                        <Label text="Actividad de la jornada"
-                                               styleClass="section-title" />
-                                        <GridPane hgap="12" vgap="12">
-                                            <columnConstraints>
-                                                <ColumnConstraints percentWidth="50" />
-                                                <ColumnConstraints percentWidth="50" />
-                                            </columnConstraints>
-                                            <children>
-                                                <VBox spacing="4" GridPane.columnIndex="0"
-                                                      styleClass="cash-mini-card">
-                                                    <children>
-                                                        <Label text="PAGOS PENDIENTES" styleClass="metric-label" />
-                                                        <Label fx:id="etiquetaPagosPendientes" text="0"
-                                                               styleClass="cash-mini-value" />
-                                                    </children>
-                                                </VBox>
-                                                <VBox spacing="4" GridPane.columnIndex="1"
-                                                      styleClass="cash-mini-card">
-                                                    <children>
-                                                        <Label text="COMPLETADAS" styleClass="metric-label" />
-                                                        <Label fx:id="etiquetaReservasCompletadas" text="0"
-                                                               styleClass="cash-mini-value" />
-                                                    </children>
-                                                </VBox>
-                                                <VBox spacing="4" GridPane.columnIndex="0" GridPane.rowIndex="1"
-                                                      styleClass="cash-mini-card">
-                                                    <children>
-                                                        <Label text="AUSENCIAS" styleClass="metric-label" />
-                                                        <Label fx:id="etiquetaReservasAusentes" text="0"
-                                                               styleClass="cash-mini-value" />
-                                                    </children>
-                                                </VBox>
-                                                <VBox spacing="4" GridPane.columnIndex="1" GridPane.rowIndex="1"
-                                                      styleClass="cash-mini-card">
-                                                    <children>
-                                                        <Label text="CANCELACIONES" styleClass="metric-label" />
-                                                        <Label fx:id="etiquetaReservasCanceladas" text="0"
-                                                               styleClass="cash-mini-value" />
-                                                    </children>
-                                                </VBox>
-                                            </children>
-                                        </GridPane>
-                                    </children>
-                                </VBox>
-                            </children>
-                        </GridPane>
-
-                        <VBox fx:id="contenedorFormularioCierre"
-                              spacing="14" styleClass="cash-close-card">
-                            <children>
-                                <Label text="Confirmación de efectivo"
-                                       styleClass="section-title" />
-                                <Label text="Ingresá el dinero físico contado. Transferencias y tarjetas no se comparan con este importe."
-                                       wrapText="true" styleClass="small-caption" />
-
-                                <GridPane hgap="16" vgap="12">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
-                                        <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
-                                    </columnConstraints>
-                                    <children>
-                                        <VBox spacing="7" GridPane.columnIndex="0">
-                                            <children>
-                                                <Label text="Efectivo contado *" styleClass="field-label" />
-                                                <TextField fx:id="campoEfectivoDeclarado"
-                                                           promptText="Ejemplo: 50000"
-                                                           styleClass="modern-field" />
-                                            </children>
-                                        </VBox>
-                                        <VBox spacing="7" GridPane.columnIndex="1">
-                                            <children>
-                                                <Label text="Diferencia" styleClass="field-label" />
-                                                <Label fx:id="etiquetaDiferencia"
-                                                       text="ARS 0"
-                                                       styleClass="cash-difference-ok" />
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </GridPane>
-
-                                <Label text="Observaciones" styleClass="field-label" />
-                                <TextArea fx:id="campoObservaciones"
-                                          prefRowCount="3" wrapText="true"
-                                          promptText="Ejemplo: diferencia revisada, billetes pendientes de rendición..."
-                                          styleClass="modern-area" />
-
-                                <Label fx:id="etiquetaMensaje"
-                                       minHeight="22" wrapText="true" />
-
-                                <Button fx:id="botonCerrarCaja"
-                                        text="CONFIRMAR CIERRE DEL DÍA"
-                                        onAction="#cerrarCaja"
-                                        maxWidth="Infinity"
-                                        styleClass="cash-close-button" />
-                            </children>
-                        </VBox>
-
-                        <VBox fx:id="contenedorCierreExistente"
-                              visible="false" managed="false"
-                              spacing="12" styleClass="cash-closed-card">
-                            <children>
-                                <Label text="Cierre confirmado"
-                                       styleClass="section-title" />
-                                <Label fx:id="etiquetaDatosCierre"
-                                       wrapText="true"
-                                       styleClass="cash-closed-copy" />
-                            </children>
-                        </VBox>
-                    </children>
-                </VBox>
-            </content>
-        </ScrollPane>
-    </center>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.CierreCajaController" styleClass="module-root">
+ <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header"><padding><Insets top="18" right="26" bottom="18" left="26"/></padding><Button text="← Inicio" onAction="#volver" styleClass="back-button"/><VBox spacing="2"><Label text="Caja operativa" styleClass="page-title"/><Label text="Pagos, movimientos manuales y cierre diario." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><DatePicker fx:id="selectorFecha" prefWidth="155" styleClass="modern-date"/><Button text="ACTUALIZAR" onAction="#cargarCaja" styleClass="secondary-button"/></HBox></top>
+ <center><ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll"><VBox spacing="16" styleClass="cash-page"><padding><Insets top="20" right="26" bottom="30" left="26"/></padding>
+  <HBox alignment="CENTER_LEFT"><Label text="Estado de la jornada" styleClass="section-title"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaEstadoCaja" text="CAJA ABIERTA" styleClass="cash-status-open"/></HBox>
+  <Label fx:id="etiquetaAdvertenciaPendientes" visible="false" managed="false" wrapText="true" styleClass="cash-warning-banner"/>
+  <GridPane hgap="10" vgap="10"><columnConstraints><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/></columnConstraints>
+   <VBox styleClass="cash-summary-card"><Label text="TOTAL NETO" styleClass="metric-label"/><Label fx:id="etiquetaTotalAcreditado" text="ARS 0" styleClass="cash-summary-value"/></VBox>
+   <VBox GridPane.columnIndex="1" styleClass="cash-summary-card, cash-highlight-card"><Label text="EFECTIVO ESPERADO" styleClass="metric-label"/><Label fx:id="etiquetaEfectivoCalculado" text="ARS 0" styleClass="cash-summary-value"/></VBox>
+   <VBox GridPane.columnIndex="2" styleClass="cash-summary-card"><Label text="REEMBOLSADO" styleClass="metric-label"/><Label fx:id="etiquetaTotalReembolsado" text="ARS 0" styleClass="cash-summary-value"/></VBox>
+   <VBox GridPane.columnIndex="3" styleClass="cash-summary-card"><Label text="INGRESOS MANUALES" styleClass="metric-label"/><Label fx:id="etiquetaIngresosManuales" text="ARS 0" styleClass="cash-summary-value"/></VBox>
+   <VBox GridPane.columnIndex="4" styleClass="cash-summary-card"><Label text="EGRESOS MANUALES" styleClass="metric-label"/><Label fx:id="etiquetaEgresosManuales" text="ARS 0" styleClass="cash-summary-value"/></VBox>
+   <VBox GridPane.columnIndex="5" styleClass="cash-summary-card"><Label text="PAGOS ACREDITADOS" styleClass="metric-label"/><Label fx:id="etiquetaPagosAcreditados" text="0" styleClass="cash-summary-value"/></VBox>
+  </GridPane>
+  <GridPane hgap="14" vgap="14"><columnConstraints><ColumnConstraints percentWidth="56"/><ColumnConstraints percentWidth="44"/></columnConstraints>
+   <VBox spacing="10" styleClass="content-card"><Label text="Desglose por medio de pago" styleClass="section-title"/><TableView fx:id="tablaMetodos" prefHeight="215" styleClass="modern-table"><columns><TableColumn fx:id="columnaMetodo" text="MÉTODO" prefWidth="190"/><TableColumn fx:id="columnaMovimientos" text="MOVIMIENTOS" prefWidth="130"/><TableColumn fx:id="columnaTotal" text="TOTAL" prefWidth="180"/></columns></TableView></VBox>
+   <VBox GridPane.columnIndex="1" spacing="10" styleClass="content-card"><Label text="Actividad del día" styleClass="section-title"/><GridPane hgap="10" vgap="10"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints><VBox styleClass="cash-mini-card"><Label text="PAGOS PENDIENTES" styleClass="metric-label"/><Label fx:id="etiquetaPagosPendientes" text="0" styleClass="cash-mini-value"/></VBox><VBox GridPane.columnIndex="1" styleClass="cash-mini-card"><Label text="COMPLETADAS" styleClass="metric-label"/><Label fx:id="etiquetaReservasCompletadas" text="0" styleClass="cash-mini-value"/></VBox><VBox GridPane.rowIndex="1" styleClass="cash-mini-card"><Label text="AUSENCIAS" styleClass="metric-label"/><Label fx:id="etiquetaReservasAusentes" text="0" styleClass="cash-mini-value"/></VBox><VBox GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="cash-mini-card"><Label text="CANCELACIONES" styleClass="metric-label"/><Label fx:id="etiquetaReservasCanceladas" text="0" styleClass="cash-mini-value"/></VBox></GridPane></VBox>
+  </GridPane>
+  <VBox spacing="10" styleClass="content-card">
+   <HBox alignment="CENTER_LEFT">
+    <Label text="Pagos acreditados del día" styleClass="section-title"/>
+    <Region HBox.hgrow="ALWAYS"/>
+    <Label text="Doble clic para abrir los pagos de la reserva" styleClass="small-caption"/>
+   </HBox>
+   <TableView fx:id="tablaPagosAcreditados" prefHeight="250" styleClass="modern-table">
+    <columns>
+     <TableColumn fx:id="columnaPagoAcreditado" text="ACREDITADO" prefWidth="150"/>
+     <TableColumn fx:id="columnaPagoCliente" text="CLIENTE" prefWidth="190"/>
+     <TableColumn fx:id="columnaPagoReserva" text="RESERVA" prefWidth="85"/>
+     <TableColumn fx:id="columnaPagoTurno" text="TURNO" prefWidth="145"/>
+     <TableColumn fx:id="columnaPagoCancha" text="CANCHA" prefWidth="135"/>
+     <TableColumn fx:id="columnaPagoMetodo" text="MÉTODO" prefWidth="130"/>
+     <TableColumn fx:id="columnaPagoImporte" text="IMPORTE" prefWidth="145"/>
+     <TableColumn fx:id="columnaPagoUsuario" text="USUARIO" prefWidth="135"/>
+    </columns>
+    <placeholder><Label text="No hay pagos acreditados para esta fecha." styleClass="empty-state"/></placeholder>
+   </TableView>
+  </VBox>  <VBox fx:id="contenedorNuevoMovimiento" spacing="12" styleClass="cash-close-card"><Label text="Registrar movimiento manual" styleClass="section-title"/><GridPane hgap="12" vgap="10"><columnConstraints><ColumnConstraints percentWidth="18"/><ColumnConstraints percentWidth="30"/><ColumnConstraints percentWidth="18"/><ColumnConstraints percentWidth="18"/><ColumnConstraints percentWidth="16"/></columnConstraints><ComboBox fx:id="comboTipoMovimiento" maxWidth="Infinity" styleClass="modern-combo"/><TextField fx:id="campoConceptoMovimiento" GridPane.columnIndex="1" promptText="Concepto o motivo" styleClass="modern-field"/><TextField fx:id="campoImporteMovimiento" GridPane.columnIndex="2" promptText="Importe" styleClass="modern-field"/><ComboBox fx:id="comboMedioMovimiento" GridPane.columnIndex="3" maxWidth="Infinity" styleClass="modern-combo"/><Button fx:id="botonRegistrarMovimiento" GridPane.columnIndex="4" text="REGISTRAR" onAction="#registrarMovimiento" maxWidth="Infinity" styleClass="primary-button"/><TextArea fx:id="campoObservacionesMovimiento" GridPane.rowIndex="1" GridPane.columnSpan="5" prefRowCount="2" promptText="Observaciones opcionales" wrapText="true" styleClass="modern-area"/></GridPane></VBox>
+  <VBox spacing="10" styleClass="content-card"><Label text="Movimientos manuales del día" styleClass="section-title"/><TableView fx:id="tablaMovimientos" prefHeight="230" styleClass="modern-table"><columns><TableColumn fx:id="columnaMovimientoFecha" text="FECHA" prefWidth="145"/><TableColumn fx:id="columnaMovimientoTipo" text="TIPO" prefWidth="105"/><TableColumn fx:id="columnaMovimientoConcepto" text="CONCEPTO" prefWidth="260"/><TableColumn fx:id="columnaMovimientoMedio" text="MEDIO" prefWidth="135"/><TableColumn fx:id="columnaMovimientoImporte" text="IMPORTE" prefWidth="150"/><TableColumn fx:id="columnaMovimientoUsuario" text="USUARIO" prefWidth="140"/></columns><placeholder><Label text="No hay movimientos manuales para esta fecha." styleClass="empty-state"/></placeholder></TableView></VBox>
+  <VBox fx:id="contenedorFormularioCierre" spacing="12" styleClass="cash-close-card"><Label text="Confirmación de efectivo" styleClass="section-title"/><GridPane hgap="14" vgap="10"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints><VBox spacing="6"><Label text="Efectivo contado *" styleClass="field-label"/><TextField fx:id="campoEfectivoDeclarado" styleClass="modern-field"/></VBox><VBox GridPane.columnIndex="1" spacing="6"><Label text="Diferencia" styleClass="field-label"/><Label fx:id="etiquetaDiferencia" text="ARS 0" styleClass="cash-difference-ok"/></VBox></GridPane><Label text="Observaciones" styleClass="field-label"/><TextArea fx:id="campoObservaciones" prefRowCount="3" wrapText="true" styleClass="modern-area"/><Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true"/><Button fx:id="botonCerrarCaja" text="CONFIRMAR CIERRE DEL DÍA" onAction="#cerrarCaja" maxWidth="Infinity" styleClass="cash-close-button"/></VBox>
+  <VBox fx:id="contenedorCierreExistente" visible="false" managed="false" spacing="10" styleClass="cash-closed-card"><Label text="Cierre confirmado" styleClass="section-title"/><Label fx:id="etiquetaDatosCierre" wrapText="true" styleClass="cash-closed-copy"/></VBox>
+ </VBox></ScrollPane></center>
 </BorderPane>
