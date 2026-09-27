@@ -1,200 +1,52 @@
 .agenda-root,
 .agenda-content,
 .agenda-scroll,
-.agenda-scroll > .viewport {
-    -fx-background-color: #0b1017;
-}
-
-.agenda-scroll {
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-
-.agenda-status {
-    -fx-text-fill: #728594;
-    -fx-font-size: 12px;
-}
-
-.agenda-status-ok {
-    -fx-text-fill: #79ad99;
-}
-
-.agenda-status-error {
-    -fx-text-fill: #df8585;
-}
-
-.agenda-nav-button {
-    -fx-min-width: 38;
-    -fx-pref-width: 38;
-    -fx-max-width: 38;
-    -fx-min-height: 38;
-    -fx-pref-height: 38;
-    -fx-max-height: 38;
-    -fx-background-color: #1d2935;
-    -fx-background-radius: 8;
-    -fx-border-color: #30414f;
-    -fx-border-radius: 8;
-    -fx-text-fill: #cbd7df;
-    -fx-font-size: 20px;
-    -fx-font-weight: 700;
-    -fx-cursor: hand;
-    -fx-padding: 0;
-}
-
-.agenda-nav-button:hover {
-    -fx-background-color: #293b49;
-    -fx-border-color: -color-principal;
-}
-
-.agenda-grid {
-    -fx-background-color: #263541;
-    -fx-padding: 1;
-}
-
-.agenda-header {
-    -fx-min-height: 44;
-    -fx-pref-height: 44;
-    -fx-max-height: 44;
-    -fx-background-color: #15212c;
-    -fx-text-fill: #dce6ed;
-    -fx-font-size: 12px;
-    -fx-font-weight: 800;
-    -fx-padding: 7 9;
-}
-
-.agenda-time-header {
-    -fx-text-fill: #7f929f;
-}
-
-.agenda-time-cell {
-    -fx-min-height: 38;
-    -fx-pref-height: 38;
-    -fx-max-height: 38;
-    -fx-background-color: #101923;
-    -fx-text-fill: #738895;
-    -fx-font-size: 11px;
-    -fx-font-weight: 700;
-    -fx-padding: 4 6;
-}
-
-.agenda-cell {
-    -fx-background-color: #121c26;
-    -fx-text-fill: #93a4b0;
-    -fx-font-size: 11px;
-    -fx-font-weight: 600;
-    -fx-padding: 8 10 6 10;
-    -fx-cursor: hand;
-    -fx-alignment: top-left;
-}
-
-.agenda-cell:hover {
-    -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.13), 8, 0.15, 0, 0);
-}
-
-.agenda-disponible {
-    -fx-background-color: #172631;
-    -fx-text-fill: #9bb2c1;
-    -fx-border-color: #304959;
-    -fx-border-width: 1;
-}
-
-.agenda-disponible:hover {
-    -fx-background-color: -color-principal-transparente;
-    -fx-text-fill: #eef6fa;
-    -fx-border-color: -color-principal;
-}
-
-.agenda-pendiente {
-    -fx-background-color: #5a431f;
-    -fx-text-fill: #ffe0a0;
-    -fx-border-color: #b58a3b;
-    -fx-border-width: 0 0 0 3;
-    -fx-font-weight: 800;
-}
-
-.agenda-confirmada {
-    -fx-background-color: #315f7d;
-    -fx-text-fill: #f2f8fc;
-    -fx-border-color: #6f9fbd;
-    -fx-border-width: 0 0 0 3;
-    -fx-font-weight: 800;
-}
-
-.agenda-completada {
-    -fx-background-color: #20382f;
-    -fx-text-fill: #88bca8;
-}
-
-.agenda-ausente {
-    -fx-background-color: #3a242a;
-    -fx-text-fill: #d8949f;
-}
-
-.agenda-bloqueada {
-    -fx-background-color: #422529;
-    -fx-text-fill: #e09999;
-}
-
-.agenda-cancelada,
-.agenda-no-disponible,
-.agenda-pasada {
-    -fx-background-color: #10171e;
-    -fx-text-fill: transparent;
-    -fx-cursor: default;
-}
-
-.agenda-pasada {
-    -fx-opacity: 0.62;
-}
-
-.legend-item {
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-font-size: 9px;
-    -fx-font-weight: 700;
-    -fx-padding: 4 7;
-}
-
-.legend-disponible {
-    -fx-background-color: #14212b;
-    -fx-text-fill: #7894a6;
-    -fx-border-color: #294150;
-}
-
-.legend-pendiente {
-    -fx-background-color: #5a431f;
-    -fx-text-fill: #ffe0a0;
-    -fx-border-color: #b58a3b;
-}
-
-.legend-confirmada {
-    -fx-background-color: #20384a;
-    -fx-text-fill: #a9cbe1;
-    -fx-border-color: #6f9fbd;
-}
-
-.legend-completada {
-    -fx-background-color: #20382f;
-    -fx-text-fill: #88bca8;
-}
-
-.legend-ausente {
-    -fx-background-color: #3a242a;
-    -fx-text-fill: #d8949f;
-}
-
-.legend-bloqueada {
-    -fx-background-color: #422529;
-    -fx-text-fill: #e09999;
-}
-
-.agenda-empty-title {
-    -fx-text-fill: #d9e2e8;
-    -fx-font-size: 20px;
-    -fx-font-weight: 800;
-}
-
-.agenda-empty-copy {
-    -fx-text-fill: #70818e;
-    -fx-font-size: 13px;
-}
+.agenda-scroll > .viewport { -fx-background-color: #0b1017; }
+.agenda-scroll { -fx-background-insets: 0; -fx-padding: 0; }
+.agenda-status { -fx-text-fill: #728594; -fx-font-size: 12px; }
+.agenda-status-ok { -fx-text-fill: #79ad99; }
+.agenda-status-error { -fx-text-fill: #df8585; }
+.agenda-help { -fx-text-fill: #607684; -fx-font-size: 10px; }
+.agenda-nav-button { -fx-min-width: 38; -fx-pref-width: 38; -fx-max-width: 38; -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; -fx-background-color: #1d2935; -fx-background-radius: 8; -fx-border-color: #30414f; -fx-border-radius: 8; -fx-text-fill: #cbd7df; -fx-font-size: 20px; -fx-font-weight: 700; -fx-cursor: hand; -fx-padding: 0; }
+.agenda-nav-button:hover { -fx-background-color: #293b49; -fx-border-color: -color-principal; }
+.agenda-grid { -fx-background-color: #263541; -fx-padding: 1; }
+.agenda-header { -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44; -fx-background-color: #15212c; -fx-text-fill: #dce6ed; -fx-font-size: 12px; -fx-font-weight: 800; -fx-padding: 7 9; }
+.agenda-time-header { -fx-text-fill: #7f929f; }
+.agenda-time-cell { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; -fx-background-color: #101923; -fx-text-fill: #738895; -fx-font-size: 11px; -fx-font-weight: 700; -fx-padding: 4 6; }
+.agenda-cell { -fx-background-color: #121c26; -fx-text-fill: #93a4b0; -fx-font-size: 11px; -fx-font-weight: 600; -fx-padding: 8 10 6 10; -fx-cursor: hand; -fx-alignment: top-left; }
+.agenda-cell:hover { -fx-effect: innershadow(gaussian, rgba(255,255,255,0.13), 8, 0.15, 0, 0); }
+.agenda-disponible { -fx-background-color: #172631; -fx-text-fill: #9bb2c1; -fx-border-color: #304959; -fx-border-width: 1; }
+.agenda-disponible:hover { -fx-background-color: -color-principal-transparente; -fx-text-fill: #eef6fa; -fx-border-color: -color-principal; }
+.agenda-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; -fx-border-color: #b58a3b; -fx-border-width: 0 0 0 3; -fx-font-weight: 800; }
+.agenda-confirmada { -fx-background-color: #315f7d; -fx-text-fill: #f2f8fc; -fx-border-color: #6f9fbd; -fx-border-width: 0 0 0 3; -fx-font-weight: 800; }
+.agenda-completada { -fx-background-color: #20382f; -fx-text-fill: #88bca8; }
+.agenda-ausente { -fx-background-color: #3a242a; -fx-text-fill: #d8949f; }
+.agenda-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e09999; }
+.agenda-cancelada, .agenda-no-disponible, .agenda-pasada { -fx-background-color: #10171e; -fx-text-fill: transparent; -fx-cursor: default; }
+.agenda-pasada { -fx-opacity: 0.52; }
+.legend-item { -fx-background-radius: 12; -fx-border-radius: 12; -fx-font-size: 9px; -fx-font-weight: 700; -fx-padding: 4 7; }
+.legend-disponible { -fx-background-color: #14212b; -fx-text-fill: #7894a6; -fx-border-color: #294150; }
+.legend-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; -fx-border-color: #b58a3b; }
+.legend-confirmada { -fx-background-color: #20384a; -fx-text-fill: #a9cbe1; -fx-border-color: #6f9fbd; }
+.legend-completada { -fx-background-color: #20382f; -fx-text-fill: #88bca8; }
+.legend-ausente { -fx-background-color: #3a242a; -fx-text-fill: #d8949f; }
+.legend-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e09999; }
+.agenda-empty-title { -fx-text-fill: #d9e2e8; -fx-font-size: 20px; -fx-font-weight: 800; }
+.agenda-empty-copy { -fx-text-fill: #70818e; -fx-font-size: 13px; }
+.agenda-detail-panel { -fx-background-color: #101a23; -fx-border-color: #2a3c49; -fx-border-width: 0 0 0 1; }
+.agenda-detail-title { -fx-text-fill: #e2ebf1; -fx-font-size: 19px; -fx-font-weight: 800; }
+.agenda-detail-close { -fx-background-color: transparent; -fx-text-fill: #7e929f; -fx-font-size: 15px; -fx-cursor: hand; -fx-padding: 4 7; }
+.agenda-detail-close:hover { -fx-text-fill: #e7eff4; -fx-background-color: #243440; -fx-background-radius: 7; }
+.agenda-detail-status { -fx-background-color: #223440; -fx-background-radius: 12; -fx-text-fill: #b8c9d4; -fx-font-size: 11px; -fx-font-weight: 800; -fx-padding: 5 9; }
+.detail-status-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; }
+.detail-status-confirmada { -fx-background-color: #274c65; -fx-text-fill: #c4e1f2; }
+.detail-status-completada { -fx-background-color: #20382f; -fx-text-fill: #9bd0bb; }
+.detail-status-ausente, .detail-status-bloqueada { -fx-background-color: #42272c; -fx-text-fill: #e4a4ad; }
+.detail-status-disponible { -fx-background-color: #1f3b31; -fx-text-fill: #94c6af; }
+.agenda-detail-label { -fx-text-fill: #718693; -fx-font-size: 10px; -fx-font-weight: 800; }
+.agenda-detail-value { -fx-text-fill: #d4dfe6; -fx-font-size: 12px; -fx-font-weight: 700; }
+.agenda-finance-card { -fx-background-color: #162630; -fx-background-radius: 9; -fx-border-color: #2d4453; -fx-border-radius: 9; -fx-padding: 12; }
+.agenda-finance-value { -fx-text-fill: #b8ccd9; -fx-font-size: 13px; -fx-font-weight: 800; }
+.agenda-finance-paid { -fx-text-fill: #8eceb6; -fx-font-size: 13px; -fx-font-weight: 800; }
+.agenda-finance-balance { -fx-text-fill: #e0b761; -fx-font-size: 13px; -fx-font-weight: 800; }
+.agenda-detail-help { -fx-text-fill: #758b99; -fx-font-size: 11px; -fx-line-spacing: 2px; }
