@@ -15,6 +15,7 @@ import dao.ReservaDAOMySQL;
 import negocio.Cancha;
 import negocio.ConfiguracionComplejo;
 import negocio.EstadoReserva;
+import negocio.OrigenReserva;
 import negocio.Reserva;
 import negocio.TipoCancelacion;
 
@@ -56,6 +57,9 @@ public class ReservaService {
 
     public void guardar(Reserva reserva) {
         expirarReservasPendientes();
+        if (reserva != null && reserva.getId() <= 0) {
+            reserva.setOrigen(OrigenReserva.PERSONAL);
+        }
         prepararYGuardar(reserva);
     }
 
@@ -70,6 +74,7 @@ public class ReservaService {
         LocalDateTime ahora = LocalDateTime.now();
 
         reserva.setEstado(EstadoReserva.PENDIENTE);
+        reserva.setOrigen(OrigenReserva.WEB);
         reserva.setFechaVencimiento(
                 ahora.plusMinutes(configuracion.getMinutosReservaPendiente()));
         reserva.setFechaExpiracion(null);

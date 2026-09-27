@@ -12,6 +12,7 @@ public class Reserva {
     private long clienteId;
     private long canchaId;
     private long usuarioId;
+    private OrigenReserva origen = OrigenReserva.PERSONAL;
     private LocalDate fecha;
     private LocalTime horaInicio;
     private LocalTime horaFin;
@@ -40,6 +41,9 @@ public class Reserva {
     public void setCanchaId(long valor) { canchaId = valor; }
     public long getUsuarioId() { return usuarioId; }
     public void setUsuarioId(long valor) { usuarioId = valor; }
+    public OrigenReserva getOrigen() { return origen; }
+    public void setOrigen(OrigenReserva valor) { origen = valor == null ? OrigenReserva.PERSONAL : valor; }
+    public boolean esSolicitudWeb() { return origen == OrigenReserva.WEB; }
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate valor) { fecha = valor; }
     public LocalTime getHoraInicio() { return horaInicio; }

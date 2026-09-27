@@ -17,6 +17,7 @@ import java.util.List;
 
 import config.ConexionBD;
 import negocio.EstadoReserva;
+import negocio.OrigenReserva;
 import negocio.Reserva;
 import negocio.TipoCancelacion;
 
@@ -33,11 +34,11 @@ public class ReservaDAOMySQL implements ReservaDAO {
 
     private void insertar(Reserva reserva) {
         String sql = "INSERT INTO reservas "
-                + "(cliente_id, cancha_id, usuario_id, fecha, hora_inicio, "
+                + "(cliente_id, cancha_id, usuario_id, origen, fecha, hora_inicio, "
                 + "hora_fin, estado, fecha_vencimiento, fecha_expiracion, "
                 + "cantidad_jugadores, comentarios, "
                 + "observaciones_administrativas, precio_total) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(
@@ -57,7 +58,7 @@ public class ReservaDAOMySQL implements ReservaDAO {
 
     private void actualizar(Reserva reserva) {
         String sql = "UPDATE reservas SET cliente_id = ?, cancha_id = ?, "
-                + "usuario_id = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, "
+                + "usuario_id = ?, origen = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, "
                 + "estado = ?, fecha_vencimiento = ?, fecha_expiracion = ?, "
                 + "cantidad_jugadores = ?, comentarios = ?, "
                 + "observaciones_administrativas = ?, precio_total = ? "
@@ -66,7 +67,7 @@ public class ReservaDAOMySQL implements ReservaDAO {
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, reserva);
-            sentencia.setLong(14, reserva.getId());
+            sentencia.setLong(15, reserva.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("La reserva no existe.");
             }
@@ -82,16 +83,17 @@ public class ReservaDAOMySQL implements ReservaDAO {
         sentencia.setLong(1, reserva.getClienteId());
         sentencia.setLong(2, reserva.getCanchaId());
         sentencia.setLong(3, reserva.getUsuarioId());
-        sentencia.setDate(4, Date.valueOf(reserva.getFecha()));
-        sentencia.setTime(5, Time.valueOf(reserva.getHoraInicio()));
-        sentencia.setTime(6, Time.valueOf(reserva.getHoraFin()));
-        sentencia.setString(7, reserva.getEstado().name());
-        cargarTimestamp(sentencia, 8, reserva.getFechaVencimiento());
-        cargarTimestamp(sentencia, 9, reserva.getFechaExpiracion());
-        sentencia.setInt(10, reserva.getCantidadJugadores());
-        sentencia.setString(11, reserva.getComentarios());
-        sentencia.setString(12, reserva.getObservacionesAdministrativas());
-        sentencia.setBigDecimal(13, reserva.getPrecioTotal());
+        sentencia.setString(4, reserva.getOrigen().name());
+        sentencia.setDate(5, Date.valueOf(reserva.getFecha()));
+        sentencia.setTime(6, Time.valueOf(reserva.getHoraInicio()));
+        sentencia.setTime(7, Time.valueOf(reserva.getHoraFin()));
+        sentencia.setString(8, reserva.getEstado().name());
+        cargarTimestamp(sentencia, 9, reserva.getFechaVencimiento());
+        cargarTimestamp(sentencia, 10, reserva.getFechaExpiracion());
+        sentencia.setInt(11, reserva.getCantidadJugadores());
+        sentencia.setString(12, reserva.getComentarios());
+        sentencia.setString(13, reserva.getObservacionesAdministrativas());
+        sentencia.setBigDecimal(14, reserva.getPrecioTotal());
     }
 
     private void cargarTimestamp(
@@ -261,7 +263,7 @@ public class ReservaDAOMySQL implements ReservaDAO {
     }
 
     private String consultaBase() {
-        return "SELECT r.id, r.cliente_id, r.cancha_id, r.usuario_id, "
+        return "SELECT r.id, r.cliente_id, r.cancha_id, r.usuario_id, r.origen, "
                 + "r.fecha, r.hora_inicio, r.hora_fin, r.estado, "
                 + "r.fecha_vencimiento, r.fecha_expiracion, "
                 + "r.tipo_cancelacion, r.motivo_cancelacion, "
@@ -285,6 +287,7 @@ public class ReservaDAOMySQL implements ReservaDAO {
         reserva.setClienteId(resultado.getLong("cliente_id"));
         reserva.setCanchaId(resultado.getLong("cancha_id"));
         reserva.setUsuarioId(resultado.getLong("usuario_id"));
+        reserva.setOrigen(OrigenReserva.valueOf(resultado.getString("origen")));
         reserva.setFecha(resultado.getDate("fecha").toLocalDate());
         reserva.setHoraInicio(resultado.getTime("hora_inicio").toLocalTime());
         reserva.setHoraFin(resultado.getTime("hora_fin").toLocalTime());

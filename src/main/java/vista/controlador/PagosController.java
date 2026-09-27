@@ -31,10 +31,10 @@ import negocio.Reserva;
 import servicio.ConfiguracionComplejoService;
 import servicio.PagoService;
 import servicio.ReservaService;
-import vista.Navegacion;
-import vista.SolicitudPagoReserva;
 import vista.FiltroPagos;
+import vista.Navegacion;
 import vista.SolicitudFiltroPagos;
+import vista.SolicitudPagoReserva;
 
 public class PagosController {
 

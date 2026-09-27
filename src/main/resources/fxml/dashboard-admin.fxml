@@ -38,6 +38,11 @@
                                 prefHeight="39"
                                 onAction="#abrirAgenda"
                                 styleClass="nav-button" />
+                        <Button text="Solicitudes web"
+                                maxWidth="Infinity"
+                                prefHeight="39"
+                                onAction="#abrirSolicitudesWeb"
+                                styleClass="nav-button" />
                         <Button text="Reservas"
                                 maxWidth="Infinity"
                                 prefHeight="39"
@@ -265,7 +270,7 @@
                                                        HBox.hgrow="ALWAYS"
                                                        styleClass="alert-item" />
                                                 <Button text="Ver"
-                                                        onAction="#verSolicitudesWeb"
+                                                        onAction="#abrirSolicitudesWeb"
                                                         styleClass="alert-action" />
                                             </children>
                                         </HBox>
