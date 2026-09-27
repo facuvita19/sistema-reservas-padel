@@ -1,20 +1,13 @@
-.dashboard-status {
-    -fx-text-fill: #728594;
-    -fx-font-size: 12px;
-}
-
-.dashboard-status-ok {
-    -fx-text-fill: #79ad99;
-}
-
-.dashboard-status-error {
-    -fx-text-fill: #df8585;
-}
-
-.dashboard-table {
-    -fx-min-height: 260;
-}
-
-.dashboard-table .table-row-cell {
-    -fx-cell-size: 44;
-}
+.dashboard-status { -fx-text-fill: #728594; -fx-font-size: 12px; }
+.dashboard-status-ok { -fx-text-fill: #79ad99; }
+.dashboard-status-error { -fx-text-fill: #df8585; }
+.dashboard-table { -fx-min-height: 260; }
+.dashboard-table .table-row-cell { -fx-cell-size: 44; }
+.alert-panel { -fx-background-color: #131d28; -fx-background-radius: 13; -fx-border-color: #263744; -fx-border-radius: 13; -fx-padding: 14; }
+.alert-grid { -fx-hgap: 10; -fx-vgap: 10; }
+.alert-item { -fx-background-color: #18232e; -fx-background-radius: 9; -fx-border-color: #2d3d49; -fx-border-radius: 9; -fx-padding: 10 12; -fx-font-size: 12px; -fx-font-weight: 700; -fx-text-fill: #aebbc5; }
+.alert-warning { -fx-background-color: #302b1d; -fx-border-color: #685a2c; -fx-text-fill: #dccb7f; }
+.alert-critical { -fx-background-color: #382226; -fx-border-color: #75434c; -fx-text-fill: #e3a0aa; }
+.alert-ok { -fx-background-color: #1d3029; -fx-border-color: #3d6355; -fx-text-fill: #8fc2ad; }
+.alert-action { -fx-pref-height: 32; -fx-background-color: transparent; -fx-border-color: #405462; -fx-border-radius: 7; -fx-text-fill: #a9bbc7; -fx-cursor: hand; }
+.alert-action:hover { -fx-background-color: #22313c; -fx-border-color: -color-principal; }

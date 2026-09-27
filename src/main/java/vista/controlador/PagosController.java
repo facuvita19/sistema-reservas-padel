@@ -33,6 +33,8 @@ import servicio.PagoService;
 import servicio.ReservaService;
 import vista.Navegacion;
 import vista.SolicitudPagoReserva;
+import vista.FiltroPagos;
+import vista.SolicitudFiltroPagos;
 
 public class PagosController {
 
@@ -95,14 +97,39 @@ public class PagosController {
 
 	@FXML
 	private void initialize() {
-		configurarTabla();
-		configurarCombos();
-		configurarFiltros();
-		cargarReservas();
-		cargarPagos();
-		nuevoPago();
+	    configurarTabla();
+	    configurarCombos();
+	    configurarFiltros();
+	    cargarReservas();
+	    cargarPagos();
+	    nuevoPago();
 
-		Platform.runLater(this::aplicarSolicitudDeReserva);
+	    Platform.runLater(() -> {
+	        aplicarSolicitudDeReserva();
+	        aplicarSolicitudFiltroDashboard();
+	    });
+	}
+	private void aplicarSolicitudFiltroDashboard() {
+	    SolicitudFiltroPagos solicitud =
+	            Navegacion.consumirSolicitudFiltroPagos();
+
+	    if (solicitud == null) {
+	        return;
+	    }
+
+	    campoBuscar.clear();
+
+	    if (solicitud.filtro()
+	            == FiltroPagos.PENDIENTES_ACREDITACION) {
+
+	        filtroEstado.setValue(EstadoPago.PENDIENTE);
+	        aplicarFiltros();
+
+	        mostrarInfo(
+	                pagosFiltrados.size()
+	                        + " pago(s) pendientes de acreditar."
+	        );
+	    }
 	}
 
 	private void aplicarSolicitudDeReserva() {
@@ -201,18 +228,35 @@ public class PagosController {
 
 	@FXML
 	private void cargarReservas() {
-		try {
-			List<Reserva> resultado = reservaService.listar().stream()
-					.filter(reserva -> reserva.getEstado() != EstadoReserva.CANCELADA).toList();
+	    try {
+	        List<Reserva> resultado =
+	                reservaService.listar()
+	                        .stream()
+	                        .filter(reserva ->
+	                                reserva.getEstado()
+	                                        != EstadoReserva.CANCELADA
+	                        )
+	                        .filter(reserva ->
+	                                reserva.getEstado()
+	                                        != EstadoReserva.EXPIRADA
+	                        )
+	                        .toList();
 
-			reservas.setAll(resultado);
-			reservasPorId.clear();
-			resultado.forEach(reserva -> reservasPorId.put(reserva.getId(), reserva));
-			comboReserva.setItems(reservas);
-			tablaPagos.refresh();
-		} catch (RuntimeException exception) {
-			mostrarError(exception.getMessage());
-		}
+	        reservas.setAll(resultado);
+	        reservasPorId.clear();
+
+	        resultado.forEach(reserva ->
+	                reservasPorId.put(
+	                        reserva.getId(),
+	                        reserva
+	                )
+	        );
+
+	        comboReserva.setItems(reservas);
+	        tablaPagos.refresh();
+	    } catch (RuntimeException exception) {
+	        mostrarError(exception.getMessage());
+	    }
 	}
 
 	@FXML

@@ -25,10 +25,8 @@
                         <Insets top="22" right="14" bottom="18" left="14" />
                     </padding>
                     <children>
-                        <Label text="PADEL RESERVAS"
-                               styleClass="sidebar-brand" />
-                        <Label text="Administración"
-                               styleClass="sidebar-caption" />
+                        <Label text="PADEL RESERVAS" styleClass="sidebar-brand" />
+                        <Label text="Administración" styleClass="sidebar-caption" />
                         <Region prefHeight="16" />
 
                         <Button text="Inicio"
@@ -106,19 +104,16 @@
     </left>
 
     <center>
-        <ScrollPane fx:id="scrollDashboard"
-                    fitToWidth="true"
-                    fitToHeight="false"
-                    pannable="false"
+        <ScrollPane fitToWidth="true"
                     hbarPolicy="NEVER"
                     vbarPolicy="AS_NEEDED"
                     styleClass="dashboard-scroll">
             <content>
                 <VBox minWidth="790"
-                      spacing="16"
+                      spacing="14"
                       styleClass="dashboard-content">
                     <padding>
-                        <Insets top="22" right="24" bottom="22" left="24" />
+                        <Insets top="20" right="24" bottom="22" left="24" />
                     </padding>
                     <children>
                         <HBox alignment="CENTER_LEFT" spacing="14">
@@ -164,111 +159,170 @@
                             </children>
                         </HBox>
 
-                        <HBox spacing="12" alignment="CENTER_LEFT">
+                        <HBox spacing="12">
                             <children>
-                                <VBox minWidth="0"
-                                      prefHeight="126"
+                                <VBox prefHeight="118"
                                       maxWidth="Infinity"
-                                      spacing="6"
+                                      spacing="5"
                                       HBox.hgrow="ALWAYS"
                                       styleClass="metric-card">
                                     <children>
-                                        <Label text="RESERVAS DE HOY"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaReservasHoy"
-                                               text="0"
-                                               style="-fx-font-size: 27px;"
-                                               styleClass="metric-value" />
-                                        <Label text="Agenda de la fecha actual"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <Label text="RESERVAS DE HOY" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaReservasHoy" text="0" styleClass="metric-value" />
+                                        <Label text="Agenda actual" styleClass="metric-detail" />
                                     </children>
                                 </VBox>
 
-                                <VBox minWidth="0"
-                                      prefHeight="126"
+                                <VBox prefHeight="118"
                                       maxWidth="Infinity"
-                                      spacing="6"
+                                      spacing="5"
                                       HBox.hgrow="ALWAYS"
                                       styleClass="metric-card">
                                     <children>
-                                        <Label text="CANCHAS ACTIVAS"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaCanchasActivas"
-                                               text="0"
-                                               style="-fx-font-size: 27px;"
-                                               styleClass="metric-value" />
-                                        <Label text="Disponibles para reservas"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <Label text="CANCHAS ACTIVAS" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaCanchasActivas" text="0" styleClass="metric-value" />
+                                        <Label text="Disponibles" styleClass="metric-detail" />
                                     </children>
                                 </VBox>
 
-                                <VBox minWidth="0"
-                                      prefHeight="126"
+                                <VBox prefHeight="118"
                                       maxWidth="Infinity"
-                                      spacing="6"
+                                      spacing="5"
                                       HBox.hgrow="ALWAYS"
                                       styleClass="metric-card">
                                     <children>
-                                        <Label text="INGRESOS DEL DÍA"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaIngresosDia"
-                                               text="ARS 0"
-                                               wrapText="false"
-                                               style="-fx-font-size: 24px;"
-                                               styleClass="metric-value" />
-                                        <Label text="Pagos acreditados hoy"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <Label text="INGRESOS DEL DÍA" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaIngresosDia" text="ARS 0" styleClass="metric-value" />
+                                        <Label text="Acreditados hoy" styleClass="metric-detail" />
                                     </children>
                                 </VBox>
 
                                 <VBox fx:id="tarjetaIngresosMes"
-                                      minWidth="0"
-                                      prefHeight="126"
+                                      prefHeight="118"
                                       maxWidth="Infinity"
-                                      spacing="6"
+                                      spacing="5"
                                       HBox.hgrow="ALWAYS"
                                       styleClass="metric-card">
                                     <children>
-                                        <Label text="INGRESOS DEL MES"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaIngresosMes"
-                                               text="ARS 0"
-                                               wrapText="false"
-                                               style="-fx-font-size: 24px;"
-                                               styleClass="metric-value" />
-                                        <Label text="Pagos acreditados del mes"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <Label text="INGRESOS DEL MES" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaIngresosMes" text="ARS 0" styleClass="metric-value" />
+                                        <Label text="Acreditados del mes" styleClass="metric-detail" />
                                     </children>
                                 </VBox>
 
-                                <VBox minWidth="0"
-                                      prefHeight="126"
+                                <VBox prefHeight="118"
                                       maxWidth="Infinity"
-                                      spacing="6"
+                                      spacing="5"
                                       HBox.hgrow="ALWAYS"
                                       styleClass="metric-card">
                                     <children>
-                                        <Label text="PAGOS PENDIENTES"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaPagosPendientes"
-                                               text="0"
-                                               style="-fx-font-size: 27px;"
-                                               styleClass="metric-value" />
-                                        <Label text="Movimientos sin acreditar"
-                                               wrapText="true"
-                                               styleClass="metric-detail" />
+                                        <Label text="PAGOS PENDIENTES" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaPagosPendientes" text="0" styleClass="metric-value" />
+                                        <Label text="Sin acreditar" styleClass="metric-detail" />
                                     </children>
                                 </VBox>
                             </children>
                         </HBox>
 
-                        <HBox spacing="16"
-                              alignment="TOP_LEFT"
-                              minHeight="390">
+                        <VBox spacing="10" styleClass="alert-panel">
+                            <children>
+                                <HBox alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="Alertas operativas" styleClass="section-title" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label text="Se actualizan con el dashboard" styleClass="small-caption" />
+                                    </children>
+                                </HBox>
+
+                                <GridPane hgap="10" vgap="10">
+                                    <columnConstraints>
+                                        <ColumnConstraints percentWidth="50" />
+                                        <ColumnConstraints percentWidth="50" />
+                                    </columnConstraints>
+                                    <children>
+                                        <HBox GridPane.columnIndex="0"
+                                              alignment="CENTER_LEFT"
+                                              spacing="8">
+                                            <children>
+                                                <Label fx:id="alertaSenias"
+                                                       text="0 reservas esperando seña"
+                                                       maxWidth="Infinity"
+                                                       HBox.hgrow="ALWAYS"
+                                                       styleClass="alert-item" />
+                                                <Button text="Ver"
+                                                        onAction="#verEsperandoSenia"
+                                                        styleClass="alert-action" />
+                                            </children>
+                                        </HBox>
+
+                                        <HBox GridPane.columnIndex="1"
+                                              alignment="CENTER_LEFT"
+                                              spacing="8">
+                                            <children>
+                                                <Label fx:id="alertaVencimientos"
+                                                       text="0 solicitudes próximas a vencer"
+                                                       maxWidth="Infinity"
+                                                       HBox.hgrow="ALWAYS"
+                                                       styleClass="alert-item" />
+                                                <Button text="Ver"
+                                                        onAction="#verSolicitudesWeb"
+                                                        styleClass="alert-action" />
+                                            </children>
+                                        </HBox>
+
+                                        <HBox GridPane.rowIndex="1"
+                                              GridPane.columnIndex="0"
+                                              alignment="CENTER_LEFT"
+                                              spacing="8">
+                                            <children>
+                                                <Label fx:id="alertaPagos"
+                                                       text="0 pagos pendientes"
+                                                       maxWidth="Infinity"
+                                                       HBox.hgrow="ALWAYS"
+                                                       styleClass="alert-item" />
+                                                <Button text="Ver"
+                                                        onAction="#verPagosPendientes"
+                                                        styleClass="alert-action" />
+                                            </children>
+                                        </HBox>
+
+                                        <HBox GridPane.rowIndex="1"
+                                              GridPane.columnIndex="1"
+                                              alignment="CENTER_LEFT"
+                                              spacing="8">
+                                            <children>
+                                                <Label fx:id="alertaTurnos"
+                                                       text="0 turnos pendientes de cerrar"
+                                                       maxWidth="Infinity"
+                                                       HBox.hgrow="ALWAYS"
+                                                       styleClass="alert-item" />
+                                                <Button text="Ver"
+                                                        onAction="#verTurnosPendientes"
+                                                        styleClass="alert-action" />
+                                            </children>
+                                        </HBox>
+
+                                        <HBox GridPane.rowIndex="2"
+                                              GridPane.columnSpan="2"
+                                              alignment="CENTER_LEFT"
+                                              spacing="8">
+                                            <children>
+                                                <Label fx:id="alertaCaja"
+                                                       text="Caja pendiente"
+                                                       maxWidth="Infinity"
+                                                       HBox.hgrow="ALWAYS"
+                                                       styleClass="alert-item" />
+                                                <Button text="Abrir caja"
+                                                        onAction="#abrirCierreCaja"
+                                                        styleClass="alert-action" />
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </GridPane>
+                            </children>
+                        </VBox>
+
+                        <HBox spacing="16" alignment="TOP_LEFT" minHeight="330">
                             <children>
                                 <VBox minWidth="500"
                                       spacing="10"
@@ -277,36 +331,24 @@
                                     <children>
                                         <HBox alignment="CENTER_LEFT">
                                             <children>
-                                                <Label text="Próximas reservas"
-                                                       styleClass="section-title" />
+                                                <Label text="Próximas reservas" styleClass="section-title" />
                                                 <Region HBox.hgrow="ALWAYS" />
-                                                <Label text="Doble clic para abrir Reservas"
-                                                       styleClass="small-caption" />
+                                                <Label text="Doble clic para abrir Reservas" styleClass="small-caption" />
                                             </children>
                                         </HBox>
 
                                         <TableView fx:id="tablaProximasReservas"
                                                    focusTraversable="false"
-                                                   minHeight="315"
-                                                   prefHeight="350"
+                                                   minHeight="270"
+                                                   prefHeight="310"
                                                    VBox.vgrow="ALWAYS"
                                                    styleClass="modern-table, dashboard-table">
                                             <columns>
-                                                <TableColumn fx:id="columnaFecha"
-                                                             text="FECHA"
-                                                             prefWidth="105" />
-                                                <TableColumn fx:id="columnaHora"
-                                                             text="HORA"
-                                                             prefWidth="82" />
-                                                <TableColumn fx:id="columnaCancha"
-                                                             text="CANCHA"
-                                                             prefWidth="145" />
-                                                <TableColumn fx:id="columnaCliente"
-                                                             text="CLIENTE"
-                                                             prefWidth="185" />
-                                                <TableColumn fx:id="columnaEstado"
-                                                             text="ESTADO"
-                                                             prefWidth="130" />
+                                                <TableColumn fx:id="columnaFecha" text="FECHA" prefWidth="105" />
+                                                <TableColumn fx:id="columnaHora" text="HORA" prefWidth="82" />
+                                                <TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="145" />
+                                                <TableColumn fx:id="columnaCliente" text="CLIENTE" prefWidth="185" />
+                                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="130" />
                                             </columns>
                                             <placeholder>
                                                 <Label text="No hay próximas reservas pendientes o confirmadas."
@@ -320,45 +362,36 @@
                                       prefWidth="270"
                                       maxWidth="290"
                                       spacing="9"
-                                      alignment="TOP_LEFT"
                                       styleClass="content-card">
                                     <children>
-                                        <Label text="Acciones rápidas"
-                                               styleClass="section-title" />
+                                        <Label text="Acciones rápidas" styleClass="section-title" />
                                         <Button text="Nueva reserva"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirReservas"
                                                 styleClass="primary-button" />
                                         <Button fx:id="accesoRapidoCanchas"
                                                 text="Registrar cancha"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirCanchas"
                                                 styleClass="secondary-button" />
                                         <Button text="Registrar cliente"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirClientes"
                                                 styleClass="secondary-button" />
                                         <Button text="Registrar pago"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirPagos"
                                                 styleClass="secondary-button" />
                                         <Button text="Ver agenda diaria"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirAgenda"
                                                 styleClass="secondary-button" />
                                         <Button text="Crear bloqueo"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirBloqueos"
                                                 styleClass="secondary-button" />
                                         <Button text="Cerrar caja del día"
                                                 maxWidth="Infinity"
-                                                prefHeight="38"
                                                 onAction="#abrirCierreCaja"
                                                 styleClass="cash-close-dashboard-button" />
                                     </children>

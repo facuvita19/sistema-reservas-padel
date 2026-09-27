@@ -10,17 +10,28 @@
     -fx-background-radius: 14;
     -fx-border-color: #24333f;
     -fx-border-radius: 14;
-    -fx-padding: 20;
+    -fx-padding: 16;
+}
+
+.config-example,
+.config-expiration-note {
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-font-size: 12px;
+    -fx-padding: 9 11;
 }
 
 .config-example {
     -fx-background-color: #182936;
-    -fx-background-radius: 9;
     -fx-border-color: #304b5d;
-    -fx-border-radius: 9;
     -fx-text-fill: #9db8cb;
-    -fx-font-size: 12px;
-    -fx-padding: 11 13;
+}
+
+.config-expiration-note {
+    -fx-background-color: #302c1c;
+    -fx-border-color: #665b2e;
+    -fx-text-fill: #d5c77f;
+    -fx-line-spacing: 2px;
 }
 
 .config-note {
@@ -28,7 +39,7 @@
     -fx-background-radius: 10;
     -fx-border-color: #2b3c49;
     -fx-border-radius: 10;
-    -fx-padding: 14;
+    -fx-padding: 12;
 }
 
 .config-note-title {
@@ -44,11 +55,11 @@
 }
 
 .config-save-button {
-    -fx-pref-height: 50;
+    -fx-pref-height: 46;
 }
 
 .color-picker {
-    -fx-pref-height: 46;
+    -fx-pref-height: 42;
     -fx-background-color: #1a2531;
     -fx-background-radius: 10;
     -fx-border-color: #2d3d4c;
@@ -56,5 +67,18 @@
 }
 
 .color-picker .label {
+    -fx-text-fill: #eef2f6;
+}
+
+.config-card .spinner {
+    -fx-pref-height: 42;
+    -fx-background-color: #1a2531;
+    -fx-background-radius: 9;
+    -fx-border-color: #2d3d4c;
+    -fx-border-radius: 9;
+}
+
+.config-card .spinner .text-field {
+    -fx-background-color: transparent;
     -fx-text-fill: #eef2f6;
 }

@@ -9,54 +9,75 @@
             fx:controller="vista.controlador.ConfiguracionController"
             styleClass="config-root">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+        <HBox alignment="CENTER_LEFT"
+              spacing="16"
+              styleClass="module-header">
+            <padding>
+                <Insets top="18" right="26" bottom="18" left="26" />
+            </padding>
             <children>
-                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
-                <VBox spacing="3">
+                <Button text="← Inicio"
+                        onAction="#volver"
+                        styleClass="back-button" />
+                <VBox spacing="2">
                     <children>
-                        <Label text="Configuración del complejo" styleClass="page-title" />
+                        <Label text="Configuración del complejo"
+                               styleClass="page-title" />
                         <Label text="Personalizá la identidad y las políticas comerciales de esta instalación."
                                styleClass="page-subtitle" />
                     </children>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
-                <ProgressIndicator fx:id="indicadorCarga" visible="false"
-                                   maxWidth="20" maxHeight="20" />
-                <Button text="RECARGAR" onAction="#cargarConfiguracion"
+                <ProgressIndicator fx:id="indicadorCarga"
+                                   visible="false"
+                                   maxWidth="18"
+                                   maxHeight="18" />
+                <Button text="RECARGAR"
+                        onAction="#cargarConfiguracion"
                         styleClass="secondary-button" />
             </children>
         </HBox>
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" styleClass="config-scroll">
+        <ScrollPane fitToWidth="true"
+                    hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED"
+                    styleClass="config-scroll">
             <content>
-                <VBox spacing="20" styleClass="config-content">
-                    <padding><Insets top="24" right="34" bottom="34" left="34" /></padding>
+                <VBox spacing="16" styleClass="config-content">
+                    <padding>
+                        <Insets top="18" right="28" bottom="28" left="28" />
+                    </padding>
                     <children>
-                        <GridPane hgap="20" vgap="20">
+                        <GridPane hgap="16" vgap="16">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                             </columnConstraints>
                             <children>
-                                <VBox GridPane.columnIndex="0" spacing="14"
+                                <VBox GridPane.columnIndex="0"
+                                      spacing="10"
                                       styleClass="config-card">
                                     <children>
-                                        <Label text="Identidad comercial" styleClass="section-title" />
-                                        <Label text="Nombre comercial *" styleClass="field-label" />
+                                        <Label text="Identidad comercial"
+                                               styleClass="section-title" />
+                                        <Label text="Nombre comercial *"
+                                               styleClass="field-label" />
                                         <TextField fx:id="campoNombreComercial"
                                                    promptText="Ejemplo: Arena Pádel"
                                                    styleClass="modern-field" />
-                                        <Label text="Razón social" styleClass="field-label" />
+                                        <Label text="Razón social"
+                                               styleClass="field-label" />
                                         <TextField fx:id="campoRazonSocial"
                                                    styleClass="modern-field" />
-                                        <Label text="Dirección" styleClass="field-label" />
+                                        <Label text="Dirección"
+                                               styleClass="field-label" />
                                         <TextField fx:id="campoDireccion"
                                                    styleClass="modern-field" />
-                                        <Label text="Logo" styleClass="field-label" />
-                                        <HBox spacing="9">
+                                        <Label text="Logo"
+                                               styleClass="field-label" />
+                                        <HBox spacing="8">
                                             <children>
                                                 <TextField fx:id="campoRutaLogo"
                                                            editable="false"
@@ -71,77 +92,130 @@
                                     </children>
                                 </VBox>
 
-                                <VBox GridPane.columnIndex="1" spacing="14"
+                                <VBox GridPane.columnIndex="1"
+                                      spacing="10"
                                       styleClass="config-card">
                                     <children>
-                                        <Label text="Contacto" styleClass="section-title" />
-                                        <Label text="Teléfono" styleClass="field-label" />
-                                        <TextField fx:id="campoTelefono" styleClass="modern-field" />
-                                        <Label text="WhatsApp" styleClass="field-label" />
-                                        <TextField fx:id="campoWhatsapp" styleClass="modern-field" />
-                                        <Label text="Correo electrónico" styleClass="field-label" />
-                                        <TextField fx:id="campoEmail" styleClass="modern-field" />
-                                        <Label text="Instagram" styleClass="field-label" />
+                                        <Label text="Contacto"
+                                               styleClass="section-title" />
+                                        <Label text="Teléfono"
+                                               styleClass="field-label" />
+                                        <TextField fx:id="campoTelefono"
+                                                   styleClass="modern-field" />
+                                        <Label text="WhatsApp"
+                                               styleClass="field-label" />
+                                        <TextField fx:id="campoWhatsapp"
+                                                   styleClass="modern-field" />
+                                        <Label text="Correo electrónico"
+                                               styleClass="field-label" />
+                                        <TextField fx:id="campoEmail"
+                                                   styleClass="modern-field" />
+                                        <Label text="Instagram"
+                                               styleClass="field-label" />
                                         <TextField fx:id="campoInstagram"
                                                    promptText="Ejemplo: @arenapadel"
                                                    styleClass="modern-field" />
                                     </children>
                                 </VBox>
 
-                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
-                                      spacing="14" styleClass="config-card">
+                                <VBox GridPane.columnIndex="0"
+                                      GridPane.rowIndex="1"
+                                      spacing="11"
+                                      styleClass="config-card">
                                     <children>
-                                        <Label text="Políticas de reserva" styleClass="section-title" />
-                                        <GridPane hgap="12" vgap="12">
+                                        <Label text="Políticas de reserva"
+                                               styleClass="section-title" />
+
+                                        <GridPane hgap="12" vgap="10">
                                             <columnConstraints>
                                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                             </columnConstraints>
                                             <children>
-                                                <VBox spacing="7" GridPane.columnIndex="0">
+                                                <VBox spacing="6" GridPane.columnIndex="0">
                                                     <children>
-                                                        <Label text="Moneda *" styleClass="field-label" />
-                                                        <ComboBox fx:id="comboMoneda" maxWidth="Infinity"
+                                                        <Label text="Moneda *"
+                                                               styleClass="field-label" />
+                                                        <ComboBox fx:id="comboMoneda"
+                                                                  maxWidth="Infinity"
                                                                   styleClass="modern-combo" />
                                                     </children>
                                                 </VBox>
-                                                <VBox spacing="7" GridPane.columnIndex="1">
+                                                <VBox spacing="6" GridPane.columnIndex="1">
                                                     <children>
-                                                        <Label text="Seña (%) *" styleClass="field-label" />
+                                                        <Label text="Seña (%) *"
+                                                               styleClass="field-label" />
                                                         <TextField fx:id="campoPorcentajeSenia"
                                                                    styleClass="modern-field" />
                                                     </children>
                                                 </VBox>
                                             </children>
                                         </GridPane>
+
                                         <Label fx:id="etiquetaEjemploSenia"
                                                wrapText="true"
                                                styleClass="config-example" />
-                                        <Label text="Anticipación mínima para reservar (horas)"
+
+                                        <GridPane hgap="12" vgap="10">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                                <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
+                                            </columnConstraints>
+                                            <children>
+                                                <VBox spacing="6" GridPane.columnIndex="0">
+                                                    <children>
+                                                        <Label text="Anticipación mínima (horas)"
+                                                               wrapText="true"
+                                                               styleClass="field-label" />
+                                                        <Spinner fx:id="spinnerAnticipacion"
+                                                                 editable="false"
+                                                                 maxWidth="Infinity" />
+                                                    </children>
+                                                </VBox>
+                                                <VBox spacing="6" GridPane.columnIndex="1">
+                                                    <children>
+                                                        <Label text="Cancelación mínima (horas)"
+                                                               wrapText="true"
+                                                               styleClass="field-label" />
+                                                        <Spinner fx:id="spinnerCancelacion"
+                                                                 editable="false"
+                                                                 maxWidth="Infinity" />
+                                                    </children>
+                                                </VBox>
+                                            </children>
+                                        </GridPane>
+
+                                        <Label text="Tiempo para pagar la seña web (minutos)"
+                                               wrapText="true"
                                                styleClass="field-label" />
-                                        <Spinner fx:id="spinnerAnticipacion"
-                                                 editable="false" maxWidth="Infinity" />
-                                        <Label text="Plazo mínimo para cancelar (horas)"
-                                               styleClass="field-label" />
-                                        <Spinner fx:id="spinnerCancelacion"
-                                                 editable="false" maxWidth="Infinity" />
+                                        <Spinner fx:id="spinnerMinutosReservaPendiente"
+                                                 editable="false"
+                                                 maxWidth="Infinity" />
+                                        <Label fx:id="etiquetaVencimiento"
+                                               wrapText="true"
+                                               styleClass="config-expiration-note" />
                                     </children>
                                 </VBox>
 
-                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
-                                      spacing="14" styleClass="config-card">
+                                <VBox GridPane.columnIndex="1"
+                                      GridPane.rowIndex="1"
+                                      spacing="11"
+                                      styleClass="config-card">
                                     <children>
-                                        <Label text="Apariencia" styleClass="section-title" />
-                                        <Label text="Color principal" styleClass="field-label" />
-                                        <ColorPicker fx:id="selectorColor" maxWidth="Infinity" />
+                                        <Label text="Apariencia"
+                                               styleClass="section-title" />
+                                        <Label text="Color principal"
+                                               styleClass="field-label" />
+                                        <ColorPicker fx:id="selectorColor"
+                                                     maxWidth="Infinity" />
                                         <Button text="Restaurar azul petróleo"
                                                 onAction="#restaurarColor"
                                                 styleClass="secondary-button" />
-                                        <VBox spacing="8" styleClass="config-note">
+                                        <VBox spacing="7" styleClass="config-note">
                                             <children>
-                                                <Label text="Próxima aplicación visual"
+                                                <Label text="Aplicación visual"
                                                        styleClass="config-note-title" />
-                                                <Label text="El color se guarda ahora y se aplicará dinámicamente a botones, menús y acentos en el siguiente bloque."
+                                                <Label text="El color se aplica a botones, menús y acentos principales después de guardar la configuración."
                                                        wrapText="true"
                                                        styleClass="config-note-text" />
                                             </children>
@@ -151,9 +225,13 @@
                             </children>
                         </GridPane>
 
-                        <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
-                        <Button fx:id="botonGuardar" text="GUARDAR CONFIGURACIÓN"
-                                onAction="#guardar" maxWidth="Infinity"
+                        <Label fx:id="etiquetaMensaje"
+                               minHeight="22"
+                               wrapText="true" />
+                        <Button fx:id="botonGuardar"
+                                text="GUARDAR CONFIGURACIÓN"
+                                onAction="#guardar"
+                                maxWidth="Infinity"
                                 styleClass="primary-button, config-save-button" />
                     </children>
                 </VBox>

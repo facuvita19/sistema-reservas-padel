@@ -39,7 +39,9 @@ import servicio.PagoService;
 import servicio.PoliticaReservaService;
 import servicio.ReprogramacionReservaService;
 import servicio.ReservaService;
+import vista.FiltroReservas;
 import vista.Navegacion;
+import vista.SolicitudFiltroReservas;
 import vista.SolicitudReservaAgenda;
 
 public class ReservasController {
@@ -53,6 +55,7 @@ public class ReservasController {
 
 	private final ObservableList<Reserva> reservas = FXCollections.observableArrayList();
 	private FilteredList<Reserva> reservasFiltradas;
+	private FiltroReservas filtroDashboard;
 	private Reserva reservaSeleccionada;
 	private final PagoService pagoService = new PagoService();
 	private final PoliticaReservaService politicaReservaService = new PoliticaReservaService();
@@ -132,7 +135,10 @@ public class ReservasController {
 		cargarReservas();
 		nuevaReserva();
 
-		Platform.runLater(this::aplicarSolicitudDesdeAgenda);
+		Platform.runLater(() -> {
+			aplicarSolicitudDesdeAgenda();
+			aplicarSolicitudFiltroDashboard();
+		});
 	}
 
 	private void configurarTabla() {
@@ -158,6 +164,47 @@ public class ReservasController {
 				mostrarDetalle(actual);
 			}
 		});
+	}
+
+	private void aplicarSolicitudFiltroDashboard() {
+		SolicitudFiltroReservas solicitud = Navegacion.consumirSolicitudFiltroReservas();
+
+		if (solicitud == null) {
+			return;
+		}
+
+		filtroDashboard = solicitud.filtro();
+
+		campoBuscar.clear();
+		filtroEstado.getSelectionModel().clearSelection();
+
+		/*
+		 * Los filtros del Dashboard pueden incluir reservas de diferentes fechas, por
+		 * lo que se elimina temporalmente el filtro diario.
+		 */
+		filtroFecha.setValue(null);
+
+		switch (filtroDashboard) {
+		case PENDIENTES_SENIA -> {
+			filtroEstado.setValue(EstadoReserva.PENDIENTE);
+
+			mostrarInfo("Mostrando reservas vigentes esperando seña.");
+		}
+
+		case PROXIMAS_A_VENCER -> {
+			filtroEstado.setValue(EstadoReserva.PENDIENTE);
+
+			mostrarInfo("Mostrando solicitudes web que vencen " + "dentro de los próximos 5 minutos.");
+		}
+
+		case PENDIENTES_CIERRE -> {
+			filtroEstado.setValue(EstadoReserva.CONFIRMADA);
+
+			mostrarInfo("Mostrando turnos finalizados pendientes de cierre.");
+		}
+		}
+
+		aplicarFiltros();
 	}
 
 	private void mostrarDialogoCierreTurno() {
@@ -422,6 +469,8 @@ public class ReservasController {
 
 		EstadoReserva estado = filtroEstado.getValue();
 		LocalDate fecha = filtroFecha.getValue();
+		LocalDateTime ahora = LocalDateTime.now();
+		LocalDateTime limiteVencimiento = ahora.plusMinutes(5);
 
 		reservasFiltradas.setPredicate(reserva -> {
 			boolean coincideFecha = fecha == null || fecha.equals(reserva.getFecha());
@@ -431,8 +480,30 @@ public class ReservasController {
 
 			boolean coincideEstado = estado == null || reserva.getEstado() == estado;
 
-			return coincideFecha && coincideTexto && coincideEstado;
+			boolean coincideDashboard = coincideFiltroDashboard(reserva, ahora, limiteVencimiento);
+
+			return coincideFecha && coincideTexto && coincideEstado && coincideDashboard;
 		});
+	}
+
+	private boolean coincideFiltroDashboard(Reserva reserva, LocalDateTime ahora, LocalDateTime limiteVencimiento) {
+
+		if (filtroDashboard == null) {
+			return true;
+		}
+
+		return switch (filtroDashboard) {
+		case PENDIENTES_SENIA -> reserva.getEstado() == EstadoReserva.PENDIENTE
+				&& (reserva.getFechaVencimiento() == null || reserva.getFechaVencimiento().isAfter(ahora));
+
+		case PROXIMAS_A_VENCER -> reserva.getEstado() == EstadoReserva.PENDIENTE
+				&& reserva.getFechaVencimiento() != null && reserva.getFechaVencimiento().isAfter(ahora)
+				&& !reserva.getFechaVencimiento().isAfter(limiteVencimiento);
+
+		case PENDIENTES_CIERRE -> reserva.getEstado() == EstadoReserva.CONFIRMADA && reserva.getFecha() != null
+				&& reserva.getHoraFin() != null
+				&& !LocalDateTime.of(reserva.getFecha(), reserva.getHoraFin()).isAfter(ahora);
+		};
 	}
 
 	private boolean contiene(String valor, String filtro) {
@@ -441,10 +512,16 @@ public class ReservasController {
 
 	@FXML
 	private void limpiarFiltros() {
+		filtroDashboard = null;
+
 		campoBuscar.clear();
 		filtroEstado.getSelectionModel().clearSelection();
 		filtroFecha.setValue(LocalDate.now());
+
+		actualizarEtiquetaFecha();
 		aplicarFiltros();
+
+		mostrarInfo("Se eliminaron los filtros del Dashboard.");
 	}
 
 	@FXML
@@ -457,7 +534,7 @@ public class ReservasController {
 
 		comboCliente.getSelectionModel().clearSelection();
 		comboCancha.getSelectionModel().clearSelection();
-		selectorFecha.setValue(LocalDate.now().plusDays(1));
+		selectorFecha.setValue(LocalDate.now());
 		comboHorario.getItems().clear();
 		spinnerJugadores.getValueFactory().setValue(4);
 		campoComentarios.clear();

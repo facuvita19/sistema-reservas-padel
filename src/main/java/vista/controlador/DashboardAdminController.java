@@ -26,17 +26,14 @@ import negocio.Reserva;
 import negocio.ResumenDashboard;
 import negocio.Usuario;
 import servicio.DashboardService;
+import vista.FiltroPagos;
+import vista.FiltroReservas;
 import vista.Navegacion;
 
 public class DashboardAdminController {
-
-    private static final DateTimeFormatter FORMATO_FECHA =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    private static final DateTimeFormatter FORMATO_HORA =
-            DateTimeFormatter.ofPattern("HH:mm");
-
-    private final DashboardService dashboardService =
-            new DashboardService();
+    private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FORMATO_HORA = DateTimeFormatter.ofPattern("HH:mm");
+    private final DashboardService dashboardService = new DashboardService();
 
     @FXML private Label etiquetaUsuario;
     @FXML private Label etiquetaFecha;
@@ -46,18 +43,20 @@ public class DashboardAdminController {
     @FXML private Label etiquetaIngresosMes;
     @FXML private Label etiquetaPagosPendientes;
     @FXML private Label etiquetaEstadoCarga;
+    @FXML private Label alertaSenias;
+    @FXML private Label alertaVencimientos;
+    @FXML private Label alertaPagos;
+    @FXML private Label alertaTurnos;
+    @FXML private Label alertaCaja;
     @FXML private ProgressIndicator indicadorCarga;
     @FXML private Button botonActualizar;
-
     @FXML private Button botonUsuarios;
     @FXML private Button botonConfiguracion;
     @FXML private Button botonCanchas;
     @FXML private Button botonBloqueos;
     @FXML private Button botonEstadisticas;
-
     @FXML private VBox tarjetaIngresosMes;
     @FXML private Button accesoRapidoCanchas;
-
     @FXML private TableView<Reserva> tablaProximasReservas;
     @FXML private TableColumn<Reserva, LocalDate> columnaFecha;
     @FXML private TableColumn<Reserva, LocalTime> columnaHora;
@@ -65,258 +64,86 @@ public class DashboardAdminController {
     @FXML private TableColumn<Reserva, String> columnaCliente;
     @FXML private TableColumn<Reserva, EstadoReserva> columnaEstado;
 
-    @FXML
-    private void initialize() {
-        mostrarDatosSesion();
-        configurarTabla();
-        aplicarPermisos();
-        Platform.runLater(this::actualizarDashboard);
-    }
+    @FXML private void initialize() { mostrarDatosSesion(); configurarTabla(); aplicarPermisos(); Platform.runLater(this::actualizarDashboard); }
 
     private void aplicarPermisos() {
         Usuario usuario = Navegacion.getUsuarioActual();
-        boolean administrador = usuario != null
-                && usuario.esAdministrador();
-
+        boolean administrador = usuario != null && usuario.esAdministrador();
         controlarAcceso(botonUsuarios, administrador);
         controlarAcceso(botonConfiguracion, administrador);
         controlarAcceso(botonCanchas, administrador);
         controlarAcceso(botonEstadisticas, administrador);
         controlarAcceso(tarjetaIngresosMes, administrador);
         controlarAcceso(accesoRapidoCanchas, administrador);
-
         controlarAcceso(botonBloqueos, true);
     }
-    
 
     private void controlarAcceso(Node nodo, boolean permitido) {
-        if (nodo == null) {
-            throw new IllegalStateException(
-                    "Falta conectar un control de permisos en dashboard-admin.fxml.");
-        }
-
-        nodo.setVisible(permitido);
-        nodo.setManaged(permitido);
+        if (nodo == null) throw new IllegalStateException("Falta conectar un control de permisos en dashboard-admin.fxml.");
+        nodo.setVisible(permitido); nodo.setManaged(permitido);
     }
 
     private void mostrarDatosSesion() {
         Usuario usuario = Navegacion.getUsuarioActual();
-        etiquetaUsuario.setText(usuario == null
-                ? "Personal"
-                : usuario.getNombreUsuario());
-
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern(
-                "EEEE d 'de' MMMM 'de' yyyy",
-                new Locale("es", "AR"));
-
-        etiquetaFecha.setText(
-                capitalizar(LocalDate.now().format(formato)));
+        etiquetaUsuario.setText(usuario == null ? "Personal" : usuario.getNombreUsuario());
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("EEEE d 'de' MMMM 'de' yyyy", new Locale("es", "AR"));
+        etiquetaFecha.setText(capitalizar(LocalDate.now().format(formato)));
     }
 
     private void configurarTabla() {
-        columnaFecha.setCellValueFactory(
-                new PropertyValueFactory<>("fecha"));
-        columnaFecha.setCellFactory(columna -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalDate fecha, boolean vacia) {
-                super.updateItem(fecha, vacia);
-                setText(vacia || fecha == null
-                        ? null
-                        : fecha.format(FORMATO_FECHA));
-            }
-        });
-
-        columnaHora.setCellValueFactory(
-                new PropertyValueFactory<>("horaInicio"));
-        columnaHora.setCellFactory(columna -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalTime hora, boolean vacia) {
-                super.updateItem(hora, vacia);
-                setText(vacia || hora == null
-                        ? null
-                        : hora.format(FORMATO_HORA));
-            }
-        });
-
-        columnaCancha.setCellValueFactory(
-                new PropertyValueFactory<>("nombreCancha"));
-        columnaCliente.setCellValueFactory(
-                new PropertyValueFactory<>("nombreCliente"));
-        columnaEstado.setCellValueFactory(
-                new PropertyValueFactory<>("estado"));
-
-        tablaProximasReservas.setRowFactory(tabla -> {
-            javafx.scene.control.TableRow<Reserva> fila =
-                    new javafx.scene.control.TableRow<>();
-
-            fila.setOnMouseClicked(evento -> {
-                if (evento.getClickCount() == 2 && !fila.isEmpty()) {
-                    Navegacion.mostrarReservas();
-                }
-            });
-
-            return fila;
-        });
+        columnaFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        columnaFecha.setCellFactory(c -> new TableCell<>() { @Override protected void updateItem(LocalDate v, boolean e) { super.updateItem(v,e); setText(e||v==null?null:v.format(FORMATO_FECHA)); }});
+        columnaHora.setCellValueFactory(new PropertyValueFactory<>("horaInicio"));
+        columnaHora.setCellFactory(c -> new TableCell<>() { @Override protected void updateItem(LocalTime v, boolean e) { super.updateItem(v,e); setText(e||v==null?null:v.format(FORMATO_HORA)); }});
+        columnaCancha.setCellValueFactory(new PropertyValueFactory<>("nombreCancha"));
+        columnaCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
+        columnaEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        tablaProximasReservas.setRowFactory(t -> { javafx.scene.control.TableRow<Reserva> fila = new javafx.scene.control.TableRow<>(); fila.setOnMouseClicked(e -> { if (e.getClickCount()==2 && !fila.isEmpty()) abrirReservas(); }); return fila; });
     }
 
-    @FXML
-    private void actualizarDashboard() {
-        cambiarEstadoCarga(true, "Actualizando información...");
-
-        Task<DatosDashboard> tarea = new Task<>() {
-            @Override
-            protected DatosDashboard call() {
-                ResumenDashboard resumen =
-                        dashboardService.obtenerResumen();
-                List<Reserva> proximas =
-                        dashboardService.listarProximasReservas();
-                return new DatosDashboard(resumen, proximas);
-            }
-        };
-
-        tarea.setOnSucceeded(evento -> {
-            DatosDashboard datos = tarea.getValue();
-            mostrarResumen(datos.resumen());
-            tablaProximasReservas.getItems().setAll(datos.proximas());
-            cambiarEstadoCarga(
-                    false,
-                    "Datos actualizados correctamente.");
-        });
-
-        tarea.setOnFailed(evento -> {
-            Throwable error = tarea.getException();
-            if (error != null) {
-                error.printStackTrace();
-            }
-
-            cambiarEstadoCarga(
-                    false,
-                    error == null || error.getMessage() == null
-                            ? "No se pudo actualizar el dashboard."
-                            : error.getMessage());
-        });
-
-        Thread hilo = new Thread(
-                tarea,
-                "dashboard-padel-reservas");
-        hilo.setDaemon(true);
-        hilo.start();
+    @FXML private void actualizarDashboard() {
+        cambiarEstadoCarga(true,"Actualizando información...");
+        Task<DatosDashboard> tarea = new Task<>() { @Override protected DatosDashboard call() { return new DatosDashboard(dashboardService.obtenerResumen(),dashboardService.listarProximasReservas()); }};
+        tarea.setOnSucceeded(e -> { DatosDashboard d=tarea.getValue(); mostrarResumen(d.resumen()); tablaProximasReservas.getItems().setAll(d.proximas()); cambiarEstadoCarga(false,"Datos actualizados correctamente."); });
+        tarea.setOnFailed(e -> { Throwable error=tarea.getException(); if(error!=null) error.printStackTrace(); cambiarEstadoCarga(false,error==null||error.getMessage()==null?"No se pudo actualizar el dashboard.":error.getMessage()); });
+        Thread hilo=new Thread(tarea,"dashboard-padel-reservas"); hilo.setDaemon(true); hilo.start();
     }
 
-    private void mostrarResumen(ResumenDashboard resumen) {
-        etiquetaReservasHoy.setText(
-                String.valueOf(resumen.getReservasHoy()));
-        etiquetaCanchasActivas.setText(
-                String.valueOf(resumen.getCanchasActivas()));
-        etiquetaIngresosDia.setText(
-                formatearMoneda(resumen.getIngresosDia()));
-        etiquetaIngresosMes.setText(
-                formatearMoneda(resumen.getIngresosMes()));
-        etiquetaPagosPendientes.setText(
-                String.valueOf(resumen.getPagosPendientes()));
+    private void mostrarResumen(ResumenDashboard r) {
+        etiquetaReservasHoy.setText(String.valueOf(r.getReservasHoy()));
+        etiquetaCanchasActivas.setText(String.valueOf(r.getCanchasActivas()));
+        etiquetaIngresosDia.setText(formatearMoneda(r.getIngresosDia()));
+        etiquetaIngresosMes.setText(formatearMoneda(r.getIngresosMes()));
+        etiquetaPagosPendientes.setText(String.valueOf(r.getPagosPendientes()));
+        alertaSenias.setText(r.getReservasPendientesSenia()+" reserva(s) esperando seña");
+        alertaVencimientos.setText(r.getReservasProximasAVencer()+" solicitud(es) web vencen en menos de 5 minutos");
+        alertaPagos.setText(r.getPagosPendientes()+" pago(s) pendientes de acreditar");
+        alertaTurnos.setText(r.getTurnosPendientesCierre()+" turno(s) pendientes de cerrar");
+        alertaCaja.setText(r.isCajaCerradaHoy()?"Caja del día cerrada":"Caja del día pendiente de cierre");
+        aplicarClaseAlerta(alertaVencimientos,r.getReservasProximasAVencer()>0,"alert-critical");
+        aplicarClaseAlerta(alertaTurnos,r.getTurnosPendientesCierre()>0,"alert-warning");
+        aplicarClaseAlerta(alertaCaja,!r.isCajaCerradaHoy(),"alert-warning");
     }
 
-    private String formatearMoneda(BigDecimal importe) {
-        BigDecimal valor = importe == null
-                ? BigDecimal.ZERO
-                : importe.setScale(2, RoundingMode.HALF_UP);
+    private void aplicarClaseAlerta(Label e, boolean activa, String clase) { e.getStyleClass().removeAll("alert-critical","alert-warning","alert-ok"); e.getStyleClass().add(activa?clase:"alert-ok"); }
+    private String formatearMoneda(BigDecimal i) { BigDecimal v=i==null?BigDecimal.ZERO:i.setScale(2,RoundingMode.HALF_UP); return NumberFormat.getCurrencyInstance(new Locale("es","AR")).format(v); }
+    private void cambiarEstadoCarga(boolean c,String m) { indicadorCarga.setVisible(c); botonActualizar.setDisable(c); etiquetaEstadoCarga.setText(m); etiquetaEstadoCarga.getStyleClass().removeAll("dashboard-status-ok","dashboard-status-error"); if(!c){String t=m==null?"":m.toLowerCase(Locale.ROOT); etiquetaEstadoCarga.getStyleClass().add(t.contains("no se pudo")||t.contains("error")?"dashboard-status-error":"dashboard-status-ok");}}
 
-        NumberFormat formato = NumberFormat.getCurrencyInstance(
-                new Locale("es", "AR"));
-
-        return formato.format(valor);
-    }
-
-    private void cambiarEstadoCarga(
-            boolean cargando,
-            String mensaje) {
-
-        indicadorCarga.setVisible(cargando);
-        botonActualizar.setDisable(cargando);
-        etiquetaEstadoCarga.setText(mensaje);
-        etiquetaEstadoCarga.getStyleClass().removeAll(
-                "dashboard-status-ok",
-                "dashboard-status-error");
-
-        if (!cargando) {
-            String texto = mensaje == null
-                    ? ""
-                    : mensaje.toLowerCase(Locale.ROOT);
-
-            etiquetaEstadoCarga.getStyleClass().add(
-                    texto.contains("no se pudo")
-                            || texto.contains("error")
-                                    ? "dashboard-status-error"
-                                    : "dashboard-status-ok");
-        }
-    }
-
-    @FXML
-    private void abrirCanchas() {
-        Navegacion.mostrarCanchas();
-    }
-
-    @FXML
-    private void abrirClientes() {
-        Navegacion.mostrarClientes();
-    }
-
-    @FXML
-    private void abrirAgenda() {
-        Navegacion.mostrarAgenda();
-    }
-
-    @FXML
-    private void abrirReservas() {
-        Navegacion.mostrarReservas();
-    }
-
-    @FXML
-    private void abrirPagos() {
-        Navegacion.mostrarPagos();
-    }
-    
-    @FXML
-    private void abrirCierreCaja() {
-        Navegacion.mostrarCierreCaja();
-    }
-
-    @FXML
-    private void abrirBloqueos() {
-        Navegacion.mostrarBloqueos();
-    }
-
-    @FXML
-    private void abrirEstadisticas() {
-        Navegacion.mostrarEstadisticas();
-    }
-
-    @FXML
-    private void abrirConfiguracion() {
-        Navegacion.mostrarConfiguracion();
-    }
-
-    @FXML
-    private void abrirUsuarios() {
-        Navegacion.mostrarUsuarios();
-    }
-
-    @FXML
-    private void cerrarSesion() {
-        Navegacion.cerrarSesion();
-    }
-
-    private String capitalizar(String texto) {
-        if (texto == null || texto.isBlank()) {
-            return "";
-        }
-
-        return Character.toUpperCase(texto.charAt(0))
-                + texto.substring(1);
-    }
-
-    private record DatosDashboard(
-            ResumenDashboard resumen,
-            List<Reserva> proximas) {
-    }
+    @FXML private void verEsperandoSenia() { Navegacion.mostrarReservasConFiltro(FiltroReservas.PENDIENTES_SENIA); }
+    @FXML private void verSolicitudesWeb() { Navegacion.mostrarReservasConFiltro(FiltroReservas.PROXIMAS_A_VENCER); }
+    @FXML private void verPagosPendientes() { Navegacion.mostrarPagosConFiltro(FiltroPagos.PENDIENTES_ACREDITACION); }
+    @FXML private void verTurnosPendientes() { Navegacion.mostrarReservasConFiltro(FiltroReservas.PENDIENTES_CIERRE); }
+    @FXML private void abrirCanchas(){Navegacion.mostrarCanchas();}
+    @FXML private void abrirClientes(){Navegacion.mostrarClientes();}
+    @FXML private void abrirAgenda(){Navegacion.mostrarAgenda();}
+    @FXML private void abrirReservas(){Navegacion.mostrarReservas();}
+    @FXML private void abrirPagos(){Navegacion.mostrarPagos();}
+    @FXML private void abrirCierreCaja(){Navegacion.mostrarCierreCaja();}
+    @FXML private void abrirBloqueos(){Navegacion.mostrarBloqueos();}
+    @FXML private void abrirEstadisticas(){Navegacion.mostrarEstadisticas();}
+    @FXML private void abrirConfiguracion(){Navegacion.mostrarConfiguracion();}
+    @FXML private void abrirUsuarios(){Navegacion.mostrarUsuarios();}
+    @FXML private void cerrarSesion(){Navegacion.cerrarSesion();}
+    private String capitalizar(String t){return t==null||t.isBlank()?"":Character.toUpperCase(t.charAt(0))+t.substring(1);}
+    private record DatosDashboard(ResumenDashboard resumen,List<Reserva> proximas){}
 }
