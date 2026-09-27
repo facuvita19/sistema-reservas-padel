@@ -30,11 +30,13 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import negocio.AuditoriaReserva;
 import negocio.Cancha;
 import negocio.Cliente;
 import negocio.ConfiguracionComplejo;
 import negocio.EstadoReserva;
 import negocio.Reserva;
+import servicio.AuditoriaReservaService;
 import servicio.CanchaService;
 import servicio.ClienteService;
 import servicio.ConfiguracionComplejoService;
@@ -55,6 +57,7 @@ public class ReservasController {
     private static final DateTimeFormatter FORMATO_FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final ReservaService reservaService = new ReservaService();
+    private final AuditoriaReservaService auditoriaReservaService = new AuditoriaReservaService();
     private final ClienteService clienteService = new ClienteService();
     private final CanchaService canchaService = new CanchaService();
     private final PagoService pagoService = new PagoService();
@@ -65,6 +68,7 @@ public class ReservasController {
     private final WhatsAppService whatsAppService = new WhatsAppService();
 
     private final ObservableList<Reserva> reservas = FXCollections.observableArrayList();
+    private final ObservableList<AuditoriaReserva> auditorias = FXCollections.observableArrayList();
     private FilteredList<Reserva> reservasFiltradas;
     private FiltroReservas filtroDashboard;
     private Reserva reservaSeleccionada;
@@ -101,10 +105,13 @@ public class ReservasController {
     @FXML private Button botonWhatsApp;
     @FXML private VBox contenedorCancelacion;
     @FXML private Label etiquetaCancelacion;
+    @FXML private VBox contenedorAuditoria;
+    @FXML private javafx.scene.control.ListView<AuditoriaReserva> listaAuditoria;
 
     @FXML
     private void initialize() {
         configurarTabla();
+        configurarTablaAuditoria();
         configurarFiltros();
         configurarFormulario();
         cargarDatosBase();
@@ -136,6 +143,144 @@ public class ReservasController {
         });
     }
 
+    private void configurarTablaAuditoria() {
+        listaAuditoria.setItems(auditorias);
+        listaAuditoria.setCellFactory(lista ->
+                new javafx.scene.control.ListCell<>() {
+                    @Override
+                    protected void updateItem(
+                            AuditoriaReserva auditoria,
+                            boolean vacia) {
+                        super.updateItem(auditoria, vacia);
+
+                        if (vacia || auditoria == null) {
+                            setText(null);
+                            setGraphic(null);
+                            return;
+                        }
+
+                        Label accion = new Label(
+                                auditoria.getAccion() == null
+                                        ? "Movimiento de reserva"
+                                        : auditoria.getAccion().toString());
+                        accion.getStyleClass().add("audit-card-action");
+
+                        String fecha = auditoria.getFechaEvento() == null
+                                ? "Sin fecha"
+                                : auditoria.getFechaEvento().format(
+                                        DateTimeFormatter.ofPattern(
+                                                "dd/MM/yyyy HH:mm"));
+
+                        Label metadatos = new Label(
+                                fecha + "  ·  " + auditoria.getResponsable());
+                        metadatos.getStyleClass().add("audit-card-meta");
+
+                        Label estados = new Label(
+                                describirCambioEstado(auditoria));
+                        estados.setWrapText(true);
+                        estados.getStyleClass().add("audit-card-states");
+
+                        Label detalle = new Label(humanizarDetalle(auditoria));
+                        detalle.setWrapText(true);
+                        detalle.setMaxWidth(Double.MAX_VALUE);
+                        detalle.getStyleClass().add("audit-card-detail");
+
+                        VBox tarjeta = new VBox(
+                                5, accion, metadatos, estados, detalle);
+                        tarjeta.getStyleClass().add("audit-card");
+                        tarjeta.setFillWidth(true);
+
+                        setText(null);
+                        setGraphic(tarjeta);
+                    }
+                });
+    }
+
+    private String describirCambioEstado(AuditoriaReserva auditoria) {
+        EstadoReserva anterior = auditoria.getEstadoAnterior();
+        EstadoReserva nuevo = auditoria.getEstadoNuevo();
+
+        if (anterior == null && nuevo == null) return "";
+        if (anterior == null) return "Estado inicial: " + nombreEstado(nuevo);
+        if (nuevo == null) return "Estado anterior: " + nombreEstado(anterior);
+        if (anterior == nuevo) return "Estado: " + nombreEstado(nuevo);
+
+        return "La reserva pasó de " + nombreEstado(anterior)
+                + " a " + nombreEstado(nuevo) + ".";
+    }
+
+    private String nombreEstado(EstadoReserva estado) {
+        if (estado == null) return "Sin estado";
+        return switch (estado) {
+            case PENDIENTE -> "Esperando seña";
+            case CONFIRMADA -> "Confirmada";
+            case COMPLETADA -> "Completada";
+            case CANCELADA -> "Cancelada";
+            case AUSENTE -> "Ausente";
+            case EXPIRADA -> "Expirada";
+        };
+    }
+
+    private String humanizarDetalle(AuditoriaReserva auditoria) {
+        if (auditoria.getAccion() == null) {
+            return limpiarDetalleTecnico(auditoria.getDetalle());
+        }
+
+        return switch (auditoria.getAccion()) {
+            case CREACION -> "La reserva fue creada y quedó registrada en el sistema.";
+            case CONFIRMACION -> "La reserva fue confirmada al acreditarse la seña requerida.";
+            case EXPIRACION_AUTOMATICA -> "La solicitud venció porque no recibió una seña dentro del plazo establecido.";
+            case CIERRE_COMPLETADA -> "El turno fue cerrado como jugado normalmente.";
+            case CIERRE_AUSENTE -> "El turno fue cerrado porque el cliente no se presentó.";
+            case CANCELACION -> "La reserva fue cancelada por solicitud del cliente.";
+            case CANCELACION_ADMINISTRATIVA, REPROGRAMACION,
+                    REPROGRAMACION_ADMINISTRATIVA, MODIFICACION,
+                    CAMBIO_ESTADO -> limpiarDetalleTecnico(
+                            auditoria.getDetalle());
+        };
+    }
+
+    private String limpiarDetalleTecnico(String detalle) {
+        if (detalle == null || detalle.isBlank()) {
+            return "Movimiento registrado correctamente.";
+        }
+
+        String limpio = detalle.trim()
+                .replace("PENDIENTE", "Esperando seña")
+                .replace("CONFIRMADA", "Confirmada")
+                .replace("COMPLETADA", "Completada")
+                .replace("CANCELADA", "Cancelada")
+                .replace("AUSENTE", "Ausente")
+                .replace("EXPIRADA", "Expirada")
+                .replace("SIN ESTADO", "Sin estado");
+
+        if (limpio.startsWith("Estado modificado de ")) {
+            return limpio.replaceFirst(
+                    "Estado modificado de ",
+                    "La reserva pasó de ");
+        }
+        return limpio;
+    }
+    private void cargarAuditoria(long reservaId) {
+        try {
+            auditorias.setAll(
+                    auditoriaReservaService.listarPorReserva(reservaId));
+            contenedorAuditoria.setVisible(true);
+            contenedorAuditoria.setManaged(true);
+        } catch (RuntimeException exception) {
+            auditorias.clear();
+            contenedorAuditoria.setVisible(true);
+            contenedorAuditoria.setManaged(true);
+            mostrarError("No se pudo cargar la auditoria: "
+                    + exception.getMessage());
+        }
+    }
+
+    private void limpiarAuditoria() {
+        auditorias.clear();
+        contenedorAuditoria.setVisible(false);
+        contenedorAuditoria.setManaged(false);
+    }
     private void configurarFiltros() {
         filtroFecha.setValue(LocalDate.now());
         filtroFecha.valueProperty().addListener((observable, anterior, nueva) -> {
@@ -308,6 +453,7 @@ public class ReservasController {
         comboCliente.setDisable(false);
         spinnerJugadores.setDisable(false);
         limpiarMensaje();
+        limpiarAuditoria();
         actualizarAccionesReserva();
     }
 
@@ -329,6 +475,7 @@ public class ReservasController {
         } catch (RuntimeException exception) { etiquetaSaldoPendiente.setText("No disponible"); }
         actualizarAccionesReserva();
         mostrarDetalleCancelacion(reserva);
+        cargarAuditoria(reserva.getId());
     }
 
     private void mostrarDetalleCancelacion(Reserva reserva) {
@@ -774,3 +921,4 @@ public class ReservasController {
         etiquetaMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
     }
 }
+

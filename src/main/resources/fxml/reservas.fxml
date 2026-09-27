@@ -80,6 +80,24 @@
                         <Label text="DETALLE DE CANCELACIÓN" styleClass="metric-label" />
                         <Label fx:id="etiquetaCancelacion" wrapText="true" styleClass="cancellation-detail-text" />
                     </VBox>
+                    <VBox fx:id="contenedorAuditoria"
+                          visible="false"
+                          managed="false"
+                          spacing="8"
+                          styleClass="audit-panel">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="HISTORIAL DE LA RESERVA"
+                                   styleClass="audit-title" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label text="Movimientos recientes primero"
+                                   styleClass="small-caption" />
+                        </HBox>
+                        <ListView fx:id="listaAuditoria"
+                                  prefHeight="300"
+                                  minHeight="250"
+                                  maxWidth="Infinity"
+                                  styleClass="audit-list" />
+                    </VBox>
                     <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
                     <Button fx:id="botonGuardar" text="GUARDAR RESERVA" onAction="#guardar" maxWidth="Infinity" styleClass="primary-button" />
                     <Button fx:id="botonWhatsApp" text="ABRIR WHATSAPP" onAction="#abrirWhatsApp" maxWidth="Infinity"
@@ -99,3 +117,4 @@
         </SplitPane>
     </center>
 </BorderPane>
+

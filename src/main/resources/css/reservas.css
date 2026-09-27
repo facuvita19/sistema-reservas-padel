@@ -31,3 +31,75 @@
 .whatsapp-button { -fx-pref-height: 46; -fx-background-color: #1f6f50; -fx-background-radius: 10; -fx-border-color: #39a87a; -fx-border-radius: 10; -fx-text-fill: #f2fff9; -fx-font-weight: 800; -fx-cursor: hand; }
 .whatsapp-button:hover { -fx-background-color: #278960; -fx-border-color: #59c996; }
 .whatsapp-button:pressed { -fx-background-color: #195b42; }
+
+.audit-panel {
+    -fx-background-color: #14212b;
+    -fx-background-radius: 10;
+    -fx-border-color: #304554;
+    -fx-border-radius: 10;
+    -fx-padding: 13;
+}
+
+.audit-title {
+    -fx-text-fill: #b9cbd7;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+}
+
+.audit-table {
+    -fx-min-height: 180;
+    -fx-pref-height: 210;
+}
+
+.audit-table .table-cell {
+    -fx-font-size: 11px;
+}
+
+.audit-panel {
+    -fx-padding: 16;
+}
+.audit-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-pref-height: 300;
+    -fx-min-height: 250;
+}
+.audit-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 5 0;
+}
+.audit-list .list-cell:filled:selected,
+.audit-list .list-cell:filled:selected:hover {
+    -fx-background-color: transparent;
+}
+.audit-card {
+    -fx-background-color: #192a36;
+    -fx-background-radius: 9;
+    -fx-border-color: #304a5b;
+    -fx-border-radius: 9;
+    -fx-padding: 13 15;
+}
+.audit-card:hover {
+    -fx-background-color: #1d3140;
+    -fx-border-color: #46677d;
+}
+.audit-card-action {
+    -fx-text-fill: #d9e8f1;
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+}
+.audit-card-meta {
+    -fx-text-fill: #7891a2;
+    -fx-font-size: 11px;
+}
+.audit-card-states {
+    -fx-text-fill: #9fc2d8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+.audit-card-detail {
+    -fx-text-fill: #b5c3cc;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}
