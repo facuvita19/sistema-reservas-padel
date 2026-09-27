@@ -19,12 +19,13 @@ public class ConfiguracionComplejo {
     private BigDecimal porcentajeSenia = new BigDecimal("25.00");
     private int anticipacionMinimaHoras = 2;
     private int cancelacionMinimaHoras = 12;
+    private int minutosReservaPendiente = 15;
     private String colorPrincipal = "#486B86";
     private String rutaLogo;
     private LocalDateTime fechaActualizacion;
 
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public void setId(long valor) { id = valor; }
     public String getNombreComercial() { return nombreComercial; }
     public void setNombreComercial(String valor) { nombreComercial = valor; }
     public String getRazonSocial() { return razonSocial; }
@@ -44,19 +45,15 @@ public class ConfiguracionComplejo {
     public BigDecimal getPorcentajeSenia() { return porcentajeSenia; }
     public void setPorcentajeSenia(BigDecimal valor) { porcentajeSenia = valor; }
     public int getAnticipacionMinimaHoras() { return anticipacionMinimaHoras; }
-    public void setAnticipacionMinimaHoras(int valor) {
-        anticipacionMinimaHoras = valor;
-    }
+    public void setAnticipacionMinimaHoras(int valor) { anticipacionMinimaHoras = valor; }
     public int getCancelacionMinimaHoras() { return cancelacionMinimaHoras; }
-    public void setCancelacionMinimaHoras(int valor) {
-        cancelacionMinimaHoras = valor;
-    }
+    public void setCancelacionMinimaHoras(int valor) { cancelacionMinimaHoras = valor; }
+    public int getMinutosReservaPendiente() { return minutosReservaPendiente; }
+    public void setMinutosReservaPendiente(int valor) { minutosReservaPendiente = valor; }
     public String getColorPrincipal() { return colorPrincipal; }
     public void setColorPrincipal(String valor) { colorPrincipal = valor; }
     public String getRutaLogo() { return rutaLogo; }
     public void setRutaLogo(String valor) { rutaLogo = valor; }
     public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
-    public void setFechaActualizacion(LocalDateTime valor) {
-        fechaActualizacion = valor;
-    }
+    public void setFechaActualizacion(LocalDateTime valor) { fechaActualizacion = valor; }
 }

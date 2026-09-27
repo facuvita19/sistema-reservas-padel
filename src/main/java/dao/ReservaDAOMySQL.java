@@ -34,9 +34,10 @@ public class ReservaDAOMySQL implements ReservaDAO {
     private void insertar(Reserva reserva) {
         String sql = "INSERT INTO reservas "
                 + "(cliente_id, cancha_id, usuario_id, fecha, hora_inicio, "
-                + "hora_fin, estado, cantidad_jugadores, comentarios, "
+                + "hora_fin, estado, fecha_vencimiento, fecha_expiracion, "
+                + "cantidad_jugadores, comentarios, "
                 + "observaciones_administrativas, precio_total) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(
@@ -57,14 +58,15 @@ public class ReservaDAOMySQL implements ReservaDAO {
     private void actualizar(Reserva reserva) {
         String sql = "UPDATE reservas SET cliente_id = ?, cancha_id = ?, "
                 + "usuario_id = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, "
-                + "estado = ?, cantidad_jugadores = ?, comentarios = ?, "
+                + "estado = ?, fecha_vencimiento = ?, fecha_expiracion = ?, "
+                + "cantidad_jugadores = ?, comentarios = ?, "
                 + "observaciones_administrativas = ?, precio_total = ? "
                 + "WHERE id = ?";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, reserva);
-            sentencia.setLong(12, reserva.getId());
+            sentencia.setLong(14, reserva.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("La reserva no existe.");
             }
@@ -74,8 +76,9 @@ public class ReservaDAOMySQL implements ReservaDAO {
         }
     }
 
-    private void cargarParametros(PreparedStatement sentencia, Reserva reserva)
-            throws SQLException {
+    private void cargarParametros(
+            PreparedStatement sentencia,
+            Reserva reserva) throws SQLException {
         sentencia.setLong(1, reserva.getClienteId());
         sentencia.setLong(2, reserva.getCanchaId());
         sentencia.setLong(3, reserva.getUsuarioId());
@@ -83,10 +86,20 @@ public class ReservaDAOMySQL implements ReservaDAO {
         sentencia.setTime(5, Time.valueOf(reserva.getHoraInicio()));
         sentencia.setTime(6, Time.valueOf(reserva.getHoraFin()));
         sentencia.setString(7, reserva.getEstado().name());
-        sentencia.setInt(8, reserva.getCantidadJugadores());
-        sentencia.setString(9, reserva.getComentarios());
-        sentencia.setString(10, reserva.getObservacionesAdministrativas());
-        sentencia.setBigDecimal(11, reserva.getPrecioTotal());
+        cargarTimestamp(sentencia, 8, reserva.getFechaVencimiento());
+        cargarTimestamp(sentencia, 9, reserva.getFechaExpiracion());
+        sentencia.setInt(10, reserva.getCantidadJugadores());
+        sentencia.setString(11, reserva.getComentarios());
+        sentencia.setString(12, reserva.getObservacionesAdministrativas());
+        sentencia.setBigDecimal(13, reserva.getPrecioTotal());
+    }
+
+    private void cargarTimestamp(
+            PreparedStatement sentencia,
+            int indice,
+            LocalDateTime valor) throws SQLException {
+        if (valor == null) sentencia.setNull(indice, Types.TIMESTAMP);
+        else sentencia.setTimestamp(indice, Timestamp.valueOf(valor));
     }
 
     @Override
@@ -146,11 +159,14 @@ public class ReservaDAOMySQL implements ReservaDAO {
 
     @Override
     public void actualizarEstado(long id, EstadoReserva estado) {
-        String sql = "UPDATE reservas SET estado = ? WHERE id = ?";
+        String sql = "UPDATE reservas SET estado = ?, "
+                + "fecha_vencimiento = CASE WHEN ? = 'CONFIRMADA' "
+                + "THEN NULL ELSE fecha_vencimiento END WHERE id = ?";
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setString(1, estado.name());
-            sentencia.setLong(2, id);
+            sentencia.setString(2, estado.name());
+            sentencia.setLong(3, id);
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("La reserva no existe.");
             }
@@ -161,17 +177,43 @@ public class ReservaDAOMySQL implements ReservaDAO {
     }
 
     @Override
+    public int expirarPendientesVencidas(LocalDateTime momento) {
+        if (momento == null) {
+            throw new IllegalArgumentException(
+                    "El momento de expiración es obligatorio.");
+        }
+
+        String sql = "UPDATE reservas r SET r.estado = 'EXPIRADA', "
+                + "r.fecha_expiracion = ?, r.fecha_vencimiento = NULL "
+                + "WHERE r.estado = 'PENDIENTE' "
+                + "AND r.fecha_vencimiento IS NOT NULL "
+                + "AND r.fecha_vencimiento <= ? "
+                + "AND NOT EXISTS (SELECT 1 FROM pagos p "
+                + "WHERE p.reserva_id = r.id AND p.estado = 'ACREDITADO')";
+
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            Timestamp timestamp = Timestamp.valueOf(momento);
+            sentencia.setTimestamp(1, timestamp);
+            sentencia.setTimestamp(2, timestamp);
+            return sentencia.executeUpdate();
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron expirar las reservas pendientes.", exception);
+        }
+    }
+
+    @Override
     public void cancelar(
             long id,
             TipoCancelacion tipo,
             String motivo,
             LocalDateTime fechaCancelacion,
             Long usuarioCancelacionId) {
-
         String sql = "UPDATE reservas SET estado = 'CANCELADA', "
                 + "tipo_cancelacion = ?, motivo_cancelacion = ?, "
-                + "fecha_cancelacion = ?, usuario_cancelacion_id = ? "
-                + "WHERE id = ?";
+                + "fecha_cancelacion = ?, usuario_cancelacion_id = ?, "
+                + "fecha_vencimiento = NULL WHERE id = ?";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
@@ -199,8 +241,8 @@ public class ReservaDAOMySQL implements ReservaDAO {
             LocalTime horaFin, long reservaExcluidaId) {
         String sql = "SELECT COUNT(*) FROM reservas "
                 + "WHERE cancha_id = ? AND fecha = ? "
-                + "AND estado <> 'CANCELADA' AND id <> ? "
-                + "AND hora_inicio < ? AND hora_fin > ?";
+                + "AND estado NOT IN ('CANCELADA', 'EXPIRADA') "
+                + "AND id <> ? AND hora_inicio < ? AND hora_fin > ?";
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setLong(1, canchaId);
@@ -221,6 +263,7 @@ public class ReservaDAOMySQL implements ReservaDAO {
     private String consultaBase() {
         return "SELECT r.id, r.cliente_id, r.cancha_id, r.usuario_id, "
                 + "r.fecha, r.hora_inicio, r.hora_fin, r.estado, "
+                + "r.fecha_vencimiento, r.fecha_expiracion, "
                 + "r.tipo_cancelacion, r.motivo_cancelacion, "
                 + "r.fecha_cancelacion, r.usuario_cancelacion_id, "
                 + "r.cantidad_jugadores, r.comentarios, "
@@ -246,17 +289,19 @@ public class ReservaDAOMySQL implements ReservaDAO {
         reserva.setHoraInicio(resultado.getTime("hora_inicio").toLocalTime());
         reserva.setHoraFin(resultado.getTime("hora_fin").toLocalTime());
         reserva.setEstado(EstadoReserva.valueOf(resultado.getString("estado")));
+        reserva.setFechaVencimiento(
+                convertirTimestamp(resultado, "fecha_vencimiento"));
+        reserva.setFechaExpiracion(
+                convertirTimestamp(resultado, "fecha_expiracion"));
 
         String tipo = resultado.getString("tipo_cancelacion");
         if (tipo != null) {
             reserva.setTipoCancelacion(TipoCancelacion.valueOf(tipo));
         }
         reserva.setMotivoCancelacion(resultado.getString("motivo_cancelacion"));
+        reserva.setFechaCancelacion(
+                convertirTimestamp(resultado, "fecha_cancelacion"));
 
-        Timestamp fechaCancelacion = resultado.getTimestamp("fecha_cancelacion");
-        if (fechaCancelacion != null) {
-            reserva.setFechaCancelacion(fechaCancelacion.toLocalDateTime());
-        }
         long usuarioCancelacion = resultado.getLong("usuario_cancelacion_id");
         if (!resultado.wasNull()) {
             reserva.setUsuarioCancelacionId(usuarioCancelacion);
@@ -270,11 +315,14 @@ public class ReservaDAOMySQL implements ReservaDAO {
         reserva.setNombreCliente(resultado.getString("nombre_cliente"));
         reserva.setNombreCancha(resultado.getString("nombre_cancha"));
         reserva.setNombreUsuario(resultado.getString("nombre_usuario"));
-
-        Timestamp fechaCreacion = resultado.getTimestamp("fecha_creacion");
-        if (fechaCreacion != null) {
-            reserva.setFechaCreacion(fechaCreacion.toLocalDateTime());
-        }
+        reserva.setFechaCreacion(
+                convertirTimestamp(resultado, "fecha_creacion"));
         return reserva;
+    }
+
+    private LocalDateTime convertirTimestamp(
+            ResultSet resultado, String columna) throws SQLException {
+        Timestamp timestamp = resultado.getTimestamp(columna);
+        return timestamp == null ? null : timestamp.toLocalDateTime();
     }
 }

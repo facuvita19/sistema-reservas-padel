@@ -188,6 +188,7 @@ public class AgendaService {
 		case COMPLETADA -> EstadoCeldaAgenda.COMPLETADA;
 		case CANCELADA -> EstadoCeldaAgenda.CANCELADA;
 		case AUSENTE -> EstadoCeldaAgenda.AUSENTE;
+		case EXPIRADA -> EstadoCeldaAgenda.DISPONIBLE;
 		});
 	}
 

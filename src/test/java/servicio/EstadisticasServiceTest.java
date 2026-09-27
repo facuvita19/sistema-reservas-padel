@@ -26,8 +26,8 @@ class EstadisticasServiceTest {
 
     @Test
     void obtieneEstadisticasParaRangoValido() {
-        LocalDate desde = LocalDate.of(2026, 1, 1);
-        LocalDate hasta = LocalDate.of(2026, 12, 31);
+        LocalDate hasta = LocalDate.now();
+        LocalDate desde = hasta.minusMonths(1);
         EstadisticasPadel resultado = service.obtener(desde, hasta);
         assertSame(dao.resultado, resultado);
         assertEquals(desde, dao.desde);
@@ -35,39 +35,35 @@ class EstadisticasServiceTest {
     }
 
     @Test
-    void rechazaFechasNulas() {
+    void rechazaFechasNulasInvertidasYFuturas() {
         assertThrows(IllegalArgumentException.class,
                 () -> service.obtener(null, LocalDate.now()));
         assertThrows(IllegalArgumentException.class,
                 () -> service.obtener(LocalDate.now(), null));
-    }
-
-    @Test
-    void rechazaRangoInvertido() {
         assertThrows(IllegalArgumentException.class,
-                () -> service.obtener(
-                        LocalDate.of(2026, 12, 31),
-                        LocalDate.of(2026, 1, 1)));
+                () -> service.obtener(LocalDate.now(), LocalDate.now().minusDays(1)));
+        assertThrows(IllegalArgumentException.class,
+                () -> service.obtener(LocalDate.now(), LocalDate.now().plusDays(1)));
     }
 
     @Test
-    void calculaTasaDeCancelacion() {
+    void calculaTasasDeCancelacionYAusencia() {
         EstadisticasPadel estadisticas = new EstadisticasPadel();
         estadisticas.setTotalReservas(20);
         estadisticas.setReservasCanceladas(3);
-        assertEquals(new BigDecimal("15.00"),
-                estadisticas.getTasaCancelacion());
+        estadisticas.setReservasAusentes(2);
+        assertEquals(new BigDecimal("15.00"), estadisticas.getTasaCancelacion());
+        assertEquals(new BigDecimal("10.00"), estadisticas.getTasaAusencia());
     }
 
     @Test
-    void tasaDeCancelacionEsCeroSinReservas() {
+    void tasasSonCeroSinReservas() {
         EstadisticasPadel estadisticas = new EstadisticasPadel();
-        assertEquals(BigDecimal.ZERO,
-                estadisticas.getTasaCancelacion());
+        assertEquals(BigDecimal.ZERO, estadisticas.getTasaCancelacion());
+        assertEquals(BigDecimal.ZERO, estadisticas.getTasaAusencia());
     }
 
-    private static final class EstadisticasDAODoble
-            implements EstadisticasDAO {
+    private static final class EstadisticasDAODoble implements EstadisticasDAO {
         private LocalDate desde;
         private LocalDate hasta;
         private final EstadisticasPadel resultado = new EstadisticasPadel();

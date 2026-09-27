@@ -5,7 +5,8 @@ public enum EstadoReserva {
     CONFIRMADA("Confirmada"),
     COMPLETADA("Completada"),
     CANCELADA("Cancelada"),
-    AUSENTE("Ausente");
+    AUSENTE("Ausente"),
+    EXPIRADA("Expirada");
 
     private final String descripcion;
 
@@ -20,7 +21,8 @@ public enum EstadoReserva {
     public boolean esFinal() {
         return this == COMPLETADA
                 || this == CANCELADA
-                || this == AUSENTE;
+                || this == AUSENTE
+                || this == EXPIRADA;
     }
 
     @Override

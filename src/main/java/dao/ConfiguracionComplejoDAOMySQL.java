@@ -17,21 +17,18 @@ public class ConfiguracionComplejoDAOMySQL
         String sql = "SELECT id, nombre_comercial, razon_social, direccion, "
                 + "telefono, whatsapp, email, instagram, moneda, "
                 + "porcentaje_senia, anticipacion_minima_horas, "
-                + "cancelacion_minima_horas, color_principal, ruta_logo, "
-                + "fecha_actualizacion FROM configuracion_complejo "
-                + "WHERE id = 1";
+                + "cancelacion_minima_horas, minutos_reserva_pendiente, "
+                + "color_principal, ruta_logo, fecha_actualizacion "
+                + "FROM configuracion_complejo WHERE id = 1";
 
-        try (
-                Connection conexion = ConexionBD.obtenerConexion();
-                PreparedStatement sentencia = conexion.prepareStatement(sql);
-                ResultSet resultado = sentencia.executeQuery()
-        ) {
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet resultado = sentencia.executeQuery()) {
             return resultado.next() ? convertir(resultado) : null;
         } catch (SQLException exception) {
             throw new RuntimeException(
                     "No se pudo recuperar la configuración del complejo.",
-                    exception
-            );
+                    exception);
         }
     }
 
@@ -41,25 +38,23 @@ public class ConfiguracionComplejoDAOMySQL
                 + "nombre_comercial, razon_social, direccion, telefono, "
                 + "whatsapp, email, instagram, moneda, porcentaje_senia, "
                 + "anticipacion_minima_horas, cancelacion_minima_horas, "
-                + "color_principal, ruta_logo) "
-                + "VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+                + "minutos_reserva_pendiente, color_principal, ruta_logo) "
+                + "VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
                 + "ON DUPLICATE KEY UPDATE "
                 + "nombre_comercial = VALUES(nombre_comercial), "
                 + "razon_social = VALUES(razon_social), "
-                + "direccion = VALUES(direccion), "
-                + "telefono = VALUES(telefono), "
+                + "direccion = VALUES(direccion), telefono = VALUES(telefono), "
                 + "whatsapp = VALUES(whatsapp), email = VALUES(email), "
                 + "instagram = VALUES(instagram), moneda = VALUES(moneda), "
                 + "porcentaje_senia = VALUES(porcentaje_senia), "
                 + "anticipacion_minima_horas = VALUES(anticipacion_minima_horas), "
                 + "cancelacion_minima_horas = VALUES(cancelacion_minima_horas), "
+                + "minutos_reserva_pendiente = VALUES(minutos_reserva_pendiente), "
                 + "color_principal = VALUES(color_principal), "
                 + "ruta_logo = VALUES(ruta_logo)";
 
-        try (
-                Connection conexion = ConexionBD.obtenerConexion();
-                PreparedStatement sentencia = conexion.prepareStatement(sql)
-        ) {
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setString(1, configuracion.getNombreComercial());
             sentencia.setString(2, configuracion.getRazonSocial());
             sentencia.setString(3, configuracion.getDireccion());
@@ -71,14 +66,14 @@ public class ConfiguracionComplejoDAOMySQL
             sentencia.setBigDecimal(9, configuracion.getPorcentajeSenia());
             sentencia.setInt(10, configuracion.getAnticipacionMinimaHoras());
             sentencia.setInt(11, configuracion.getCancelacionMinimaHoras());
-            sentencia.setString(12, configuracion.getColorPrincipal());
-            sentencia.setString(13, configuracion.getRutaLogo());
+            sentencia.setInt(12, configuracion.getMinutosReservaPendiente());
+            sentencia.setString(13, configuracion.getColorPrincipal());
+            sentencia.setString(14, configuracion.getRutaLogo());
             sentencia.executeUpdate();
         } catch (SQLException exception) {
             throw new RuntimeException(
                     "No se pudo guardar la configuración del complejo.",
-                    exception
-            );
+                    exception);
         }
     }
 
@@ -86,8 +81,7 @@ public class ConfiguracionComplejoDAOMySQL
             throws SQLException {
         ConfiguracionComplejo configuracion = new ConfiguracionComplejo();
         configuracion.setId(resultado.getLong("id"));
-        configuracion.setNombreComercial(
-                resultado.getString("nombre_comercial"));
+        configuracion.setNombreComercial(resultado.getString("nombre_comercial"));
         configuracion.setRazonSocial(resultado.getString("razon_social"));
         configuracion.setDireccion(resultado.getString("direccion"));
         configuracion.setTelefono(resultado.getString("telefono"));
@@ -95,21 +89,19 @@ public class ConfiguracionComplejoDAOMySQL
         configuracion.setEmail(resultado.getString("email"));
         configuracion.setInstagram(resultado.getString("instagram"));
         configuracion.setMoneda(resultado.getString("moneda"));
-        configuracion.setPorcentajeSenia(
-                resultado.getBigDecimal("porcentaje_senia"));
+        configuracion.setPorcentajeSenia(resultado.getBigDecimal("porcentaje_senia"));
         configuracion.setAnticipacionMinimaHoras(
                 resultado.getInt("anticipacion_minima_horas"));
         configuracion.setCancelacionMinimaHoras(
                 resultado.getInt("cancelacion_minima_horas"));
-        configuracion.setColorPrincipal(
-                resultado.getString("color_principal"));
+        configuracion.setMinutosReservaPendiente(
+                resultado.getInt("minutos_reserva_pendiente"));
+        configuracion.setColorPrincipal(resultado.getString("color_principal"));
         configuracion.setRutaLogo(resultado.getString("ruta_logo"));
 
-        Timestamp actualizacion =
-                resultado.getTimestamp("fecha_actualizacion");
+        Timestamp actualizacion = resultado.getTimestamp("fecha_actualizacion");
         if (actualizacion != null) {
-            configuracion.setFechaActualizacion(
-                    actualizacion.toLocalDateTime());
+            configuracion.setFechaActualizacion(actualizacion.toLocalDateTime());
         }
         return configuracion;
     }

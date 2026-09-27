@@ -16,6 +16,8 @@ public class Reserva {
     private LocalTime horaInicio;
     private LocalTime horaFin;
     private EstadoReserva estado = EstadoReserva.PENDIENTE;
+    private LocalDateTime fechaVencimiento;
+    private LocalDateTime fechaExpiracion;
     private TipoCancelacion tipoCancelacion;
     private String motivoCancelacion;
     private LocalDateTime fechaCancelacion;
@@ -31,21 +33,25 @@ public class Reserva {
     private String nombreUsuario;
 
     public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public void setId(long valor) { id = valor; }
     public long getClienteId() { return clienteId; }
-    public void setClienteId(long clienteId) { this.clienteId = clienteId; }
+    public void setClienteId(long valor) { clienteId = valor; }
     public long getCanchaId() { return canchaId; }
-    public void setCanchaId(long canchaId) { this.canchaId = canchaId; }
+    public void setCanchaId(long valor) { canchaId = valor; }
     public long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(long usuarioId) { this.usuarioId = usuarioId; }
+    public void setUsuarioId(long valor) { usuarioId = valor; }
     public LocalDate getFecha() { return fecha; }
-    public void setFecha(LocalDate fecha) { this.fecha = fecha; }
+    public void setFecha(LocalDate valor) { fecha = valor; }
     public LocalTime getHoraInicio() { return horaInicio; }
-    public void setHoraInicio(LocalTime horaInicio) { this.horaInicio = horaInicio; }
+    public void setHoraInicio(LocalTime valor) { horaInicio = valor; }
     public LocalTime getHoraFin() { return horaFin; }
-    public void setHoraFin(LocalTime horaFin) { this.horaFin = horaFin; }
+    public void setHoraFin(LocalTime valor) { horaFin = valor; }
     public EstadoReserva getEstado() { return estado; }
-    public void setEstado(EstadoReserva estado) { this.estado = estado; }
+    public void setEstado(EstadoReserva valor) { estado = valor; }
+    public LocalDateTime getFechaVencimiento() { return fechaVencimiento; }
+    public void setFechaVencimiento(LocalDateTime valor) { fechaVencimiento = valor; }
+    public LocalDateTime getFechaExpiracion() { return fechaExpiracion; }
+    public void setFechaExpiracion(LocalDateTime valor) { fechaExpiracion = valor; }
     public TipoCancelacion getTipoCancelacion() { return tipoCancelacion; }
     public void setTipoCancelacion(TipoCancelacion valor) { tipoCancelacion = valor; }
     public String getMotivoCancelacion() { return motivoCancelacion; }
@@ -57,11 +63,11 @@ public class Reserva {
     public int getCantidadJugadores() { return cantidadJugadores; }
     public void setCantidadJugadores(int valor) { cantidadJugadores = valor; }
     public String getComentarios() { return comentarios; }
-    public void setComentarios(String comentarios) { this.comentarios = comentarios; }
+    public void setComentarios(String valor) { comentarios = valor; }
     public String getObservacionesAdministrativas() { return observacionesAdministrativas; }
     public void setObservacionesAdministrativas(String valor) { observacionesAdministrativas = valor; }
     public BigDecimal getPrecioTotal() { return precioTotal; }
-    public void setPrecioTotal(BigDecimal precioTotal) { this.precioTotal = precioTotal; }
+    public void setPrecioTotal(BigDecimal valor) { precioTotal = valor; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime valor) { fechaCreacion = valor; }
     public String getNombreCliente() { return nombreCliente; }
@@ -70,6 +76,17 @@ public class Reserva {
     public void setNombreCancha(String valor) { nombreCancha = valor; }
     public String getNombreUsuario() { return nombreUsuario; }
     public void setNombreUsuario(String valor) { nombreUsuario = valor; }
+
+    public boolean tieneVencimiento() {
+        return fechaVencimiento != null;
+    }
+
+    public boolean estaVencida(LocalDateTime momento) {
+        return estado == EstadoReserva.PENDIENTE
+                && fechaVencimiento != null
+                && momento != null
+                && !fechaVencimiento.isAfter(momento);
+    }
 
     public boolean seSuperpone(LocalTime inicio, LocalTime fin) {
         if (horaInicio == null || horaFin == null

@@ -1,4 +1,113 @@
+.cash-page {
+    -fx-background-color: -color-fondo;
+}
 
+.cash-status-open,
+.cash-status-closed {
+    -fx-padding: 7 13;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}
+
+.cash-status-open {
+    -fx-background-color: #443b24;
+    -fx-border-color: #7e6a35;
+    -fx-text-fill: #dcc87f;
+}
+
+.cash-status-closed {
+    -fx-background-color: #234438;
+    -fx-border-color: #477664;
+    -fx-text-fill: #9ed1bc;
+}
+
+.cash-summary-card,
+.cash-mini-card,
+.cash-close-card,
+.cash-closed-card {
+    -fx-background-color: #131f29;
+    -fx-background-radius: 14;
+    -fx-border-color: #2b3c49;
+    -fx-border-radius: 14;
+    -fx-padding: 18;
+}
+
+.cash-highlight-card {
+    -fx-border-color: -color-principal;
+}
+
+.cash-summary-value {
+    -fx-text-fill: #f0f5f8;
+    -fx-font-size: 25px;
+    -fx-font-weight: 800;
+}
+
+.cash-mini-value {
+    -fx-text-fill: #e2ebf0;
+    -fx-font-size: 22px;
+    -fx-font-weight: 800;
+}
+
+.cash-difference-ok,
+.cash-difference-warning {
+    -fx-min-height: 40;
+    -fx-padding: 8 12;
+    -fx-background-radius: 9;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.cash-difference-ok {
+    -fx-background-color: #213f35;
+    -fx-text-fill: #9ed1bc;
+}
+
+.cash-difference-warning {
+    -fx-background-color: #4b2930;
+    -fx-text-fill: #e59aa4;
+}
+
+.cash-close-card {
+    -fx-border-color: #36505f;
+}
+
+.cash-close-button {
+    -fx-pref-height: 48;
+    -fx-background-color: #7a303b;
+    -fx-background-radius: 10;
+    -fx-border-color: #a95764;
+    -fx-border-radius: 10;
+    -fx-text-fill: #fff4f5;
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+
+.cash-close-button:hover {
+    -fx-background-color: #91404c;
+    -fx-border-color: #ca7180;
+}
+
+.cash-close-button:pressed {
+    -fx-background-color: #642630;
+}
+
+.cash-close-button:disabled {
+    -fx-opacity: 0.55;
+}
+
+.cash-closed-card {
+    -fx-background-color: #193329;
+    -fx-border-color: #477664;
+}
+
+.cash-closed-copy {
+    -fx-text-fill: #b7d5c8;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 4px;
+}
 
 .cash-close-dashboard-button {
     -fx-pref-height: 42;

@@ -541,8 +541,8 @@ public class ReservasController {
 
 		if (reservaSeleccionada.getEstado() == EstadoReserva.PENDIENTE) {
 
-			cambiarEstadoSeleccionado(EstadoReserva.CONFIRMADA);
-
+			mostrarError("La reserva se confirmará automáticamente " + "cuando los pagos acreditados alcancen "
+					+ "el importe mínimo de la seña.");
 			return;
 		}
 
@@ -602,7 +602,7 @@ public class ReservasController {
 
 	private void actualizarAccionesReserva() {
 		if (reservaSeleccionada == null) {
-			configurarBoton(botonAccionPrincipal, false, false, "CONFIRMAR RESERVA");
+			configurarBoton(botonAccionPrincipal, false, false, "CERRAR TURNO");
 
 			configurarBoton(botonPagos, false, false, "ABRIR PAGOS");
 
@@ -616,23 +616,26 @@ public class ReservasController {
 		EstadoReserva estado = reservaSeleccionada.getEstado();
 
 		boolean pendiente = estado == EstadoReserva.PENDIENTE;
-		boolean confirmada = estado == EstadoReserva.CONFIRMADA;
-		boolean finalizada = estado == EstadoReserva.COMPLETADA || estado == EstadoReserva.AUSENTE
-				|| estado == EstadoReserva.CANCELADA;
 
-		if (pendiente) {
-			configurarBoton(botonAccionPrincipal, true, true, "CONFIRMAR RESERVA");
-		} else if (confirmada && turnoFinalizado(reservaSeleccionada)) {
+		boolean confirmada = estado == EstadoReserva.CONFIRMADA;
+
+		boolean finalizada = estado == EstadoReserva.COMPLETADA || estado == EstadoReserva.AUSENTE
+				|| estado == EstadoReserva.CANCELADA || estado == EstadoReserva.EXPIRADA;
+
+		if (confirmada && turnoFinalizado(reservaSeleccionada)) {
+
 			configurarBoton(botonAccionPrincipal, true, true, "CERRAR TURNO");
 		} else {
-			configurarBoton(botonAccionPrincipal, false, false, "CONFIRMAR RESERVA");
+			configurarBoton(botonAccionPrincipal, false, false, "CERRAR TURNO");
 		}
 
-		boolean mostrarPagos = !finalizada || estado == EstadoReserva.COMPLETADA;
+		boolean mostrarPagos = pendiente || confirmada || estado == EstadoReserva.COMPLETADA;
+
 		boolean mostrarCancelar = pendiente || confirmada;
+
 		boolean mostrarReprogramar = pendiente || confirmada;
 
-		configurarBoton(botonPagos, mostrarPagos, mostrarPagos, "ABRIR PAGOS");
+		configurarBoton(botonPagos, mostrarPagos, mostrarPagos, pendiente ? "REGISTRAR SEÑA" : "ABRIR PAGOS");
 
 		configurarBoton(botonCancelar, mostrarCancelar, mostrarCancelar, "CANCELAR RESERVA");
 
@@ -673,7 +676,9 @@ public class ReservasController {
 			reserva.setObservacionesAdministrativas(campoObservaciones.getText());
 
 			if (reservaSeleccionada == null) {
-				reserva.setEstado(EstadoReserva.CONFIRMADA);
+				reserva.setEstado(EstadoReserva.PENDIENTE);
+				reserva.setFechaVencimiento(null);
+				reserva.setFechaExpiracion(null);
 			}
 
 			reservaService.guardar(reserva);

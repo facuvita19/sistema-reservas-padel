@@ -12,15 +12,10 @@ import negocio.TipoCancelacion;
 public interface ReservaDAO {
 
     void guardar(Reserva reserva);
-
     Reserva buscar(long id);
-
     List<Reserva> listar();
-
     List<Reserva> listarPorCliente(long clienteId);
-
     List<Reserva> listarPorFecha(LocalDate fecha);
-
     void actualizarEstado(long id, EstadoReserva estado);
 
     default void cancelar(
@@ -29,8 +24,11 @@ public interface ReservaDAO {
             String motivo,
             LocalDateTime fechaCancelacion,
             Long usuarioCancelacionId) {
-
         actualizarEstado(id, EstadoReserva.CANCELADA);
+    }
+
+    default int expirarPendientesVencidas(LocalDateTime momento) {
+        return 0;
     }
 
     boolean horarioOcupado(

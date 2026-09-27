@@ -32,6 +32,10 @@ public class EstadisticasService {
         if (desde == null || hasta == null) {
             throw new IllegalArgumentException("Las fechas son obligatorias.");
         }
+        if (desde.isAfter(LocalDate.now()) || hasta.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException(
+                    "El período no puede incluir fechas futuras.");
+        }
         if (hasta.isBefore(desde)) {
             throw new IllegalArgumentException(
                     "La fecha final no puede ser anterior a la inicial.");

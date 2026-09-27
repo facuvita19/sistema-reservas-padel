@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.*?>
 <?import javafx.scene.control.*?>
@@ -10,24 +9,22 @@
             fx:controller="vista.controlador.EstadisticasController"
             styleClass="stats-root">
     <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+        <HBox alignment="CENTER_LEFT" spacing="14" styleClass="module-header">
+            <padding><Insets top="18" right="26" bottom="18" left="26" /></padding>
             <children>
                 <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
-                <VBox spacing="3">
+                <VBox spacing="2">
                     <children>
-                        <Label text="Estadísticas" styleClass="page-title" />
-                        <Label text="Analizá reservas, ingresos y demanda del complejo."
+                        <Label text="Estadísticas y reportes" styleClass="page-title" />
+                        <Label text="Reservas, ingresos, demanda y cierres de caja."
                                styleClass="page-subtitle" />
                     </children>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS" />
                 <Label text="Desde" styleClass="field-label" />
-                <DatePicker fx:id="fechaDesde" prefWidth="145"
-                            styleClass="modern-date" />
+                <DatePicker fx:id="fechaDesde" prefWidth="145" styleClass="modern-date" />
                 <Label text="Hasta" styleClass="field-label" />
-                <DatePicker fx:id="fechaHasta" prefWidth="145"
-                            styleClass="modern-date" />
+                <DatePicker fx:id="fechaHasta" prefWidth="145" styleClass="modern-date" />
                 <Button fx:id="botonActualizar" text="ACTUALIZAR"
                         onAction="#actualizar" styleClass="primary-button" />
             </children>
@@ -35,15 +32,15 @@
     </top>
 
     <center>
-        <ScrollPane fitToWidth="true" styleClass="stats-scroll">
+        <ScrollPane fx:id="scrollEstadisticas" fitToWidth="true" pannable="false" hbarPolicy="NEVER"
+                    vbarPolicy="AS_NEEDED" styleClass="stats-scroll">
             <content>
-                <VBox spacing="20" styleClass="stats-content">
-                    <padding><Insets top="18" right="22" bottom="24" left="22" /></padding>
+                <VBox minWidth="900" spacing="16" styleClass="stats-content">
+                    <padding><Insets top="16" right="24" bottom="28" left="24" /></padding>
                     <children>
                         <HBox alignment="CENTER_LEFT" spacing="9">
                             <children>
-                                <ProgressIndicator fx:id="indicadorCarga"
-                                                   visible="false"
+                                <ProgressIndicator fx:id="indicadorCarga" visible="false"
                                                    maxWidth="18" maxHeight="18" />
                                 <Label fx:id="etiquetaEstado"
                                        text="Preparando estadísticas..."
@@ -51,86 +48,103 @@
                             </children>
                         </HBox>
 
-                        <GridPane hgap="14" vgap="14">
+                        <GridPane hgap="12" vgap="12">
                             <columnConstraints>
-                                <ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
-                                <ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
-                                <ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
-                                <ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
-                                <ColumnConstraints percentWidth="20" hgrow="ALWAYS" />
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
+                                <ColumnConstraints percentWidth="25" hgrow="ALWAYS" />
                             </columnConstraints>
                             <children>
-                                <VBox GridPane.columnIndex="0" spacing="7" styleClass="metric-card">
+                                <VBox GridPane.columnIndex="0" spacing="5" styleClass="stats-metric-card">
                                     <children><Label text="TOTAL RESERVAS" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaTotalReservas" text="0" styleClass="metric-value" /></children>
+                                        <Label fx:id="etiquetaTotalReservas" text="0" styleClass="stats-metric-value" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="1" spacing="7" styleClass="metric-card">
+                                <VBox GridPane.columnIndex="1" spacing="5" styleClass="stats-metric-card">
                                     <children><Label text="COMPLETADAS" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaCompletadas" text="0" styleClass="metric-value" /></children>
+                                        <Label fx:id="etiquetaCompletadas" text="0" styleClass="stats-metric-value" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="2" spacing="7" styleClass="metric-card">
-                                    <children><Label text="CANCELACIÓN" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaCancelacion" text="0 %" styleClass="metric-value" /></children>
+                                <VBox GridPane.columnIndex="2" spacing="5" styleClass="stats-metric-card">
+                                    <children><Label text="CANCELADAS" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaCanceladas" text="0 · 0 %" styleClass="stats-metric-value" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="3" spacing="7" styleClass="metric-card">
-                                    <children><Label text="INGRESOS" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaIngresos" text="ARS 0" styleClass="stats-money-value" /></children>
+                                <VBox GridPane.columnIndex="3" spacing="5" styleClass="stats-metric-card">
+                                    <children><Label text="AUSENCIAS" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaAusencias" text="0 · 0 %" styleClass="stats-metric-value" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="4" spacing="7" styleClass="metric-card">
+                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="5" styleClass="stats-metric-card">
+                                    <children><Label text="INGRESOS ACREDITADOS" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaIngresos" text="ARS 0" wrapText="true" styleClass="stats-money-value" /></children>
+                                </VBox>
+                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="5" styleClass="stats-metric-card">
+                                    <children><Label text="REEMBOLSADO" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaReembolsado" text="ARS 0" wrapText="true" styleClass="stats-money-value" /></children>
+                                </VBox>
+                                <VBox GridPane.columnIndex="2" GridPane.rowIndex="1" spacing="5" styleClass="stats-metric-card">
                                     <children><Label text="TICKET PROMEDIO" styleClass="metric-label" />
-                                        <Label fx:id="etiquetaTicketPromedio" text="ARS 0" styleClass="stats-money-value" /></children>
+                                        <Label fx:id="etiquetaTicketPromedio" text="ARS 0" wrapText="true" styleClass="stats-money-value" /></children>
+                                </VBox>
+                                <VBox GridPane.columnIndex="3" GridPane.rowIndex="1" spacing="5" styleClass="stats-metric-card">
+                                    <children><Label text="PAGOS ACREDITADOS" styleClass="metric-label" />
+                                        <Label fx:id="etiquetaPagosAcreditados" text="0" styleClass="stats-metric-value" /></children>
                                 </VBox>
                             </children>
                         </GridPane>
 
-                        <GridPane hgap="18" vgap="14">
+                        <GridPane hgap="16" vgap="16">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                             </columnConstraints>
-                            <rowConstraints> <RowConstraints minHeight="285" prefHeight="310" maxHeight="340" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="245" prefHeight="270" maxHeight="300" vgrow="SOMETIMES" />
-                            </rowConstraints>
                             <children>
-                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="0"
-                                      spacing="10" styleClass="stats-chart-card">
-                                    <children>
-                                        <Label text="Reservas por estado" styleClass="section-title" />
-                                        <PieChart fx:id="graficoEstados" minHeight="250" prefHeight="280" maxHeight="320" VBox.vgrow="ALWAYS" />
-                                    </children>
+                                <VBox GridPane.columnIndex="0" spacing="8" styleClass="stats-chart-card">
+                                    <children><Label text="Reservas por estado" styleClass="section-title" />
+                                        <PieChart fx:id="graficoEstados" minHeight="250" prefHeight="250" maxHeight="250" VBox.vgrow="NEVER" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="0"
-                                      spacing="10" styleClass="stats-chart-card">
-                                    <children>
-                                        <Label text="Uso por cancha" styleClass="section-title" />
-                                        <BarChart fx:id="graficoCanchas" VBox.vgrow="ALWAYS">
-                                            <xAxis><CategoryAxis /></xAxis>
-                                            <yAxis><NumberAxis label="Reservas" /></yAxis>
-                                        </BarChart>
-                                    </children>
+                                <VBox GridPane.columnIndex="1" spacing="8" styleClass="stats-chart-card">
+                                    <children><Label text="Ingresos por método de pago" styleClass="section-title" />
+                                        <PieChart fx:id="graficoMetodos" minHeight="250" prefHeight="250" maxHeight="250" VBox.vgrow="NEVER" /></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1"
-                                      spacing="10" styleClass="stats-chart-card">
-                                    <children>
-                                        <Label text="Ingresos por mes" styleClass="section-title" />
-                                        <LineChart fx:id="graficoIngresos" VBox.vgrow="ALWAYS">
-                                            <xAxis><CategoryAxis /></xAxis>
-                                            <yAxis><NumberAxis label="ARS" /></yAxis>
-                                        </LineChart>
-                                    </children>
+                                <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="8" styleClass="stats-chart-card">
+                                    <children><Label text="Uso por cancha" styleClass="section-title" />
+                                        <BarChart fx:id="graficoCanchas" minHeight="250" prefHeight="250" maxHeight="250" animated="false">
+                                            <xAxis><CategoryAxis /></xAxis><yAxis><NumberAxis label="Reservas" /></yAxis>
+                                        </BarChart></children>
                                 </VBox>
-                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1"
-                                      spacing="10" styleClass="stats-chart-card">
-                                    <children>
-                                        <Label text="Horarios más solicitados" styleClass="section-title" />
-                                        <BarChart fx:id="graficoHorarios" VBox.vgrow="ALWAYS">
-                                            <xAxis><CategoryAxis /></xAxis>
-                                            <yAxis><NumberAxis label="Reservas" /></yAxis>
-                                        </BarChart>
-                                    </children>
+                                <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="8" styleClass="stats-chart-card">
+                                    <children><Label text="Horarios más solicitados" styleClass="section-title" />
+                                        <BarChart fx:id="graficoHorarios" minHeight="250" prefHeight="250" maxHeight="250" animated="false">
+                                            <xAxis><CategoryAxis /></xAxis><yAxis><NumberAxis label="Reservas" /></yAxis>
+                                        </BarChart></children>
                                 </VBox>
                             </children>
                         </GridPane>
+
+                        <VBox spacing="8" styleClass="stats-chart-card">
+                            <children><Label text="Ingresos acreditados por mes" styleClass="section-title" />
+                                <LineChart fx:id="graficoIngresos" minHeight="260" prefHeight="260" maxHeight="260" animated="false">
+                                    <xAxis><CategoryAxis /></xAxis><yAxis><NumberAxis label="ARS" /></yAxis>
+                                </LineChart></children>
+                        </VBox>
+
+                        <VBox spacing="10" styleClass="stats-chart-card">
+                            <children>
+                                <Label text="Historial de cierres de caja" styleClass="section-title" />
+                                <TableView fx:id="tablaCierres" prefHeight="240" styleClass="modern-table">
+                                    <columns>
+                                        <TableColumn fx:id="columnaFechaCierre" text="FECHA" prefWidth="100" />
+                                        <TableColumn fx:id="columnaTotalCierre" text="TOTAL" prefWidth="135" />
+                                        <TableColumn fx:id="columnaEfectivoCalculado" text="EFECTIVO CALC." prefWidth="145" />
+                                        <TableColumn fx:id="columnaEfectivoDeclarado" text="EFECTIVO DECL." prefWidth="145" />
+                                        <TableColumn fx:id="columnaDiferencia" text="DIFERENCIA" prefWidth="130" />
+                                        <TableColumn fx:id="columnaReembolsado" text="REEMBOLSADO" prefWidth="135" />
+                                        <TableColumn fx:id="columnaUsuario" text="USUARIO ID" prefWidth="100" />
+                                        <TableColumn fx:id="columnaFechaHoraCierre" text="CERRADA" prefWidth="155" />
+                                    </columns>
+                                    <placeholder><Label text="No hay cierres de caja en el período." styleClass="empty-state" /></placeholder>
+                                </TableView>
+                            </children>
+                        </VBox>
                     </children>
                 </VBox>
             </content>

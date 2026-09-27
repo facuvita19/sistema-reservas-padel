@@ -9,6 +9,7 @@ import dao.PagoDAO;
 import dao.PagoDAOMySQL;
 import dao.ReservaDAO;
 import dao.ReservaDAOMySQL;
+import negocio.ConfiguracionComplejo;
 import negocio.EstadoPago;
 import negocio.EstadoReserva;
 import negocio.Pago;
@@ -18,19 +19,44 @@ public class PagoService {
 
     private final PagoDAO pagoDAO;
     private final ReservaDAO reservaDAO;
+    private final ConfiguracionComplejoService configuracionService;
 
     public PagoService() {
-        this(new PagoDAOMySQL(), new ReservaDAOMySQL());
+        this(
+                new PagoDAOMySQL(),
+                new ReservaDAOMySQL(),
+                new ConfiguracionComplejoService()
+        );
     }
 
-    public PagoService(PagoDAO pagoDAO, ReservaDAO reservaDAO) {
-        if (pagoDAO == null || reservaDAO == null) {
+    public PagoService(
+            PagoDAO pagoDAO,
+            ReservaDAO reservaDAO) {
+
+        this(
+                pagoDAO,
+                reservaDAO,
+                new ConfiguracionComplejoService()
+        );
+    }
+
+    public PagoService(
+            PagoDAO pagoDAO,
+            ReservaDAO reservaDAO,
+            ConfiguracionComplejoService configuracionService) {
+
+        if (pagoDAO == null
+                || reservaDAO == null
+                || configuracionService == null) {
+
             throw new IllegalArgumentException(
                     "Las dependencias de pagos no pueden ser nulas."
             );
         }
+
         this.pagoDAO = pagoDAO;
         this.reservaDAO = reservaDAO;
+        this.configuracionService = configuracionService;
     }
 
     public void guardar(Pago pago) {
@@ -47,10 +73,15 @@ public class PagoService {
 
         if (pago.getEstado() == EstadoPago.ACREDITADO
                 && pago.getFechaPago() == null) {
+
             pago.setFechaPago(LocalDateTime.now());
         }
 
         pagoDAO.guardar(pago);
+
+        if (pago.getEstado() == EstadoPago.ACREDITADO) {
+            confirmarReservaSiAlcanzoSenia(pago.getReservaId());
+        }
     }
 
     public void acreditar(long pagoId) {
@@ -63,8 +94,67 @@ public class PagoService {
         }
 
         Reserva reserva = obtenerReserva(pago.getReservaId());
+        validarReservaCobrable(reserva);
         validarImporteContraSaldo(pago, reserva);
-        pagoDAO.actualizarEstado(pagoId, EstadoPago.ACREDITADO);
+
+        pagoDAO.actualizarEstado(
+                pagoId,
+                EstadoPago.ACREDITADO
+        );
+
+        confirmarReservaSiAlcanzoSenia(pago.getReservaId());
+    }
+
+    private void confirmarReservaSiAlcanzoSenia(long reservaId) {
+        Reserva reserva = obtenerReserva(reservaId);
+
+        if (reserva.getEstado() != EstadoReserva.PENDIENTE) {
+            return;
+        }
+
+        ConfiguracionComplejo configuracion =
+                configuracionService.obtener();
+
+        BigDecimal seniaRequerida = calcularSeniaRequerida(
+                reserva.getPrecioTotal(),
+                configuracion.getPorcentajeSenia()
+        );
+
+        BigDecimal totalAcreditado = pagoDAO
+                .totalAcreditado(reservaId)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        if (totalAcreditado.compareTo(seniaRequerida) >= 0) {
+            reservaDAO.actualizarEstado(
+                    reservaId,
+                    EstadoReserva.CONFIRMADA
+            );
+
+            reserva.setEstado(EstadoReserva.CONFIRMADA);
+            reserva.setFechaVencimiento(null);
+            reserva.setFechaExpiracion(null);
+        }
+    }
+
+    private BigDecimal calcularSeniaRequerida(
+            BigDecimal precioReserva,
+            BigDecimal porcentajeSenia) {
+
+        BigDecimal precio = precioReserva == null
+                ? BigDecimal.ZERO
+                : precioReserva;
+
+        BigDecimal porcentaje = porcentajeSenia == null
+                ? BigDecimal.ZERO
+                : porcentajeSenia;
+
+        return precio
+                .multiply(porcentaje)
+                .divide(
+                        BigDecimal.valueOf(100),
+                        2,
+                        RoundingMode.HALF_UP
+                );
     }
 
     public void anular(long pagoId) {
@@ -76,7 +166,10 @@ public class PagoService {
             );
         }
 
-        pagoDAO.actualizarEstado(pagoId, EstadoPago.ANULADO);
+        pagoDAO.actualizarEstado(
+                pagoId,
+                EstadoPago.ANULADO
+        );
     }
 
     private void reembolsarMovimiento(long pagoId) {
@@ -93,7 +186,7 @@ public class PagoService {
                 EstadoPago.REEMBOLSADO
         );
     }
-    
+
     public void reembolsarPagosDeReservaAutorizado(
             long reservaId) {
 
@@ -101,9 +194,7 @@ public class PagoService {
 
         Reserva reserva = obtenerReserva(reservaId);
 
-        if (reserva.getEstado()
-                != EstadoReserva.CANCELADA) {
-
+        if (reserva.getEstado() != EstadoReserva.CANCELADA) {
             throw new IllegalArgumentException(
                     "La reserva debe estar cancelada "
                             + "antes de registrar el reembolso."
@@ -115,9 +206,7 @@ public class PagoService {
 
         List<Pago> acreditados = pagosReserva.stream()
                 .filter(pago ->
-                        pago.getEstado()
-                                == EstadoPago.ACREDITADO
-                )
+                        pago.getEstado() == EstadoPago.ACREDITADO)
                 .toList();
 
         if (acreditados.isEmpty()) {
@@ -131,15 +220,12 @@ public class PagoService {
             reembolsarMovimiento(pago.getId());
         }
     }
-    
+
     public BigDecimal totalAcreditado(long reservaId) {
         validarId(reservaId, "reserva");
 
         return pagoDAO.totalAcreditado(reservaId)
-                .setScale(
-                        2,
-                        RoundingMode.HALF_UP
-                );
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     public boolean tienePagosAcreditados(long reservaId) {
@@ -151,11 +237,14 @@ public class PagoService {
         Reserva reserva = obtenerReserva(reservaId);
         BigDecimal acreditado = pagoDAO.totalAcreditado(reservaId);
         BigDecimal saldo = reserva.getPrecioTotal().subtract(acreditado);
-        return saldo.max(BigDecimal.ZERO).setScale(2, RoundingMode.HALF_UP);
+
+        return saldo.max(BigDecimal.ZERO)
+                .setScale(2, RoundingMode.HALF_UP);
     }
 
     public boolean estaPagada(long reservaId) {
-        return calcularSaldo(reservaId).compareTo(BigDecimal.ZERO) == 0;
+        return calcularSaldo(reservaId)
+                .compareTo(BigDecimal.ZERO) == 0;
     }
 
     public Pago buscar(long id) {
@@ -173,13 +262,16 @@ public class PagoService {
 
     private void validarPago(Pago pago) {
         if (pago == null) {
-            throw new IllegalArgumentException("El pago no puede ser nulo.");
+            throw new IllegalArgumentException(
+                    "El pago no puede ser nulo."
+            );
         }
 
         validarId(pago.getReservaId(), "reserva");
 
         if (pago.getImporte() == null
                 || pago.getImporte().compareTo(BigDecimal.ZERO) <= 0) {
+
             throw new IllegalArgumentException(
                     "El importe debe ser mayor que cero."
             );
@@ -193,12 +285,15 @@ public class PagoService {
     }
 
     private void normalizar(Pago pago) {
-        pago.setImporte(pago.getImporte().setScale(
-                2,
-                RoundingMode.HALF_UP
-        ));
+        pago.setImporte(
+                pago.getImporte().setScale(
+                        2,
+                        RoundingMode.HALF_UP
+                )
+        );
 
         String referencia = pago.getReferencia();
+
         pago.setReferencia(
                 referencia == null || referencia.isBlank()
                         ? null
@@ -212,14 +307,27 @@ public class PagoService {
                     "No se pueden registrar pagos sobre una reserva cancelada."
             );
         }
+
+        if (reserva.getEstado() == EstadoReserva.EXPIRADA) {
+            throw new IllegalArgumentException(
+                    "No se pueden registrar pagos sobre una reserva expirada."
+            );
+        }
     }
 
-    private void validarImporteContraSaldo(Pago pago, Reserva reserva) {
-        BigDecimal acreditado = pagoDAO.totalAcreditado(reserva.getId());
-        BigDecimal saldo = reserva.getPrecioTotal().subtract(acreditado);
+    private void validarImporteContraSaldo(
+            Pago pago,
+            Reserva reserva) {
+
+        BigDecimal acreditado =
+                pagoDAO.totalAcreditado(reserva.getId());
+
+        BigDecimal saldo =
+                reserva.getPrecioTotal().subtract(acreditado);
 
         if (pago.getId() > 0
                 && pago.getEstado() == EstadoPago.ACREDITADO) {
+
             saldo = saldo.add(pago.getImporte());
         }
 
@@ -235,8 +343,11 @@ public class PagoService {
         Pago pago = pagoDAO.buscar(pagoId);
 
         if (pago == null) {
-            throw new IllegalArgumentException("El pago no existe.");
+            throw new IllegalArgumentException(
+                    "El pago no existe."
+            );
         }
+
         return pago;
     }
 
@@ -245,8 +356,11 @@ public class PagoService {
         Reserva reserva = reservaDAO.buscar(reservaId);
 
         if (reserva == null) {
-            throw new IllegalArgumentException("La reserva no existe.");
+            throw new IllegalArgumentException(
+                    "La reserva no existe."
+            );
         }
+
         return reserva;
     }
 

@@ -9,17 +9,18 @@
             fx:controller="vista.controlador.AgendaController"
             styleClass="agenda-root">
     <top>
-        <VBox spacing="14" styleClass="module-header">
+        <VBox spacing="8" styleClass="module-header">
             <padding>
-                <Insets top="20" right="28" bottom="18" left="28" />
+                <Insets top="14" right="22" bottom="12" left="22" />
             </padding>
             <children>
-                <HBox alignment="CENTER_LEFT" spacing="16">
+                <HBox alignment="CENTER_LEFT" spacing="12">
                     <children>
                         <Button text="← Inicio"
                                 onAction="#volver"
                                 styleClass="back-button" />
-                        <VBox spacing="3">
+
+                        <VBox spacing="1">
                             <children>
                                 <Label text="Agenda diaria"
                                        styleClass="page-title" />
@@ -28,7 +29,9 @@
                                        styleClass="page-subtitle" />
                             </children>
                         </VBox>
+
                         <Region HBox.hgrow="ALWAYS" />
+
                         <Button text="‹"
                                 onAction="#diaAnterior"
                                 styleClass="agenda-nav-button" />
@@ -39,7 +42,7 @@
                                 onAction="#diaSiguiente"
                                 styleClass="agenda-nav-button" />
                         <DatePicker fx:id="selectorFecha"
-                                    prefWidth="150"
+                                    prefWidth="145"
                                     styleClass="modern-date" />
                         <Button fx:id="botonActualizar"
                                 text="ACTUALIZAR"
@@ -48,26 +51,37 @@
                     </children>
                 </HBox>
 
-                <HBox alignment="CENTER_LEFT" spacing="14">
+                <HBox alignment="CENTER_LEFT" spacing="10">
                     <children>
                         <ProgressIndicator fx:id="indicadorCarga"
                                            visible="false"
-                                           maxWidth="18"
-                                           maxHeight="18" />
+                                           maxWidth="16"
+                                           maxHeight="16" />
                         <Label fx:id="etiquetaEstado"
                                text="Preparando agenda..."
                                styleClass="agenda-status" />
+
                         <Region HBox.hgrow="ALWAYS" />
-                        <HBox spacing="10" alignment="CENTER_RIGHT">
+
+                        <FlowPane hgap="6"
+                                  vgap="5"
+                                  alignment="CENTER_RIGHT"
+                                  prefWrapLength="690">
                             <children>
-                                <Label text="Disponible" styleClass="legend-item, legend-disponible" />
-                                <Label text="Pendiente" styleClass="legend-item, legend-pendiente" />
-                                <Label text="Confirmada" styleClass="legend-item, legend-confirmada" />
-                                <Label text="Completada" styleClass="legend-item, legend-completada" />
-                                <Label text="Ausente" styleClass="legend-item, legend-ausente" />
-                                <Label text="Bloqueada" styleClass="legend-item, legend-bloqueada" />
+                                <Label text="Disponible"
+                                       styleClass="legend-item, legend-disponible" />
+                                <Label text="Pendiente"
+                                       styleClass="legend-item, legend-pendiente" />
+                                <Label text="Confirmada"
+                                       styleClass="legend-item, legend-confirmada" />
+                                <Label text="Completada"
+                                       styleClass="legend-item, legend-completada" />
+                                <Label text="Ausente"
+                                       styleClass="legend-item, legend-ausente" />
+                                <Label text="Bloqueada"
+                                       styleClass="legend-item, legend-bloqueada" />
                             </children>
-                        </HBox>
+                        </FlowPane>
                     </children>
                 </HBox>
             </children>
@@ -77,16 +91,19 @@
     <center>
         <StackPane styleClass="agenda-content">
             <padding>
-                <Insets top="20" right="24" bottom="24" left="24" />
+                <Insets top="10" right="14" bottom="14" left="14" />
             </padding>
             <children>
                 <ScrollPane fx:id="scrollAgenda"
                             fitToHeight="false"
-                            fitToWidth="false"
-                            pannable="true"
+                            fitToWidth="true"
+                            pannable="false"
+                            hbarPolicy="AS_NEEDED"
+                            vbarPolicy="AS_NEEDED"
                             styleClass="agenda-scroll">
                     <content>
                         <GridPane fx:id="grillaAgenda"
+                                  minWidth="0"
                                   hgap="1"
                                   vgap="1"
                                   styleClass="agenda-grid" />
@@ -94,19 +111,18 @@
                 </ScrollPane>
 
                 <VBox fx:id="contenedorSinCanchas"
-      alignment="CENTER"
-      spacing="10"
-      visible="false"
-      managed="false"
-      mouseTransparent="true">
-    <children>
-        <Label text="No hay canchas activas para mostrar."
-               styleClass="agenda-empty-title" />
-
-        <Label text="Registrá o activá una cancha para comenzar a usar la agenda."
-               styleClass="agenda-empty-copy" />
-    </children>
-</VBox>
+                      alignment="CENTER"
+                      spacing="8"
+                      visible="false"
+                      managed="false"
+                      mouseTransparent="true">
+                    <children>
+                        <Label text="No hay canchas activas para mostrar."
+                               styleClass="agenda-empty-title" />
+                        <Label text="Registrá o activá una cancha para comenzar a usar la agenda."
+                               styleClass="agenda-empty-copy" />
+                    </children>
+                </VBox>
             </children>
         </StackPane>
     </center>
