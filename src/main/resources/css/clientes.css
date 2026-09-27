@@ -1,19 +1,10 @@
-.client-note {
-    -fx-background-color: #16222d;
-    -fx-background-radius: 10;
-    -fx-border-color: #293b49;
-    -fx-border-radius: 10;
-    -fx-padding: 14;
-}
-
-.client-note-title {
-    -fx-text-fill: #afc4d3;
-    -fx-font-size: 12px;
-    -fx-font-weight: 800;
-}
-
-.client-note-text {
-    -fx-text-fill: #7f919f;
-    -fx-font-size: 12px;
-    -fx-line-spacing: 2px;
-}
+.client-reservation-button { -fx-pref-height: 38; -fx-background-color: #1f6f50; -fx-background-radius: 9; -fx-border-color: #3f9e76; -fx-border-radius: 9; -fx-text-fill: #f1fff8; -fx-font-weight: 800; -fx-cursor: hand; }
+.client-reservation-button:hover { -fx-background-color: #278960; -fx-border-color: #59c996; }
+.history-metric { -fx-background-color: #16232e; -fx-background-radius: 9; -fx-border-color: #2a3d4c; -fx-border-radius: 9; -fx-padding: 10 5; -fx-min-height: 68; }
+.history-metric-label { -fx-text-fill: #8093a1; -fx-font-size: 10px; -fx-font-weight: 800; }
+.history-metric-value { -fx-text-fill: #dbe6ed; -fx-font-size: 21px; -fx-font-weight: 800; }
+.history-money-value { -fx-text-fill: #8eceb6; -fx-font-size: 12px; -fx-font-weight: 800; }
+.history-balance-value { -fx-text-fill: #d4b26a; -fx-font-size: 12px; -fx-font-weight: 800; }
+.next-reservation-card { -fx-background-color: #182936; -fx-background-radius: 9; -fx-border-color: #345064; -fx-border-radius: 9; -fx-padding: 11 14; }
+.next-reservation-value { -fx-text-fill: #b8ccda; -fx-font-size: 13px; -fx-font-weight: 700; -fx-padding: 0 0 0 12; }
+.client-history-table { -fx-min-height: 230; }

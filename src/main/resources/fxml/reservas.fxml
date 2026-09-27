@@ -1,316 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.ReservasController"
-            styleClass="module-root">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.ReservasController" styleClass="module-root">
     <top>
-        <HBox alignment="CENTER_LEFT"
-              spacing="16"
-              styleClass="module-header">
-            <padding>
-                <Insets top="22" right="28" bottom="22" left="28" />
-            </padding>
-            <children>
-                <Button text="← Inicio"
-                        onAction="#volver"
-                        styleClass="back-button" />
-
-                <VBox spacing="3">
-                    <children>
-                        <Label text="Gestión de reservas"
-                               styleClass="page-title" />
-                        <Label text="Consultá disponibilidad y administrá la agenda del complejo."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-
-                <Region HBox.hgrow="ALWAYS" />
-
-                <Button text="NUEVA RESERVA"
-                        onAction="#nuevaReserva"
-                        styleClass="primary-button" />
-            </children>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
+            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
+            <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+            <VBox spacing="3">
+                <Label text="Gestión de reservas" styleClass="page-title" />
+                <Label text="Consultá disponibilidad y administrá la agenda del complejo." styleClass="page-subtitle" />
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button text="NUEVA RESERVA" onAction="#nuevaReserva" styleClass="primary-button" />
         </HBox>
     </top>
-
     <center>
-        <SplitPane dividerPositions="0.64"
-                   styleClass="module-split">
-            <items>
-                <VBox spacing="16" styleClass="list-panel">
-                    <padding>
-                        <Insets top="22" right="22" bottom="22" left="28" />
-                    </padding>
-                    <children>
-                        <VBox spacing="12">
-                            <children>
-                                <HBox alignment="CENTER_LEFT" spacing="10">
-                                    <children>
-                                        <Button text="‹"
-                                                onAction="#diaAnterior"
-                                                styleClass="reservation-date-button" />
-
-                                        <Button text="HOY"
-                                                onAction="#irHoy"
-                                                styleClass="secondary-button" />
-
-                                        <Button text="›"
-                                                onAction="#diaSiguiente"
-                                                styleClass="reservation-date-button" />
-
-                                        <DatePicker fx:id="filtroFecha"
-                                                    prefWidth="155"
-                                                    styleClass="modern-date" />
-
-                                        <Label fx:id="etiquetaFechaSeleccionada"
-                                               text="Reservas de hoy"
-                                               styleClass="reservation-date-label" />
-
-                                        <Region HBox.hgrow="ALWAYS" />
-
-                                        <Button text="Actualizar"
-                                                onAction="#cargarReservas"
-                                                styleClass="secondary-button" />
-                                    </children>
-                                </HBox>
-
-                                <HBox spacing="10">
-                                    <children>
-                                        <TextField fx:id="campoBuscar"
-                                                   promptText="Buscar por cliente, cancha o estado..."
-                                                   HBox.hgrow="ALWAYS"
-                                                   styleClass="modern-field" />
-
-                                        <ComboBox fx:id="filtroEstado"
-                                                  promptText="Todos los estados"
-                                                  prefWidth="180"
-                                                  styleClass="modern-combo" />
-
-                                        <Button text="Limpiar filtros"
-                                                onAction="#limpiarFiltros"
-                                                styleClass="secondary-button" />
-                                    </children>
-                                </HBox>
-                            </children>
-                        </VBox>
-
-                        <TableView fx:id="tablaReservas"
-                                   VBox.vgrow="ALWAYS"
-                                   styleClass="modern-table">
-                            <columns>
-                                <TableColumn fx:id="columnaFecha"
-                                             text="FECHA"
-                                             prefWidth="96" />
-                                <TableColumn fx:id="columnaHorario"
-                                             text="HORARIO"
-                                             prefWidth="115" />
-                                <TableColumn fx:id="columnaCancha"
-                                             text="CANCHA"
-                                             prefWidth="145" />
-                                <TableColumn fx:id="columnaCliente"
-                                             text="CLIENTE"
-                                             prefWidth="175" />
-                                <TableColumn fx:id="columnaEstado"
-                                             text="ESTADO"
-                                             prefWidth="115" />
-                                <TableColumn fx:id="columnaPrecio"
-                                             text="PRECIO"
-                                             prefWidth="105" />
-                            </columns>
-                            <placeholder>
-                                <Label text="Todavía no hay reservas registradas."
-                                       styleClass="empty-state" />
-                            </placeholder>
-                        </TableView>
-                    </children>
+        <SplitPane dividerPositions="0.64" styleClass="module-split">
+            <VBox spacing="16" styleClass="list-panel">
+                <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                <VBox spacing="12">
+                    <HBox alignment="CENTER_LEFT" spacing="10">
+                        <Button text="‹" onAction="#diaAnterior" styleClass="reservation-date-button" />
+                        <Button text="HOY" onAction="#irHoy" styleClass="secondary-button" />
+                        <Button text="›" onAction="#diaSiguiente" styleClass="reservation-date-button" />
+                        <DatePicker fx:id="filtroFecha" prefWidth="155" styleClass="modern-date" />
+                        <Label fx:id="etiquetaFechaSeleccionada" text="Reservas de hoy" styleClass="reservation-date-label" />
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="Actualizar" onAction="#cargarReservas" styleClass="secondary-button" />
+                    </HBox>
+                    <HBox spacing="10">
+                        <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha o estado..." HBox.hgrow="ALWAYS" styleClass="modern-field" />
+                        <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="180" styleClass="modern-combo" />
+                        <Button text="Limpiar filtros" onAction="#limpiarFiltros" styleClass="secondary-button" />
+                    </HBox>
                 </VBox>
-
-                <ScrollPane fitToWidth="true"
-                            styleClass="form-scroll">
-                    <content>
-                        <VBox spacing="14" styleClass="form-card">
-                            <padding>
-                                <Insets top="24" right="30" bottom="28" left="30" />
-                            </padding>
-                            <children>
-                                <Label fx:id="tituloFormulario"
-                                       text="Nueva reserva"
-                                       styleClass="section-title" />
-
-                                <Label text="La hora final y el precio se calculan automáticamente."
-                                       styleClass="small-caption" />
-
-                                <Label text="Cliente *"
-                                       styleClass="field-label" />
-                                <ComboBox fx:id="comboCliente"
-                                          maxWidth="Infinity"
-                                          promptText="Seleccionar cliente"
-                                          styleClass="modern-combo" />
-
-                                <Label text="Cancha *"
-                                       styleClass="field-label" />
-                                <ComboBox fx:id="comboCancha"
-                                          maxWidth="Infinity"
-                                          promptText="Seleccionar cancha"
-                                          styleClass="modern-combo" />
-
-                                <GridPane hgap="12" vgap="10">
-                                    <columnConstraints>
-                                        <ColumnConstraints percentWidth="50"
-                                                           hgrow="ALWAYS" />
-                                        <ColumnConstraints percentWidth="50"
-                                                           hgrow="ALWAYS" />
-                                    </columnConstraints>
-                                    <children>
-                                        <VBox spacing="7"
-                                              GridPane.columnIndex="0">
-                                            <children>
-                                                <Label text="Fecha *"
-                                                       styleClass="field-label" />
-                                                <DatePicker fx:id="selectorFecha"
-                                                            maxWidth="Infinity"
-                                                            styleClass="modern-date" />
-                                            </children>
-                                        </VBox>
-
-                                        <VBox spacing="7"
-                                              GridPane.columnIndex="1">
-                                            <children>
-                                                <Label text="Horario disponible *"
-                                                       styleClass="field-label" />
-                                                <ComboBox fx:id="comboHorario"
-                                                          maxWidth="Infinity"
-                                                          promptText="Seleccionar"
-                                                          styleClass="modern-combo" />
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </GridPane>
-
-                                <HBox alignment="CENTER_LEFT"
-                                      spacing="12"
-                                      styleClass="price-summary">
-                                    <children>
-                                        <VBox spacing="3">
-                                            <children>
-                                                <Label text="PRECIO DE LA RESERVA"
-                                                       styleClass="metric-label" />
-                                                <Label fx:id="etiquetaPrecio"
-                                                       text="ARS 0"
-                                                       styleClass="reservation-price" />
-
-                                                <Label text="SALDO PENDIENTE"
-                                                       styleClass="metric-label" />
-                                                <Label fx:id="etiquetaSaldoPendiente"
-                                                       text="ARS 0"
-                                                       styleClass="reservation-balance" />
-                                            </children>
-                                        </VBox>
-
-                                        <Region HBox.hgrow="ALWAYS" />
-
-                                        <VBox spacing="5"
-                                              alignment="CENTER_RIGHT">
-                                            <children>
-                                                <Label text="JUGADORES"
-                                                       styleClass="metric-label" />
-                                                <Spinner fx:id="spinnerJugadores"
-                                                         prefWidth="100"
-                                                         editable="false" />
-                                            </children>
-                                        </VBox>
-                                    </children>
-                                </HBox>
-
-                                <Label text="Comentarios del cliente"
-                                       styleClass="field-label" />
-                                <TextArea fx:id="campoComentarios"
-                                          prefRowCount="2"
-                                          wrapText="true"
-                                          promptText="Ejemplo: partido amistoso..."
-                                          styleClass="modern-area" />
-
-                                <Label text="Observaciones administrativas"
-                                       styleClass="field-label" />
-                                <TextArea fx:id="campoObservaciones"
-                                          prefRowCount="2"
-                                          wrapText="true"
-                                          promptText="Información privada para el personal..."
-                                          styleClass="modern-area" />
-
-                                <VBox fx:id="contenedorCancelacion"
-                                      visible="false"
-                                      managed="false"
-                                      spacing="6"
-                                      styleClass="cancellation-detail">
-                                    <children>
-                                        <Label text="DETALLE DE CANCELACIÓN"
-                                               styleClass="metric-label" />
-                                        <Label fx:id="etiquetaCancelacion"
-                                               wrapText="true"
-                                               styleClass="cancellation-detail-text" />
-                                    </children>
-                                </VBox>
-
-                                <Label fx:id="etiquetaMensaje"
-                                       minHeight="22"
-                                       wrapText="true" />
-
-                                <Button fx:id="botonGuardar"
-                                        text="GUARDAR RESERVA"
-                                        onAction="#guardar"
-                                        maxWidth="Infinity"
-                                        styleClass="primary-button" />
-
-                                <VBox spacing="9">
-                                    <children>
-                                        <HBox spacing="9">
-                                            <children>
-                                                <Button fx:id="botonAccionPrincipal"
-                                                        text="CONFIRMAR RESERVA"
-                                                        onAction="#ejecutarAccionPrincipal"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="Infinity"
-                                                        styleClass="status-confirm-button" />
-
-                                                <Button fx:id="botonPagos"
-                                                        text="ABRIR PAGOS"
-                                                        onAction="#abrirPagos"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="Infinity"
-                                                        styleClass="payment-button" />
-                                            </children>
-                                        </HBox>
-
-                                        <HBox spacing="9">
-                                            <children>
-                                                <Button fx:id="botonReprogramar"
-                                                        text="REPROGRAMAR"
-                                                        onAction="#iniciarReprogramacion"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="Infinity"
-                                                        styleClass="reschedule-button" />
-
-                                                <Button fx:id="botonCancelar"
-                                                        text="CANCELAR RESERVA"
-                                                        onAction="#cancelarReserva"
-                                                        HBox.hgrow="ALWAYS"
-                                                        maxWidth="Infinity"
-                                                        styleClass="danger-button" />
-                                            </children>
-                                        </HBox>
-                                    </children>
-                                </VBox>
-                            </children>
+                <TableView fx:id="tablaReservas" VBox.vgrow="ALWAYS" styleClass="modern-table">
+                    <columns>
+                        <TableColumn fx:id="columnaFecha" text="FECHA" prefWidth="96" />
+                        <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="115" />
+                        <TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="145" />
+                        <TableColumn fx:id="columnaCliente" text="CLIENTE" prefWidth="175" />
+                        <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="115" />
+                        <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="105" />
+                    </columns>
+                    <placeholder><Label text="Todavía no hay reservas registradas." styleClass="empty-state" /></placeholder>
+                </TableView>
+            </VBox>
+            <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                <VBox spacing="14" styleClass="form-card">
+                    <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                    <Label fx:id="tituloFormulario" text="Nueva reserva" styleClass="section-title" />
+                    <Label text="La hora final y el precio se calculan automáticamente." styleClass="small-caption" />
+                    <Label text="Cliente *" styleClass="field-label" />
+                    <ComboBox fx:id="comboCliente" maxWidth="Infinity" promptText="Seleccionar cliente" styleClass="modern-combo" />
+                    <Label text="Cancha *" styleClass="field-label" />
+                    <ComboBox fx:id="comboCancha" maxWidth="Infinity" promptText="Seleccionar cancha" styleClass="modern-combo" />
+                    <GridPane hgap="12" vgap="10">
+                        <columnConstraints><ColumnConstraints percentWidth="50" hgrow="ALWAYS" /><ColumnConstraints percentWidth="50" hgrow="ALWAYS" /></columnConstraints>
+                        <VBox spacing="7" GridPane.columnIndex="0"><Label text="Fecha *" styleClass="field-label" /><DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="modern-date" /></VBox>
+                        <VBox spacing="7" GridPane.columnIndex="1"><Label text="Horario disponible *" styleClass="field-label" /><ComboBox fx:id="comboHorario" maxWidth="Infinity" promptText="Seleccionar" styleClass="modern-combo" /></VBox>
+                    </GridPane>
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="price-summary">
+                        <VBox spacing="3">
+                            <Label text="PRECIO DE LA RESERVA" styleClass="metric-label" />
+                            <Label fx:id="etiquetaPrecio" text="ARS 0" styleClass="reservation-price" />
+                            <Label text="SALDO PENDIENTE" styleClass="metric-label" />
+                            <Label fx:id="etiquetaSaldoPendiente" text="ARS 0" styleClass="reservation-balance" />
                         </VBox>
-                    </content>
-                </ScrollPane>
-            </items>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <VBox spacing="5" alignment="CENTER_RIGHT"><Label text="JUGADORES" styleClass="metric-label" /><Spinner fx:id="spinnerJugadores" prefWidth="100" editable="false" /></VBox>
+                    </HBox>
+                    <Label text="Comentarios del cliente" styleClass="field-label" />
+                    <TextArea fx:id="campoComentarios" prefRowCount="2" wrapText="true" promptText="Ejemplo: partido amistoso..." styleClass="modern-area" />
+                    <Label text="Observaciones administrativas" styleClass="field-label" />
+                    <TextArea fx:id="campoObservaciones" prefRowCount="2" wrapText="true" promptText="Información privada para el personal..." styleClass="modern-area" />
+                    <VBox fx:id="contenedorCancelacion" visible="false" managed="false" spacing="6" styleClass="cancellation-detail">
+                        <Label text="DETALLE DE CANCELACIÓN" styleClass="metric-label" />
+                        <Label fx:id="etiquetaCancelacion" wrapText="true" styleClass="cancellation-detail-text" />
+                    </VBox>
+                    <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+                    <Button fx:id="botonGuardar" text="GUARDAR RESERVA" onAction="#guardar" maxWidth="Infinity" styleClass="primary-button" />
+                    <Button fx:id="botonWhatsApp" text="ABRIR WHATSAPP" onAction="#abrirWhatsApp" maxWidth="Infinity"
+                            visible="false" managed="false" styleClass="whatsapp-button" />
+                    <VBox spacing="9">
+                        <HBox spacing="9">
+                            <Button fx:id="botonAccionPrincipal" text="CONFIRMAR RESERVA" onAction="#ejecutarAccionPrincipal" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="status-confirm-button" />
+                            <Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button" />
+                        </HBox>
+                        <HBox spacing="9">
+                            <Button fx:id="botonReprogramar" text="REPROGRAMAR" onAction="#iniciarReprogramacion" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="reschedule-button" />
+                            <Button fx:id="botonCancelar" text="CANCELAR RESERVA" onAction="#cancelarReserva" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="danger-button" />
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
         </SplitPane>
     </center>
 </BorderPane>

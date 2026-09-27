@@ -5,6 +5,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.IntConsumer;
 
 public final class ProcesadorVencimientosService {
 
@@ -14,14 +15,13 @@ public final class ProcesadorVencimientosService {
     private final AtomicBoolean iniciado = new AtomicBoolean(false);
 
     private ScheduledExecutorService ejecutor;
+    private volatile IntConsumer alProcesarVencimientos;
 
     public ProcesadorVencimientosService() {
         this(new ReservaService());
     }
 
-    public ProcesadorVencimientosService(
-            ReservaService reservaService) {
-
+    public ProcesadorVencimientosService(ReservaService reservaService) {
         if (reservaService == null) {
             throw new IllegalArgumentException(
                     "El servicio de reservas no puede ser nulo."
@@ -29,6 +29,12 @@ public final class ProcesadorVencimientosService {
         }
 
         this.reservaService = reservaService;
+    }
+
+    public void setAlProcesarVencimientos(
+            IntConsumer alProcesarVencimientos) {
+
+        this.alProcesarVencimientos = alProcesarVencimientos;
     }
 
     public void iniciar() {
@@ -62,8 +68,7 @@ public final class ProcesadorVencimientosService {
 
     private void procesarConSeguridad() {
         try {
-            int cantidad =
-                    reservaService.expirarReservasPendientes();
+            int cantidad = reservaService.expirarReservasPendientes();
 
             if (cantidad > 0) {
                 System.out.println(
@@ -71,10 +76,30 @@ public final class ProcesadorVencimientosService {
                                 + cantidad
                 );
             }
+
+            notificarProcesamiento(cantidad);
+
         } catch (RuntimeException exception) {
             System.err.println(
                     "No se pudieron procesar los vencimientos "
                             + "de reservas pendientes."
+            );
+            exception.printStackTrace();
+        }
+    }
+
+    private void notificarProcesamiento(int cantidadExpirada) {
+        IntConsumer listener = alProcesarVencimientos;
+
+        if (listener == null) {
+            return;
+        }
+
+        try {
+            listener.accept(cantidadExpirada);
+        } catch (RuntimeException exception) {
+            System.err.println(
+                    "No se pudo notificar la actualización del dashboard."
             );
             exception.printStackTrace();
         }

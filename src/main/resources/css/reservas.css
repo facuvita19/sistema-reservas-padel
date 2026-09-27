@@ -5,187 +5,29 @@
     -fx-border-radius: 11;
     -fx-padding: 15 17;
 }
-
-.reservation-price {
-    -fx-text-fill: #a9c4d8;
-    -fx-font-size: 24px;
-    -fx-font-weight: 800;
-}
-
-.modern-date {
-    -fx-pref-height: 46;
-    -fx-background-color: #1a2531;
-    -fx-background-radius: 10;
-    -fx-border-color: #2d3d4c;
-    -fx-border-radius: 10;
-}
-
-.modern-date .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: #eef2f6;
-    -fx-prompt-text-fill: #697b89;
-}
-
-.modern-date:focused {
-    -fx-border-color: #587c98;
-}
-
-.date-picker-popup {
-    -fx-background-color: #18232e;
-    -fx-border-color: #30414f;
-}
-
-.date-picker-popup .month-year-pane {
-    -fx-background-color: #14202a;
-}
-
-.date-picker-popup .day-cell {
-    -fx-background-color: #18232e;
-    -fx-text-fill: #dce4ea;
-}
-
-.date-picker-popup .day-cell:hover {
-    -fx-background-color: #294052;
-}
-
-.date-picker-popup .selected {
-    -fx-background-color: #587c98;
-}
-
-.status-confirm-button {
-    -fx-pref-height: 44;
-    -fx-background-color: #1f3a31;
-    -fx-background-radius: 10;
-    -fx-border-color: #3e6658;
-    -fx-border-radius: 10;
-    -fx-text-fill: #8eceb6;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-
-.status-confirm-button:hover {
-    -fx-background-color: #284b3f;
-    -fx-border-color: #57927d;
-}
-
-.spinner {
-    -fx-background-color: #1a2531;
-    -fx-background-radius: 8;
-    -fx-border-color: #2d3d4c;
-    -fx-border-radius: 8;
-}
-
-.spinner .text-field {
-    -fx-background-color: transparent;
-    -fx-text-fill: #eef2f6;
-}
-
-.reservation-date-button {
-    -fx-min-width: 42;
-    -fx-pref-width: 42;
-    -fx-pref-height: 42;
-    -fx-background-color: #1d2935;
-    -fx-background-radius: 9;
-    -fx-border-color: #30414f;
-    -fx-border-radius: 9;
-    -fx-text-fill: #cbd7df;
-    -fx-font-size: 21px;
-    -fx-font-weight: 700;
-    -fx-cursor: hand;
-}
-
-.reservation-date-button:hover {
-    -fx-background-color: #293b49;
-    -fx-border-color: -color-principal;
-}
-
-.reservation-date-label {
-    -fx-text-fill: #afc0cc;
-    -fx-font-size: 14px;
-    -fx-font-weight: 700;
-    -fx-padding: 0 0 0 5;
-}
-
-.status-complete-button {
-    -fx-pref-height: 44;
-    -fx-background-color: #234438;
-    -fx-background-radius: 10;
-    -fx-border-color: #477664;
-    -fx-border-radius: 10;
-    -fx-text-fill: #9ed1bc;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-
-.status-complete-button:hover {
-    -fx-background-color: #2c5546;
-    -fx-border-color: #67a48d;
-}
-
-.status-absent-button {
-    -fx-pref-height: 44;
-    -fx-background-color: #43272d;
-    -fx-background-radius: 10;
-    -fx-border-color: #75424c;
-    -fx-border-radius: 10;
-    -fx-text-fill: #e1a0aa;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-
-.status-absent-button:hover {
-    -fx-background-color: #573139;
-    -fx-border-color: #a05c69;
-}
-
-.payment-button {
-    -fx-pref-height: 44;
-    -fx-background-color: #263b4c;
-    -fx-background-radius: 10;
-    -fx-border-color: #4a6c84;
-    -fx-border-radius: 10;
-    -fx-text-fill: #b2cddd;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-
-.payment-button:hover {
-    -fx-background-color: #304b60;
-    -fx-border-color: -color-principal-hover;
-}
-
-.reservation-balance {
-    -fx-text-fill: #d4b26a;
-    -fx-font-size: 20px;
-    -fx-font-weight: 800;
-}
-
-.cancellation-detail {
-    -fx-background-color: #302326;
-    -fx-background-radius: 10;
-    -fx-border-color: #67424a;
-    -fx-border-radius: 10;
-    -fx-padding: 13 15;
-}
-
-.cancellation-detail-text {
-    -fx-text-fill: #dca5ad;
-    -fx-font-size: 12px;
-    -fx-line-spacing: 3px;
-}
-
-.reschedule-button {
-    -fx-pref-height: 44;
-    -fx-background-color: #2c3446;
-    -fx-background-radius: 10;
-    -fx-border-color: #555f7b;
-    -fx-border-radius: 10;
-    -fx-text-fill: #bec8e2;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-
-.reschedule-button:hover {
-    -fx-background-color: #384258;
-    -fx-border-color: -color-principal-hover;
-}
+.reservation-price { -fx-text-fill: #a9c4d8; -fx-font-size: 24px; -fx-font-weight: 800; }
+.modern-date { -fx-pref-height: 46; -fx-background-color: #1a2531; -fx-background-radius: 10; -fx-border-color: #2d3d4c; -fx-border-radius: 10; }
+.modern-date .text-field { -fx-background-color: transparent; -fx-text-fill: #eef2f6; -fx-prompt-text-fill: #697b89; }
+.modern-date:focused { -fx-border-color: #587c98; }
+.date-picker-popup { -fx-background-color: #18232e; -fx-border-color: #30414f; }
+.date-picker-popup .month-year-pane { -fx-background-color: #14202a; }
+.date-picker-popup .day-cell { -fx-background-color: #18232e; -fx-text-fill: #dce4ea; }
+.date-picker-popup .day-cell:hover { -fx-background-color: #294052; }
+.date-picker-popup .selected { -fx-background-color: #587c98; }
+.status-confirm-button { -fx-pref-height: 44; -fx-background-color: #1f3a31; -fx-background-radius: 10; -fx-border-color: #3e6658; -fx-border-radius: 10; -fx-text-fill: #8eceb6; -fx-font-weight: 800; -fx-cursor: hand; }
+.status-confirm-button:hover { -fx-background-color: #284b3f; -fx-border-color: #57927d; }
+.spinner { -fx-background-color: #1a2531; -fx-background-radius: 8; -fx-border-color: #2d3d4c; -fx-border-radius: 8; }
+.spinner .text-field { -fx-background-color: transparent; -fx-text-fill: #eef2f6; }
+.reservation-date-button { -fx-min-width: 42; -fx-pref-width: 42; -fx-pref-height: 42; -fx-background-color: #1d2935; -fx-background-radius: 9; -fx-border-color: #30414f; -fx-border-radius: 9; -fx-text-fill: #cbd7df; -fx-font-size: 21px; -fx-font-weight: 700; -fx-cursor: hand; }
+.reservation-date-button:hover { -fx-background-color: #293b49; -fx-border-color: -color-principal; }
+.reservation-date-label { -fx-text-fill: #afc0cc; -fx-font-size: 14px; -fx-font-weight: 700; -fx-padding: 0 0 0 5; }
+.payment-button { -fx-pref-height: 44; -fx-background-color: #263b4c; -fx-background-radius: 10; -fx-border-color: #4a6c84; -fx-border-radius: 10; -fx-text-fill: #b2cddd; -fx-font-weight: 800; -fx-cursor: hand; }
+.payment-button:hover { -fx-background-color: #304b60; -fx-border-color: -color-principal-hover; }
+.reservation-balance { -fx-text-fill: #d4b26a; -fx-font-size: 20px; -fx-font-weight: 800; }
+.cancellation-detail { -fx-background-color: #302326; -fx-background-radius: 10; -fx-border-color: #67424a; -fx-border-radius: 10; -fx-padding: 13 15; }
+.cancellation-detail-text { -fx-text-fill: #dca5ad; -fx-font-size: 12px; -fx-line-spacing: 3px; }
+.reschedule-button { -fx-pref-height: 44; -fx-background-color: #2c3446; -fx-background-radius: 10; -fx-border-color: #555f7b; -fx-border-radius: 10; -fx-text-fill: #bec8e2; -fx-font-weight: 800; -fx-cursor: hand; }
+.reschedule-button:hover { -fx-background-color: #384258; -fx-border-color: -color-principal-hover; }
+.whatsapp-button { -fx-pref-height: 46; -fx-background-color: #1f6f50; -fx-background-radius: 10; -fx-border-color: #39a87a; -fx-border-radius: 10; -fx-text-fill: #f2fff9; -fx-font-weight: 800; -fx-cursor: hand; }
+.whatsapp-button:hover { -fx-background-color: #278960; -fx-border-color: #59c996; }
+.whatsapp-button:pressed { -fx-background-color: #195b42; }
