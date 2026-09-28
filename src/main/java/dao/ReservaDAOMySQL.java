@@ -187,7 +187,8 @@ public class ReservaDAOMySQL implements ReservaDAO {
 
         String sql = "UPDATE reservas r SET r.estado = 'EXPIRADA', "
                 + "r.fecha_expiracion = ?, r.fecha_vencimiento = NULL "
-                + "WHERE r.estado = 'PENDIENTE' "
+                + "WHERE r.origen = 'WEB' "
+                + "AND r.estado = 'PENDIENTE' "
                 + "AND r.fecha_vencimiento IS NOT NULL "
                 + "AND r.fecha_vencimiento <= ? "
                 + "AND NOT EXISTS (SELECT 1 FROM pagos p "
