@@ -1,115 +1,97 @@
-const API=`http://${window.location.hostname}:8080/api/publica`;
-const STORAGE="padel.solicitud.codigo";
-const REQUEST_TIMEOUT_MS=15000;
-let creandoSolicitud=false;
-let toastTimer=null;
-const state={complex:null,courts:[],court:null,date:null,time:null,availability:null,created:null,timer:null};
-const $=id=>document.getElementById(id);
-const money=(v,c="ARS")=>new Intl.NumberFormat("es-AR",{style:"currency",currency:c}).format(Number(v||0));
-const dateAr=v=>new Intl.DateTimeFormat("es-AR",{dateStyle:"full"}).format(new Date(v+"T12:00:00"));
-const safe=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const API = `http://${window.location.hostname}:8080/api/publica`;
+const STORAGE_CODE = "padel.solicitud.codigo";
+const STORAGE_HISTORY = "padel.solicitudes.historial.v2";
+const REQUEST_TIMEOUT_MS = 15000;
+const AUTO_REFRESH_MS = 30000;
+const MAX_HISTORY = 12;
+let creandoSolicitud = false;
+let toastTimer = null;
+let trackingRefreshTimer = null;
+const state = { complex:null, courts:[], court:null, date:null, time:null, availability:null, created:null, timer:null, tracking:null };
+const $ = id => document.getElementById(id);
+const money = (v,c="ARS") => new Intl.NumberFormat("es-AR",{style:"currency",currency:c}).format(Number(v||0));
+const dateAr = v => new Intl.DateTimeFormat("es-AR",{dateStyle:"full"}).format(new Date(`${v}T12:00:00`));
+const shortDate = v => new Intl.DateTimeFormat("es-AR",{day:"2-digit",month:"short"}).format(new Date(`${v}T12:00:00`));
+const safe = v => String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const localIso = date => { const d=new Date(date); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
 
-async function api(path,options={}){
-  const controller=new AbortController();
-  const timeout=setTimeout(()=>controller.abort(),REQUEST_TIMEOUT_MS);
-  try{
+async function api(path, options={}) {
+  const controller=new AbortController(); const timeout=setTimeout(()=>controller.abort(),REQUEST_TIMEOUT_MS);
+  try {
     const response=await fetch(API+path,{headers:{"Content-Type":"application/json",...(options.headers||{})},...options,signal:controller.signal});
-    let data;
-    try{data=await response.json()}catch{data={mensaje:"El servidor devolvió una respuesta inválida."}}
-    if(!response.ok){
-      const error=new Error(data.mensaje||"No se pudo completar la operación.");
-      error.codigo=data.codigo;error.operacionId=data.operacionId||response.headers.get("X-Operacion-Id");error.estado=response.status;throw error;
-    }
+    let data; try{data=await response.json()}catch{data={mensaje:"El servidor devolvió una respuesta inválida."}}
+    if(!response.ok){const error=new Error(data.mensaje||"No se pudo completar la operación.");error.codigo=data.codigo;error.operacionId=data.operacionId||response.headers.get("X-Operacion-Id");error.estado=response.status;throw error}
     return data;
-  }catch(error){
-    if(error.name==="AbortError")throw new Error("La operación demoró demasiado. Verificá la conexión e intentá nuevamente.");
-    throw error;
-  }finally{clearTimeout(timeout)}
+  } catch(error) { if(error.name==="AbortError") throw new Error("La operación demoró demasiado. Verificá la conexión e intentá nuevamente."); throw error; }
+  finally { clearTimeout(timeout); }
 }
 function message(text){$("message").textContent=text;$("message").classList.toggle("hidden",!text);if(text)$("message").scrollIntoView({behavior:"smooth",block:"center"})}
 function toast(text){clearTimeout(toastTimer);$("toast").textContent=text;$("toast").classList.remove("hidden");toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2200)}
-function showStep(n){document.querySelectorAll(".panel").forEach((p,i)=>p.classList.toggle("hidden",i!==n-1));document.querySelectorAll("[data-step-indicator]").forEach((s,i)=>s.classList.toggle("active",i<=n-1));message("");if(location.hash!=="#reservar")location.hash="reservar";else $("reservar").scrollIntoView({behavior:"smooth",block:"start"})}
+function showStep(n){document.querySelectorAll(".panel").forEach((p,i)=>p.classList.toggle("hidden",i!==n-1));document.querySelectorAll("[data-step-indicator]").forEach((s,i)=>s.classList.toggle("active",i<=n-1));message("");$("reservar").scrollIntoView({behavior:"smooth",block:"start"})}
 function hexToRgb(hex){const clean=String(hex||"").replace("#","");if(!/^[0-9a-f]{6}$/i.test(clean))return "72,107,134";return `${parseInt(clean.slice(0,2),16)},${parseInt(clean.slice(2,4),16)},${parseInt(clean.slice(4,6),16)}`}
+function getHistory(){try{return JSON.parse(localStorage.getItem(STORAGE_HISTORY)||"[]")}catch{return []}}
+function saveHistory(items){localStorage.setItem(STORAGE_HISTORY,JSON.stringify(items.slice(0,MAX_HISTORY)));renderRecentBookings()}
+function upsertHistory(item){const current=getHistory().filter(x=>x.codigoSeguimiento!==item.codigoSeguimiento);saveHistory([{...item,guardadaEn:new Date().toISOString()},...current])}
 
 async function init(){
-  const now=new Date();now.setMinutes(now.getMinutes()-now.getTimezoneOffset());
-  $("date").min=now.toISOString().slice(0,10);$("date").value=new Date(now.getTime()+86400000).toISOString().slice(0,10);
+  const today=new Date();$("date").min=localIso(today);state.date=localIso(today);$("date").value=state.date;renderQuickDates();
   try{
-    const [complex,courts]=await Promise.all([api("/complejo"),api("/canchas")]);
-    state.complex=complex;state.courts=courts;
+    const [complex,courts]=await Promise.all([api("/complejo"),api("/canchas")]);state.complex=complex;state.courts=courts;
     const color=complex.colorPrincipal||"#486b86";document.documentElement.style.setProperty("--p",color);document.documentElement.style.setProperty("--p-rgb",hexToRgb(color));
     $("brandName").textContent=complex.nombreComercial;$("footerName").textContent=complex.nombreComercial;$("footerContact").textContent=[complex.direccion,complex.whatsapp].filter(Boolean).join(" · ");document.title=`Reservas | ${complex.nombreComercial}`;
     $("court").innerHTML='<option value="">Seleccionar cancha</option>'+courts.map(c=>`<option value="${c.id}">${safe(c.nombre)}</option>`).join("");
-    $("apiStatus").innerHTML='<i></i> Disponibilidad online';$("apiStatus").classList.remove("offline");$("court").addEventListener("change",courtChanged);
-    const saved=localStorage.getItem(STORAGE);if(saved)$("trackingCode").value=saved;
-  }catch(e){$("apiStatus").innerHTML='<i></i> Servicio no disponible';$("apiStatus").classList.add("offline");$("court").innerHTML='<option value="">No se pudieron cargar las canchas</option>';message("No pudimos conectarnos con el sistema. Verificá que la API esté en funcionamiento.")}
+    renderCourtCards();renderComplexFacts();$("apiStatus").innerHTML='<i></i> Disponibilidad online';$("apiStatus").classList.remove("offline");
+    const saved=localStorage.getItem(STORAGE_CODE);if(saved)$("trackingCode").value=saved;renderRecentBookings();
+  }catch(e){$("apiStatus").innerHTML='<i></i> Servicio no disponible';$("apiStatus").classList.add("offline");$("courtCards").innerHTML='<div class="empty"><strong>No pudimos cargar las canchas</strong><p>Verificá la conexión e intentá nuevamente.</p></div>';message("No pudimos conectarnos con el sistema. Verificá que la API esté en funcionamiento.")}
+  registerPwa();
 }
-function courtChanged(){
-  state.court=state.courts.find(c=>String(c.id)===$("court").value)||null;
-  if(!state.court){$("courtInfo").innerHTML='<span class="detail-icon">⌁</span><p>Seleccioná una cancha para ver precio, duración y seña.</p>';return}
-  const c=state.court;
-  $("courtInfo").innerHTML=`<div class="detail-grid"><div><small>Cancha</small><strong>${safe(c.nombre)}</strong></div><div><small>Duración</small><strong>${c.duracionMinutos} minutos</strong></div><div><small>Precio</small><strong>${money(c.precio,state.complex.moneda)}</strong></div><div><small>Seña</small><strong>${money(c.importeSenia,state.complex.moneda)}</strong></div></div>`;
+function renderCourtCards(){
+  $("courtCount").textContent=`${state.courts.length} ${state.courts.length===1?"cancha":"canchas"}`;
+  $("courtCards").innerHTML=state.courts.map(c=>`<button class="court-card" type="button" role="radio" aria-checked="false" data-court-id="${c.id}"><span class="court-card-check">✓</span><h4>${safe(c.nombre)}</h4><p class="court-card-description">${safe(c.descripcion||[c.tipo,c.superficie].filter(Boolean).join(" · ")||"Cancha disponible online")}</p><div class="court-card-meta"><span>${safe(c.tipo||"Pádel")}</span><span>${c.duracionMinutos} min</span>${c.tieneIluminacion?"<span>Iluminada</span>":""}</div><div class="court-card-price"><small>Turno</small><strong>${money(c.precio,state.complex.moneda)}</strong></div></button>`).join("");
+  document.querySelectorAll("[data-court-id]").forEach(b=>b.addEventListener("click",()=>selectCourt(b.dataset.courtId)));
 }
-
-$("availability").addEventListener("click",async()=>{
-  state.date=$("date").value;if(!state.court||!state.date)return message("Seleccioná una cancha y una fecha para continuar.");
-  const b=$("availability");b.disabled=true;b.querySelector("span").textContent="Consultando...";
-  try{state.availability=await api(`/disponibilidad?canchaId=${state.court.id}&fecha=${state.date}`);renderTimes();showStep(2)}catch(e){message(e.message)}finally{b.disabled=false;b.querySelector("span").textContent="Consultar horarios"}
-});
+function selectCourt(id){state.court=state.courts.find(c=>String(c.id)===String(id))||null;$("court").value=state.court?String(state.court.id):"";document.querySelectorAll("[data-court-id]").forEach(b=>{const selected=String(b.dataset.courtId)===String(id);b.classList.toggle("selected",selected);b.setAttribute("aria-checked",selected)});renderCourtInfo()}
+function renderCourtInfo(){if(!state.court){$("courtInfo").innerHTML='<span class="detail-icon">⌁</span><p>Seleccioná una cancha para ver precio, duración y seña.</p>';return}const c=state.court;$("courtInfo").innerHTML=`<div class="detail-grid"><div><small>Cancha</small><strong>${safe(c.nombre)}</strong></div><div><small>Duración</small><strong>${c.duracionMinutos} minutos</strong></div><div><small>Precio</small><strong>${money(c.precio,state.complex.moneda)}</strong></div><div><small>Seña</small><strong>${money(c.importeSenia,state.complex.moneda)}</strong></div></div>`}
+function renderQuickDates(){const labels=["Hoy","Mañana"];const start=new Date();$("quickDates").innerHTML=Array.from({length:7},(_,i)=>{const d=new Date(start);d.setDate(start.getDate()+i);const value=localIso(d);const day=labels[i]||new Intl.DateTimeFormat("es-AR",{weekday:"short"}).format(d);return `<button class="date-chip ${value===state.date?"selected":""}" type="button" data-date="${value}"><strong>${safe(day)}</strong><small>${shortDate(value)}</small></button>`}).join("");document.querySelectorAll("[data-date]").forEach(b=>b.addEventListener("click",()=>selectDate(b.dataset.date)))}
+function selectDate(value){state.date=value;$("date").value=value;document.querySelectorAll("[data-date]").forEach(b=>b.classList.toggle("selected",b.dataset.date===value))}
+$("toggleCalendar").addEventListener("click",()=>{$("date").classList.toggle("hidden");if(!$("date").classList.contains("hidden"))$("date").showPicker?.()});$("date").addEventListener("change",()=>selectDate($("date").value));
+$("availability").addEventListener("click",loadAvailability);$("refreshTimes").addEventListener("click",loadAvailability);
+async function loadAvailability(){if(!state.court||!state.date)return message("Seleccioná una cancha y una fecha para continuar.");const b=$("availability");b.disabled=true;b.querySelector("span").textContent="Consultando...";try{state.availability=await api(`/disponibilidad?canchaId=${state.court.id}&fecha=${state.date}`);renderTimes();showStep(2)}catch(e){message(e.message)}finally{b.disabled=false;b.querySelector("span").textContent="Consultar horarios"}}
 function timeGroup(hour){const h=Number(hour.slice(0,2));return h<12?"Mañana":h<18?"Tarde":"Noche"}
-function renderTimes(){
-  const list=state.availability.horarios||[];$("timesTitle").textContent=`${state.court.nombre} · ${dateAr(state.date)}`;
-  let last="";$("times").innerHTML=list.map(t=>{const group=timeGroup(t.horaInicio);const header=group!==last?`<div class="time-group">${group}</div>`:"";last=group;return `${header}<button class="time" type="button" data-time="${t.horaInicio}"><small>Disponible</small>${t.horaInicio.slice(0,5)} a ${t.horaFin.slice(0,5)}</button>`}).join("");
-  $("emptyTimes").classList.toggle("hidden",list.length>0);document.querySelectorAll(".time").forEach(b=>b.addEventListener("click",()=>selectTime(b.dataset.time)));
-}
-function selectTime(value){
-  state.time=state.availability.horarios.find(t=>t.horaInicio===value);document.querySelectorAll(".time").forEach(b=>b.classList.toggle("selected",b.dataset.time===value));
-  $("selected").innerHTML=`<div><small>Cancha</small><strong>${safe(state.court.nombre)}</strong></div><div><small>Fecha</small><strong>${dateAr(state.date)}</strong></div><div><small>Horario</small><strong>${state.time.horaInicio.slice(0,5)} a ${state.time.horaFin.slice(0,5)}</strong></div><div><small>Seña</small><strong>${money(state.time.importeSenia,state.complex.moneda)}</strong></div>`;showStep(3);
-}
+function renderTimes(){const list=state.availability.horarios||[];$("timesTitle").textContent=`${state.court.nombre} · ${dateAr(state.date)}`;$("availableCount").textContent=`${list.length} ${list.length===1?"turno disponible":"turnos disponibles"}`;let last="";$("times").innerHTML=list.map(t=>{const group=timeGroup(t.horaInicio);const header=group!==last?`<div class="time-group">${group}</div>`:"";last=group;return `${header}<button class="time" type="button" data-time="${t.horaInicio}"><small>Disponible</small>${t.horaInicio.slice(0,5)} a ${t.horaFin.slice(0,5)}<span>${money(t.precio,state.complex.moneda)}</span></button>`}).join("");$("emptyTimes").classList.toggle("hidden",list.length>0);document.querySelectorAll(".time").forEach(b=>b.addEventListener("click",()=>selectTime(b.dataset.time)))}
+function selectTime(value){state.time=state.availability.horarios.find(t=>t.horaInicio===value);document.querySelectorAll(".time").forEach(b=>b.classList.toggle("selected",b.dataset.time===value));$("selected").innerHTML=`<div><small>Cancha</small><strong>${safe(state.court.nombre)}</strong></div><div><small>Fecha</small><strong>${dateAr(state.date)}</strong></div><div><small>Horario</small><strong>${state.time.horaInicio.slice(0,5)} a ${state.time.horaFin.slice(0,5)}</strong></div><div><small>Seña</small><strong>${money(state.time.importeSenia,state.complex.moneda)}</strong></div>`;showStep(3)}
 document.querySelectorAll("[data-back]").forEach(b=>b.addEventListener("click",()=>showStep(Number(b.dataset.back))));
-
 function fieldError(input,text){const field=input.closest(".field");field?.classList.toggle("invalid",Boolean(text));const error=field?.querySelector(".field-error");if(error)error.textContent=text||""}
-function validateForm(){
-  let valid=true;const checks=[
-    [$("name"),v=>v.length?"":"Ingresá tu nombre."],[$("lastname"),v=>v.length?"":"Ingresá tu apellido."],
-    [$("document"),v=>/^\d{7,10}$/.test(v)?"":"Ingresá entre 7 y 10 números."],[$("phone"),v=>/^[0-9+()\-\s]{6,30}$/.test(v)?"":"Ingresá un teléfono válido."],
-    [$("email"),v=>!v||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)?"":"Ingresá un correo válido."]];
-  checks.forEach(([input,fn])=>{const error=fn(input.value.trim());fieldError(input,error);if(error)valid=false});
-  const terms=$("form").querySelector('.terms input');if(!terms.checked){message("Aceptá la condición de reserva para continuar.");valid=false}
-  return valid;
-}
+function validateForm(){let valid=true;const checks=[[$("name"),v=>v.length?"":"Ingresá tu nombre."],[$("lastname"),v=>v.length?"":"Ingresá tu apellido."],[$("document"),v=>/^\d{7,10}$/.test(v)?"":"Ingresá entre 7 y 10 números."],[$("phone"),v=>/^[0-9+()\-\s]{6,30}$/.test(v)?"":"Ingresá un teléfono válido."],[$("email"),v=>!v||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)?"":"Ingresá un correo válido."]];checks.forEach(([input,fn])=>{const error=fn(input.value.trim());fieldError(input,error);if(error)valid=false});if(!$("form").querySelector('.terms input').checked){message("Aceptá la condición de reserva para continuar.");valid=false}return valid}
 ["name","lastname","document","phone","email"].forEach(id=>$(id).addEventListener("input",()=>fieldError($(id),"")));
-$("form").addEventListener("submit",async e=>{
-  e.preventDefault();if(creandoSolicitud)return;if(!state.time)return message("La selección del turno está incompleta.");if(!validateForm())return;
-  creandoSolicitud=true;const payload={canchaId:state.court.id,fecha:state.date,horaInicio:state.time.horaInicio,cantidadJugadores:Number($("players").value),cliente:{nombre:$("name").value.trim(),apellido:$("lastname").value.trim(),documento:$("document").value.trim(),telefono:$("phone").value.trim(),email:$("email").value.trim()||null},comentarios:$("comments").value.trim()||null};
-  const b=$("submit");b.disabled=true;b.querySelector("span").textContent="Creando solicitud...";
-  try{const result=await api("/solicitudes",{method:"POST",body:JSON.stringify(payload)});state.created=result;localStorage.setItem(STORAGE,result.codigoSeguimiento);renderConfirmation(result);showStep(4)}catch(err){message(err.message)}finally{creandoSolicitud=false;b.disabled=false;b.querySelector("span").textContent="Solicitar reserva"}
-});
-function renderConfirmation(r){
-  $("confirmation").innerHTML=`<div class="tracking-grid"><div class="tracking-item"><small>Solicitud</small><strong>#${r.solicitudId}</strong></div><div class="tracking-item"><small>Cancha</small><strong>${safe(r.cancha)}</strong></div><div class="tracking-item"><small>Fecha y horario</small><strong>${dateAr(r.fecha)} · ${r.horaInicio.slice(0,5)} a ${r.horaFin.slice(0,5)}</strong></div><div class="tracking-item"><small>Precio y seña</small><strong>${money(r.precioTotal,r.moneda)} · ${money(r.importeSenia,r.moneda)}</strong></div></div><div class="copy-row"><div><small>Código de seguimiento</small><code>${safe(r.codigoSeguimiento)}</code></div><button class="copy-button" type="button" data-copy="${safe(r.codigoSeguimiento)}">Copiar código</button></div>`;
-  bindCopyButtons();$("instructions").textContent=state.complex.whatsapp?`Podés informar el pago por WhatsApp al ${state.complex.whatsapp}. Guardamos el código en este navegador.`:"Guardá el código para consultar el estado más adelante.";startTimer(r.vencimiento);renderPayment(r.importeSenia,r.moneda,$("paymentBox"),$("whatsappPayment"),r);
-}
+$("form").addEventListener("submit",async e=>{e.preventDefault();if(creandoSolicitud)return;if(!state.time)return message("La selección del turno está incompleta.");if(!validateForm())return;creandoSolicitud=true;const payload={canchaId:state.court.id,fecha:state.date,horaInicio:state.time.horaInicio,cantidadJugadores:Number($("players").value),cliente:{nombre:$("name").value.trim(),apellido:$("lastname").value.trim(),documento:$("document").value.trim(),telefono:$("phone").value.trim(),email:$("email").value.trim()||null},comentarios:$("comments").value.trim()||null};const b=$("submit");b.disabled=true;b.querySelector("span").textContent="Creando solicitud...";try{const result=await api("/solicitudes",{method:"POST",body:JSON.stringify(payload)});state.created=result;localStorage.setItem(STORAGE_CODE,result.codigoSeguimiento);upsertHistory(historyFromCreated(result));renderConfirmation(result);showStep(4)}catch(err){message(err.message)}finally{creandoSolicitud=false;b.disabled=false;b.querySelector("span").textContent="Solicitar reserva"}});
+function historyFromCreated(r){return {codigoSeguimiento:r.codigoSeguimiento,solicitudId:r.solicitudId,estado:r.estado,cancha:r.cancha,fecha:r.fecha,horaInicio:r.horaInicio,horaFin:r.horaFin,precioTotal:r.precioTotal,moneda:r.moneda}}
+function historyFromTracking(r){return {codigoSeguimiento:r.codigoSeguimiento,solicitudId:r.solicitudId,estado:r.estado,cancha:r.cancha,fecha:r.fecha,horaInicio:r.horaInicio,horaFin:r.horaFin,precioTotal:r.precioTotal,moneda:r.moneda}}
+function renderConfirmation(r){$("confirmation").innerHTML=`<div class="tracking-grid"><div class="tracking-item"><small>Solicitud</small><strong>#${r.solicitudId}</strong></div><div class="tracking-item"><small>Cancha</small><strong>${safe(r.cancha)}</strong></div><div class="tracking-item"><small>Fecha y horario</small><strong>${dateAr(r.fecha)} · ${r.horaInicio.slice(0,5)} a ${r.horaFin.slice(0,5)}</strong></div><div class="tracking-item"><small>Precio y seña</small><strong>${money(r.precioTotal,r.moneda)} · ${money(r.importeSenia,r.moneda)}</strong></div></div><div class="copy-row"><div><small>Código de seguimiento</small><code>${safe(r.codigoSeguimiento)}</code></div><button class="copy-button" type="button" data-copy="${safe(r.codigoSeguimiento)}">Copiar código</button></div>`;bindCopyButtons();$("instructions").textContent=state.complex.whatsapp?`Podés informar el pago por WhatsApp al ${state.complex.whatsapp}. Guardamos la reserva en este navegador.`:"Guardá el código para consultar el estado más adelante.";startTimer(r.vencimiento);renderPayment(r.importeSenia,r.moneda,$("paymentBox"),$("whatsappPayment"),r)}
 function startTimer(value){clearInterval(state.timer);const end=new Date(value);const tick=()=>{const diff=end-Date.now();if(diff<=0){$("timer").textContent="EXPIRADA";clearInterval(state.timer);return}const m=Math.floor(diff/60000),s=Math.floor(diff%60000/1000);$("timer").textContent=`${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`};tick();state.timer=setInterval(tick,1000)}
-$("newRequest").addEventListener("click",()=>{clearInterval(state.timer);state.time=null;state.availability=null;$("form").reset();$("court").value="";courtChanged();showStep(1)});$("viewCreated").addEventListener("click",()=>openTracking(state.created?.codigoSeguimiento));
-
-function openTracking(code){$("trackingModal").classList.remove("hidden");document.body.classList.add("modal-open");if(code)$("trackingCode").value=code;$("trackingResult").classList.add("hidden");$("trackingError").classList.add("hidden");setTimeout(()=>$("trackingCode").focus(),50);if(code)searchTracking()}
-function closeTracking(){$("trackingModal").classList.add("hidden");document.body.classList.remove("modal-open")}
-$("openTracking").addEventListener("click",()=>openTracking(localStorage.getItem(STORAGE)));document.querySelectorAll("[data-open-tracking]").forEach(b=>b.addEventListener("click",()=>openTracking(localStorage.getItem(STORAGE))));$("closeTracking").addEventListener("click",closeTracking);$("trackingModal").addEventListener("click",e=>{if(e.target===$("trackingModal"))closeTracking()});document.addEventListener("keydown",e=>{if(e.key==="Escape")closeTracking()});$("trackingCode").addEventListener("keydown",e=>{if(e.key==="Enter")searchTracking()});
-$("pasteTracking").addEventListener("click",async()=>{try{$("trackingCode").value=await navigator.clipboard.readText();toast("Código pegado") }catch{toast("Pegá el código manualmente")}});$("searchTracking").addEventListener("click",searchTracking);
-async function searchTracking(){
-  const code=$("trackingCode").value.trim();if(!code)return trackingError("Ingresá el código de seguimiento.");const b=$("searchTracking");b.disabled=true;b.textContent="Consultando...";
-  try{const r=await api(`/solicitudes/${encodeURIComponent(code)}`);localStorage.setItem(STORAGE,r.codigoSeguimiento);renderTracking(r);$("trackingError").classList.add("hidden")}catch(e){trackingError(e.message);$("trackingResult").classList.add("hidden");$("trackingWhatsapp").classList.add("hidden")}finally{b.disabled=false;b.textContent="Consultar estado"}
-}
+$("newRequest").addEventListener("click",()=>{clearInterval(state.timer);state.time=null;state.availability=null;$("form").reset();selectCourt("");showStep(1)});$("viewCreated").addEventListener("click",()=>openTracking(state.created?.codigoSeguimiento));$("shareCreated").addEventListener("click",()=>shareReservation(state.created));
+function openModal(id){$(id).classList.remove("hidden");document.body.classList.add("modal-open")}
+function closeModal(id){$(id).classList.add("hidden");if(document.querySelectorAll(".modal:not(.hidden)").length===0)document.body.classList.remove("modal-open")}
+function openTracking(code){openModal("trackingModal");if(code)$("trackingCode").value=code;$("trackingResult").classList.add("hidden");$("trackingError").classList.add("hidden");setTimeout(()=>$("trackingCode").focus(),50);if(code)searchTracking()}
+function openHistory(){renderHistory();openModal("historyModal")}
+$("openTracking").addEventListener("click",()=>openTracking(localStorage.getItem(STORAGE_CODE)));document.querySelectorAll("[data-open-tracking]").forEach(b=>b.addEventListener("click",()=>openTracking(localStorage.getItem(STORAGE_CODE))));document.querySelectorAll("[data-open-history]").forEach(b=>b.addEventListener("click",openHistory));$("openHistory").addEventListener("click",openHistory);$("closeTracking").addEventListener("click",()=>closeModal("trackingModal"));$("closeHistory").addEventListener("click",()=>closeModal("historyModal"));document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)closeModal(m.id)}));document.addEventListener("keydown",e=>{if(e.key==="Escape")document.querySelectorAll(".modal:not(.hidden)").forEach(m=>closeModal(m.id))});$("trackingCode").addEventListener("keydown",e=>{if(e.key==="Enter")searchTracking()});
+$("pasteTracking").addEventListener("click",async()=>{try{$("trackingCode").value=await navigator.clipboard.readText();toast("Código pegado")}catch{toast("Pegá el código manualmente")}});$("searchTracking").addEventListener("click",searchTracking);
+async function searchTracking(silent=false){const code=$("trackingCode").value.trim();if(!code)return trackingError("Ingresá el código de seguimiento.");const b=$("searchTracking");if(!silent){b.disabled=true;b.textContent="Consultando..."}try{const r=await api(`/solicitudes/${encodeURIComponent(code)}`);state.tracking=r;localStorage.setItem(STORAGE_CODE,r.codigoSeguimiento);upsertHistory(historyFromTracking(r));renderTracking(r);$("trackingError").classList.add("hidden");scheduleTrackingRefresh(r)}catch(e){if(!silent){trackingError(e.message);$("trackingResult").classList.add("hidden");$("trackingWhatsapp").classList.add("hidden")}}finally{if(!silent){b.disabled=false;b.textContent="Consultar estado"}}}
+function scheduleTrackingRefresh(r){clearTimeout(trackingRefreshTimer);if(r.pendiente&&!$("trackingModal").classList.contains("hidden"))trackingRefreshTimer=setTimeout(()=>searchTracking(true),AUTO_REFRESH_MS)}
 function trackingError(text){$("trackingError").textContent=text;$("trackingError").classList.remove("hidden")}
 function timelineHtml(r){const confirmed=r.confirmada||["COMPLETADA","AUSENTE"].includes(r.estado);const ended=["EXPIRADA","CANCELADA"].includes(r.estado);return `<div class="timeline"><div class="timeline-step done"><i></i>Solicitud</div><div class="timeline-step ${confirmed||ended?"done":""}"><i></i>${confirmed?"Confirmada":ended?r.estado:"Pendiente"}</div><div class="timeline-step ${["COMPLETADA","AUSENTE"].includes(r.estado)?"done":""}"><i></i>Turno</div></div>`}
-function renderTracking(r){
-  const stateClass=`state-${String(r.estado).toLowerCase()}`;const result=$("trackingResult");
-  result.innerHTML=`<div class="tracking-top"><div><span class="state-badge ${stateClass}">${safe(r.estado)}</span><h3>Solicitud #${r.solicitudId}</h3></div><button class="copy-button" type="button" data-copy="${safe(r.codigoSeguimiento)}">Copiar código</button></div><p class="muted">${safe(r.mensaje)}</p>${timelineHtml(r)}<div class="tracking-grid"><div class="tracking-item"><small>Cancha</small><strong>${safe(r.cancha)}</strong></div><div class="tracking-item"><small>Turno</small><strong>${dateAr(r.fecha)} · ${r.horaInicio.slice(0,5)}</strong></div><div class="tracking-item"><small>Precio</small><strong>${money(r.precioTotal,r.moneda)}</strong></div><div class="tracking-item"><small>Acreditado</small><strong>${money(r.totalAcreditado,r.moneda)}</strong></div><div class="tracking-item"><small>Seña requerida</small><strong>${money(r.importeSenia,r.moneda)}</strong></div><div class="tracking-item"><small>Saldo</small><strong>${money(r.saldoPendiente,r.moneda)}</strong></div></div>`;
-  if(r.pendiente){const box=document.createElement("div");box.className="summary left";result.appendChild(box);renderPayment(r.importeSenia,r.moneda,box,$("trackingWhatsapp"),r)}else $("trackingWhatsapp").classList.add("hidden");
-  result.classList.remove("hidden");bindCopyButtons();
-}
+function renderTracking(r){const result=$("trackingResult");result.innerHTML=`<div class="tracking-top"><div><span class="state-badge state-${String(r.estado).toLowerCase()}">${safe(r.estado)}</span><h3>Solicitud #${r.solicitudId}</h3></div><button class="copy-button" type="button" data-copy="${safe(r.codigoSeguimiento)}">Copiar código</button></div><p class="muted">${safe(r.mensaje)}</p>${timelineHtml(r)}<div class="tracking-grid"><div class="tracking-item"><small>Cancha</small><strong>${safe(r.cancha)}</strong></div><div class="tracking-item"><small>Turno</small><strong>${dateAr(r.fecha)} · ${r.horaInicio.slice(0,5)}</strong></div><div class="tracking-item"><small>Precio</small><strong>${money(r.precioTotal,r.moneda)}</strong></div><div class="tracking-item"><small>Acreditado</small><strong>${money(r.totalAcreditado,r.moneda)}</strong></div><div class="tracking-item"><small>Seña requerida</small><strong>${money(r.importeSenia,r.moneda)}</strong></div><div class="tracking-item"><small>Saldo</small><strong>${money(r.saldoPendiente,r.moneda)}</strong></div></div><div class="share-actions"><button class="button secondary" type="button" data-share-tracking>Compartir</button><button class="button ghost" type="button" data-refresh-tracking>Actualizar</button></div>`;if(r.pendiente){const box=document.createElement("div");box.className="summary left";result.appendChild(box);renderPayment(r.importeSenia,r.moneda,box,$("trackingWhatsapp"),r)}else $("trackingWhatsapp").classList.add("hidden");result.classList.remove("hidden");bindCopyButtons();result.querySelector("[data-share-tracking]").addEventListener("click",()=>shareReservation(r));result.querySelector("[data-refresh-tracking]").addEventListener("click",()=>searchTracking())}
 function paymentHtml(amount,currency){if(!state.complex?.pagoTransferenciaDisponible)return "";return `<h3 class="payment-title">Datos para acreditar la seña</h3><div class="tracking-grid"><div class="tracking-item"><small>Importe</small><strong>${money(amount,currency)}</strong></div><div class="tracking-item"><small>Alias</small><div class="copy-row"><strong>${safe(state.complex.pagoAlias)}</strong><button class="copy-button" type="button" data-copy="${safe(state.complex.pagoAlias)}">Copiar</button></div></div><div class="tracking-item"><small>Titular</small><strong>${safe(state.complex.pagoTitular||"-")}</strong></div><div class="tracking-item"><small>Entidad</small><strong>${safe(state.complex.pagoEntidad||"-")}</strong></div></div>${state.complex.pagoInstrucciones?`<p class="muted">${safe(state.complex.pagoInstrucciones)}</p>`:""}`}
 function whatsappUrl(id,cancha,fecha,hora,amount,currency){if(!state.complex?.whatsapp)return null;const phone=state.complex.whatsapp.replace(/\D/g,"");const text=`Hola, informo el pago de la seña. Solicitud #${id}. ${cancha}, ${fecha}, ${hora}. Importe: ${money(amount,currency)}.`;return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`}
 function renderPayment(amount,currency,box,link,r){const html=paymentHtml(amount,currency);box.innerHTML=html;box.classList.toggle("hidden",!html);const url=whatsappUrl(r.solicitudId,r.cancha,r.fecha,r.horaInicio.slice(0,5),amount,currency);if(url){link.href=url;link.classList.remove("hidden")}else link.classList.add("hidden");bindCopyButtons()}
 function bindCopyButtons(){document.querySelectorAll("[data-copy]").forEach(b=>{if(b.dataset.bound)return;b.dataset.bound="1";b.addEventListener("click",async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);toast("Copiado al portapapeles")}catch{toast("No se pudo copiar")}})})}
+function renderRecentBookings(){const items=getHistory().slice(0,3);$("recentBookings").innerHTML=items.length?items.map(historyCard).join(""):'<div class="empty"><strong>Todavía no hay reservas guardadas</strong><p>Cuando hagas una solicitud, aparecerá acá.</p></div>';bindHistoryCards($("recentBookings"))}
+function renderHistory(){const items=getHistory();$("historyList").innerHTML=items.length?items.map(historyItem).join(""):'<div class="empty"><strong>No hay reservas guardadas</strong><p>Podés consultar una reserva por código para agregarla.</p></div>';$("clearHistory").classList.toggle("hidden",items.length===0);bindHistoryCards($("historyList"))}
+function historyCard(x){return `<article class="booking-mini" data-history-code="${safe(x.codigoSeguimiento)}"><div class="booking-mini-top"><span class="state-badge state-${String(x.estado).toLowerCase()}">${safe(x.estado)}</span><small>${shortDate(x.fecha)}</small></div><h3>${safe(x.cancha)}</h3><p>${x.horaInicio?.slice(0,5)||""} · ${money(x.precioTotal,x.moneda)}</p><code>${safe(x.codigoSeguimiento)}</code></article>`}
+function historyItem(x){return `<article class="history-item"><div class="history-item-top"><span class="state-badge state-${String(x.estado).toLowerCase()}">${safe(x.estado)}</span><small>#${x.solicitudId||"-"}</small></div><h3>${safe(x.cancha)}</h3><p>${dateAr(x.fecha)} · ${x.horaInicio?.slice(0,5)||""}</p><div class="history-item-actions"><button class="button secondary" type="button" data-history-code="${safe(x.codigoSeguimiento)}">Ver estado</button><button class="button ghost" type="button" data-forget-code="${safe(x.codigoSeguimiento)}">Quitar</button></div></article>`}
+function bindHistoryCards(root){root.querySelectorAll("[data-history-code]").forEach(b=>b.addEventListener("click",()=>{closeModal("historyModal");openTracking(b.dataset.historyCode)}));root.querySelectorAll("[data-forget-code]").forEach(b=>b.addEventListener("click",e=>{e.stopPropagation();saveHistory(getHistory().filter(x=>x.codigoSeguimiento!==b.dataset.forgetCode));renderHistory();toast("Reserva quitada del dispositivo")}))}
+$("clearHistory").addEventListener("click",()=>{if(confirm("¿Querés borrar el historial guardado en este dispositivo?")){saveHistory([]);renderHistory();toast("Historial eliminado")}});
+function renderComplexFacts(){if(!state.complex)return;const c=state.complex;const facts=[["Dirección",c.direccion||"Consultar al complejo"],["WhatsApp",c.whatsapp||"No informado"],["Seña",`${c.porcentajeSenia}% del turno`],["Plazo",`${c.minutosReservaPendiente} minutos`],["Moneda",c.moneda],["Transferencia",c.pagoTransferenciaDisponible?"Disponible":"Consultar"]];$("complexFacts").innerHTML=facts.map(([a,b])=>`<div class="fact"><small>${safe(a)}</small><strong>${safe(b)}</strong></div>`).join("")}
+async function shareReservation(r){if(!r)return;const text=`Reserva de pádel #${r.solicitudId}\n${r.cancha}\n${dateAr(r.fecha)} de ${r.horaInicio.slice(0,5)} a ${r.horaFin.slice(0,5)}\nCódigo: ${r.codigoSeguimiento}`;try{if(navigator.share)await navigator.share({title:"Reserva de pádel",text});else{await navigator.clipboard.writeText(text);toast("Resumen copiado")}}catch(e){if(e.name!=="AbortError")toast("No se pudo compartir")}}
+function registerPwa(){if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("service-worker.js").catch(()=>{}))}
 init();
