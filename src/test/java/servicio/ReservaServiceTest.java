@@ -2,362 +2,242 @@ package servicio;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAdjusters;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import dao.BloqueoCanchaDAO;
-import dao.CanchaDAO;
 import dao.ReservaDAO;
-import negocio.BloqueoCancha;
 import negocio.Cancha;
+import negocio.ConfiguracionComplejo;
 import negocio.EstadoReserva;
+import negocio.OrigenReserva;
 import negocio.Reserva;
-import negocio.TipoCancha;
 
+@ExtendWith(MockitoExtension.class)
 class ReservaServiceTest {
 
-    private ReservaDAODoble reservaDAO;
-    private BloqueoDAODoble bloqueoDAO;
-    private CanchaDAODoble canchaDAO;
-    private ReservaService service;
-    private Cancha cancha;
+	@Mock
+	private ReservaDAO reservaDAO;
+	@Mock
+	private BloqueoCanchaDAO bloqueoDAO;
+	@Mock
+	private CanchaService canchaService;
+	@Mock
+	private ConfiguracionComplejoService configuracionService;
 
-    @BeforeEach
-    void preparar() {
-        reservaDAO = new ReservaDAODoble();
-        bloqueoDAO = new BloqueoDAODoble();
-        canchaDAO = new CanchaDAODoble();
+	private ReservaService service;
+	private Cancha cancha;
 
-        cancha = crearCancha();
-        canchaDAO.cancha = cancha;
+	@BeforeEach
+	void preparar() {
+		service = new ReservaService(reservaDAO, bloqueoDAO, canchaService, configuracionService);
 
-        service = new ReservaService(
-                reservaDAO,
-                bloqueoDAO,
-                new CanchaService(canchaDAO)
-        );
-    }
+		cancha = new Cancha();
+		cancha.setId(2L);
+		cancha.setNombre("Cancha Central");
+		cancha.setActivo(true);
+		cancha.setHoraApertura(LocalTime.of(8, 0));
+		cancha.setHoraCierre(LocalTime.of(23, 0));
+		cancha.setDuracionReserva(90);
+		cancha.setPrecio(new BigDecimal("12000.00"));
+		cancha.setDiasDisponibles(EnumSet.allOf(DayOfWeek.class));
 
-    @Test
-    void guardaReservaValidaCalculandoHoraYPrecio() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
-        reserva.setComentarios("  Partido   amistoso  ");
+		lenient().when(canchaService.buscar(2L)).thenReturn(cancha);
+	}
 
-        service.guardar(reserva);
+	@Test
+	void guardarPendienteWebConfiguraOrigenEstadoYVencimiento() {
+		ConfiguracionComplejo configuracion = new ConfiguracionComplejo();
+		configuracion.setMinutosReservaPendiente(10);
+		when(configuracionService.obtener()).thenReturn(configuracion);
 
-        assertTrue(reservaDAO.guardarInvocado);
-        assertSame(reserva, reservaDAO.ultimaGuardada);
-        assertEquals(LocalTime.of(19, 30), reserva.getHoraFin());
-        assertEquals(new BigDecimal("25000.00"), reserva.getPrecioTotal());
-        assertEquals("Partido amistoso", reserva.getComentarios());
-    }
+		LocalDateTime antes = LocalDateTime.now();
+		Reserva reserva = reservaValida();
 
-    @Test
-    void asignaEstadoPendienteCuandoEsNulo() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
-        reserva.setEstado(null);
+		Reserva resultado = service.guardarPendienteWeb(reserva);
+		LocalDateTime despues = LocalDateTime.now();
 
-        service.guardar(reserva);
+		assertSame(reserva, resultado);
+		assertEquals(OrigenReserva.WEB, reserva.getOrigen());
+		assertEquals(EstadoReserva.PENDIENTE, reserva.getEstado());
+		assertNull(reserva.getFechaExpiracion());
+		assertNotNull(reserva.getFechaVencimiento());
+		assertFalse(reserva.getFechaVencimiento().isBefore(antes.plusMinutes(10)));
+		assertFalse(reserva.getFechaVencimiento().isAfter(despues.plusMinutes(10)));
+		assertEquals(LocalTime.of(11, 30), reserva.getHoraFin());
+		assertEquals(new BigDecimal("12000.00"), reserva.getPrecioTotal());
+		verify(reservaDAO).guardar(reserva);
+	}
 
-        assertEquals(EstadoReserva.PENDIENTE, reserva.getEstado());
-    }
+	@Test
+	void guardarAdministrativaFuerzaOrigenPersonal() {
+		Reserva reserva = reservaValida();
+		reserva.setOrigen(OrigenReserva.WEB);
 
-    @Test
-    void rechazaReservaNula() {
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(null)
-        );
-        assertFalse(reservaDAO.guardarInvocado);
-    }
+		service.guardar(reserva);
 
-    @Test
-    void rechazaIdentificadoresInvalidos() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
-        reserva.setClienteId(0L);
+		assertEquals(OrigenReserva.PERSONAL, reserva.getOrigen());
+		verify(reservaDAO).guardar(reserva);
+	}
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
-    }
+	@Test
+	void rechazaHorarioSuperpuesto() {
+		Reserva reserva = reservaValida();
+		when(reservaDAO.horarioOcupado(2L, reserva.getFecha(), LocalTime.of(10, 0), LocalTime.of(11, 30), 0L))
+				.thenReturn(true);
 
-    @Test
-    void rechazaCantidadDeJugadoresInvalida() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
-        reserva.setCantidadJugadores(9);
+		IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> service.guardar(reserva));
 
-        assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
-    }
+		assertEquals("El horario se superpone con otra reserva.", error.getMessage());
+		verify(reservaDAO, never()).guardar(any());
+	}
 
-    @Test
-    void rechazaDiaSinDisponibilidad() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.SUNDAY),
-                LocalTime.of(18, 0)
-        );
+	@Test
+	void rechazaHorarioBloqueado() {
+		Reserva reserva = reservaValida();
+		when(bloqueoDAO.horarioBloqueado(2L, reserva.getFecha(), LocalTime.of(10, 0), LocalTime.of(11, 30), 0L))
+				.thenReturn(true);
 
-        IllegalArgumentException error = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
+		IllegalArgumentException error = assertThrows(IllegalArgumentException.class, () -> service.guardar(reserva));
 
-        assertTrue(error.getMessage().contains("disponible"));
-    }
+		assertEquals("La cancha se encuentra bloqueada en ese horario.", error.getMessage());
+		verify(reservaDAO, never()).guardar(any());
+	}
 
-    @Test
-    void rechazaHorarioFueraDeJornada() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(23, 0)
-        );
+	@Test
+	void expirarPendientesDelegaAlDao() {
+		when(reservaDAO.expirarPendientesVencidas(any(LocalDateTime.class))).thenReturn(3);
 
-        IllegalArgumentException error = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
+		int cantidad = service.expirarReservasPendientes();
 
-        assertTrue(error.getMessage().contains("jornada"));
-    }
+		assertEquals(3, cantidad);
+		verify(reservaDAO).expirarPendientesVencidas(any(LocalDateTime.class));
+	}
 
-    @Test
-    void rechazaSuperposicionConOtraReserva() {
-        reservaDAO.ocupado = true;
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
+	@Test
+	void permitePendienteAConfirmada() {
+		Reserva reserva = reservaExistente(EstadoReserva.PENDIENTE);
+		when(reservaDAO.buscar(50L)).thenReturn(reserva);
 
-        IllegalArgumentException error = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
+		service.cambiarEstado(50L, EstadoReserva.CONFIRMADA);
 
-        assertTrue(error.getMessage().contains("superpone"));
-        assertFalse(reservaDAO.guardarInvocado);
-    }
+		verify(reservaDAO).actualizarEstado(50L, EstadoReserva.CONFIRMADA);
+	}
 
-    @Test
-    void rechazaHorarioBloqueado() {
-        bloqueoDAO.bloqueado = true;
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
+	@Test
+	void permiteConfirmadaACompletada() {
+		Reserva reserva = reservaExistente(EstadoReserva.CONFIRMADA);
+		when(reservaDAO.buscar(50L)).thenReturn(reserva);
 
-        IllegalArgumentException error = assertThrows(
-                IllegalArgumentException.class,
-                () -> service.guardar(reserva)
-        );
+		service.cambiarEstado(50L, EstadoReserva.COMPLETADA);
 
-        assertTrue(error.getMessage().contains("bloqueada"));
-    }
+		verify(reservaDAO).actualizarEstado(50L, EstadoReserva.COMPLETADA);
+	}
 
-    @Test
-    void listaSolamenteHorariosLibres() {
-        LocalDate fecha = proximo(DayOfWeek.MONDAY);
-        reservaDAO.iniciosOcupados.add(LocalTime.of(11, 0));
-        bloqueoDAO.iniciosBloqueados.add(LocalTime.of(14, 0));
+	@Test
+	void permiteConfirmadaAAusente() {
+		Reserva reserva = reservaExistente(EstadoReserva.CONFIRMADA);
+		when(reservaDAO.buscar(50L)).thenReturn(reserva);
 
-        List<LocalTime> horarios = service.listarHorariosDisponibles(
-                cancha.getId(),
-                fecha,
-                0L
-        );
+		service.cambiarEstado(50L, EstadoReserva.AUSENTE);
 
-        assertTrue(horarios.contains(LocalTime.of(8, 0)));
-        assertFalse(horarios.contains(LocalTime.of(11, 0)));
-        assertFalse(horarios.contains(LocalTime.of(14, 0)));
-        assertTrue(horarios.contains(LocalTime.of(21, 30)));
-        assertEquals(8, horarios.size());
-    }
+		verify(reservaDAO).actualizarEstado(50L, EstadoReserva.AUSENTE);
+	}
 
-    @Test
-    void devuelveListaVaciaParaFechaPasadaODiaNoDisponible() {
-        assertTrue(service.listarHorariosDisponibles(
-                cancha.getId(),
-                LocalDate.now().minusDays(1),
-                0L
-        ).isEmpty());
+	@Test
+	void rechazaPendienteACompletada() {
+		Reserva reserva = reservaExistente(EstadoReserva.PENDIENTE);
+		when(reservaDAO.buscar(50L)).thenReturn(reserva);
 
-        assertTrue(service.listarHorariosDisponibles(
-                cancha.getId(),
-                proximo(DayOfWeek.SUNDAY),
-                0L
-        ).isEmpty());
-    }
+		IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+				() -> service.cambiarEstado(50L, EstadoReserva.COMPLETADA));
 
-    @Test
-    void buscaListaPorClienteYFecha() {
-        Reserva reserva = crearReserva(
-                proximo(DayOfWeek.MONDAY),
-                LocalTime.of(18, 0)
-        );
-        reservaDAO.buscada = reserva;
-        reservaDAO.reservas.add(reserva);
+		assertEquals("El cambio de estado no está permitido.", error.getMessage());
+		verify(reservaDAO, never()).actualizarEstado(anyLong(), any());
+	}
 
-        assertSame(reserva, service.buscar(1L));
-        assertEquals(1, service.listar().size());
-        assertEquals(1, service.listarPorCliente(20L).size());
-        assertEquals(1, service.listarPorFecha(reserva.getFecha()).size());
-        assertNull(service.buscar(0L));
-    }
+	@Test
+	void rechazaCambiarReservaFinalizada() {
+		Reserva reserva = reservaExistente(EstadoReserva.EXPIRADA);
+		when(reservaDAO.buscar(50L)).thenReturn(reserva);
 
-    private Cancha crearCancha() {
-        Cancha resultado = new Cancha();
-        resultado.setId(10L);
-        resultado.setNombre("Cancha Central");
-        resultado.setTipo(TipoCancha.CUBIERTA);
-        resultado.setHoraApertura(LocalTime.of(8, 0));
-        resultado.setHoraCierre(LocalTime.of(23, 0));
-        resultado.setDuracionReserva(90);
-        resultado.setPrecio(new BigDecimal("25000"));
-        resultado.setDiasDisponibles(EnumSet.of(
-                DayOfWeek.MONDAY,
-                DayOfWeek.TUESDAY,
-                DayOfWeek.WEDNESDAY,
-                DayOfWeek.THURSDAY,
-                DayOfWeek.FRIDAY,
-                DayOfWeek.SATURDAY
-        ));
-        resultado.setActivo(true);
-        return resultado;
-    }
+		IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+				() -> service.cambiarEstado(50L, EstadoReserva.CONFIRMADA));
 
-    private Reserva crearReserva(LocalDate fecha, LocalTime inicio) {
-        Reserva reserva = new Reserva();
-        reserva.setClienteId(20L);
-        reserva.setCanchaId(cancha.getId());
-        reserva.setUsuarioId(30L);
-        reserva.setFecha(fecha);
-        reserva.setHoraInicio(inicio);
-        reserva.setCantidadJugadores(4);
-        reserva.setEstado(EstadoReserva.PENDIENTE);
-        return reserva;
-    }
+		assertEquals("No se puede modificar una reserva finalizada.", error.getMessage());
+		verify(reservaDAO, never()).actualizarEstado(anyLong(), any());
+	}
 
-    private LocalDate proximo(DayOfWeek dia) {
-        return LocalDate.now().with(TemporalAdjusters.next(dia));
-    }
+	@Test
+	void listarHorariosOmiteOcupadosYBloqueados() {
+	    LocalDate fecha = LocalDate.now().plusDays(1);
 
-    private static final class ReservaDAODoble implements ReservaDAO {
-        private boolean guardarInvocado;
-        private boolean ocupado;
-        private Reserva ultimaGuardada;
-        private Reserva buscada;
-        private EstadoReserva estadoActualizado;
-        private final List<Reserva> reservas = new ArrayList<>();
-        private final List<LocalTime> iniciosOcupados = new ArrayList<>();
+	    cancha.setHoraApertura(LocalTime.of(8, 0));
+	    cancha.setHoraCierre(LocalTime.of(12, 30));
 
-        @Override
-        public void guardar(Reserva reserva) {
-            guardarInvocado = true;
-            ultimaGuardada = reserva;
-        }
+	    lenient().when(reservaDAO.horarioOcupado(
+	            2L,
+	            fecha,
+	            LocalTime.of(9, 30),
+	            LocalTime.of(11, 0),
+	            0L
+	    )).thenReturn(true);
 
-        @Override
-        public Reserva buscar(long id) {
-            return buscada;
-        }
+	    lenient().when(bloqueoDAO.horarioBloqueado(
+	            2L,
+	            fecha,
+	            LocalTime.of(11, 0),
+	            LocalTime.of(12, 30),
+	            0L
+	    )).thenReturn(true);
 
-        @Override
-        public List<Reserva> listar() {
-            return new ArrayList<>(reservas);
-        }
+	    var horarios = service.listarHorariosDisponibles(
+	            2L,
+	            fecha,
+	            0L
+	    );
 
-        @Override
-        public List<Reserva> listarPorCliente(long clienteId) {
-            return new ArrayList<>(reservas);
-        }
+	    assertEquals(1, horarios.size());
+	    assertEquals(LocalTime.of(8, 0), horarios.get(0));
+	}
 
-        @Override
-        public List<Reserva> listarPorFecha(LocalDate fecha) {
-            return new ArrayList<>(reservas);
-        }
 
-        @Override
-        public void actualizarEstado(long id, EstadoReserva estado) {
-            estadoActualizado = estado;
-        }
+	private Reserva reservaValida() {
+		Reserva reserva = new Reserva();
+		reserva.setClienteId(1L);
+		reserva.setCanchaId(2L);
+		reserva.setUsuarioId(3L);
+		reserva.setFecha(LocalDate.now().plusDays(1));
+		reserva.setHoraInicio(LocalTime.of(10, 0));
+		reserva.setCantidadJugadores(4);
+		return reserva;
+	}
 
-        @Override
-        public boolean horarioOcupado(
-                long canchaId,
-                LocalDate fecha,
-                LocalTime inicio,
-                LocalTime fin,
-                long reservaExcluidaId) {
-            return ocupado || iniciosOcupados.contains(inicio);
-        }
-    }
-
-    private static final class BloqueoDAODoble
-            implements BloqueoCanchaDAO {
-        private boolean bloqueado;
-        private final List<LocalTime> iniciosBloqueados =
-                new ArrayList<>();
-
-        @Override public void guardar(BloqueoCancha bloqueo) { }
-        @Override public void eliminar(long id) { }
-        @Override public BloqueoCancha buscar(long id) { return null; }
-        @Override public List<BloqueoCancha> listar() {
-            return new ArrayList<>();
-        }
-        @Override public List<BloqueoCancha> listarPorCancha(long id) {
-            return new ArrayList<>();
-        }
-        @Override
-        public boolean horarioBloqueado(
-                long canchaId,
-                LocalDate fecha,
-                LocalTime inicio,
-                LocalTime fin,
-                long bloqueoExcluidoId) {
-            return bloqueado || iniciosBloqueados.contains(inicio);
-        }
-    }
-
-    private static final class CanchaDAODoble implements CanchaDAO {
-        private Cancha cancha;
-        @Override public void guardar(Cancha cancha) { this.cancha = cancha; }
-        @Override public void eliminar(long id) { }
-        @Override public Cancha buscar(long id) { return cancha; }
-        @Override public List<Cancha> listar() {
-            return cancha == null
-                    ? new ArrayList<>()
-                    : new ArrayList<>(List.of(cancha));
-        }
-        @Override public boolean existeNombre(String nombre, long id) {
-            return false;
-        }
-    }
+	private Reserva reservaExistente(EstadoReserva estado) {
+		Reserva reserva = reservaValida();
+		reserva.setId(50L);
+		reserva.setEstado(estado);
+		return reserva;
+	}
 }
