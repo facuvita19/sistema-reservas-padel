@@ -2,67 +2,179 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Reservá tu cancha de pádel online">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Reservá tu cancha de pádel online de forma rápida y segura.">
+  <meta name="theme-color" content="#081018">
   <title>Reservas de pádel</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<header class="hero" id="inicio">
-  <nav class="nav container">
-    <a class="brand" href="#inicio"><span class="brand-mark">P</span><span id="brandName">Pádel Reservas</span></a>
-    <div class="nav-actions"><button id="openTracking" class="nav-button" type="button">Consultar solicitud</button><a href="#reservar">Reservar</a></div>
-  </nav>
-  <div class="hero-content container">
-    <div><p class="eyebrow">RESERVAS ONLINE</p><h1>Tu próximo partido empieza acá</h1><p>Consultá disponibilidad real y reservá tu turno en pocos pasos.</p><a class="button primary" href="#reservar">Ver horarios</a></div>
-    <div class="court-art"><i></i><b></b></div>
+  <a class="skip-link" href="#reservar">Ir a reservar</a>
+
+  <header class="hero" id="inicio">
+    <nav class="nav container" aria-label="Navegación principal">
+      <a class="brand" href="#inicio" aria-label="Ir al inicio">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span class="brand-copy">
+          <strong id="brandName">Pádel Reservas</strong>
+          <small>Reservas online</small>
+        </span>
+      </a>
+      <div class="nav-actions">
+        <button id="openTracking" class="nav-button" type="button">Consultar solicitud</button>
+        <a class="nav-primary" href="#reservar">Reservar turno</a>
+      </div>
+    </nav>
+
+    <div class="hero-content container">
+      <div class="hero-copy">
+        <div class="live-label"><span></span> Disponibilidad en tiempo real</div>
+        <p class="eyebrow">RESERVAS ONLINE</p>
+        <h1>Tu próximo partido empieza acá</h1>
+        <p class="hero-description">Elegí cancha, fecha y horario. Reservá en minutos y seguí el estado de tu solicitud desde cualquier dispositivo.</p>
+        <div class="hero-actions">
+          <a class="button primary button-large" href="#reservar">Buscar un turno</a>
+          <button class="button ghost button-large" type="button" data-open-tracking>Ya reservé</button>
+        </div>
+        <div class="hero-benefits" aria-label="Beneficios">
+          <span>✓ Horarios reales</span>
+          <span>✓ Reserva protegida</span>
+          <span>✓ Seguimiento online</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="visual-glow"></div>
+        <div class="court-art">
+          <span class="court-net"></span>
+          <span class="court-center"></span>
+          <span class="court-service top"></span>
+          <span class="court-service bottom"></span>
+          <span class="ball"></span>
+        </div>
+        <div class="floating-card floating-top"><small>Reservá online</small><strong>En pocos pasos</strong></div>
+        <div class="floating-card floating-bottom"><span class="pulse"></span><strong>Turnos disponibles</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="trust-strip" aria-label="Cómo funciona">
+      <div class="container trust-grid">
+        <article><span>01</span><div><strong>Elegí la cancha</strong><small>Compará precio, duración y seña.</small></div></article>
+        <article><span>02</span><div><strong>Seleccioná el turno</strong><small>Consultá disponibilidad real.</small></div></article>
+        <article><span>03</span><div><strong>Acreditá la seña</strong><small>Protegé tu reserva dentro del plazo.</small></div></article>
+      </div>
+    </section>
+
+    <section id="reservar" class="booking container">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">RESERVÁ TU TURNO</p>
+          <h2>Encontrá el horario ideal</h2>
+          <p>Completá los pasos y recibí tu código de seguimiento.</p>
+        </div>
+        <span id="apiStatus" class="status" role="status"><i></i> Conectando...</span>
+      </div>
+
+      <div class="booking-shell">
+        <div class="steps" aria-label="Progreso de la reserva">
+          <span class="active" data-step-indicator="1"><b>1</b><em>Cancha y fecha</em></span>
+          <span data-step-indicator="2"><b>2</b><em>Horario</em></span>
+          <span data-step-indicator="3"><b>3</b><em>Tus datos</em></span>
+          <span data-step-indicator="4"><b>4</b><em>Confirmación</em></span>
+        </div>
+
+        <div id="message" class="message hidden" role="alert" aria-live="assertive"></div>
+
+        <section id="step1" class="card panel">
+          <div class="panel-intro full">
+            <span class="panel-number">01</span>
+            <div><h3>Elegí dónde y cuándo jugar</h3><p>Seleccioná una cancha para conocer todos los detalles.</p></div>
+          </div>
+          <div class="field">
+            <label for="court">Cancha</label>
+            <select id="court"><option value="">Cargando canchas...</option></select>
+          </div>
+          <div class="field">
+            <label for="date">Fecha</label>
+            <input id="date" type="date">
+          </div>
+          <button id="availability" class="button primary action-button" type="button"><span>Consultar horarios</span><i aria-hidden="true">→</i></button>
+          <div id="courtInfo" class="court-detail full"><span class="detail-icon">⌁</span><p>Seleccioná una cancha para ver precio, duración y seña.</p></div>
+        </section>
+
+        <section id="step2" class="card panel hidden">
+          <div class="card-head">
+            <div><p class="eyebrow">HORARIOS DISPONIBLES</p><h3 id="timesTitle">Elegí un horario</h3><p>Los horarios mostrados están disponibles en este momento.</p></div>
+            <button class="link" data-back="1" type="button">← Cambiar selección</button>
+          </div>
+          <div id="times" class="times"></div>
+          <div id="emptyTimes" class="empty hidden"><span>◷</span><strong>No hay horarios disponibles</strong><p>Probá otra fecha o cancha.</p></div>
+        </section>
+
+        <section id="step3" class="card panel hidden">
+          <div class="card-head">
+            <div><p class="eyebrow">TUS DATOS</p><h3>Completá la solicitud</h3><p>Usaremos estos datos para identificar tu reserva.</p></div>
+            <button class="link" data-back="2" type="button">← Cambiar horario</button>
+          </div>
+          <div id="selected" class="selection-summary"></div>
+          <form id="form" novalidate>
+            <div class="grid">
+              <div class="field"><label for="name">Nombre <span>*</span></label><input id="name" required maxlength="100" autocomplete="given-name" placeholder="Tu nombre"><small class="field-error"></small></div>
+              <div class="field"><label for="lastname">Apellido <span>*</span></label><input id="lastname" required maxlength="100" autocomplete="family-name" placeholder="Tu apellido"><small class="field-error"></small></div>
+              <div class="field"><label for="document">Documento <span>*</span></label><input id="document" required inputmode="numeric" pattern="[0-9]{7,10}" minlength="7" maxlength="10" autocomplete="off" placeholder="Sin puntos"><small class="field-error"></small></div>
+              <div class="field"><label for="phone">Teléfono <span>*</span></label><input id="phone" required type="tel" maxlength="30" autocomplete="tel" placeholder="Ejemplo: 11 2345 6789"><small class="field-error"></small></div>
+              <div class="field full"><label for="email">Correo electrónico <small>Opcional</small></label><input id="email" type="email" maxlength="150" autocomplete="email" placeholder="nombre@correo.com"><small class="field-error"></small></div>
+              <div class="field"><label for="players">Cantidad de jugadores</label><select id="players"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
+              <div class="field full"><label for="comments">Comentarios <small>Opcional</small></label><textarea id="comments" rows="3" maxlength="500" placeholder="Información adicional para el complejo"></textarea></div>
+            </div>
+            <label class="terms"><input type="checkbox" required><span><strong>Entiendo la condición de reserva</strong>El turno quedará protegido temporalmente hasta acreditar la seña.</span></label>
+            <button id="submit" class="button primary submit-button" type="submit"><span>Solicitar reserva</span><i aria-hidden="true">→</i></button>
+          </form>
+        </section>
+
+        <section id="step4" class="card panel hidden centered confirmation-panel">
+          <div class="success">✓</div>
+          <span class="state-label pending">Solicitud creada</span>
+          <h3>Tu turno quedó reservado temporalmente</h3>
+          <p class="confirmation-lead">Acreditá la seña antes de que termine el plazo para confirmar tu reserva.</p>
+          <div id="confirmation" class="summary left"></div>
+          <div class="countdown"><div><small>Tiempo restante</small><span>Para acreditar la seña</span></div><strong id="timer">--:--</strong></div>
+          <div id="paymentBox" class="summary left hidden"></div>
+          <p id="instructions" class="muted"></p>
+          <a id="whatsappPayment" class="button whatsapp hidden" target="_blank" rel="noopener">Informar pago por WhatsApp</a>
+          <div class="button-row"><button id="viewCreated" class="button primary" type="button">Ver estado</button><button id="newRequest" class="button secondary" type="button">Hacer otra reserva</button></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="support-section">
+      <div class="container support-card">
+        <div><p class="eyebrow">¿YA HICISTE UNA RESERVA?</p><h2>Consultá el estado en cualquier momento</h2><p>Usá el código de seguimiento para saber si está pendiente, confirmada o expirada.</p></div>
+        <button class="button secondary button-large" type="button" data-open-tracking>Consultar solicitud</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="trackingModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="trackingTitle">
+    <div class="modal-card">
+      <button id="closeTracking" class="close" type="button" aria-label="Cerrar">×</button>
+      <div class="modal-icon">⌕</div>
+      <p class="eyebrow">SEGUIMIENTO</p>
+      <h2 id="trackingTitle">Consultá tu solicitud</h2>
+      <p class="muted">Ingresá el código recibido al reservar.</p>
+      <div class="field"><label for="trackingCode">Código de seguimiento</label><div class="input-action"><input id="trackingCode" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off"><button id="pasteTracking" type="button" title="Pegar código">Pegar</button></div></div>
+      <button id="searchTracking" class="button primary wide" type="button">Consultar estado</button>
+      <div id="trackingError" class="message hidden" role="alert"></div>
+      <div id="trackingResult" class="tracking-result hidden"></div>
+      <a id="trackingWhatsapp" class="button whatsapp wide hidden" target="_blank" rel="noopener">Informar pago por WhatsApp</a>
+    </div>
   </div>
-</header>
-<main>
-<section id="reservar" class="booking container">
-  <div class="section-heading"><div><p class="eyebrow">RESERVÁ TU TURNO</p><h2>Disponibilidad en tiempo real</h2></div><span id="apiStatus" class="status">Conectando...</span></div>
-  <div class="steps"><span class="active">1. Cancha y fecha</span><span>2. Horario</span><span>3. Tus datos</span><span>4. Confirmación</span></div>
-  <div id="message" class="message hidden"></div>
 
-  <section id="step1" class="card panel">
-    <div class="field"><label>Cancha</label><select id="court"><option>Cargando...</option></select></div>
-    <div class="field"><label>Fecha</label><input id="date" type="date"></div>
-    <button id="availability" class="button primary" type="button">Consultar horarios</button>
-    <div id="courtInfo" class="summary full">Seleccioná una cancha para ver precio, duración y seña.</div>
-  </section>
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
 
-  <section id="step2" class="card panel hidden">
-    <div class="card-head"><div><p class="eyebrow">HORARIOS</p><h3 id="timesTitle">Elegí un horario</h3></div><button class="link" data-back="1">Cambiar selección</button></div>
-    <div id="times" class="times"></div><p id="emptyTimes" class="empty hidden">No hay horarios disponibles para esa fecha.</p>
-  </section>
-
-  <section id="step3" class="card panel hidden">
-    <div class="card-head"><div><p class="eyebrow">TUS DATOS</p><h3>Completá la solicitud</h3></div><button class="link" data-back="2">Cambiar horario</button></div>
-    <div id="selected" class="summary"></div>
-    <form id="form"><div class="grid">
-      <div class="field"><label>Nombre *</label><input id="name" required maxlength="100"></div>
-      <div class="field"><label>Apellido *</label><input id="lastname" required maxlength="100"></div>
-      <div class="field"><label>Documento *</label><input id="document" required inputmode="numeric" minlength="7" maxlength="10"></div>
-      <div class="field"><label>Teléfono *</label><input id="phone" required maxlength="30"></div>
-      <div class="field full"><label>Email</label><input id="email" type="email" maxlength="150"></div>
-      <div class="field"><label>Jugadores</label><select id="players"><option>2</option><option selected>4</option><option>6</option><option>8</option></select></div>
-      <div class="field full"><label>Comentarios</label><textarea id="comments" rows="3" maxlength="500"></textarea></div>
-    </div><label class="terms"><input type="checkbox" required> El turno quedará reservado temporalmente hasta acreditar la seña.</label><button id="submit" class="button primary" type="submit">Solicitar reserva</button></form>
-  </section>
-
-  <section id="step4" class="card panel hidden centered">
-    <div class="success">✓</div><p class="eyebrow">SOLICITUD CREADA</p><h3>Tu turno quedó reservado temporalmente</h3>
-    <div id="confirmation" class="summary left"></div><div class="countdown"><span>Tiempo para acreditar la seña</span><strong id="timer">--:--</strong></div>
-    '<div id="paymentBox" class="summary left hidden"></div>
-    <p id="instructions" class="muted"></p><a id="whatsappPayment" class="button whatsapp hidden" target="_blank" rel="noopener">Informar pago por WhatsApp</a>'<div class="button-row"><button id="viewCreated" class="button primary">Ver estado</button><button id="newRequest" class="button secondary">Otra reserva</button></div>
-  </section>
-</section>
-</main>
-
-<div id="trackingModal" class="modal hidden" role="dialog" aria-modal="true">
-  <div class="modal-card"><button id="closeTracking" class="close">×</button><p class="eyebrow">SEGUIMIENTO</p><h2>Consultá tu solicitud</h2><p class="muted">Ingresá el código recibido al reservar.</p><div class="field"><label>Código de seguimiento</label><input id="trackingCode" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div><button id="searchTracking" class="button primary wide">Consultar estado</button><div id="trackingError" class="message hidden"></div>'<div id="trackingResult" class="tracking-result hidden"></div><a id="trackingWhatsapp" class="button whatsapp wide hidden" target="_blank" rel="noopener">Informar pago por WhatsApp</a>'</div>
-</div>
-<footer><div class="container footer"><span id="footerName">Pádel Reservas</span><span id="footerContact"></span></div></footer>
-<script src="app.js"></script>
+  <footer><div class="container footer"><div><strong id="footerName">Pádel Reservas</strong><small>Reservas online simples y seguras.</small></div><span id="footerContact"></span></div></footer>
+  <script src="app.js"></script>
 </body>
 </html>

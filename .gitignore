@@ -33,19 +33,17 @@ installer/input/
 installer/output/
 installer/package/
 
-# Configuración privada
+# Credenciales y configuraciÃ³n privada
 .env
 database.properties
 database.local.properties
 src/main/resources/database.properties
 
-# Backups y archivos temporales
+# Backups y datos temporales
 backups/
 *.bak
-*.tmp
-*.log
 
-# Compilación
+# CompilaciÃ³n
 target/
 
 # Eclipse
@@ -53,9 +51,11 @@ target/
 .classpath
 .project
 
-# Migraciones copiadas automáticamente para Docker
-database/docker-init/
-
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Archivos temporales
+*.tmp
+*.log
+database/docker-init/
