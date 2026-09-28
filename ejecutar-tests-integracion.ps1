@@ -133,7 +133,7 @@ try {
         -ForegroundColor Cyan
 
     $mavenArgs = @(
-        "-Dtest=integracion.ReservaDAOMySQLIntegracionTest",
+        "-Dtest=integracion.ReservaDAOMySQLIntegracionIT",
         "test"
     )
 

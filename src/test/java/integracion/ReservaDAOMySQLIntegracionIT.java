@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
 import config.ConexionBD;
 import dao.ReservaDAOMySQL;
 
-class ReservaDAOMySQLIntegracionTest {
+class ReservaDAOMySQLIntegracionIT {
 
     private final List<Long> reservasCreadas = new ArrayList<>();
     private final List<Long> clientesCreados = new ArrayList<>();
