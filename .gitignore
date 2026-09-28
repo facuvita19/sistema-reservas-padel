@@ -32,3 +32,30 @@ Thumbs.db
 installer/input/
 installer/output/
 installer/package/
+
+# Configuración privada
+.env
+database.properties
+database.local.properties
+src/main/resources/database.properties
+
+# Backups y archivos temporales
+backups/
+*.bak
+*.tmp
+*.log
+
+# Compilación
+target/
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# Migraciones copiadas automáticamente para Docker
+database/docker-init/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db

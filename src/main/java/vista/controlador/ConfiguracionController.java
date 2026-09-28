@@ -22,331 +22,300 @@ import vista.Navegacion;
 
 public class ConfiguracionController {
 
-    private final ConfiguracionComplejoService configuracionService =
-            new ConfiguracionComplejoService();
+	private final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
-    private ConfiguracionComplejo configuracionActual;
+	private ConfiguracionComplejo configuracionActual;
 
-    @FXML private TextField campoNombreComercial;
-    @FXML private TextField campoRazonSocial;
-    @FXML private TextField campoDireccion;
-    @FXML private TextField campoTelefono;
-    @FXML private TextField campoWhatsapp;
-    @FXML private TextField campoEmail;
-    @FXML private TextField campoInstagram;
-    @FXML private ComboBox<String> comboMoneda;
-    @FXML private TextField campoPorcentajeSenia;
-    @FXML private Spinner<Integer> spinnerAnticipacion;
-    @FXML private Spinner<Integer> spinnerCancelacion;
-    @FXML private Spinner<Integer> spinnerMinutosReservaPendiente;
-    @FXML private ColorPicker selectorColor;
-    @FXML private TextField campoRutaLogo;
-    @FXML private Label etiquetaEjemploSenia;
-    @FXML private Label etiquetaVencimiento;
-    @FXML private Label etiquetaMensaje;
-    @FXML private ProgressIndicator indicadorCarga;
-    @FXML private Button botonGuardar;
+	@FXML
+	private TextField campoNombreComercial;
+	@FXML
+	private TextField campoRazonSocial;
+	@FXML
+	private TextField campoDireccion;
+	@FXML
+	private TextField campoTelefono;
+	@FXML
+	private TextField campoWhatsapp;
+	@FXML
+	private TextField campoEmail;
+	@FXML
+	private TextField campoInstagram;
+	@FXML
+	private ComboBox<String> comboMoneda;
+	@FXML
+	private TextField campoPorcentajeSenia;
+	@FXML
+	private Spinner<Integer> spinnerAnticipacion;
+	@FXML
+	private Spinner<Integer> spinnerCancelacion;
+	@FXML
+	private Spinner<Integer> spinnerMinutosReservaPendiente;
+	@FXML
+	private ColorPicker selectorColor;
+	@FXML
+	private TextField campoRutaLogo;
+	@FXML
+	private TextField campoPagoAlias;
+	@FXML
+	private TextField campoPagoTitular;
+	@FXML
+	private TextField campoPagoEntidad;
+	@FXML
+	private javafx.scene.control.TextArea campoPagoInstrucciones;
+	@FXML
+	private Label etiquetaEjemploSenia;
+	@FXML
+	private Label etiquetaVencimiento;
+	@FXML
+	private Label etiquetaMensaje;
+	@FXML
+	private ProgressIndicator indicadorCarga;
+	@FXML
+	private Button botonGuardar;
 
-    @FXML
-    private void initialize() {
-        configurarControles();
-        Platform.runLater(this::cargarConfiguracion);
-    }
+	@FXML
+	private void initialize() {
+		configurarControles();
+		Platform.runLater(this::cargarConfiguracion);
+	}
 
-    private void configurarControles() {
-        comboMoneda.getItems().setAll(
-                "ARS", "USD", "EUR", "BRL", "UYU");
-        comboMoneda.getSelectionModel().select("ARS");
+	private void configurarControles() {
+		comboMoneda.getItems().setAll("ARS", "USD", "EUR", "BRL", "UYU");
+		comboMoneda.getSelectionModel().select("ARS");
 
-        spinnerAnticipacion.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                        0, 720, 2));
+		spinnerAnticipacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 720, 2));
 
-        spinnerCancelacion.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                        0, 720, 12));
+		spinnerCancelacion.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 720, 12));
 
-        spinnerMinutosReservaPendiente.setValueFactory(
-                new SpinnerValueFactory.IntegerSpinnerValueFactory(
-                        1, 1440, 15, 1));
+		spinnerMinutosReservaPendiente
+				.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 1440, 15, 1));
 
-        campoPorcentajeSenia.textProperty().addListener(
-                (observador, anterior, actual) -> actualizarEjemploSenia());
+		campoPorcentajeSenia.textProperty().addListener((observador, anterior, actual) -> actualizarEjemploSenia());
 
-        comboMoneda.valueProperty().addListener(
-                (observador, anterior, actual) -> actualizarEjemploSenia());
+		comboMoneda.valueProperty().addListener((observador, anterior, actual) -> actualizarEjemploSenia());
 
-        spinnerMinutosReservaPendiente.valueProperty().addListener(
-                (observador, anterior, actual) -> actualizarTextoVencimiento());
-    }
+		spinnerMinutosReservaPendiente.valueProperty()
+				.addListener((observador, anterior, actual) -> actualizarTextoVencimiento());
+	}
 
-    @FXML
-    private void cargarConfiguracion() {
-        cambiarCarga(true, "Cargando configuración...");
+	@FXML
+	private void cargarConfiguracion() {
+		cambiarCarga(true, "Cargando configuración...");
 
-        Task<ConfiguracionComplejo> tarea = new Task<>() {
-            @Override
-            protected ConfiguracionComplejo call() {
-                return configuracionService.obtener();
-            }
-        };
+		Task<ConfiguracionComplejo> tarea = new Task<>() {
+			@Override
+			protected ConfiguracionComplejo call() {
+				return configuracionService.obtener();
+			}
+		};
 
-        tarea.setOnSucceeded(evento -> {
-            configuracionActual = tarea.getValue();
-            mostrarConfiguracion(configuracionActual);
-            Navegacion.recargarConfiguracion();
-            cambiarCarga(false, "Configuración cargada.");
-            mostrarExito("Configuración cargada.");
-        });
+		tarea.setOnSucceeded(evento -> {
+			configuracionActual = tarea.getValue();
+			mostrarConfiguracion(configuracionActual);
+			Navegacion.recargarConfiguracion();
+			cambiarCarga(false, "Configuración cargada.");
+			mostrarExito("Configuración cargada.");
+		});
 
-        tarea.setOnFailed(evento -> {
-            Throwable error = tarea.getException();
-            if (error != null) {
-                error.printStackTrace();
-            }
+		tarea.setOnFailed(evento -> {
+			Throwable error = tarea.getException();
+			if (error != null) {
+				error.printStackTrace();
+			}
 
-            cambiarCarga(false, "No se pudo cargar la configuración.");
-            mostrarError(
-                    error == null || error.getMessage() == null
-                            ? "No se pudo cargar la configuración."
-                            : error.getMessage());
-        });
+			cambiarCarga(false, "No se pudo cargar la configuración.");
+			mostrarError(error == null || error.getMessage() == null ? "No se pudo cargar la configuración."
+					: error.getMessage());
+		});
 
-        Thread hilo = new Thread(
-                tarea,
-                "configuracion-complejo-carga");
-        hilo.setDaemon(true);
-        hilo.start();
-    }
+		Thread hilo = new Thread(tarea, "configuracion-complejo-carga");
+		hilo.setDaemon(true);
+		hilo.start();
+	}
 
-    private void mostrarConfiguracion(
-            ConfiguracionComplejo configuracion) {
+	private void mostrarConfiguracion(ConfiguracionComplejo configuracion) {
 
-        campoNombreComercial.setText(configuracion.getNombreComercial());
-        campoRazonSocial.setText(configuracion.getRazonSocial());
-        campoDireccion.setText(configuracion.getDireccion());
-        campoTelefono.setText(configuracion.getTelefono());
-        campoWhatsapp.setText(configuracion.getWhatsapp());
-        campoEmail.setText(configuracion.getEmail());
-        campoInstagram.setText(configuracion.getInstagram());
-        comboMoneda.setValue(configuracion.getMoneda());
-        campoPorcentajeSenia.setText(
-                configuracion.getPorcentajeSenia().toPlainString());
-        spinnerAnticipacion.getValueFactory().setValue(
-                configuracion.getAnticipacionMinimaHoras());
-        spinnerCancelacion.getValueFactory().setValue(
-                configuracion.getCancelacionMinimaHoras());
-        spinnerMinutosReservaPendiente.getValueFactory().setValue(
-                configuracion.getMinutosReservaPendiente());
-        campoRutaLogo.setText(configuracion.getRutaLogo());
+		campoNombreComercial.setText(configuracion.getNombreComercial());
+		campoRazonSocial.setText(configuracion.getRazonSocial());
+		campoDireccion.setText(configuracion.getDireccion());
+		campoTelefono.setText(configuracion.getTelefono());
+		campoWhatsapp.setText(configuracion.getWhatsapp());
+		campoEmail.setText(configuracion.getEmail());
+		campoInstagram.setText(configuracion.getInstagram());
+		comboMoneda.setValue(configuracion.getMoneda());
+		campoPorcentajeSenia.setText(configuracion.getPorcentajeSenia().toPlainString());
+		spinnerAnticipacion.getValueFactory().setValue(configuracion.getAnticipacionMinimaHoras());
+		spinnerCancelacion.getValueFactory().setValue(configuracion.getCancelacionMinimaHoras());
+		spinnerMinutosReservaPendiente.getValueFactory().setValue(configuracion.getMinutosReservaPendiente());
+		campoRutaLogo.setText(configuracion.getRutaLogo());
+		campoPagoAlias.setText(configuracion.getPagoAlias());
+		campoPagoTitular.setText(configuracion.getPagoTitular());
+		campoPagoEntidad.setText(configuracion.getPagoEntidad());
+		campoPagoInstrucciones.setText(configuracion.getPagoInstrucciones());
+		try {
+			selectorColor.setValue(Color.web(configuracion.getColorPrincipal()));
+		} catch (IllegalArgumentException exception) {
+			selectorColor.setValue(Color.web("#486B86"));
+		}
 
-        try {
-            selectorColor.setValue(
-                    Color.web(configuracion.getColorPrincipal()));
-        } catch (IllegalArgumentException exception) {
-            selectorColor.setValue(Color.web("#486B86"));
-        }
+		actualizarEjemploSenia();
+		actualizarTextoVencimiento();
+	}
 
-        actualizarEjemploSenia();
-        actualizarTextoVencimiento();
-    }
+	@FXML
+	private void guardar() {
+		try {
+			ConfiguracionComplejo configuracion = configuracionActual == null ? new ConfiguracionComplejo()
+					: configuracionActual;
 
-    @FXML
-    private void guardar() {
-        try {
-            ConfiguracionComplejo configuracion =
-                    configuracionActual == null
-                            ? new ConfiguracionComplejo()
-                            : configuracionActual;
+			configuracion.setNombreComercial(campoNombreComercial.getText());
+			configuracion.setRazonSocial(campoRazonSocial.getText());
+			configuracion.setDireccion(campoDireccion.getText());
+			configuracion.setTelefono(campoTelefono.getText());
+			configuracion.setWhatsapp(campoWhatsapp.getText());
+			configuracion.setEmail(campoEmail.getText());
+			configuracion.setInstagram(campoInstagram.getText());
+			configuracion.setMoneda(comboMoneda.getValue());
+			configuracion.setPorcentajeSenia(parsearPorcentaje(campoPorcentajeSenia.getText()));
+			configuracion.setAnticipacionMinimaHoras(spinnerAnticipacion.getValue());
+			configuracion.setCancelacionMinimaHoras(spinnerCancelacion.getValue());
+			configuracion.setMinutosReservaPendiente(spinnerMinutosReservaPendiente.getValue());
+			configuracion.setColorPrincipal(colorHexadecimal(selectorColor.getValue()));
+			configuracion.setRutaLogo(campoRutaLogo.getText());
+			configuracion.setPagoAlias(campoPagoAlias.getText());
+			configuracion.setPagoTitular(campoPagoTitular.getText());
+			configuracion.setPagoEntidad(campoPagoEntidad.getText());
+			configuracion.setPagoInstrucciones(campoPagoInstrucciones.getText());
+			cambiarCarga(true, "Guardando configuración...");
+			guardarEnSegundoPlano(configuracion);
+		} catch (IllegalArgumentException exception) {
+			mostrarError(exception.getMessage());
+		}
+	}
 
-            configuracion.setNombreComercial(
-                    campoNombreComercial.getText());
-            configuracion.setRazonSocial(campoRazonSocial.getText());
-            configuracion.setDireccion(campoDireccion.getText());
-            configuracion.setTelefono(campoTelefono.getText());
-            configuracion.setWhatsapp(campoWhatsapp.getText());
-            configuracion.setEmail(campoEmail.getText());
-            configuracion.setInstagram(campoInstagram.getText());
-            configuracion.setMoneda(comboMoneda.getValue());
-            configuracion.setPorcentajeSenia(
-                    parsearPorcentaje(campoPorcentajeSenia.getText()));
-            configuracion.setAnticipacionMinimaHoras(
-                    spinnerAnticipacion.getValue());
-            configuracion.setCancelacionMinimaHoras(
-                    spinnerCancelacion.getValue());
-            configuracion.setMinutosReservaPendiente(
-                    spinnerMinutosReservaPendiente.getValue());
-            configuracion.setColorPrincipal(
-                    colorHexadecimal(selectorColor.getValue()));
-            configuracion.setRutaLogo(campoRutaLogo.getText());
+	private void guardarEnSegundoPlano(ConfiguracionComplejo configuracion) {
 
-            cambiarCarga(true, "Guardando configuración...");
-            guardarEnSegundoPlano(configuracion);
-        } catch (IllegalArgumentException exception) {
-            mostrarError(exception.getMessage());
-        }
-    }
+		Task<Void> tarea = new Task<>() {
+			@Override
+			protected Void call() {
+				configuracionService.guardar(configuracion);
+				return null;
+			}
+		};
 
-    private void guardarEnSegundoPlano(
-            ConfiguracionComplejo configuracion) {
+		tarea.setOnSucceeded(evento -> {
+			configuracionActual = configuracion;
+			mostrarConfiguracion(configuracion);
+			Navegacion.recargarConfiguracion();
+			cambiarCarga(false, "La configuración se guardó correctamente.");
+			mostrarExito("La configuración se guardó correctamente.");
+		});
 
-        Task<Void> tarea = new Task<>() {
-            @Override
-            protected Void call() {
-                configuracionService.guardar(configuracion);
-                return null;
-            }
-        };
+		tarea.setOnFailed(evento -> {
+			Throwable error = tarea.getException();
+			if (error != null) {
+				error.printStackTrace();
+			}
 
-        tarea.setOnSucceeded(evento -> {
-            configuracionActual = configuracion;
-            mostrarConfiguracion(configuracion);
-            Navegacion.recargarConfiguracion();
-            cambiarCarga(false,
-                    "La configuración se guardó correctamente.");
-            mostrarExito(
-                    "La configuración se guardó correctamente.");
-        });
+			cambiarCarga(false, "No se pudo guardar la configuración.");
+			mostrarError(error == null || error.getMessage() == null ? "No se pudo guardar la configuración."
+					: error.getMessage());
+		});
 
-        tarea.setOnFailed(evento -> {
-            Throwable error = tarea.getException();
-            if (error != null) {
-                error.printStackTrace();
-            }
+		Thread hilo = new Thread(tarea, "configuracion-complejo-guardado");
+		hilo.setDaemon(true);
+		hilo.start();
+	}
 
-            cambiarCarga(false,
-                    "No se pudo guardar la configuración.");
-            mostrarError(
-                    error == null || error.getMessage() == null
-                            ? "No se pudo guardar la configuración."
-                            : error.getMessage());
-        });
+	@FXML
+	private void seleccionarLogo() {
+		FileChooser selector = new FileChooser();
+		selector.setTitle("Seleccionar logo del complejo");
+		selector.getExtensionFilters()
+				.add(new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.webp"));
 
-        Thread hilo = new Thread(
-                tarea,
-                "configuracion-complejo-guardado");
-        hilo.setDaemon(true);
-        hilo.start();
-    }
+		File archivo = selector.showOpenDialog(campoRutaLogo.getScene().getWindow());
 
-    @FXML
-    private void seleccionarLogo() {
-        FileChooser selector = new FileChooser();
-        selector.setTitle("Seleccionar logo del complejo");
-        selector.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(
-                        "Imágenes",
-                        "*.png", "*.jpg", "*.jpeg", "*.webp"));
+		if (archivo != null) {
+			campoRutaLogo.setText(archivo.getAbsolutePath());
+		}
+	}
 
-        File archivo = selector.showOpenDialog(
-                campoRutaLogo.getScene().getWindow());
+	@FXML
+	private void restaurarColor() {
+		selectorColor.setValue(Color.web("#486B86"));
+	}
 
-        if (archivo != null) {
-            campoRutaLogo.setText(archivo.getAbsolutePath());
-        }
-    }
+	private void actualizarEjemploSenia() {
+		String moneda = comboMoneda.getValue() == null ? "ARS" : comboMoneda.getValue();
 
-    @FXML
-    private void restaurarColor() {
-        selectorColor.setValue(Color.web("#486B86"));
-    }
+		try {
+			BigDecimal porcentaje = parsearPorcentaje(campoPorcentajeSenia.getText());
 
-    private void actualizarEjemploSenia() {
-        String moneda = comboMoneda.getValue() == null
-                ? "ARS"
-                : comboMoneda.getValue();
+			BigDecimal ejemplo = new BigDecimal("40000").multiply(porcentaje).divide(BigDecimal.valueOf(100), 2,
+					java.math.RoundingMode.HALF_UP);
 
-        try {
-            BigDecimal porcentaje = parsearPorcentaje(
-                    campoPorcentajeSenia.getText());
+			etiquetaEjemploSenia.setText("Ejemplo: para una reserva de " + moneda + " 40.000, la seña será " + moneda
+					+ " " + ejemplo.toPlainString() + ".");
+		} catch (IllegalArgumentException exception) {
+			etiquetaEjemploSenia.setText("Ingresá un porcentaje válido entre 0 y 100.");
+		}
+	}
 
-            BigDecimal ejemplo = new BigDecimal("40000")
-                    .multiply(porcentaje)
-                    .divide(
-                            BigDecimal.valueOf(100),
-                            2,
-                            java.math.RoundingMode.HALF_UP);
+	private void actualizarTextoVencimiento() {
+		Integer minutos = spinnerMinutosReservaPendiente.getValue();
 
-            etiquetaEjemploSenia.setText(
-                    "Ejemplo: para una reserva de "
-                            + moneda
-                            + " 40.000, la seña será "
-                            + moneda
-                            + " "
-                            + ejemplo.toPlainString()
-                            + ".");
-        } catch (IllegalArgumentException exception) {
-            etiquetaEjemploSenia.setText(
-                    "Ingresá un porcentaje válido entre 0 y 100.");
-        }
-    }
+		if (minutos == null) {
+			etiquetaVencimiento.setText("Ingresá el plazo para pagar la seña.");
+			return;
+		}
 
-    private void actualizarTextoVencimiento() {
-        Integer minutos = spinnerMinutosReservaPendiente.getValue();
+		etiquetaVencimiento.setText("Las reservas iniciadas desde la web se liberarán " + "automáticamente después de "
+				+ minutos + (minutos == 1 ? " minuto" : " minutos") + " si la seña no fue acreditada. "
+				+ "Las reservas creadas por el personal no vencen automáticamente.");
+	}
 
-        if (minutos == null) {
-            etiquetaVencimiento.setText(
-                    "Ingresá el plazo para pagar la seña.");
-            return;
-        }
+	private BigDecimal parsearPorcentaje(String valor) {
+		if (valor == null || valor.isBlank()) {
+			throw new IllegalArgumentException("Ingresá el porcentaje de seña.");
+		}
 
-        etiquetaVencimiento.setText(
-                "Las reservas iniciadas desde la web se liberarán "
-                        + "automáticamente después de "
-                        + minutos
-                        + (minutos == 1 ? " minuto" : " minutos")
-                        + " si la seña no fue acreditada. "
-                        + "Las reservas creadas por el personal no vencen automáticamente.");
-    }
+		try {
+			return new BigDecimal(valor.trim().replace(",", "."));
+		} catch (NumberFormatException exception) {
+			throw new IllegalArgumentException("El porcentaje de seña debe ser numérico.");
+		}
+	}
 
-    private BigDecimal parsearPorcentaje(String valor) {
-        if (valor == null || valor.isBlank()) {
-            throw new IllegalArgumentException(
-                    "Ingresá el porcentaje de seña.");
-        }
+	private String colorHexadecimal(Color color) {
+		return String.format("#%02X%02X%02X", Math.round(color.getRed() * 255), Math.round(color.getGreen() * 255),
+				Math.round(color.getBlue() * 255));
+	}
 
-        try {
-            return new BigDecimal(valor.trim().replace(",", "."));
-        } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException(
-                    "El porcentaje de seña debe ser numérico.");
-        }
-    }
+	private void cambiarCarga(boolean cargando, String mensaje) {
+		indicadorCarga.setVisible(cargando);
+		botonGuardar.setDisable(cargando);
+		etiquetaMensaje.setText(mensaje);
+	}
 
-    private String colorHexadecimal(Color color) {
-        return String.format(
-                "#%02X%02X%02X",
-                Math.round(color.getRed() * 255),
-                Math.round(color.getGreen() * 255),
-                Math.round(color.getBlue() * 255));
-    }
+	private void mostrarError(String mensaje) {
+		etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje);
+		etiquetaMensaje.getStyleClass().remove("mensaje-exito");
+		if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) {
+			etiquetaMensaje.getStyleClass().add("mensaje-error");
+		}
+	}
 
-    private void cambiarCarga(boolean cargando, String mensaje) {
-        indicadorCarga.setVisible(cargando);
-        botonGuardar.setDisable(cargando);
-        etiquetaMensaje.setText(mensaje);
-    }
+	private void mostrarExito(String mensaje) {
+		etiquetaMensaje.setText(mensaje);
+		etiquetaMensaje.getStyleClass().remove("mensaje-error");
+		if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) {
+			etiquetaMensaje.getStyleClass().add("mensaje-exito");
+		}
+	}
 
-    private void mostrarError(String mensaje) {
-        etiquetaMensaje.setText(
-                mensaje == null ? "Ocurrió un error." : mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-exito");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-error");
-        }
-    }
-
-    private void mostrarExito(String mensaje) {
-        etiquetaMensaje.setText(mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-error");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-exito");
-        }
-    }
-
-    @FXML
-    private void volver() {
-        Navegacion.mostrarDashboard(
-                Navegacion.getUsuarioActual());
-    }
+	@FXML
+	private void volver() {
+		Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
+	}
 }

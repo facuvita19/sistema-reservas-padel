@@ -1,0 +1,9 @@
+target
+.git
+.settings
+.classpath
+.project
+backups
+.env
+database.properties
+*.bak

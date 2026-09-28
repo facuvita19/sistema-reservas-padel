@@ -82,3 +82,5 @@
     -fx-background-color: transparent;
     -fx-text-fill: #eef2f6;
 }
+
+.config-payment-card { -fx-border-color: #3b5668; }

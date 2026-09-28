@@ -225,7 +225,18 @@
                             </children>
                         </GridPane>
 
-                        <Label fx:id="etiquetaMensaje"
+                        <VBox spacing="10" styleClass="config-card, config-payment-card">
+                            <Label text="Instrucciones de pago para la web" styleClass="section-title" />
+                            <Label text="Estos datos se mostrarán al cliente después de solicitar el turno." wrapText="true" styleClass="config-note-text" />
+                            <GridPane hgap="12" vgap="10">
+                                <columnConstraints><ColumnConstraints percentWidth="33.33"/><ColumnConstraints percentWidth="33.33"/><ColumnConstraints percentWidth="33.34"/></columnConstraints>
+                                <VBox spacing="6"><Label text="Alias o identificador" styleClass="field-label"/><TextField fx:id="campoPagoAlias" promptText="Ejemplo: arena.padel" styleClass="modern-field"/></VBox>
+                                <VBox spacing="6" GridPane.columnIndex="1"><Label text="Titular" styleClass="field-label"/><TextField fx:id="campoPagoTitular" styleClass="modern-field"/></VBox>
+                                <VBox spacing="6" GridPane.columnIndex="2"><Label text="Entidad o medio" styleClass="field-label"/><TextField fx:id="campoPagoEntidad" promptText="Banco o billetera" styleClass="modern-field"/></VBox>
+                            </GridPane>
+                            <Label text="Instrucciones adicionales" styleClass="field-label"/>
+                            <TextArea fx:id="campoPagoInstrucciones" prefRowCount="3" wrapText="true" promptText="Ejemplo: transferí el importe exacto y enviá el comprobante por WhatsApp." styleClass="modern-area"/>
+                        </VBox>                        <Label fx:id="etiquetaMensaje"
                                minHeight="22"
                                wrapText="true" />
                         <Button fx:id="botonGuardar"

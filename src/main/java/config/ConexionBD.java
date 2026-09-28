@@ -11,43 +11,24 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public final class ConexionBD {
-
-    private static final String ARCHIVO_CONFIGURACION =
-            "database.properties";
-
+    private static final String ARCHIVO_CONFIGURACION = "database.properties";
     private static final String CLAVE_URL = "db.url";
     private static final String CLAVE_USUARIO = "db.user";
     private static final String CLAVE_PASSWORD = "db.password";
 
-    private ConexionBD() {
-    }
+    private ConexionBD() { }
 
     public static Connection obtenerConexion() {
         Properties propiedades = cargarPropiedades();
-
-        String url = obtenerObligatoria(propiedades, CLAVE_URL);
-        String usuario = obtenerObligatoria(
-                propiedades,
-                CLAVE_USUARIO
-        );
-        String password = propiedades.getProperty(
-                CLAVE_PASSWORD,
-                ""
-        );
-
+        String url = obtenerConfiguracion("DB_URL", propiedades, CLAVE_URL, true);
+        String usuario = obtenerConfiguracion("DB_USER", propiedades, CLAVE_USUARIO, true);
+        String password = obtenerConfiguracion("DB_PASSWORD", propiedades, CLAVE_PASSWORD, false);
         try {
-            return DriverManager.getConnection(
-                    url,
-                    usuario,
-                    password
-            );
+            return DriverManager.getConnection(url, usuario, password);
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudo conectar con la base de datos "
-                            + "padel_reservas. Revise MySQL y el archivo "
-                            + ARCHIVO_CONFIGURACION + ".",
-                    exception
-            );
+                    "No se pudo conectar con la base de datos. Revisá MySQL y la configuración DB_URL, DB_USER y DB_PASSWORD.",
+                    exception);
         }
     }
 
@@ -59,67 +40,40 @@ public final class ConexionBD {
         }
     }
 
+    private static String obtenerConfiguracion(String variable,
+            Properties propiedades, String clave, boolean obligatoria) {
+        String entorno = System.getenv(variable);
+        if (entorno != null && !entorno.isBlank()) return entorno.trim();
+        String sistema = System.getProperty(clave);
+        if (sistema != null && !sistema.isBlank()) return sistema.trim();
+        String archivo = propiedades.getProperty(clave);
+        if (archivo != null && !archivo.isBlank()) return archivo.trim();
+        if (obligatoria) {
+            throw new IllegalStateException(
+                    "Falta configurar " + variable + " o " + clave + ".");
+        }
+        return "";
+    }
+
     private static Properties cargarPropiedades() {
         Properties propiedades = new Properties();
         Path rutaExterna = Paths.get(ARCHIVO_CONFIGURACION)
-                .toAbsolutePath()
-                .normalize();
-
+                .toAbsolutePath().normalize();
         if (Files.isRegularFile(rutaExterna)) {
-            try (InputStream entrada =
-                    Files.newInputStream(rutaExterna)) {
+            try (InputStream entrada = Files.newInputStream(rutaExterna)) {
                 propiedades.load(entrada);
                 return propiedades;
             } catch (IOException exception) {
-                throw new RuntimeException(
-                        "No se pudo leer " + rutaExterna + ".",
-                        exception
-                );
+                throw new RuntimeException("No se pudo leer " + rutaExterna + ".", exception);
             }
         }
-
-        try (InputStream entrada = ConexionBD.class
-                .getClassLoader()
+        try (InputStream entrada = ConexionBD.class.getClassLoader()
                 .getResourceAsStream(ARCHIVO_CONFIGURACION)) {
-
-            if (entrada == null) {
-                throw new IllegalStateException(
-                        "No se encontro " + ARCHIVO_CONFIGURACION
-                                + " en el directorio de ejecucion. "
-                                + "Copie database.properties.example, "
-                                + "renombre la copia y complete sus "
-                                + "credenciales de MySQL."
-                );
-            }
-
-            propiedades.load(entrada);
+            if (entrada != null) propiedades.load(entrada);
             return propiedades;
-
         } catch (IOException exception) {
             throw new RuntimeException(
-                    "No se pudo cargar "
-                            + ARCHIVO_CONFIGURACION + ".",
-                    exception
-            );
+                    "No se pudo cargar " + ARCHIVO_CONFIGURACION + ".", exception);
         }
-    }
-
-    private static String obtenerObligatoria(
-            Properties propiedades,
-            String clave) {
-
-        String valor = propiedades.getProperty(clave);
-
-        if (valor == null || valor.trim().isEmpty()) {
-            throw new IllegalStateException(
-                    "Falta configurar la propiedad "
-                            + clave
-                            + " en "
-                            + ARCHIVO_CONFIGURACION
-                            + "."
-            );
-        }
-
-        return valor.trim();
     }
 }

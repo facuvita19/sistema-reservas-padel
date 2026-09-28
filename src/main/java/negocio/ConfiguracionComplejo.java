@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class ConfiguracionComplejo {
-
     public static final long ID_UNICO = 1L;
 
     private long id = ID_UNICO;
@@ -20,6 +19,10 @@ public class ConfiguracionComplejo {
     private int anticipacionMinimaHoras = 2;
     private int cancelacionMinimaHoras = 12;
     private int minutosReservaPendiente = 15;
+    private String pagoAlias;
+    private String pagoTitular;
+    private String pagoEntidad;
+    private String pagoInstrucciones;
     private String colorPrincipal = "#486B86";
     private String rutaLogo;
     private LocalDateTime fechaActualizacion;
@@ -50,10 +53,22 @@ public class ConfiguracionComplejo {
     public void setCancelacionMinimaHoras(int valor) { cancelacionMinimaHoras = valor; }
     public int getMinutosReservaPendiente() { return minutosReservaPendiente; }
     public void setMinutosReservaPendiente(int valor) { minutosReservaPendiente = valor; }
+    public String getPagoAlias() { return pagoAlias; }
+    public void setPagoAlias(String valor) { pagoAlias = valor; }
+    public String getPagoTitular() { return pagoTitular; }
+    public void setPagoTitular(String valor) { pagoTitular = valor; }
+    public String getPagoEntidad() { return pagoEntidad; }
+    public void setPagoEntidad(String valor) { pagoEntidad = valor; }
+    public String getPagoInstrucciones() { return pagoInstrucciones; }
+    public void setPagoInstrucciones(String valor) { pagoInstrucciones = valor; }
     public String getColorPrincipal() { return colorPrincipal; }
     public void setColorPrincipal(String valor) { colorPrincipal = valor; }
     public String getRutaLogo() { return rutaLogo; }
     public void setRutaLogo(String valor) { rutaLogo = valor; }
     public LocalDateTime getFechaActualizacion() { return fechaActualizacion; }
     public void setFechaActualizacion(LocalDateTime valor) { fechaActualizacion = valor; }
+
+    public boolean tieneInstruccionesPago() {
+        return pagoAlias != null && !pagoAlias.isBlank();
+    }
 }
