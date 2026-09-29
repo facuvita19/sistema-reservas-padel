@@ -11,7 +11,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
+import api.publica.CuentaClienteDTO.ActualizarPerfil;
 import api.publica.CuentaClienteDTO.HistorialReservas;
 import api.publica.CuentaClienteDTO.Perfil;
 import api.publica.CuentaClienteDTO.ReservaResumen;
@@ -20,6 +23,12 @@ import negocio.Cliente;
 import negocio.ConfiguracionComplejo;
 
 public class CuentaClienteService {
+
+    private static final Pattern EMAIL = Pattern.compile(
+            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
+            Pattern.CASE_INSENSITIVE);
+    private static final Pattern TELEFONO =
+            Pattern.compile("^[0-9+()\\-\\s]{6,30}$");
 
     private final ConfiguracionComplejoService configuracionService;
 
@@ -73,6 +82,229 @@ public class CuentaClienteService {
                 cliente.getDocumento(),
                 cliente.getTelefono(),
                 cliente.getEmail());
+    }
+
+    public Perfil actualizarPerfil(
+            long clienteId,
+            ActualizarPerfil entrada) {
+        validarClienteId(clienteId);
+        DatosPerfil datos = validarYNormalizarPerfil(entrada);
+
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            conexion.setAutoCommit(false);
+            try {
+                String documento = bloquearClienteActivo(
+                        conexion, clienteId);
+                validarCorreoDisponible(
+                        conexion, clienteId, datos.email());
+                actualizarCliente(conexion, clienteId, datos);
+                actualizarUsuarioCliente(
+                        conexion, clienteId, datos.email());
+                conexion.commit();
+                return new Perfil(
+                        clienteId,
+                        datos.nombre(),
+                        datos.apellido(),
+                        documento,
+                        datos.telefono(),
+                        datos.email());
+            } catch (SQLException | RuntimeException exception) {
+                rollbackSeguro(conexion, exception);
+                if (exception instanceof SQLException sql
+                        && sql.getErrorCode() == 1062) {
+                    throw new ConflictoPerfilException();
+                }
+                throw exception;
+            } finally {
+                restaurarAutoCommit(conexion);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo actualizar el perfil del cliente.",
+                    exception);
+        }
+    }
+
+    private String bloquearClienteActivo(
+            Connection conexion,
+            long clienteId) throws SQLException {
+        String sql = "SELECT documento FROM clientes "
+                + "WHERE id = ? AND activo = TRUE FOR UPDATE";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, clienteId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return resultado.getString("documento");
+                }
+            }
+        }
+        throw new RecursoClienteNoEncontradoException(
+                "El perfil del cliente no esta disponible.");
+    }
+
+    private void validarCorreoDisponible(
+            Connection conexion,
+            long clienteId,
+            String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM clientes "
+                + "WHERE LOWER(email) = LOWER(?) AND id <> ?";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, email);
+            sentencia.setLong(2, clienteId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                if (resultado.getInt(1) > 0) {
+                    throw new ConflictoPerfilException();
+                }
+            }
+        }
+
+        String usuarios = "SELECT COUNT(*) FROM usuarios "
+                + "WHERE LOWER(nombre_usuario) = LOWER(?) "
+                + "AND (cliente_id IS NULL OR cliente_id <> ?)";
+        try (PreparedStatement sentencia =
+                conexion.prepareStatement(usuarios)) {
+            sentencia.setString(1, email);
+            sentencia.setLong(2, clienteId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                if (resultado.getInt(1) > 0) {
+                    throw new ConflictoPerfilException();
+                }
+            }
+        }
+    }
+
+    private void actualizarCliente(
+            Connection conexion,
+            long clienteId,
+            DatosPerfil datos) throws SQLException {
+        String sql = "UPDATE clientes SET nombre = ?, apellido = ?, "
+                + "telefono = ?, email = ? "
+                + "WHERE id = ? AND activo = TRUE";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, datos.nombre());
+            sentencia.setString(2, datos.apellido());
+            sentencia.setString(3, datos.telefono());
+            sentencia.setString(4, datos.email());
+            sentencia.setLong(5, clienteId);
+            if (sentencia.executeUpdate() == 0) {
+                throw new RecursoClienteNoEncontradoException(
+                        "El perfil del cliente no esta disponible.");
+            }
+        }
+    }
+
+    private void actualizarUsuarioCliente(
+            Connection conexion,
+            long clienteId,
+            String email) throws SQLException {
+        String sql = "UPDATE usuarios SET nombre_usuario = ? "
+                + "WHERE cliente_id = ? AND rol = 'CLIENTE' "
+                + "AND activo = TRUE";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, email);
+            sentencia.setLong(2, clienteId);
+            int filas = sentencia.executeUpdate();
+            if (filas == 0 && !existeUsuarioCliente(
+                    conexion, clienteId, email)) {
+                throw new RecursoClienteNoEncontradoException(
+                        "La cuenta del cliente no esta disponible.");
+            }
+        }
+    }
+
+    private boolean existeUsuarioCliente(
+            Connection conexion,
+            long clienteId,
+            String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM usuarios "
+                + "WHERE cliente_id = ? AND rol = 'CLIENTE' "
+                + "AND activo = TRUE "
+                + "AND LOWER(nombre_usuario) = LOWER(?)";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, clienteId);
+            sentencia.setString(2, email);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                return resultado.getInt(1) > 0;
+            }
+        }
+    }
+
+    private DatosPerfil validarYNormalizarPerfil(
+            ActualizarPerfil entrada) {
+        if (entrada == null) {
+            throw new IllegalArgumentException(
+                    "Los datos del perfil son obligatorios.");
+        }
+
+        String nombre = normalizarNombre(entrada.nombre());
+        String apellido = normalizarNombre(entrada.apellido());
+        String telefono = entrada.telefono() == null
+                ? ""
+                : entrada.telefono().trim();
+        String email = entrada.email() == null
+                ? ""
+                : entrada.email().trim().toLowerCase(Locale.ROOT);
+
+        if (nombre.isBlank()) {
+            throw new IllegalArgumentException(
+                    "El nombre es obligatorio.");
+        }
+        if (apellido.isBlank()) {
+            throw new IllegalArgumentException(
+                    "El apellido es obligatorio.");
+        }
+        if (!TELEFONO.matcher(telefono).matches()) {
+            throw new IllegalArgumentException(
+                    "El telefono contiene caracteres no validos.");
+        }
+        if (email.length() > 150 || !EMAIL.matcher(email).matches()) {
+            throw new IllegalArgumentException(
+                    "El correo electronico no tiene un formato valido.");
+        }
+        return new DatosPerfil(nombre, apellido, telefono, email);
+    }
+
+    private String normalizarNombre(String valor) {
+        if (valor == null || valor.isBlank()) return "";
+        String[] palabras = valor.trim()
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("\\s+", " ")
+                .split(" ");
+        StringBuilder resultado = new StringBuilder();
+        for (String palabra : palabras) {
+            if (palabra.isBlank()) continue;
+            if (resultado.length() > 0) resultado.append(' ');
+            resultado.append(Character.toUpperCase(palabra.charAt(0)))
+                    .append(palabra.substring(1));
+        }
+        return resultado.toString();
+    }
+
+    private void rollbackSeguro(
+            Connection conexion,
+            Exception original) {
+        try {
+            conexion.rollback();
+        } catch (SQLException rollback) {
+            original.addSuppressed(rollback);
+        }
+    }
+
+    private void restaurarAutoCommit(Connection conexion) {
+        try {
+            conexion.setAutoCommit(true);
+        } catch (SQLException ignored) {
+        }
+    }
+
+    private record DatosPerfil(
+            String nombre,
+            String apellido,
+            String telefono,
+            String email) {
     }
 
     public HistorialReservas listarReservas(long clienteId) {
@@ -271,6 +503,14 @@ public class CuentaClienteService {
         if (reservaId <= 0) {
             throw new IllegalArgumentException(
                     "El ID de la reserva debe ser positivo.");
+        }
+    }
+
+    public static class ConflictoPerfilException
+            extends IllegalArgumentException {
+
+        public ConflictoPerfilException() {
+            super("El correo electronico ya pertenece a otra cuenta.");
         }
     }
 

@@ -20,6 +20,13 @@ public final class CuentaClienteDTO {
             String email) {
     }
 
+    public record ActualizarPerfil(
+            String nombre,
+            String apellido,
+            String telefono,
+            String email) {
+    }
+
     public record ReservaResumen(
             long reservaId,
             String codigoSeguimiento,

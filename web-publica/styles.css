@@ -1309,3 +1309,23 @@ body.customer-authenticated #form .check:has(#rememberData) {
         grid-template-columns: 1fr;
     }
 }
+/* mi-perfil-estructura-v1 */
+.profile-modal-card {
+    width: min(680px, calc(100vw - 28px));
+}
+
+.profile-modal-card input[readonly] {
+    cursor: not-allowed;
+    opacity: .78;
+    background: var(--soft);
+}
+
+.success-alert {
+    border-color: rgba(82, 196, 140, .45);
+    background: rgba(82, 196, 140, .12);
+    color: var(--ok);
+}
+
+.account-menu #openProfile {
+    border-bottom: 1px solid var(--line);
+}

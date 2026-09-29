@@ -1,1 +1,93 @@
-const CACHE='padel-web-cuentas-8',SHELL=['/','/index.html','/styles.css','/app.js','/manifest.webmanifest','/offline.html','/icon-192.png','/icon-512.png','/icon-maskable-512.png'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE).map(x=>caches.delete(x)))).then(()=>self.clients.claim())));self.addEventListener('message',e=>{if(e.data==='SKIP_WAITING')self.skipWaiting()});self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.port==='8080')return;if(e.request.mode==='navigate'){e.respondWith(fetch(e.request).then(r=>{const x=r.clone();caches.open(CACHE).then(c=>c.put(e.request,x));return r}).catch(()=>caches.match(e.request).then(r=>r||caches.match('/offline.html'))));return}e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(r=>{if(r.ok){const x=r.clone();caches.open(CACHE).then(c=>c.put(e.request,x))}return r}))) });
+const CACHE = 'padel-web-network-first-1';
+const SHELL = [
+    '/',
+    '/index.html',
+    '/styles.css?v=perfil-1',
+    '/app.js?v=perfil-1',
+    '/manifest.webmanifest',
+    '/offline.html',
+    '/icon-192.png',
+    '/icon-512.png',
+    '/icon-maskable-512.png'
+];
+
+self.addEventListener('install', event => {
+    event.waitUntil(
+        caches.open(CACHE)
+            .then(cache => cache.addAll(SHELL))
+            .then(() => self.skipWaiting())
+    );
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys()
+            .then(keys => Promise.all(
+                keys.filter(key => key !== CACHE)
+                    .map(key => caches.delete(key))
+            ))
+            .then(() => self.clients.claim())
+    );
+});
+
+self.addEventListener('message', event => {
+    if (event.data === 'SKIP_WAITING') {
+        self.skipWaiting();
+    }
+});
+
+async function networkFirst(request, fallback) {
+    try {
+        const response = await fetch(request, { cache: 'no-store' });
+        if (response.ok) {
+            const cache = await caches.open(CACHE);
+            await cache.put(request, response.clone());
+        }
+        return response;
+    } catch (error) {
+        const cached = await caches.match(request);
+        if (cached) return cached;
+        if (fallback) {
+            const fallbackResponse = await caches.match(fallback);
+            if (fallbackResponse) return fallbackResponse;
+        }
+        throw error;
+    }
+}
+
+self.addEventListener('fetch', event => {
+    const request = event.request;
+    const url = new URL(request.url);
+
+    if (request.method !== 'GET' || url.port === '8080') {
+        return;
+    }
+
+    if (request.mode === 'navigate') {
+        event.respondWith(networkFirst(request, '/offline.html'));
+        return;
+    }
+
+    const isApplicationAsset = url.pathname.endsWith('/app.js')
+            || url.pathname.endsWith('/styles.css')
+            || url.pathname.endsWith('/service-worker.js')
+            || url.pathname.endsWith('/manifest.webmanifest');
+
+    if (isApplicationAsset) {
+        event.respondWith(networkFirst(request));
+        return;
+    }
+
+    event.respondWith(
+        caches.match(request).then(cached => {
+            if (cached) return cached;
+            return fetch(request).then(response => {
+                if (response.ok) {
+                    const copy = response.clone();
+                    caches.open(CACHE).then(cache => cache.put(request, copy));
+                }
+                return response;
+            });
+        })
+    );
+});

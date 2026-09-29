@@ -233,7 +233,7 @@ decorateBookingStepsV3();
     const menu = document.createElement('div');
     menu.id = 'accountMenu';
     menu.className = 'account-menu hidden';
-    menu.innerHTML = '<button id="logoutAccount" type="button">Cerrar sesi\u00f3n</button>';
+    menu.innerHTML = '<button id="openProfile" type="button">Mi perfil</button><button id="logoutAccount" type="button">Cerrar sesi\u00f3n</button>';
     navActions.appendChild(menu);
 
     const logoutButton = document.getElementById('logoutAccount');
@@ -918,4 +918,244 @@ decorateBookingStepsV3();
     });
 
     refreshAuthenticatedBookingForm();
+})();
+// mi-perfil-estructura-v1
+(function () {
+    const modal = document.getElementById('profileModal');
+    const openButton = document.getElementById('openProfile');
+    const closeButton = document.getElementById('closeProfile');
+    const accountMenu = document.getElementById('accountMenu');
+    const accountBadge = document.getElementById('accountBadge');
+
+    if (!modal || !openButton || !closeButton) {
+        console.warn('No se pudo inicializar el modal Mi perfil.');
+        return;
+    }
+
+    let previousFocus = null;
+
+    function openProfileModal() {
+        previousFocus = document.activeElement;
+        accountMenu?.classList.add('hidden');
+        accountBadge?.setAttribute('aria-expanded', 'false');
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        window.setTimeout(function () {
+            document.getElementById('profileName')?.focus();
+        }, 20);
+    }
+
+    function closeProfileModal() {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+        previousFocus?.focus();
+    }
+
+    openButton.addEventListener('click', openProfileModal);
+    closeButton.addEventListener('click', closeProfileModal);
+
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) closeProfileModal();
+    });
+
+    modal.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            event.preventDefault();
+            closeProfileModal();
+            return;
+        }
+
+        if (event.key !== 'Tab') return;
+        const focusable = Array.from(modal.querySelectorAll(
+            'button:not([disabled]), input:not([disabled]), a[href], textarea, select'
+        ));
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeProfileModal();
+        }
+    });
+})();
+// mi-perfil-conectado-v1
+(function () {
+    const modal = document.getElementById('profileModal');
+    const openButton = document.getElementById('openProfile');
+    const form = document.getElementById('profileForm');
+    const nameInput = document.getElementById('profileName');
+    const lastnameInput = document.getElementById('profileLastname');
+    const documentInput = document.getElementById('profileDocument');
+    const phoneInput = document.getElementById('profilePhone');
+    const emailInput = document.getElementById('profileEmail');
+    const errorBox = document.getElementById('profileError');
+    const successBox = document.getElementById('profileSuccess');
+    const submitButton = document.getElementById('submitProfile');
+
+    if (!modal || !openButton || !form || !nameInput || !lastnameInput
+            || !documentInput || !phoneInput || !emailInput
+            || !errorBox || !successBox || !submitButton) {
+        console.warn('No se pudo conectar el formulario Mi perfil.');
+        return;
+    }
+
+    function showMessage(element, message) {
+        element.textContent = message || '';
+        element.classList.toggle('hidden', !message);
+    }
+
+    function clearMessages() {
+        showMessage(errorBox, '');
+        showMessage(successBox, '');
+    }
+
+    function fillProfile(profile) {
+        nameInput.value = profile.nombre || '';
+        lastnameInput.value = profile.apellido || '';
+        documentInput.value = profile.documento || '';
+        phoneInput.value = profile.telefono || '';
+        emailInput.value = profile.email || '';
+    }
+
+    async function requestProfile(method, body) {
+        const options = {
+            method: method,
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json; charset=utf-8' }
+        };
+        if (body) options.body = JSON.stringify(body);
+
+        const response = await fetch(API + '/cliente/perfil', options);
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+        }
+
+        if (!response.ok) {
+            const error = new Error(data.mensaje || 'No se pudo procesar el perfil.');
+            error.status = response.status;
+            throw error;
+        }
+        return data;
+    }
+
+    async function loadProfile() {
+        clearMessages();
+        submitButton.disabled = true;
+        try {
+            fillProfile(await requestProfile('GET'));
+        } catch (error) {
+            showMessage(errorBox, error.message);
+            if (error.status === 401) {
+                modal.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    function validate() {
+        const name = nameInput.value.trim();
+        const lastname = lastnameInput.value.trim();
+        const phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+
+        if (!name) return 'El nombre es obligatorio.';
+        if (!lastname) return 'El apellido es obligatorio.';
+        if (!/^[0-9+()\-\s]{6,30}$/.test(phone)) {
+            return 'El telefono no tiene un formato valido.';
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            return 'El correo electronico no tiene un formato valido.';
+        }
+        return '';
+    }
+
+    function updateVisibleProfile(profile) {
+        const accountBadge = document.getElementById('accountBadge');
+        if (accountBadge) {
+            accountBadge.textContent = 'Hola, ' + (profile.nombre || 'Cliente');
+        }
+
+        const bookingName = document.getElementById('authenticatedBookingName');
+        const bookingDocument = document.getElementById('authenticatedBookingDocument');
+        const bookingPhone = document.getElementById('authenticatedBookingPhone');
+        const bookingEmail = document.getElementById('authenticatedBookingEmail');
+
+        if (bookingName) {
+            bookingName.textContent = [profile.nombre, profile.apellido]
+                    .filter(Boolean).join(' ');
+        }
+        if (bookingDocument) {
+            const digits = String(profile.documento || '').replace(/\D/g, '');
+            bookingDocument.textContent = digits
+                    ? new Intl.NumberFormat('es-AR').format(Number(digits))
+                    : '-';
+        }
+        if (bookingPhone) bookingPhone.textContent = profile.telefono || '-';
+        if (bookingEmail) bookingEmail.textContent = profile.email || '-';
+
+        const reservationFields = {
+            name: profile.nombre,
+            lastname: profile.apellido,
+            document: profile.documento,
+            phone: profile.telefono,
+            email: profile.email
+        };
+        Object.entries(reservationFields).forEach(function (entry) {
+            const input = document.getElementById(entry[0]);
+            if (input) input.value = entry[1] || '';
+        });
+
+        document.dispatchEvent(new CustomEvent('customer-profile-updated', {
+            detail: profile
+        }));
+    }
+
+    openButton.addEventListener('click', function () {
+        window.setTimeout(loadProfile, 0);
+    });
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        clearMessages();
+
+        const validationError = validate();
+        if (validationError) {
+            showMessage(errorBox, validationError);
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Guardando...';
+
+        try {
+            const profile = await requestProfile('PUT', {
+                nombre: nameInput.value.trim(),
+                apellido: lastnameInput.value.trim(),
+                telefono: phoneInput.value.trim(),
+                email: emailInput.value.trim()
+            });
+            fillProfile(profile);
+            updateVisibleProfile(profile);
+            showMessage(successBox, 'Tus datos se guardaron correctamente.');
+        } catch (error) {
+            showMessage(errorBox, error.message);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Guardar cambios';
+        }
+    });
 })();

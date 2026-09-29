@@ -324,7 +324,7 @@ public final class ApiPublicaServer {
                     "Access-Control-Allow-Credentials", "true");
         }
         x.getResponseHeaders().set("Access-Control-Allow-Methods",
-                "GET, POST, OPTIONS");
+                "GET, POST, PUT, OPTIONS");
         x.getResponseHeaders().set("Access-Control-Allow-Headers",
                 "Content-Type");
         x.getResponseHeaders().set("Cache-Control", "no-store");
