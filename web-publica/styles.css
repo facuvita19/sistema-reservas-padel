@@ -431,3 +431,75 @@ html[data-theme="auto"] {
         font-size: 11px;
     }
 }
+
+/* faq-seguro-v1 */
+.info {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    align-items: start;
+}
+
+.faq-card h2 {
+    margin-bottom: 18px;
+}
+
+.faq-list {
+    border-top: 1px solid var(--line);
+}
+
+.faq-list details {
+    border-bottom: 1px solid var(--line);
+}
+
+.faq-list summary {
+    position: relative;
+    padding: 15px 38px 15px 0;
+    color: var(--text);
+    font-weight: 800;
+    cursor: pointer;
+    list-style: none;
+}
+
+.faq-list summary::-webkit-details-marker {
+    display: none;
+}
+
+.faq-list summary::after {
+    content: "+";
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    color: var(--muted);
+    font-size: 16px;
+    transform: translateY(-50%);
+}
+
+.faq-list details[open] summary::after {
+    content: "-";
+    color: var(--text);
+    border-color: var(--p);
+    background: rgba(var(--prgb), 0.12);
+}
+
+.faq-list details p {
+    margin: -2px 38px 15px 0;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.faq-list summary:focus-visible {
+    outline: 3px solid rgba(var(--prgb), 0.30);
+    outline-offset: 3px;
+    border-radius: 8px;
+}
+
+@media (max-width: 850px) {
+    .info {
+        grid-template-columns: 1fr !important;
+    }
+}
