@@ -35,6 +35,10 @@ services:
       DB_USER: "${MYSQL_USER}"
       DB_PASSWORD: "${MYSQL_PASSWORD}"
       VENCIMIENTOS_INTERVALO_SEGUNDOS: "30"
+      API_RECUPERACION_MOSTRAR_TOKEN: "true"
+      API_WEB_PUBLICA_URL: "http://localhost:5173/"
+      
+      
       JAVA_TOOL_OPTIONS: "-Dapi.port=8080 -Dapi.cors.origen=${WEB_ORIGIN} -Duser.timezone=America/Argentina/Buenos_Aires"
     ports:
       - "8080:8080"

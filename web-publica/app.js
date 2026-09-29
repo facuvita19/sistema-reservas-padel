@@ -1349,3 +1349,112 @@ decorateBookingStepsV3();
         }
     });
 })();
+// recuperacion-password-web-v1
+(function () {
+    const loginModal = document.getElementById('loginModal');
+    const recoveryModal = document.getElementById('recoveryModal');
+    const resetModal = document.getElementById('resetPasswordModal');
+    const openRecovery = document.getElementById('openRecovery');
+    const closeRecovery = document.getElementById('closeRecovery');
+    const closeReset = document.getElementById('closeResetPassword');
+    const backToLogin = document.getElementById('backToLogin');
+    const resetGoLogin = document.getElementById('resetGoLogin');
+    const recoveryForm = document.getElementById('recoveryForm');
+    const recoveryEmail = document.getElementById('recoveryEmail');
+    const recoveryError = document.getElementById('recoveryError');
+    const recoverySuccess = document.getElementById('recoverySuccess');
+    const recoveryDevLink = document.getElementById('recoveryDevLink');
+    const recoveryTestLink = document.getElementById('recoveryTestLink');
+    const recoveryExpiration = document.getElementById('recoveryExpiration');
+    const submitRecovery = document.getElementById('submitRecovery');
+    const resetForm = document.getElementById('resetPasswordForm');
+    const newPassword = document.getElementById('resetPassword');
+    const repeatPassword = document.getElementById('resetPasswordRepeat');
+    const resetError = document.getElementById('resetPasswordError');
+    const resetSuccess = document.getElementById('resetPasswordSuccess');
+    const submitReset = document.getElementById('submitResetPassword');
+    const resetHelp = document.getElementById('resetPasswordHelp');
+
+    if (!openRecovery || !recoveryModal || !resetModal) return;
+    let recoveryToken = null;
+
+    function message(element, value) {
+        element.textContent = value || '';
+        element.classList.toggle('hidden', !value);
+    }
+    function show(modal) { modal.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    function hide(modal) { modal.classList.add('hidden'); document.body.style.overflow = ''; }
+    function openLogin() { hide(recoveryModal); hide(resetModal); loginModal?.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    function clearRecovery() {
+        recoveryForm.reset(); message(recoveryError, ''); message(recoverySuccess, '');
+        recoveryDevLink.classList.add('hidden'); recoveryTestLink.removeAttribute('href'); recoveryExpiration.textContent = '';
+    }
+    function clearReset() {
+        resetForm.reset(); message(resetError, ''); message(resetSuccess, ''); resetGoLogin.classList.add('hidden');
+    }
+
+    openRecovery.addEventListener('click', function () {
+        loginModal?.classList.add('hidden'); clearRecovery(); show(recoveryModal); recoveryEmail.focus();
+    });
+    closeRecovery.addEventListener('click', function () { clearRecovery(); hide(recoveryModal); });
+    closeReset.addEventListener('click', function () { clearReset(); hide(resetModal); });
+    backToLogin.addEventListener('click', openLogin);
+    resetGoLogin.addEventListener('click', function () {
+        const url = new URL(location.href); url.searchParams.delete('recuperar'); history.replaceState({}, '', url);
+        openLogin();
+    });
+
+    recoveryForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); message(recoveryError, ''); message(recoverySuccess, ''); recoveryDevLink.classList.add('hidden');
+        const email = recoveryEmail.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { message(recoveryError, 'Ingresa un correo electronico valido.'); return; }
+        submitRecovery.disabled = true; submitRecovery.textContent = 'Enviando...';
+        try {
+            const response = await api('/auth/recuperar', { method: 'POST', body: JSON.stringify({ email }) });
+            message(recoverySuccess, response.mensaje);
+            if (response.enlacePrueba) {
+                recoveryTestLink.href = response.enlacePrueba;
+                recoveryExpiration.textContent = response.vencimiento ? 'Vence: ' + new Date(response.vencimiento).toLocaleString('es-AR') : '';
+                recoveryDevLink.classList.remove('hidden');
+            }
+        } catch (error) { message(recoveryError, error.message); }
+        finally { submitRecovery.disabled = false; submitRecovery.textContent = 'Enviar instrucciones'; }
+    });
+
+    async function openResetFromUrl() {
+        const params = new URLSearchParams(location.search);
+        const token = params.get('recuperar');
+        if (!token) return;
+        recoveryToken = token;
+        loginModal?.classList.add('hidden'); clearReset(); show(resetModal);
+        submitReset.disabled = true; resetHelp.textContent = 'Validando el enlace...';
+        try {
+            const state = await api('/auth/recuperacion?token=' + encodeURIComponent(token));
+            if (!state.vigente) throw new Error('El enlace de recuperacion no es valido o ha vencido.');
+            resetHelp.textContent = 'Elegi una contrasena nueva para tu cuenta.';
+            submitReset.disabled = false; newPassword.focus();
+        } catch (error) {
+            resetHelp.textContent = 'No se puede utilizar este enlace.'; message(resetError, error.message); submitReset.disabled = true;
+        }
+    }
+
+    resetForm.addEventListener('submit', async function (event) {
+        event.preventDefault(); message(resetError, ''); message(resetSuccess, '');
+        if (newPassword.value.length < 8) { message(resetError, 'La contrasena debe tener al menos 8 caracteres.'); return; }
+        if (newPassword.value !== repeatPassword.value) { message(resetError, 'Las contrasenas no coinciden.'); return; }
+        submitReset.disabled = true; submitReset.textContent = 'Guardando...';
+        try {
+            const response = await api('/auth/restablecer', { method: 'POST', body: JSON.stringify({ token: recoveryToken, passwordNuevo: newPassword.value, passwordRepetido: repeatPassword.value }) });
+            resetForm.reset(); message(resetSuccess, response.mensaje); resetGoLogin.classList.remove('hidden');
+            const url = new URL(location.href); url.searchParams.delete('recuperar'); history.replaceState({}, '', url);
+        } catch (error) { message(resetError, error.message); submitReset.disabled = false; }
+        finally { submitReset.textContent = 'Guardar nueva contrasena'; }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key !== 'Escape') return;
+        if (!recoveryModal.classList.contains('hidden')) { clearRecovery(); hide(recoveryModal); }
+        if (!resetModal.classList.contains('hidden')) { clearReset(); hide(resetModal); }
+    });
+    openResetFromUrl();
+})();

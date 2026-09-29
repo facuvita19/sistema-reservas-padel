@@ -27,6 +27,7 @@ import api.publica.SeguridadApiPublica.DemasiadasSolicitudesException;
 import api.publica.SolicitudWebPublicaService.ConflictoDisponibilidadException;
 import servicio.AutenticacionClienteService;
 import servicio.CuentaClienteService;
+import servicio.RecuperacionPasswordClienteService;
 import servicio.SesionClienteService;
 
 public final class ApiPublicaServer {
@@ -39,6 +40,7 @@ public final class ApiPublicaServer {
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final ObjectMapper mapper;
     private final AutenticacionClienteService autenticacionClienteService;
+    private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
     private final AutenticacionClienteHandler autenticacionHandler;
     private final CuentaClienteHandler cuentaClienteHandler;
     private HttpServer servidor;
@@ -68,6 +70,10 @@ public final class ApiPublicaServer {
                 new SesionClienteService();
         autenticacionClienteService =
                 new AutenticacionClienteService();
+        recuperacionPasswordHandler = new RecuperacionPasswordClienteHandler(
+                new RecuperacionPasswordClienteService(),
+                seguridad,
+                mapper);
         autenticacionHandler = new AutenticacionClienteHandler(
                 autenticacionClienteService,
                 sesionClienteService,
@@ -121,6 +127,12 @@ public final class ApiPublicaServer {
         String ruta = normalizar(x.getRequestURI().getPath());
         try {
             seguridad.validarGeneral(ip);
+
+            if (recuperacionPasswordHandler.puedeProcesar(ruta)) {
+                recuperacionPasswordHandler.procesar(
+                        x, ruta, metodo, ip, operacionId);
+                return;
+            }
 
             if (autenticacionHandler.puedeProcesar(ruta)) {
                 autenticacionHandler.procesar(
