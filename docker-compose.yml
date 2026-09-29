@@ -35,8 +35,17 @@ services:
       DB_USER: "${MYSQL_USER}"
       DB_PASSWORD: "${MYSQL_PASSWORD}"
       VENCIMIENTOS_INTERVALO_SEGUNDOS: "30"
-      API_RECUPERACION_MOSTRAR_TOKEN: "true"
+      API_RECUPERACION_MOSTRAR_TOKEN: "false"
       API_WEB_PUBLICA_URL: "http://localhost:5173/"
+      SMTP_HOST: "${SMTP_HOST}"
+      SMTP_PORT: "${SMTP_PORT}"
+      SMTP_USER: "${SMTP_USER}"
+      SMTP_PASSWORD: "${SMTP_PASSWORD}"
+      SMTP_FROM_EMAIL: "${SMTP_FROM_EMAIL}"
+      SMTP_FROM_NAME: "${SMTP_FROM_NAME}"
+      SMTP_STARTTLS: "${SMTP_STARTTLS}"
+      SMTP_SSL: "${SMTP_SSL}"
+      SMTP_TIMEOUT_MS: "${SMTP_TIMEOUT_MS}"
       
       
       JAVA_TOOL_OPTIONS: "-Dapi.port=8080 -Dapi.cors.origen=${WEB_ORIGIN} -Duser.timezone=America/Argentina/Buenos_Aires"

@@ -16,6 +16,7 @@ import api.publica.RecuperacionPasswordClienteDTO.Mensaje;
 import api.publica.RecuperacionPasswordClienteDTO.RespuestaSolicitud;
 import api.publica.RecuperacionPasswordClienteDTO.RestablecerPassword;
 import api.publica.RecuperacionPasswordClienteDTO.SolicitarRecuperacion;
+import servicio.CorreoRecuperacionPasswordService;
 import servicio.RecuperacionPasswordClienteService;
 import servicio.RecuperacionPasswordClienteService.SolicitudRecuperacion;
 import servicio.RecuperacionPasswordClienteService.TokenRecuperacionInvalidoException;
@@ -27,11 +28,14 @@ public final class RecuperacionPasswordClienteHandler {
             "Si existe una cuenta asociada, recibiras instrucciones para continuar.";
 
     private final RecuperacionPasswordClienteService recuperacionService;
+    // correoRecuperacionServiceV1
+    private final CorreoRecuperacionPasswordService correoRecuperacionService;
     private final SeguridadApiPublica seguridad;
     private final ObjectMapper mapper;
 
     public RecuperacionPasswordClienteHandler(
             RecuperacionPasswordClienteService recuperacionService,
+            CorreoRecuperacionPasswordService correoRecuperacionService,
             SeguridadApiPublica seguridad,
             ObjectMapper mapper) {
         if (recuperacionService == null || seguridad == null || mapper == null) {
@@ -39,6 +43,7 @@ public final class RecuperacionPasswordClienteHandler {
                     "Las dependencias de recuperacion no pueden ser nulas.");
         }
         this.recuperacionService = recuperacionService;
+        this.correoRecuperacionService = correoRecuperacionService;
         this.seguridad = seguridad;
         this.mapper = mapper;
     }
@@ -92,6 +97,19 @@ public final class RecuperacionPasswordClienteHandler {
                 intercambio, SolicitarRecuperacion.class);
         SolicitudRecuperacion resultado =
                 recuperacionService.solicitar(entrada.email());
+
+        if (resultado.generada() && correoRecuperacionService != null) {
+            try {
+                correoRecuperacionService.enviar(
+                        entrada.email(),
+                        resultado.token(),
+                        resultado.vencimiento());
+            } catch (RuntimeException exception) {
+                System.err.println("[RECUPERACION " + ip + "] "
+                        + "No se pudo enviar el correo: "
+                        + exception.getMessage());
+            }
+        }
 
         String enlace = null;
         java.time.LocalDateTime vencimiento = null;

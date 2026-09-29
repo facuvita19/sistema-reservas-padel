@@ -26,6 +26,9 @@ import api.publica.SeguridadApiPublica.CuerpoDemasiadoGrandeException;
 import api.publica.SeguridadApiPublica.DemasiadasSolicitudesException;
 import api.publica.SolicitudWebPublicaService.ConflictoDisponibilidadException;
 import servicio.AutenticacionClienteService;
+import config.ConfiguracionCorreo;
+import servicio.CorreoRecuperacionPasswordService;
+import servicio.CorreoService;
 import servicio.CuentaClienteService;
 import servicio.RecuperacionPasswordClienteService;
 import servicio.SesionClienteService;
@@ -70,8 +73,15 @@ public final class ApiPublicaServer {
                 new SesionClienteService();
         autenticacionClienteService =
                 new AutenticacionClienteService();
+        CorreoRecuperacionPasswordService correoRecuperacion = null;
+        if (ConfiguracionCorreo.estaConfigurado()) {
+            correoRecuperacion = new CorreoRecuperacionPasswordService(
+                    new CorreoService(),
+                    obtenerUrlWebPublica());
+        }
         recuperacionPasswordHandler = new RecuperacionPasswordClienteHandler(
                 new RecuperacionPasswordClienteService(),
+                correoRecuperacion,
                 seguridad,
                 mapper);
         autenticacionHandler = new AutenticacionClienteHandler(
@@ -346,6 +356,16 @@ public final class ApiPublicaServer {
         x.getResponseHeaders().set("Permissions-Policy",
                 "camera=(), microphone=(), geolocation=()");
         x.getResponseHeaders().set("X-Operacion-Id", operacionId);
+    }
+
+    private String obtenerUrlWebPublica() {
+        String valor = System.getenv("API_WEB_PUBLICA_URL");
+        if (valor == null || valor.isBlank()) {
+            valor = System.getProperty("api.web.publica.url");
+        }
+        return valor == null || valor.isBlank()
+                ? "http://localhost:5173/"
+                : valor.trim();
     }
 
     private int obtenerPuerto() {

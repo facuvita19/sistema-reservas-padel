@@ -166,6 +166,42 @@ class ClienteServiceTest {
             ultimoGuardado = cliente;
         }
 
+        // doblesDaoCompletosV1
+        @Override
+        public void guardar(
+                java.sql.Connection conexion,
+                Cliente cliente) {
+            guardar(cliente);
+        }
+
+        @Override
+        public Cliente buscarPorDocumento(String documento) {
+            if (documento == null) return null;
+            return clientes.stream()
+                    .filter(cliente -> documento.equals(
+                            cliente.getDocumento()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
+        @Override
+        public Cliente buscarPorDocumento(
+                java.sql.Connection conexion,
+                String documento) {
+            return buscarPorDocumento(documento);
+        }
+
+        @Override
+        public Cliente buscarPorEmail(String email) {
+            if (email == null) return null;
+            return clientes.stream()
+                    .filter(cliente -> cliente.getEmail() != null)
+                    .filter(cliente -> email.equalsIgnoreCase(
+                            cliente.getEmail()))
+                    .findFirst()
+                    .orElse(null);
+        }
+
         @Override
         public void eliminar(long id) {
             idEliminado = id;
@@ -174,6 +210,20 @@ class ClienteServiceTest {
         @Override
         public Cliente buscar(long id) {
             return buscado;
+        }
+
+        // doblesDaoConexionV1
+        @Override
+        public Cliente buscarPorEmail(
+                java.sql.Connection conexion,
+                String email) {
+            if (email == null) return null;
+            return clientes.stream()
+                    .filter(cliente -> cliente.getEmail() != null)
+                    .filter(cliente -> email.equalsIgnoreCase(
+                            cliente.getEmail()))
+                    .findFirst()
+                    .orElse(null);
         }
 
         @Override

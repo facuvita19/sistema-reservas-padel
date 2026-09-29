@@ -304,6 +304,39 @@ class UsuarioServiceTest {
             guardarInvocado = true;
         }
 
+        // doblesDaoCompletosV1
+        @Override
+        public void guardar(
+                java.sql.Connection conexion,
+                Usuario usuario) {
+            guardar(usuario);
+        }
+
+        @Override
+        public Usuario buscarPorNombreUsuarioIncluyendoInactivos(
+                String nombreUsuario) {
+            return buscarPorNombreUsuario(nombreUsuario);
+        }
+
+        @Override
+        public Usuario buscarPorNombreUsuario(
+                java.sql.Connection conexion,
+                String nombreUsuario,
+                boolean soloActivos) {
+            Usuario usuario = buscarPorNombreUsuario(nombreUsuario);
+            if (usuario == null) return null;
+            return soloActivos && !usuario.isActivo() ? null : usuario;
+        }
+
+        @Override
+        public Usuario buscarPorClienteId(long clienteId) {
+            return usuarios.stream()
+                    .filter(usuario -> usuario.getClienteId() != null)
+                    .filter(usuario -> usuario.getClienteId() == clienteId)
+                    .findFirst()
+                    .orElse(null);
+        }
+
         @Override
         public void eliminar(long id) {
             eliminarInvocado = true;
@@ -322,6 +355,18 @@ class UsuarioServiceTest {
         @Override
         public Usuario buscarPorNombreUsuario(String nombreUsuario) {
             return porNombre;
+        }
+
+        // doblesDaoConexionV1
+        @Override
+        public Usuario buscarPorClienteId(
+                java.sql.Connection conexion,
+                long clienteId) {
+            return usuarios.stream()
+                    .filter(usuario -> usuario.getClienteId() != null)
+                    .filter(usuario -> usuario.getClienteId() == clienteId)
+                    .findFirst()
+                    .orElse(null);
         }
 
         @Override
