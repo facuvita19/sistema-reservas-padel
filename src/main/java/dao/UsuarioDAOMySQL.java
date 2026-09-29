@@ -18,21 +18,39 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
 
     @Override
     public void guardar(Usuario usuario) {
-        if (usuario == null) {
-            throw new IllegalArgumentException("El usuario no puede ser nulo.");
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            guardar(conexion, usuario);
+        } catch (SQLException exception) {
+            throw traducirError(
+                    "No se pudo guardar el usuario.",
+                    exception);
         }
-        if (usuario.getId() <= 0) insertar(usuario);
-        else actualizar(usuario);
     }
 
-    private void insertar(Usuario usuario) {
+    @Override
+    public void guardar(Connection conexion, Usuario usuario) {
+        if (conexion == null) {
+            throw new IllegalArgumentException(
+                    "La conexion no puede ser nula.");
+        }
+        if (usuario == null) {
+            throw new IllegalArgumentException(
+                    "El usuario no puede ser nulo.");
+        }
+        if (usuario.getId() <= 0) {
+            insertar(conexion, usuario);
+        } else {
+            actualizar(conexion, usuario);
+        }
+    }
+
+    private void insertar(Connection conexion, Usuario usuario) {
         String sql = "INSERT INTO usuarios "
                 + "(nombre_usuario, password_hash, rol, cliente_id, activo) "
                 + "VALUES (?, ?, ?, ?, ?)";
 
-        try (Connection conexion = ConexionBD.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(
-                     sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement sentencia = conexion.prepareStatement(
+                sql, Statement.RETURN_GENERATED_KEYS)) {
             sentencia.setString(1, usuario.getNombreUsuario());
             sentencia.setString(2, usuario.getPasswordHash());
             sentencia.setString(3, usuario.getRol().name());
@@ -40,28 +58,33 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             sentencia.setBoolean(5, usuario.isActivo());
 
             if (sentencia.executeUpdate() == 0) {
-                throw new RuntimeException("No se pudo crear el usuario.");
+                throw new RuntimeException(
+                        "No se pudo crear el usuario.");
             }
             try (ResultSet claves = sentencia.getGeneratedKeys()) {
-                if (claves.next()) usuario.setId(claves.getLong(1));
+                if (claves.next()) {
+                    usuario.setId(claves.getLong(1));
+                }
             }
         } catch (SQLException exception) {
-            throw traducirError("No se pudo guardar el usuario.", exception);
+            throw traducirError(
+                    "No se pudo guardar el usuario.",
+                    exception);
         }
     }
 
-    private void actualizar(Usuario usuario) {
+    private void actualizar(Connection conexion, Usuario usuario) {
         boolean cambiarPassword = usuario.getPasswordHash() != null
                 && !usuario.getPasswordHash().isBlank();
 
         String sql = cambiarPassword
-                ? "UPDATE usuarios SET nombre_usuario = ?, password_hash = ?, "
-                        + "rol = ?, cliente_id = ?, activo = ? WHERE id = ?"
+                ? "UPDATE usuarios SET nombre_usuario = ?, "
+                        + "password_hash = ?, rol = ?, cliente_id = ?, "
+                        + "activo = ? WHERE id = ?"
                 : "UPDATE usuarios SET nombre_usuario = ?, rol = ?, "
                         + "cliente_id = ?, activo = ? WHERE id = ?";
 
-        try (Connection conexion = ConexionBD.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             int indice = 1;
             sentencia.setString(indice++, usuario.getNombreUsuario());
             if (cambiarPassword) {
@@ -73,33 +96,43 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             sentencia.setLong(indice, usuario.getId());
 
             if (sentencia.executeUpdate() == 0) {
-                throw new IllegalArgumentException("El usuario no existe.");
+                throw new IllegalArgumentException(
+                        "El usuario no existe.");
             }
         } catch (SQLException exception) {
-            throw traducirError("No se pudo actualizar el usuario.", exception);
+            throw traducirError(
+                    "No se pudo actualizar el usuario.",
+                    exception);
         }
     }
 
     private void cargarCliente(
-            PreparedStatement sentencia, int indice, Long clienteId)
-            throws SQLException {
-        if (clienteId == null) sentencia.setNull(indice, Types.BIGINT);
-        else sentencia.setLong(indice, clienteId);
+            PreparedStatement sentencia,
+            int indice,
+            Long clienteId) throws SQLException {
+        if (clienteId == null) {
+            sentencia.setNull(indice, Types.BIGINT);
+        } else {
+            sentencia.setLong(indice, clienteId);
+        }
     }
 
     @Override
     public void eliminar(long id) {
         cambiarActivo(id, false,
-                "El usuario no existe o ya está inactivo.");
+                "El usuario no existe o ya esta inactivo.");
     }
 
     @Override
     public void activar(long id) {
         cambiarActivo(id, true,
-                "El usuario no existe o ya está activo.");
+                "El usuario no existe o ya esta activo.");
     }
 
-    private void cambiarActivo(long id, boolean activo, String mensaje) {
+    private void cambiarActivo(
+            long id,
+            boolean activo,
+            String mensaje) {
         String sql = "UPDATE usuarios SET activo = ? "
                 + "WHERE id = ? AND activo <> ?";
         try (Connection conexion = ConexionBD.obtenerConexion();
@@ -112,7 +145,8 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             }
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    activo ? "No se pudo activar el usuario."
+                    activo
+                            ? "No se pudo activar el usuario."
                             : "No se pudo desactivar el usuario.",
                     exception);
         }
@@ -125,26 +159,107 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setLong(1, id);
             try (ResultSet resultado = sentencia.executeQuery()) {
-                return resultado.next() ? convertirResultado(resultado) : null;
+                return resultado.next()
+                        ? convertirResultado(resultado)
+                        : null;
             }
         } catch (SQLException exception) {
-            throw new RuntimeException("No se pudo buscar el usuario.", exception);
+            throw new RuntimeException(
+                    "No se pudo buscar el usuario.",
+                    exception);
         }
     }
 
     @Override
     public Usuario buscarPorNombreUsuario(String nombreUsuario) {
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            return buscarPorNombreUsuario(
+                    conexion, nombreUsuario, true);
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo buscar el nombre de usuario.",
+                    exception);
+        }
+    }
+
+    @Override
+    public Usuario buscarPorNombreUsuarioIncluyendoInactivos(
+            String nombreUsuario) {
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            return buscarPorNombreUsuario(
+                    conexion, nombreUsuario, false);
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo buscar el nombre de usuario.",
+                    exception);
+        }
+    }
+
+    @Override
+    public Usuario buscarPorNombreUsuario(
+            Connection conexion,
+            String nombreUsuario,
+            boolean soloActivos) {
+        if (conexion == null) {
+            throw new IllegalArgumentException(
+                    "La conexion no puede ser nula.");
+        }
+        if (nombreUsuario == null || nombreUsuario.isBlank()) {
+            return null;
+        }
+
         String sql = consultaBase()
-                + " WHERE LOWER(nombre_usuario) = LOWER(?) AND activo = TRUE";
-        try (Connection conexion = ConexionBD.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-            sentencia.setString(1, nombreUsuario);
+                + " WHERE LOWER(nombre_usuario) = LOWER(?)"
+                + (soloActivos ? " AND activo = TRUE" : "")
+                + " LIMIT 1";
+
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, nombreUsuario.trim());
             try (ResultSet resultado = sentencia.executeQuery()) {
-                return resultado.next() ? convertirResultado(resultado) : null;
+                return resultado.next()
+                        ? convertirResultado(resultado)
+                        : null;
             }
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudo buscar el nombre de usuario.", exception);
+                    "No se pudo buscar el nombre de usuario.",
+                    exception);
+        }
+    }
+
+    @Override
+    public Usuario buscarPorClienteId(long clienteId) {
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            return buscarPorClienteId(conexion, clienteId);
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo buscar la cuenta del cliente.",
+                    exception);
+        }
+    }
+
+    @Override
+    public Usuario buscarPorClienteId(
+            Connection conexion,
+            long clienteId) {
+        if (conexion == null) {
+            throw new IllegalArgumentException(
+                    "La conexion no puede ser nula.");
+        }
+        if (clienteId <= 0) return null;
+
+        String sql = consultaBase() + " WHERE cliente_id = ? LIMIT 1";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, clienteId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next()
+                        ? convertirResultado(resultado)
+                        : null;
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo buscar la cuenta del cliente.",
+                    exception);
         }
     }
 
@@ -162,13 +277,15 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             return usuarios;
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudieron recuperar los usuarios.", exception);
+                    "No se pudieron recuperar los usuarios.",
+                    exception);
         }
     }
 
     @Override
     public boolean existeNombreUsuario(
-            String nombreUsuario, long usuarioExcluidoId) {
+            String nombreUsuario,
+            long usuarioExcluidoId) {
         String sql = "SELECT COUNT(*) FROM usuarios "
                 + "WHERE LOWER(nombre_usuario) = LOWER(?) AND id <> ?";
         try (Connection conexion = ConexionBD.obtenerConexion();
@@ -181,7 +298,8 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             }
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudo comprobar el nombre de usuario.", exception);
+                    "No se pudo comprobar el nombre de usuario.",
+                    exception);
         }
     }
 
@@ -196,7 +314,8 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
             return resultado.getLong(1);
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudieron contar los administradores.", exception);
+                    "No se pudieron contar los administradores.",
+                    exception);
         }
     }
 
@@ -213,19 +332,23 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
         usuario.setPasswordHash(resultado.getString("password_hash"));
         usuario.setRol(RolUsuario.valueOf(resultado.getString("rol")));
         long clienteId = resultado.getLong("cliente_id");
-        usuario.setClienteId(resultado.wasNull() ? null : clienteId);
+        usuario.setClienteId(
+                resultado.wasNull() ? null : clienteId);
         usuario.setActivo(resultado.getBoolean("activo"));
         Timestamp fecha = resultado.getTimestamp("fecha_creacion");
-        if (fecha != null) usuario.setFechaCreacion(fecha.toLocalDateTime());
+        if (fecha != null) {
+            usuario.setFechaCreacion(fecha.toLocalDateTime());
+        }
         return usuario;
     }
 
     private RuntimeException traducirError(
-            String mensaje, SQLException exception) {
+            String mensaje,
+            SQLException exception) {
         if (exception.getErrorCode() == 1062) {
             return new IllegalArgumentException(
                     "Ya existe el nombre de usuario o el cliente "
-                            + "ya está vinculado a otra cuenta.",
+                            + "ya esta vinculado a otra cuenta.",
                     exception);
         }
         return new RuntimeException(mensaje, exception);

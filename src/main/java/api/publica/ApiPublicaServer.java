@@ -25,6 +25,8 @@ import api.publica.DisponibilidadPublicaService.RecursoNoEncontradoException;
 import api.publica.SeguridadApiPublica.CuerpoDemasiadoGrandeException;
 import api.publica.SeguridadApiPublica.DemasiadasSolicitudesException;
 import api.publica.SolicitudWebPublicaService.ConflictoDisponibilidadException;
+import servicio.AutenticacionClienteService;
+import servicio.SesionClienteService;
 
 public final class ApiPublicaServer {
     private static final int PUERTO = 8080;
@@ -35,6 +37,7 @@ public final class ApiPublicaServer {
     private final EstadoSolicitudWebPublicaService estadoService;
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final ObjectMapper mapper;
+    private final AutenticacionClienteHandler autenticacionHandler;
     private HttpServer servidor;
     private ExecutorService ejecutor;
 
@@ -58,6 +61,13 @@ public final class ApiPublicaServer {
         this.estadoService = estadoService;
         mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        SesionClienteService sesionClienteService =
+                new SesionClienteService();
+        autenticacionHandler = new AutenticacionClienteHandler(
+                new AutenticacionClienteService(),
+                sesionClienteService,
+                seguridad,
+                mapper);
     }
 
     public synchronized void iniciar() {
@@ -102,6 +112,12 @@ public final class ApiPublicaServer {
         String ruta = normalizar(x.getRequestURI().getPath());
         try {
             seguridad.validarGeneral(ip);
+
+            if (autenticacionHandler.puedeProcesar(ruta)) {
+                autenticacionHandler.procesar(
+                        x, ruta, metodo, ip, operacionId);
+                return;
+            }
 
             if (ruta.equals(PREFIJO + "/solicitudes")
                     && "POST".equals(metodo)) {
@@ -261,10 +277,14 @@ public final class ApiPublicaServer {
                 x.getResponseHeaders().set(
                         "Access-Control-Allow-Origin", origen);
                 x.getResponseHeaders().set("Vary", "Origin");
+                x.getResponseHeaders().set(
+                        "Access-Control-Allow-Credentials", "true");
             }
         } else {
             x.getResponseHeaders().set(
                     "Access-Control-Allow-Origin", permitido);
+            x.getResponseHeaders().set(
+                    "Access-Control-Allow-Credentials", "true");
         }
         x.getResponseHeaders().set("Access-Control-Allow-Methods",
                 "GET, POST, OPTIONS");
