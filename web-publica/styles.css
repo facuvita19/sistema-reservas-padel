@@ -1329,3 +1329,47 @@ body.customer-authenticated #form .check:has(#rememberData) {
 .account-menu #openProfile {
     border-bottom: 1px solid var(--line);
 }
+/* cambiar-password-web-v1 */
+.password-section {
+    margin: 18px 0;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: var(--soft);
+    overflow: hidden;
+}
+
+.password-section summary {
+    padding: 15px 17px;
+    color: var(--text);
+    font-weight: 850;
+    cursor: pointer;
+    user-select: none;
+}
+
+.password-section summary:hover {
+    background: rgba(var(--prgb), .08);
+}
+
+.password-section[open] summary {
+    border-bottom: 1px solid var(--line);
+}
+
+.password-form {
+    padding: 17px;
+}
+
+.password-form .button {
+    margin-top: 4px;
+}
+/* correccion-password-perfil-v1 */
+#passwordSuccess:not(.hidden) {
+    display: block;
+    margin: 14px 0;
+    padding: 13px 15px;
+    border: 1px solid rgba(82, 196, 140, .55);
+    border-radius: 12px;
+    background: rgba(82, 196, 140, .16);
+    color: var(--text);
+    font-weight: 800;
+    text-align: center;
+}

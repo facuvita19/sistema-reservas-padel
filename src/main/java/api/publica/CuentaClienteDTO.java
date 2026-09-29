@@ -50,6 +50,13 @@ public final class CuentaClienteDTO {
             String mensaje) {
     }
 
+    // cambiarPasswordClienteV1
+    public record CambiarPassword(
+            String passwordActual,
+            String passwordNuevo,
+            String passwordRepetido) {
+    }
+
     public record HistorialReservas(
             List<ReservaResumen> proximas,
             List<ReservaResumen> anteriores,

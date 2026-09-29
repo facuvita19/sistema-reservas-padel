@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.net.httpserver.HttpExchange;
 
 import api.publica.CuentaClienteDTO.ActualizarPerfil;
+import api.publica.CuentaClienteDTO.CambiarPassword;
 import servicio.AutenticacionClienteService;
 import servicio.AutenticacionClienteService.SesionAutenticada;
 import servicio.CuentaClienteService;
@@ -65,6 +66,13 @@ public final class CuentaClienteHandler {
                 return;
             }
 
+            // cambiarPasswordClienteEndpointV1
+            if (ruta.equals(PREFIJO + "/password")
+                    && "PUT".equals(metodo)) {
+                cambiarPassword(intercambio, autenticada);
+                return;
+            }
+
             if (!"GET".equals(metodo)) {
                 error(intercambio, 405, "METODO_NO_PERMITIDO",
                         "El metodo solicitado no esta permitido.",
@@ -113,6 +121,20 @@ public final class CuentaClienteHandler {
             error(intercambio, 400, "SOLICITUD_INVALIDA",
                     exception.getMessage(), operacionId);
         }
+    }
+
+    private void cambiarPassword(
+            HttpExchange intercambio,
+            SesionAutenticada autenticada) throws IOException {
+        CambiarPassword entrada = mapper.readValue(
+                intercambio.getRequestBody(),
+                CambiarPassword.class);
+        cuentaService.cambiarPassword(
+                autenticada.usuario().getId(),
+                entrada);
+        responder(intercambio, 200,
+                new MensajeCuenta(
+                        "La contrasena fue actualizada correctamente."));
     }
 
     private void actualizarPerfil(
@@ -174,6 +196,9 @@ public final class CuentaClienteHandler {
         try (OutputStream salida = intercambio.getResponseBody()) {
             salida.write(datos);
         }
+    }
+
+    private record MensajeCuenta(String mensaje) {
     }
 
     private record ErrorCuenta(

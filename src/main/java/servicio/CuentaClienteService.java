@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 import api.publica.CuentaClienteDTO.ActualizarPerfil;
+import api.publica.CuentaClienteDTO.CambiarPassword;
 import api.publica.CuentaClienteDTO.HistorialReservas;
 import api.publica.CuentaClienteDTO.Perfil;
 import api.publica.CuentaClienteDTO.ReservaResumen;
@@ -31,18 +32,26 @@ public class CuentaClienteService {
             Pattern.compile("^[0-9+()\\-\\s]{6,30}$");
 
     private final ConfiguracionComplejoService configuracionService;
+    private final UsuarioService usuarioService;
 
     public CuentaClienteService() {
-        this(new ConfiguracionComplejoService());
+        this(new ConfiguracionComplejoService(), new UsuarioService());
     }
 
     public CuentaClienteService(
             ConfiguracionComplejoService configuracionService) {
-        if (configuracionService == null) {
+        this(configuracionService, new UsuarioService());
+    }
+
+    public CuentaClienteService(
+            ConfiguracionComplejoService configuracionService,
+            UsuarioService usuarioService) {
+        if (configuracionService == null || usuarioService == null) {
             throw new IllegalArgumentException(
-                    "El servicio de configuracion no puede ser nulo.");
+                    "Los servicios de cuenta no pueden ser nulos.");
         }
         this.configuracionService = configuracionService;
+        this.usuarioService = usuarioService;
     }
 
     public Perfil obtenerPerfil(long clienteId) {
@@ -305,6 +314,39 @@ public class CuentaClienteService {
             String apellido,
             String telefono,
             String email) {
+    }
+
+    // cambiarPasswordClienteV1
+    public void cambiarPassword(
+            long usuarioId,
+            CambiarPassword entrada) {
+        if (usuarioId <= 0) {
+            throw new IllegalArgumentException(
+                    "El ID del usuario debe ser positivo.");
+        }
+        if (entrada == null) {
+            throw new IllegalArgumentException(
+                    "Los datos para cambiar la contrasena son obligatorios.");
+        }
+
+        String actual = entrada.passwordActual();
+        String nueva = entrada.passwordNuevo();
+        String repetida = entrada.passwordRepetido();
+
+        if (actual == null || actual.isBlank()) {
+            throw new IllegalArgumentException(
+                    "La contrasena actual es obligatoria.");
+        }
+        if (nueva == null || nueva.length() < 8) {
+            throw new IllegalArgumentException(
+                    "La contrasena nueva debe tener al menos 8 caracteres.");
+        }
+        if (repetida == null || !nueva.equals(repetida)) {
+            throw new IllegalArgumentException(
+                    "Las contrasenas nuevas no coinciden.");
+        }
+
+        usuarioService.cambiarPassword(usuarioId, actual, nueva);
     }
 
     public HistorialReservas listarReservas(long clienteId) {

@@ -383,7 +383,7 @@ decorateBookingStepsV3();
             : 'Mi cuenta';
     }
 
-    form.addEventListener('submit', async function (event) {
+    submitButton.addEventListener('click', async function (event) {
         event.preventDefault();
         showError('');
 
@@ -1128,7 +1128,7 @@ decorateBookingStepsV3();
         window.setTimeout(loadProfile, 0);
     });
 
-    form.addEventListener('submit', async function (event) {
+    submitButton.addEventListener('click', async function (event) {
         event.preventDefault();
         clearMessages();
 
@@ -1156,6 +1156,196 @@ decorateBookingStepsV3();
         } finally {
             submitButton.disabled = false;
             submitButton.textContent = 'Guardar cambios';
+        }
+    });
+})();
+// cambiar-password-web-v1
+(function () {
+    const profileModal = document.getElementById('profileModal');
+    const form = document.getElementById('passwordForm');
+    const currentInput = document.getElementById('currentPassword');
+    const newInput = document.getElementById('newPassword');
+    const repeatInput = document.getElementById('repeatNewPassword');
+    const errorBox = document.getElementById('passwordError');
+    const successBox = document.getElementById('passwordSuccess');
+    const submitButton = document.getElementById('submitPassword');
+    const section = document.querySelector('.password-section');
+
+    if (!profileModal || !form || !currentInput || !newInput
+            || !repeatInput || !errorBox || !successBox
+            || !submitButton || !section) {
+        console.warn('No se pudo inicializar Cambiar contrasena.');
+        return;
+    }
+
+    function showMessage(element, message) {
+        element.textContent = message || '';
+        element.classList.toggle('hidden', !message);
+    }
+
+    function clearMessages() {
+        showMessage(errorBox, '');
+        showMessage(successBox, '');
+    }
+
+    function clearForm() {
+        currentInput.value = '';
+        newInput.value = '';
+        repeatInput.value = '';
+        clearMessages();
+        section.open = false;
+    }
+
+    submitButton.addEventListener('click', async function (event) {
+        event.preventDefault();
+        clearMessages();
+
+        const currentPassword = currentInput.value;
+        const newPassword = newInput.value;
+        const repeatedPassword = repeatInput.value;
+
+        if (!currentPassword) {
+            showMessage(errorBox, 'Ingresa tu contrasena actual.');
+            return;
+        }
+        if (newPassword.length < 8) {
+            showMessage(errorBox, 'La contrasena nueva debe tener al menos 8 caracteres.');
+            return;
+        }
+        if (newPassword !== repeatedPassword) {
+            showMessage(errorBox, 'Las contrasenas nuevas no coinciden.');
+            return;
+        }
+        if (newPassword === currentPassword) {
+            showMessage(errorBox, 'La contrasena nueva debe ser diferente.');
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Actualizando...';
+
+        try {
+            const response = await fetch(API + '/cliente/password', {
+                method: 'PUT',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json; charset=utf-8' },
+                body: JSON.stringify({
+                    passwordActual: currentPassword,
+                    passwordNuevo: newPassword,
+                    passwordRepetido: repeatedPassword
+                })
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+            }
+
+            if (!response.ok) {
+                throw new Error(data.mensaje || 'No se pudo cambiar la contrasena.');
+            }
+
+            currentInput.value = '';
+            newInput.value = '';
+            repeatInput.value = '';
+            const successMessage = data.mensaje
+                    || 'La contrasena fue actualizada correctamente.';
+            showMessage(successBox, successMessage);
+            if (typeof toast === 'function') toast('Contrasena actualizada');
+            successBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } catch (error) {
+            showMessage(errorBox, error.message);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Actualizar contrasena';
+        }
+    });
+
+    const closeButton = document.getElementById('closeProfile');
+    closeButton?.addEventListener('click', clearForm);
+
+    profileModal.addEventListener('click', function (event) {
+        if (event.target === profileModal) clearForm();
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape'
+                && !profileModal.classList.contains('hidden')) {
+            clearForm();
+        }
+    });
+
+    section.addEventListener('toggle', function () {
+        if (!section.open) clearForm();
+    });
+})();
+// correccion-password-perfil-v1
+(function () {
+    const modal = document.getElementById('profileModal');
+    const passwordBox = document.getElementById('passwordForm');
+    const submitButton = document.getElementById('submitPassword');
+
+    if (!modal || !passwordBox || !submitButton) return;
+
+    modal.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            event.stopImmediatePropagation();
+        }
+    }, true);
+
+    passwordBox.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            submitButton.click();
+        }
+    });
+})();
+// limpiar-password-al-abrir-v1
+(function () {
+    const openProfile = document.getElementById('openProfile');
+    const closeProfile = document.getElementById('closeProfile');
+    const profileModal = document.getElementById('profileModal');
+    const section = document.querySelector('.password-section');
+    const fields = [
+        document.getElementById('currentPassword'),
+        document.getElementById('newPassword'),
+        document.getElementById('repeatNewPassword')
+    ].filter(Boolean);
+    const errorBox = document.getElementById('passwordError');
+    const successBox = document.getElementById('passwordSuccess');
+
+    if (!openProfile || !profileModal || !fields.length) return;
+
+    function clearPasswordState() {
+        fields.forEach(function (field) {
+            field.value = '';
+            field.setAttribute('value', '');
+        });
+        if (errorBox) {
+            errorBox.textContent = '';
+            errorBox.classList.add('hidden');
+        }
+        if (successBox) {
+            successBox.textContent = '';
+            successBox.classList.add('hidden');
+        }
+        if (section) section.open = false;
+    }
+
+    function clearAfterAutofill() {
+        clearPasswordState();
+        window.setTimeout(clearPasswordState, 60);
+        window.setTimeout(clearPasswordState, 250);
+    }
+
+    openProfile.addEventListener('click', clearAfterAutofill);
+    closeProfile?.addEventListener('click', clearPasswordState);
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !profileModal.classList.contains('hidden')) {
+            clearPasswordState();
         }
     });
 })();
