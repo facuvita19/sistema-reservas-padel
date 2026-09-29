@@ -52,7 +52,23 @@ public class SolicitudWebPublicaService {
 
     public SolicitudWebDTO.SolicitudCreada crear(
             SolicitudWebDTO.CrearSolicitud entrada) {
-        validarEntrada(entrada);
+        return crearInterno(entrada, null);
+    }
+
+    public SolicitudWebDTO.SolicitudCreada crear(
+            SolicitudWebDTO.CrearSolicitud entrada,
+            long clienteIdAutenticado) {
+        if (clienteIdAutenticado <= 0) {
+            throw new IllegalArgumentException(
+                    "El cliente autenticado no es valido.");
+        }
+        return crearInterno(entrada, clienteIdAutenticado);
+    }
+
+    private SolicitudWebDTO.SolicitudCreada crearInterno(
+            SolicitudWebDTO.CrearSolicitud entrada,
+            Long clienteIdAutenticado) {
+        validarEntrada(entrada, clienteIdAutenticado == null);
         Cancha cancha = obtenerCancha(entrada.canchaId());
         ConfiguracionComplejo configuracion = configuracionService.obtener();
         LocalTime fin = entrada.horaInicio()
@@ -69,8 +85,10 @@ public class SolicitudWebPublicaService {
                 expirarPendientes(conexion);
                 validarDisponibilidad(conexion, cancha.getId(), entrada.fecha(),
                         entrada.horaInicio(), fin);
-                long clienteId = obtenerOCrearCliente(
-                        conexion, entrada.cliente());
+                long clienteId = clienteIdAutenticado == null
+                        ? obtenerOCrearCliente(conexion, entrada.cliente())
+                        : obtenerClienteAutenticado(
+                                conexion, clienteIdAutenticado);
                 long usuarioId = obtenerUsuarioWeb(conexion);
                 LocalDateTime vencimiento = LocalDateTime.now().plusMinutes(
                         configuracion.getMinutosReservaPendiente());
@@ -92,7 +110,9 @@ public class SolicitudWebPublicaService {
         }
     }
 
-    private void validarEntrada(SolicitudWebDTO.CrearSolicitud entrada) {
+    private void validarEntrada(
+            SolicitudWebDTO.CrearSolicitud entrada,
+            boolean validarDatosCliente) {
         if (entrada == null) {
             throw new IllegalArgumentException("La solicitud es obligatoria.");
         }
@@ -106,7 +126,9 @@ public class SolicitudWebPublicaService {
             throw new IllegalArgumentException(
                     "La cantidad de jugadores debe estar entre 1 y 8.");
         }
-        validarCliente(entrada.cliente());
+        if (validarDatosCliente) {
+            validarCliente(entrada.cliente());
+        }
     }
 
     private void validarCliente(SolicitudWebDTO.ClienteEntrada cliente) {
@@ -244,6 +266,21 @@ public class SolicitudWebPublicaService {
                 }
             }
         }
+    }
+
+    private long obtenerClienteAutenticado(
+            Connection conexion,
+            long clienteId) throws SQLException {
+        String sql = "SELECT id FROM clientes "
+                + "WHERE id = ? AND activo = TRUE FOR UPDATE";
+        try (PreparedStatement st = conexion.prepareStatement(sql)) {
+            st.setLong(1, clienteId);
+            try (ResultSet rs = st.executeQuery()) {
+                if (rs.next()) return rs.getLong("id");
+            }
+        }
+        throw new IllegalArgumentException(
+                "La cuenta no tiene un cliente activo asociado.");
     }
 
     private long obtenerOCrearCliente(Connection conexion,

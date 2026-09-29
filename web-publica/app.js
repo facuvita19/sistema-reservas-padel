@@ -1,6 +1,6 @@
 const API=`http://${location.hostname}:8080/api/publica`,K={code:'padel.solicitud.codigo',hist:'padel.historial.v4',profile:'padel.perfil.v2',draft:'padel.borrador.v2',theme:'padel.tema.v2'};const $=id=>document.getElementById(id),state={complex:null,courts:[],court:null,date:localDate(new Date()),time:null,availability:null,created:null,step:1,timer:null,lastFocus:null};let installPrompt,toastTimer,historyTimer,waitingWorker;
 function localDate(d){const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}function addDays(v,n){const d=new Date(v+'T12:00:00');d.setDate(d.getDate()+n);return localDate(d)}function dateAr(v){return new Intl.DateTimeFormat('es-AR',{dateStyle:'full'}).format(new Date(v+'T12:00:00'))}function shortDate(v){return new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'short'}).format(new Date(v+'T12:00:00'))}function money(v,c='ARS'){return new Intl.NumberFormat('es-AR',{style:'currency',currency:c}).format(Number(v||0))}function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
-async function api(path,opt={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);try{const r=await fetch(API+path,{headers:{'Content-Type':'application/json',...(opt.headers||{})},...opt,signal:c.signal});let d;try{d=await r.json()}catch{d={mensaje:'Respuesta inválida del servidor.'}}if(!r.ok)throw new Error(d.mensaje||'No se pudo completar la operación.');return d}catch(e){if(e.name==='AbortError')throw new Error('La operación demoró demasiado.');throw e}finally{clearTimeout(t)}}
+async function api(path,opt={}){const c=new AbortController(),t=setTimeout(()=>c.abort(),15000);try{const r=await fetch(API+path,{credentials:'include',headers:{'Content-Type':'application/json',...(opt.headers||{})},...opt,signal:c.signal});let d;try{d=await r.json()}catch{d={mensaje:'Respuesta inválida del servidor.'}}if(!r.ok)throw new Error(d.mensaje||'No se pudo completar la operación.');return d}catch(e){if(e.name==='AbortError')throw new Error('La operación demoró demasiado.');throw e}finally{clearTimeout(t)}}
 function toast(t){clearTimeout(toastTimer);$('toast').textContent=t;$('toast').classList.remove('hidden');toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),2500)}function msg(t){$('message').textContent=t;$('message').classList.toggle('hidden',!t)}function showStep(n){state.step=n;document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('hidden',i!==n-1));document.querySelectorAll('[data-step]').forEach((s,i)=>s.classList.toggle('active',i<n));msg('');const p=$(`step${n}`);p.focus({preventScroll:true});p.scrollIntoView({behavior:'smooth'})}
 function theme(mode){localStorage.setItem(K.theme,mode);const effective=mode==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'):mode;document.documentElement.dataset.theme=mode;document.documentElement.dataset.effectiveTheme=effective;const labels={auto:'Auto',dark:'Oscuro',light:'Claro'};const icons={auto:'Ã¢â€”Â',dark:'Ã¢ËœÂ¾',light:'Ã¢Ëœâ‚¬'};$('themeLabel').textContent=labels[mode];$('themeIcon').textContent=icons[mode];$('themeToggle').setAttribute('aria-label',`Cambiar apariencia. Tema actual: ${labels[mode]}`);$('themeToggle').title=`Tema: ${labels[mode].toLowerCase()}`;document.querySelector('meta[name=theme-color]').content=effective==='dark'?'#071018':'#f4f7f9'}
 function cycleTheme(){const current=localStorage.getItem(K.theme)||'auto';const modes=['auto','dark','light'];const next=modes[(modes.indexOf(current)+1)%modes.length];theme(next);toast(`Tema: ${next==='auto'?'automatico':next}`)}
@@ -46,3 +46,876 @@ function decorateBookingStepsV3() {
 decorateBookingStepsV3();
 
 // ampliar-dias-disponibles-v1
+
+// modales-cuentas-v1
+(function () {
+    const openLoginButton = document.getElementById('openLogin');
+    const openRegisterButton = document.getElementById('openRegister');
+    const closeLoginButton = document.getElementById('closeLogin');
+    const closeRegisterButton = document.getElementById('closeRegister');
+    const goLoginButton = document.getElementById('goLogin');
+    const goRegisterButton = document.getElementById('goRegister');
+    const loginModal = document.getElementById('loginModal');
+    const registerModal = document.getElementById('registerModal');
+
+    if (!openLoginButton || !openRegisterButton
+            || !closeLoginButton || !closeRegisterButton
+            || !goLoginButton || !goRegisterButton
+            || !loginModal || !registerModal) {
+        console.warn('No se pudo inicializar la interfaz de cuentas.');
+        return;
+    }
+
+    function openAccountModal(id) {
+        openModal(id);
+    }
+
+    function switchAccountModal(fromId, toId) {
+        closeModal(fromId);
+        window.setTimeout(function () {
+            openAccountModal(toId);
+        }, 20);
+    }
+
+    openLoginButton.addEventListener('click', function () {
+        openAccountModal('loginModal');
+    });
+
+    openRegisterButton.addEventListener('click', function () {
+        openAccountModal('registerModal');
+    });
+
+    closeLoginButton.addEventListener('click', function () {
+        closeModal('loginModal');
+    });
+
+    closeRegisterButton.addEventListener('click', function () {
+        closeModal('registerModal');
+    });
+
+    goRegisterButton.addEventListener('click', function () {
+        switchAccountModal('loginModal', 'registerModal');
+    });
+
+    goLoginButton.addEventListener('click', function () {
+        switchAccountModal('registerModal', 'loginModal');
+    });
+})();
+// sesion-y-login-clientes-v1
+(function () {
+    const openLoginButton = document.getElementById('openLogin');
+    const openRegisterButton = document.getElementById('openRegister');
+    const loginForm = document.getElementById('loginForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginError = document.getElementById('loginError');
+    const submitLogin = document.getElementById('submitLogin');
+    const navActions = document.querySelector('.nav-actions');
+
+    if (!openLoginButton || !openRegisterButton || !loginForm
+            || !loginEmail || !loginPassword || !loginError
+            || !submitLogin || !navActions) {
+        console.warn('No se pudo inicializar el acceso de clientes.');
+        return;
+    }
+
+    const accountBadge = document.createElement('button');
+    accountBadge.id = 'accountBadge';
+    accountBadge.type = 'button';
+    accountBadge.className = 'nav-btn hidden';
+    accountBadge.disabled = true;
+    navActions.insertBefore(accountBadge, openLoginButton);
+
+    function showLoginError(text) {
+        loginError.textContent = text || '';
+        loginError.classList.toggle('hidden', !text);
+    }
+
+    function applySession(session) {
+        const authenticated = Boolean(session && session.autenticado && session.perfil);
+        openLoginButton.classList.toggle('hidden', authenticated);
+        openRegisterButton.classList.toggle('hidden', authenticated);
+        accountBadge.classList.toggle('hidden', !authenticated);
+
+        if (authenticated) {
+            const profile = session.perfil;
+            const name = String(profile.nombre || '').trim();
+            accountBadge.textContent = name ? 'Hola, ' + name : 'Mi cuenta';
+        } else {
+            accountBadge.textContent = '';
+        }
+    }
+
+    async function request(path, options) {
+        const response = await fetch(API + path, {
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+                ...((options && options.headers) || {})
+            },
+            ...(options || {})
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+        }
+
+        if (!response.ok) {
+            throw new Error(data.mensaje || 'No se pudo completar la operacion.');
+        }
+
+        return data;
+    }
+
+    async function loadCurrentSession() {
+        try {
+            const session = await request('/auth/sesion', { method: 'GET' });
+            applySession(session);
+        } catch (error) {
+            applySession(null);
+            console.warn('No se pudo consultar la sesion del cliente.', error);
+        }
+    }
+
+    loginForm.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        showLoginError('');
+
+        const email = loginEmail.value.trim();
+        const password = loginPassword.value;
+
+        if (!email || !password) {
+            showLoginError('Completa el correo y la contrasena.');
+            return;
+        }
+
+        submitLogin.disabled = true;
+        submitLogin.textContent = 'Ingresando...';
+
+        try {
+            const session = await request('/auth/login', {
+                method: 'POST',
+                body: JSON.stringify({ email, password })
+            });
+            applySession(session);
+            loginForm.reset();
+            closeModal('loginModal');
+            toast('Sesion iniciada correctamente');
+        } catch (error) {
+            showLoginError(error.message);
+        } finally {
+            submitLogin.disabled = false;
+            submitLogin.textContent = 'Ingresar';
+        }
+    });
+
+    loadCurrentSession();
+})();
+// cerrar-sesion-clientes-v1
+(function () {
+    const accountBadge = document.getElementById('accountBadge');
+    const openLoginButton = document.getElementById('openLogin');
+    const openRegisterButton = document.getElementById('openRegister');
+    const navActions = document.querySelector('.nav-actions');
+
+    if (!accountBadge || !openLoginButton || !openRegisterButton || !navActions) {
+        console.warn('No se pudo inicializar el cierre de sesion.');
+        return;
+    }
+
+    accountBadge.disabled = false;
+    accountBadge.setAttribute('aria-haspopup', 'true');
+    accountBadge.setAttribute('aria-expanded', 'false');
+
+    const menu = document.createElement('div');
+    menu.id = 'accountMenu';
+    menu.className = 'account-menu hidden';
+    menu.innerHTML = '<button id="logoutAccount" type="button">Cerrar sesi\u00f3n</button>';
+    navActions.appendChild(menu);
+
+    const logoutButton = document.getElementById('logoutAccount');
+
+    function closeAccountMenu() {
+        menu.classList.add('hidden');
+        accountBadge.setAttribute('aria-expanded', 'false');
+    }
+
+    function showGuestHeader() {
+        accountBadge.classList.add('hidden');
+        accountBadge.textContent = '';
+        openLoginButton.classList.remove('hidden');
+        openRegisterButton.classList.remove('hidden');
+        closeAccountMenu();
+    }
+
+    accountBadge.addEventListener('click', function (event) {
+        event.stopPropagation();
+        const willOpen = menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !willOpen);
+        accountBadge.setAttribute('aria-expanded', String(willOpen));
+    });
+
+    logoutButton.addEventListener('click', async function () {
+        logoutButton.disabled = true;
+        logoutButton.textContent = 'Cerrando...';
+
+        try {
+            const response = await fetch(API + '/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (!response.ok) {
+                let data = null;
+                try { data = await response.json(); } catch { }
+                throw new Error(data && data.mensaje
+                    ? data.mensaje
+                    : 'No se pudo cerrar la sesion.');
+            }
+
+            showGuestHeader();
+            toast('Sesi\u00f3n cerrada correctamente');
+        } catch (error) {
+            toast(error.message || 'No se pudo cerrar la sesion');
+        } finally {
+            logoutButton.disabled = false;
+            logoutButton.textContent = 'Cerrar sesi\u00f3n';
+        }
+    });
+
+    document.addEventListener('click', function (event) {
+        if (!menu.contains(event.target) && event.target !== accountBadge) {
+            closeAccountMenu();
+        }
+    });
+
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !menu.classList.contains('hidden')) {
+            closeAccountMenu();
+            accountBadge.focus();
+        }
+    });
+})();
+// registro-clientes-web-v1
+(function () {
+    const form = document.getElementById('registerForm');
+    const nameInput = document.getElementById('registerName');
+    const lastnameInput = document.getElementById('registerLastname');
+    const documentInput = document.getElementById('registerDocument');
+    const phoneInput = document.getElementById('registerPhone');
+    const emailInput = document.getElementById('registerEmail');
+    const passwordInput = document.getElementById('registerPassword');
+    const passwordRepeatInput = document.getElementById('registerPasswordRepeat');
+    const errorBox = document.getElementById('registerError');
+    const submitButton = document.getElementById('submitRegister');
+
+    if (!form || !nameInput || !lastnameInput || !documentInput
+            || !phoneInput || !emailInput || !passwordInput
+            || !passwordRepeatInput || !errorBox || !submitButton) {
+        console.warn('No se pudo inicializar el registro de clientes.');
+        return;
+    }
+
+    function showError(text) {
+        errorBox.textContent = text || '';
+        errorBox.classList.toggle('hidden', !text);
+    }
+
+    function validate() {
+        const name = nameInput.value.trim();
+        const lastname = lastnameInput.value.trim();
+        const documentValue = documentInput.value.replace(/\D/g, '');
+        const phone = phoneInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const passwordRepeat = passwordRepeatInput.value;
+
+        if (!name || !lastname || !documentValue || !phone || !email
+                || !password || !passwordRepeat) {
+            throw new Error('Completa todos los campos.');
+        }
+        if (!/^\d{7,10}$/.test(documentValue)) {
+            throw new Error('El documento debe tener entre 7 y 10 numeros.');
+        }
+        if (!/^[0-9+()\-\s]{6,30}$/.test(phone)) {
+            throw new Error('El telefono no tiene un formato valido.');
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('El correo electronico no tiene un formato valido.');
+        }
+        if (password.length < 8) {
+            throw new Error('La contrasena debe tener al menos 8 caracteres.');
+        }
+        if (password !== passwordRepeat) {
+            throw new Error('Las contrasenas no coinciden.');
+        }
+
+        return {
+            nombre: name,
+            apellido: lastname,
+            documento: documentValue,
+            telefono: phone,
+            email: email,
+            password: password
+        };
+    }
+
+    function applyRegisteredSession(session) {
+        const openLogin = document.getElementById('openLogin');
+        const openRegister = document.getElementById('openRegister');
+        const accountBadge = document.getElementById('accountBadge');
+        const profile = session && session.perfil;
+
+        if (!profile || !accountBadge || !openLogin || !openRegister) {
+            window.location.reload();
+            return;
+        }
+
+        openLogin.classList.add('hidden');
+        openRegister.classList.add('hidden');
+        accountBadge.classList.remove('hidden');
+        accountBadge.textContent = profile.nombre
+            ? 'Hola, ' + String(profile.nombre).trim()
+            : 'Mi cuenta';
+    }
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        showError('');
+
+        let payload;
+        try {
+            payload = validate();
+        } catch (error) {
+            showError(error.message);
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Creando cuenta...';
+
+        try {
+            const response = await fetch(API + '/auth/registro', {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            let data;
+            try {
+                data = await response.json();
+            } catch {
+                data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+            }
+
+            if (!response.ok) {
+                throw new Error(data.mensaje || 'No se pudo crear la cuenta.');
+            }
+
+            applyRegisteredSession(data);
+            form.reset();
+            closeModal('registerModal');
+            toast('Cuenta creada correctamente');
+        } catch (error) {
+            showError(error.message || 'No se pudo crear la cuenta.');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Crear cuenta';
+        }
+    });
+})();
+// historial-sincronizado-clientes-v1
+(function () {
+    const openHistoryButton = document.getElementById('openHistory');
+    const refreshButton = document.getElementById('refreshHistory');
+    const clearButton = document.getElementById('clearHistory');
+    const historyList = document.getElementById('historyList');
+    const historyStatus = document.getElementById('historyStatus');
+
+    if (!openHistoryButton || !refreshButton || !clearButton
+            || !historyList || !historyStatus) {
+        console.warn('No se pudo inicializar el historial sincronizado.');
+        return;
+    }
+
+    const localOpenHistory = openHistoryButton.onclick;
+    const localRefreshHistory = refreshButton.onclick;
+    const localClearHistory = clearButton.onclick;
+    let synchronizedMode = false;
+
+    async function request(path) {
+        const response = await fetch(API + path, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+        }
+
+        if (!response.ok) {
+            const error = new Error(data.mensaje || 'No se pudo cargar el historial.');
+            error.status = response.status;
+            throw error;
+        }
+
+        return data;
+    }
+
+    function moneyAccount(value, currency) {
+        return new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: currency || 'ARS'
+        }).format(Number(value || 0));
+    }
+
+    function stateClass(value) {
+        return 'state-' + String(value || '').toLowerCase();
+    }
+
+    function reservationCard(reservation) {
+        const code = reservation.codigoSeguimiento;
+        const actions = [];
+
+        if (code) {
+            actions.push('<button class="button primary" data-account-open="'
+                + esc(code) + '">Ver estado</button>');
+            actions.push('<button class="button secondary" data-copy="'
+                + esc(code) + '">Copiar codigo</button>');
+        }
+
+        return '<article class="history-item account-history-item">'
+            + '<div class="booking-top"><span class="badge '
+            + stateClass(reservation.estado) + '">'
+            + esc(reservation.estado || '') + '</span><small>#'
+            + esc(reservation.reservaId || '-') + '</small></div>'
+            + '<h3>' + esc(reservation.cancha || '') + '</h3>'
+            + '<p>' + dateAr(reservation.fecha) + ' - '
+            + String(reservation.horaInicio || '').slice(0, 5) + ' a '
+            + String(reservation.horaFin || '').slice(0, 5) + '</p>'
+            + '<div class="account-history-money"><span><small>Total</small><strong>'
+            + moneyAccount(reservation.precioTotal, reservation.moneda)
+            + '</strong></span><span><small>Acreditado</small><strong>'
+            + moneyAccount(reservation.totalAcreditado, reservation.moneda)
+            + '</strong></span><span><small>Saldo</small><strong>'
+            + moneyAccount(reservation.saldoPendiente, reservation.moneda)
+            + '</strong></span></div>'
+            + (reservation.mensaje
+                ? '<p class="history-note">' + esc(reservation.mensaje) + '</p>'
+                : '')
+            + (actions.length
+                ? '<div class="history-actions">' + actions.join('') + '</div>'
+                : '<div class="history-note">Reserva registrada por el complejo.</div>')
+            + '</article>';
+    }
+
+    function renderSection(title, reservations) {
+        if (!Array.isArray(reservations) || reservations.length === 0) {
+            return '';
+        }
+        return '<h3 class="history-title">' + title + '</h3>'
+            + reservations.map(reservationCard).join('');
+    }
+
+    function bindSynchronizedActions() {
+        historyList.querySelectorAll('[data-account-open]').forEach(function (button) {
+            button.addEventListener('click', function () {
+                closeModal('historyModal');
+                openTracking(button.dataset.accountOpen);
+            });
+        });
+        bindCopy();
+    }
+
+    function renderSynchronizedHistory(history) {
+        const next = Array.isArray(history.proximas) ? history.proximas : [];
+        const previous = Array.isArray(history.anteriores) ? history.anteriores : [];
+        const html = renderSection('Proximas', next)
+            + renderSection('Anteriores', previous);
+
+        historyList.innerHTML = html || '<div class="empty">Todavia no tenes reservas asociadas a tu cuenta.</div>';
+        historyStatus.textContent = (history.total || 0) + ' reservas sincronizadas';
+        clearButton.classList.add('hidden');
+        bindSynchronizedActions();
+    }
+
+    async function loadSynchronizedHistory() {
+        historyStatus.textContent = 'Actualizando...';
+        try {
+            const history = await request('/cliente/reservas');
+            synchronizedMode = true;
+            renderSynchronizedHistory(history);
+        } catch (error) {
+            if (error.status === 401) {
+                synchronizedMode = false;
+                clearButton.classList.remove('hidden');
+                renderHistory();
+                historyStatus.textContent = 'Guardado en este dispositivo';
+                return;
+            }
+            historyStatus.textContent = 'No se pudo actualizar';
+            historyList.innerHTML = '<div class="alert">'
+                + esc(error.message) + '</div>';
+        }
+    }
+
+    openHistoryButton.onclick = function () {
+        openModal('historyModal');
+        loadSynchronizedHistory();
+    };
+
+    document.querySelectorAll('[data-open-history]').forEach(function (button) {
+        button.onclick = openHistoryButton.onclick;
+    });
+
+    refreshButton.onclick = function () {
+        if (synchronizedMode) {
+            loadSynchronizedHistory();
+        } else if (typeof localRefreshHistory === 'function') {
+            localRefreshHistory.call(refreshButton);
+        } else {
+            refreshHistory();
+        }
+    };
+
+    clearButton.onclick = function () {
+        if (synchronizedMode) return;
+        if (typeof localClearHistory === 'function') {
+            localClearHistory.call(clearButton);
+        }
+    };
+})();
+// recientes-sincronizadas-clientes-v1
+(function () {
+    const recentContainer = document.getElementById('recentBookings');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    if (!recentContainer) {
+        console.warn('No se pudo inicializar las reservas recientes sincronizadas.');
+        return;
+    }
+
+    let requestNumber = 0;
+
+    async function getJson(path) {
+        const response = await fetch(API + path, {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            data = { mensaje: 'El servidor devolvio una respuesta invalida.' };
+        }
+
+        if (!response.ok) {
+            const error = new Error(data.mensaje || 'No se pudieron cargar las reservas.');
+            error.status = response.status;
+            throw error;
+        }
+
+        return data;
+    }
+
+    function synchronizedCard(reservation) {
+        const code = reservation.codigoSeguimiento;
+        const openAttribute = code
+            ? ' data-recent-account="' + esc(code) + '" tabindex="0" role="button"'
+            : '';
+        const payment = money(reservation.saldoPendiente, reservation.moneda || 'ARS');
+
+        return '<article class="booking-mini synchronized-recent"'
+            + openAttribute + '>'
+            + '<div class="booking-top"><span class="badge state-'
+            + String(reservation.estado || '').toLowerCase() + '">'
+            + esc(reservation.estado || '') + '</span><small>#'
+            + esc(reservation.reservaId || '-') + '</small></div>'
+            + '<h3>' + esc(reservation.cancha || '') + '</h3>'
+            + '<p>' + dateAr(reservation.fecha) + ' - '
+            + String(reservation.horaInicio || '').slice(0, 5) + ' a '
+            + String(reservation.horaFin || '').slice(0, 5) + '</p>'
+            + '<div class="synchronized-recent-footer"><span>Saldo</span><strong>'
+            + payment + '</strong></div>'
+            + (code
+                ? '<small class="synchronized-recent-help">Abrir estado</small>'
+                : '<small class="synchronized-recent-help">Reserva registrada por el complejo</small>')
+            + '</article>';
+    }
+
+    function bindCards() {
+        recentContainer.querySelectorAll('[data-recent-account]').forEach(function (card) {
+            function open() {
+                openTracking(card.dataset.recentAccount);
+            }
+            card.addEventListener('click', open);
+            card.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    open();
+                }
+            });
+        });
+    }
+
+    function renderSynchronized(history) {
+        const next = Array.isArray(history.proximas)
+            ? history.proximas.slice(0, 3)
+            : [];
+
+        recentContainer.innerHTML = next.length
+            ? next.map(synchronizedCard).join('')
+            : '<div class="empty">No hay reservas proximas en tu cuenta.</div>';
+        bindCards();
+    }
+
+    async function refreshRecentAccount() {
+        const currentRequest = ++requestNumber;
+        try {
+            const history = await getJson('/cliente/reservas');
+            if (currentRequest !== requestNumber) return;
+            renderSynchronized(history);
+        } catch (error) {
+            if (currentRequest !== requestNumber) return;
+            if (error.status === 401) {
+                renderRecent();
+                return;
+            }
+            console.warn('No se pudieron actualizar las reservas recientes.', error);
+        }
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function () {
+            window.setTimeout(refreshRecentAccount, 700);
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function () {
+            window.setTimeout(refreshRecentAccount, 900);
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.id === 'logoutAccount') {
+            window.setTimeout(function () {
+                requestNumber++;
+                renderRecent();
+            }, 500);
+        }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            refreshRecentAccount();
+        }
+    });
+
+    refreshRecentAccount();
+})();
+// precargar-formulario-cuenta-v1
+(function () {
+    const nameInput = document.getElementById('name');
+    const lastnameInput = document.getElementById('lastname');
+    const documentInput = document.getElementById('document');
+    const phoneInput = document.getElementById('phone');
+    const emailInput = document.getElementById('email');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    if (!nameInput || !lastnameInput || !documentInput
+            || !phoneInput || !emailInput) {
+        console.warn('No se pudo inicializar la precarga del formulario.');
+        return;
+    }
+
+    let lastProfileId = null;
+
+    async function getProfile() {
+        const response = await fetch(API + '/cliente/perfil', {
+            method: 'GET',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (response.status === 401) return null;
+
+        let data;
+        try {
+            data = await response.json();
+        } catch {
+            throw new Error('El servidor devolvio una respuesta invalida.');
+        }
+
+        if (!response.ok) {
+            throw new Error(data.mensaje || 'No se pudo cargar el perfil.');
+        }
+
+        return data;
+    }
+
+    function applyProfile(profile) {
+        if (!profile) {
+            lastProfileId = null;
+            return;
+        }
+
+        const profileId = String(profile.clienteId || '');
+        if (profileId && profileId === lastProfileId) return;
+
+        nameInput.value = profile.nombre || '';
+        lastnameInput.value = profile.apellido || '';
+        documentInput.value = profile.documento || '';
+        phoneInput.value = profile.telefono || '';
+        emailInput.value = profile.email || '';
+
+        nameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        lastnameInput.dispatchEvent(new Event('input', { bubbles: true }));
+        phoneInput.dispatchEvent(new Event('input', { bubbles: true }));
+        emailInput.dispatchEvent(new Event('input', { bubbles: true }));
+
+        lastProfileId = profileId;
+    }
+
+    async function refreshProfile() {
+        try {
+            applyProfile(await getProfile());
+        } catch (error) {
+            console.warn('No se pudo precargar el perfil del cliente.', error);
+        }
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function () {
+            window.setTimeout(refreshProfile, 700);
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function () {
+            window.setTimeout(refreshProfile, 900);
+        });
+    }
+
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.id === 'logoutAccount') {
+            lastProfileId = null;
+        }
+    });
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            refreshProfile();
+        }
+    });
+
+    refreshProfile();
+})();
+// reserva-perfil-autenticado-v1
+(function () {
+    const card = document.getElementById('authenticatedBookingProfile');
+    const fullName = document.getElementById('authenticatedBookingName');
+    const documentValue = document.getElementById('authenticatedBookingDocument');
+    const phoneValue = document.getElementById('authenticatedBookingPhone');
+    const emailValue = document.getElementById('authenticatedBookingEmail');
+
+    if (!card || !fullName || !documentValue || !phoneValue || !emailValue) {
+        console.warn('No se pudo inicializar el resumen del cliente autenticado.');
+        return;
+    }
+
+    function formatDocument(value) {
+        const digits = String(value || '').replace(/\D/g, '');
+        return digits ? new Intl.NumberFormat('es-AR').format(Number(digits)) : '-';
+    }
+
+    function showGuestBookingForm() {
+        document.body.classList.remove('customer-authenticated');
+        card.classList.add('hidden');
+        fullName.textContent = '';
+        documentValue.textContent = '';
+        phoneValue.textContent = '';
+        emailValue.textContent = '';
+    }
+
+    function showAuthenticatedBookingForm(profile) {
+        if (!profile) {
+            showGuestBookingForm();
+            return;
+        }
+
+        fullName.textContent = [profile.nombre, profile.apellido]
+                .filter(Boolean).join(' ');
+        documentValue.textContent = formatDocument(profile.documento);
+        phoneValue.textContent = profile.telefono || '-';
+        emailValue.textContent = profile.email || '-';
+        card.classList.remove('hidden');
+        document.body.classList.add('customer-authenticated');
+    }
+
+    async function refreshAuthenticatedBookingForm() {
+        try {
+            const response = await fetch(API + '/cliente/perfil', {
+                method: 'GET',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            if (response.status === 401) {
+                showGuestBookingForm();
+                return;
+            }
+
+            if (!response.ok) {
+                throw new Error('No se pudo consultar el perfil.');
+            }
+
+            showAuthenticatedBookingForm(await response.json());
+        } catch (error) {
+            showGuestBookingForm();
+            console.warn('No se pudo actualizar el formulario de reserva.', error);
+        }
+    }
+
+    document.addEventListener('click', function (event) {
+        if (event.target && event.target.id === 'logoutAccount') {
+            window.setTimeout(refreshAuthenticatedBookingForm, 500);
+        }
+    });
+
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', function () {
+            window.setTimeout(refreshAuthenticatedBookingForm, 700);
+        });
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', function () {
+            window.setTimeout(refreshAuthenticatedBookingForm, 900);
+        });
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            refreshAuthenticatedBookingForm();
+        }
+    });
+
+    refreshAuthenticatedBookingForm();
+})();

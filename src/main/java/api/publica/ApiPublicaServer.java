@@ -38,6 +38,7 @@ public final class ApiPublicaServer {
     private final EstadoSolicitudWebPublicaService estadoService;
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final ObjectMapper mapper;
+    private final AutenticacionClienteService autenticacionClienteService;
     private final AutenticacionClienteHandler autenticacionHandler;
     private final CuentaClienteHandler cuentaClienteHandler;
     private HttpServer servidor;
@@ -65,7 +66,7 @@ public final class ApiPublicaServer {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         SesionClienteService sesionClienteService =
                 new SesionClienteService();
-        AutenticacionClienteService autenticacionClienteService =
+        autenticacionClienteService =
                 new AutenticacionClienteService();
         autenticacionHandler = new AutenticacionClienteHandler(
                 autenticacionClienteService,
@@ -140,8 +141,14 @@ public final class ApiPublicaServer {
                         x.getRequestBody());
                 SolicitudWebDTO.CrearSolicitud entrada = mapper.readValue(
                         cuerpo, SolicitudWebDTO.CrearSolicitud.class);
+                Long clienteIdAutenticado =
+                        obtenerClienteAutenticadoParaSolicitud(x);
                 SolicitudWebDTO.SolicitudCreada creada =
-                        solicitudWebService.crear(entrada);
+                        clienteIdAutenticado == null
+                                ? solicitudWebService.crear(entrada)
+                                : solicitudWebService.crear(
+                                        entrada,
+                                        clienteIdAutenticado);
                 String codigo = estadoService.obtenerCodigo(
                         creada.solicitudId());
                 responder(x, 201,
@@ -223,6 +230,22 @@ public final class ApiPublicaServer {
                             + operacionId,
                     operacionId);
         }
+    }
+
+    private Long obtenerClienteAutenticadoParaSolicitud(
+            HttpExchange intercambio) {
+        String token = CookieSesionCliente.leer(intercambio);
+        if (token == null || token.isBlank()) return null;
+
+        AutenticacionClienteService.SesionAutenticada sesion =
+                autenticacionClienteService.obtenerSesion(token);
+        if (sesion == null) {
+            CookieSesionCliente.eliminar(
+                    intercambio,
+                    CookieSesionCliente.debeSerSegura());
+            return null;
+        }
+        return sesion.cliente().getId();
     }
 
     private long id(String valor) {

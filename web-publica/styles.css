@@ -921,3 +921,391 @@ html[data-theme="auto"] {
         transition: none;
     }
 }
+
+/* cuentas-web-estructura-v1 */
+.account-register {
+    border-color: var(--p) !important;
+    background: rgba(var(--prgb), 0.18) !important;
+}
+
+.account-register:hover {
+    background: rgba(var(--prgb), 0.30) !important;
+}
+
+.account-modal-card {
+    width: min(520px, calc(100vw - 32px));
+}
+
+.account-modal-card.large {
+    width: min(760px, calc(100vw - 32px));
+}
+
+.account-modal-card > .eyebrow {
+    margin-bottom: 6px;
+}
+
+.account-modal-card > h2 {
+    margin: 0 38px 6px 0;
+}
+
+.account-modal-card > .muted {
+    margin: 0 38px 20px 0;
+    line-height: 1.55;
+}
+
+.account-form {
+    margin-top: 4px;
+}
+
+.account-form .field input {
+    width: 100%;
+}
+
+.account-form .alert {
+    margin: 4px 0 14px;
+}
+
+.account-switch {
+    margin: 18px 0 0;
+    color: var(--muted);
+    text-align: center;
+}
+
+.account-switch .link {
+    margin-left: 4px;
+}
+
+@media (max-width: 900px) {
+    .nav-actions {
+        flex-wrap: wrap !important;
+    }
+}
+
+@media (max-width: 620px) {
+    .account-login,
+    .account-register {
+        flex: 1 1 auto;
+    }
+
+    .account-modal-card,
+    .account-modal-card.large {
+        width: min(100% - 20px, 760px);
+        max-height: calc(100vh - 20px);
+        overflow-y: auto;
+        padding: 22px 16px;
+    }
+
+    .account-modal-card > h2,
+    .account-modal-card > .muted {
+        margin-right: 34px;
+    }
+}
+/* cuenta-cabecera-sin-parpadeo-v1 */
+#openLogin.hidden,
+#openRegister.hidden,
+#accountBadge.hidden {
+    display: none !important;
+}
+
+#accountBadge {
+    min-width: 112px;
+}
+
+#accountBadge:disabled {
+    opacity: 1;
+    cursor: default;
+}
+/* menu-cuenta-clientes-v1 */
+.nav-actions {
+    position: relative;
+}
+
+#accountBadge {
+    cursor: pointer;
+}
+
+.account-menu {
+    position: absolute;
+    z-index: 12;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 170px;
+    padding: 7px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.account-menu.hidden {
+    display: none !important;
+}
+
+.account-menu button {
+    width: 100%;
+    min-height: 40px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text);
+    padding: 0 12px;
+    text-align: left;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.account-menu button:hover,
+.account-menu button:focus-visible {
+    background: var(--soft);
+    outline: none;
+}
+/* historial-sincronizado-legible-v1 */
+#historyModal .modal-card.large {
+    width: min(880px, calc(100vw - 32px));
+    max-height: min(88vh, 860px);
+    padding: 28px;
+}
+
+#historyModal .card-head {
+    align-items: flex-start;
+    margin-bottom: 24px;
+}
+
+#historyModal #historyStatus {
+    margin-top: 8px;
+    line-height: 1.45;
+}
+
+#historyModal .history-title {
+    margin: 28px 0 12px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+}
+
+#historyModal .history-item.account-history-item {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+#historyModal .account-history-item .booking-top {
+    margin-bottom: 2px;
+}
+
+#historyModal .account-history-item h3 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.25;
+}
+
+#historyModal .account-history-item > p {
+    margin: 0;
+    line-height: 1.5;
+}
+
+#historyModal .account-history-money {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 2px;
+}
+
+#historyModal .account-history-money > span {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--soft);
+}
+
+#historyModal .account-history-money small {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+#historyModal .account-history-money strong {
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+
+#historyModal .account-history-item .history-note {
+    margin: 0;
+    padding-top: 1px;
+    line-height: 1.45;
+}
+
+#historyModal .account-history-item .history-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 2px;
+}
+
+#historyModal .account-history-item .history-actions .button {
+    min-height: 40px;
+    padding: 0 14px;
+}
+
+@media (max-width: 680px) {
+    #historyModal .modal-card.large {
+        width: calc(100vw - 20px);
+        padding: 20px 16px;
+    }
+
+    #historyModal .account-history-money {
+        grid-template-columns: 1fr;
+    }
+
+    #historyModal .account-history-money > span {
+        align-items: center;
+        text-align: center;
+    }
+
+    #historyModal .account-history-item .history-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    #historyModal .account-history-item .history-actions .button {
+        width: 100%;
+    }
+}
+/* recientes-sincronizadas-clientes-v1 */
+.synchronized-recent {
+    display: grid;
+    gap: 9px;
+}
+
+.synchronized-recent[data-recent-account] {
+    cursor: pointer;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.synchronized-recent[data-recent-account]:hover {
+    transform: translateY(-2px);
+    border-color: var(--p);
+    background: rgba(var(--prgb), .1);
+}
+
+.synchronized-recent[data-recent-account]:focus-visible {
+    outline: 3px solid rgba(var(--prgb), .38);
+    outline-offset: 3px;
+}
+
+.synchronized-recent h3,
+.synchronized-recent p {
+    margin: 0;
+}
+
+.synchronized-recent-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 9px;
+    border-top: 1px solid var(--line);
+}
+
+.synchronized-recent-footer span,
+.synchronized-recent-help {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.synchronized-recent-footer strong {
+    font-size: 14px;
+}
+/* reserva-perfil-autenticado-v1 */
+.booking-profile {
+    margin: 0 0 20px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(var(--prgb), .13), var(--soft));
+    text-align: left;
+}
+
+.booking-profile.hidden {
+    display: none !important;
+}
+
+.booking-profile > .eyebrow {
+    margin: 0 0 6px;
+}
+
+.booking-profile > strong {
+    display: block;
+    color: var(--text);
+    font-size: 21px;
+    line-height: 1.2;
+}
+
+.booking-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.booking-profile-grid > div {
+    min-width: 0;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--surface);
+}
+
+.booking-profile-grid small {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.booking-profile-grid span {
+    display: block;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 750;
+    overflow-wrap: anywhere;
+}
+
+.booking-profile-help {
+    margin: 13px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+body.customer-authenticated #form .field:has(#name),
+body.customer-authenticated #form .field:has(#lastname),
+body.customer-authenticated #form .field:has(#document),
+body.customer-authenticated #form .field:has(#phone),
+body.customer-authenticated #form .field:has(#email),
+body.customer-authenticated #form .check:has(#rememberData) {
+    display: none !important;
+}
+
+@media (max-width: 680px) {
+    .booking-profile-grid {
+        grid-template-columns: 1fr;
+    }
+}
