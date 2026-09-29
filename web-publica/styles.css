@@ -503,3 +503,421 @@ html[data-theme="auto"] {
         grid-template-columns: 1fr !important;
     }
 }
+/* confirmacion-compacta-v1 */
+.confirmation {
+    width: min(860px, 100%);
+    max-width: 860px;
+    padding: 26px 28px 24px;
+    text-align: center;
+}
+
+.confirmation .success {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 8px;
+    font-size: 28px;
+}
+
+.confirmation > .badge {
+    margin-bottom: 5px;
+}
+
+.confirmation > h3 {
+    margin: 8px 0 4px;
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+.confirmation > .muted {
+    margin: 0 0 16px;
+}
+
+.confirmation .receipt {
+    margin: 0 0 14px;
+    padding: 14px;
+}
+
+.confirmation .receipt-grid {
+    display: grid;
+    grid-template-columns: .7fr .9fr 1.3fr 1fr;
+    gap: 10px;
+    text-align: left;
+}
+
+.confirmation .receipt-grid > div {
+    min-width: 0;
+    padding: 5px 8px;
+}
+
+.confirmation .receipt-grid small,
+.confirmation .tracking-item small,
+.confirmation .tracking-code small {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+}
+
+.confirmation .receipt-grid strong,
+.confirmation .tracking-item strong {
+    display: block;
+    line-height: 1.35;
+}
+
+.confirmation .tracking-code {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 12px;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    background: var(--bg);
+    text-align: left;
+}
+
+.confirmation .tracking-code > div {
+    min-width: 0;
+}
+
+.confirmation .tracking-code code {
+    display: block;
+    overflow-wrap: anywhere;
+    color: var(--text);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.confirmation .compact-copy {
+    min-height: 36px;
+    flex: 0 0 auto;
+    padding: 0 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--soft);
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 850;
+    cursor: pointer;
+}
+
+.confirmation .compact-copy:hover {
+    border-color: var(--p);
+    background: rgba(var(--prgb), .16);
+}
+
+.confirmation .countdown {
+    min-height: 66px;
+    margin: 0 0 14px;
+    padding: 12px 16px;
+}
+
+.confirmation .countdown strong {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.confirmation > .summary {
+    margin: 0 0 14px;
+    padding: 14px;
+}
+
+.confirmation .tracking-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.confirmation .tracking-item {
+    min-width: 0;
+    padding: 11px;
+    text-align: left;
+}
+
+.confirmation .alias-copy {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.confirmation .alias-copy strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.confirmation > .whatsapp {
+    width: auto;
+    min-width: 150px;
+    margin: 0 5px 0 0;
+    vertical-align: middle;
+}
+
+.confirmation > .actions {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    margin: 0;
+    vertical-align: middle;
+}
+
+.confirmation > .actions .button {
+    min-width: 130px;
+    min-height: 44px;
+}
+
+.confirmation > .whatsapp,
+.confirmation > .actions {
+    margin-top: 2px;
+}
+
+@media (max-width: 900px) {
+    .confirmation .receipt-grid,
+    .confirmation .tracking-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .confirmation > .whatsapp {
+        display: flex;
+        width: 100%;
+        margin: 0 0 9px;
+    }
+
+    .confirmation > .actions {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        width: 100%;
+    }
+
+    .confirmation > .actions .button {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+@media (max-width: 620px) {
+    .confirmation {
+        padding: 20px 16px;
+    }
+
+    .confirmation > h3 {
+        font-size: 21px;
+    }
+
+    .confirmation .receipt-grid,
+    .confirmation .tracking-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .confirmation .tracking-code,
+    .confirmation .alias-copy {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .confirmation .compact-copy {
+        width: 100%;
+    }
+
+    .confirmation .countdown {
+        min-height: 60px;
+    }
+
+    .confirmation .countdown strong {
+        font-size: 25px;
+    }
+
+    .confirmation > .actions {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* copiar-alias-centrado-v1 */
+.confirmation .alias-copy {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    width: 100%;
+    text-align: center;
+}
+
+.confirmation .alias-copy strong {
+    display: block;
+    width: 100%;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.confirmation .alias-copy .compact-copy {
+    width: auto !important;
+    min-width: 74px;
+    align-self: center;
+}
+
+@media (max-width: 620px) {
+    .confirmation .alias-copy .compact-copy {
+        width: min(150px, 100%) !important;
+    }
+}
+
+/* confirmacion-datos-centrados-v1 */
+.confirmation .receipt-grid {
+    align-items: start;
+    text-align: center !important;
+}
+
+.confirmation .receipt-grid > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center !important;
+}
+
+.confirmation .receipt-grid small,
+.confirmation .receipt-grid strong {
+    width: 100%;
+    text-align: center !important;
+}
+
+.confirmation .tracking-code {
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 9px !important;
+    text-align: center !important;
+}
+
+.confirmation .tracking-code > div,
+.confirmation .tracking-code small,
+.confirmation .tracking-code code {
+    width: 100%;
+    text-align: center !important;
+}
+
+.confirmation .tracking-code .compact-copy {
+    width: auto !important;
+    min-width: 82px;
+    align-self: center !important;
+}
+
+.confirmation .tracking-grid {
+    align-items: start;
+}
+
+.confirmation .tracking-item {
+    display: flex;
+    min-height: 94px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center !important;
+}
+
+.confirmation .tracking-item small,
+.confirmation .tracking-item strong {
+    width: 100%;
+    text-align: center !important;
+}
+
+.confirmation .alias-copy {
+    display: flex !important;
+    width: 100%;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    text-align: center !important;
+}
+
+.confirmation .alias-copy strong {
+    width: 100%;
+    text-align: center !important;
+    overflow-wrap: anywhere;
+}
+
+.confirmation .alias-copy .compact-copy {
+    width: auto !important;
+    min-width: 82px;
+    align-self: center !important;
+}
+
+@media (max-width: 620px) {
+    .confirmation .tracking-item {
+        min-height: 0;
+    }
+
+    .confirmation .tracking-code .compact-copy,
+    .confirmation .alias-copy .compact-copy {
+        width: min(160px, 100%) !important;
+    }
+}
+
+/* interaccion-horarios-v1 */
+.time {
+    cursor: pointer;
+    transition:
+        transform 0.16s ease,
+        border-color 0.16s ease,
+        background-color 0.16s ease,
+        box-shadow 0.16s ease;
+}
+
+.time:hover {
+    transform: translateY(-2px);
+    border-color: var(--p);
+    background: rgba(var(--prgb), 0.16);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+.time:hover small {
+    color: var(--text);
+}
+
+.time:focus-visible {
+    outline: 3px solid rgba(var(--prgb), 0.32);
+    outline-offset: 3px;
+    border-color: var(--p);
+}
+
+.time:active {
+    transform: translateY(0) scale(0.98);
+    background: rgba(var(--prgb), 0.26);
+    box-shadow: none;
+}
+
+.time:disabled {
+    cursor: not-allowed;
+    opacity: 0.48;
+    transform: none;
+    box-shadow: none;
+}
+
+@media (hover: none) {
+    .time:hover {
+        transform: none;
+        border-color: var(--line);
+        background: var(--soft);
+        box-shadow: none;
+    }
+
+    .time:active {
+        transform: scale(0.98);
+        border-color: var(--p);
+        background: rgba(var(--prgb), 0.26);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .time {
+        transition: none;
+    }
+}

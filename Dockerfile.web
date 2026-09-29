@@ -2,5 +2,11 @@ FROM nginx:1.29-alpine
 COPY web-publica/index.html /usr/share/nginx/html/index.html
 COPY web-publica/styles.css /usr/share/nginx/html/styles.css
 COPY web-publica/app.js /usr/share/nginx/html/app.js
+COPY web-publica/manifest.webmanifest /usr/share/nginx/html/manifest.webmanifest
+COPY web-publica/service-worker.js /usr/share/nginx/html/service-worker.js
+COPY web-publica/offline.html /usr/share/nginx/html/offline.html
+COPY web-publica/icon-192.png /usr/share/nginx/html/icon-192.png
+COPY web-publica/icon-512.png /usr/share/nginx/html/icon-512.png
+COPY web-publica/icon-maskable-512.png /usr/share/nginx/html/icon-maskable-512.png
 COPY web-publica/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
