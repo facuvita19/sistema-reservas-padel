@@ -26,6 +26,7 @@ import api.publica.SeguridadApiPublica.CuerpoDemasiadoGrandeException;
 import api.publica.SeguridadApiPublica.DemasiadasSolicitudesException;
 import api.publica.SolicitudWebPublicaService.ConflictoDisponibilidadException;
 import servicio.AutenticacionClienteService;
+import servicio.CuentaClienteService;
 import servicio.SesionClienteService;
 
 public final class ApiPublicaServer {
@@ -38,6 +39,7 @@ public final class ApiPublicaServer {
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final ObjectMapper mapper;
     private final AutenticacionClienteHandler autenticacionHandler;
+    private final CuentaClienteHandler cuentaClienteHandler;
     private HttpServer servidor;
     private ExecutorService ejecutor;
 
@@ -63,10 +65,16 @@ public final class ApiPublicaServer {
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         SesionClienteService sesionClienteService =
                 new SesionClienteService();
+        AutenticacionClienteService autenticacionClienteService =
+                new AutenticacionClienteService();
         autenticacionHandler = new AutenticacionClienteHandler(
-                new AutenticacionClienteService(),
+                autenticacionClienteService,
                 sesionClienteService,
                 seguridad,
+                mapper);
+        cuentaClienteHandler = new CuentaClienteHandler(
+                autenticacionClienteService,
+                new CuentaClienteService(),
                 mapper);
     }
 
@@ -116,6 +124,12 @@ public final class ApiPublicaServer {
             if (autenticacionHandler.puedeProcesar(ruta)) {
                 autenticacionHandler.procesar(
                         x, ruta, metodo, ip, operacionId);
+                return;
+            }
+
+            if (cuentaClienteHandler.puedeProcesar(ruta)) {
+                cuentaClienteHandler.procesar(
+                        x, ruta, metodo, operacionId);
                 return;
             }
 
