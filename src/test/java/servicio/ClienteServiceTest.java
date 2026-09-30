@@ -212,6 +212,13 @@ class ClienteServiceTest {
             return buscado;
         }
 
+        @Override
+        public Cliente buscar(
+                java.sql.Connection conexion,
+                long id) {
+            return buscar(id);
+        }
+
         // doblesDaoConexionV1
         @Override
         public Cliente buscarPorEmail(
@@ -224,6 +231,29 @@ class ClienteServiceTest {
                             cliente.getEmail()))
                     .findFirst()
                     .orElse(null);
+        }
+
+        // buscarActivosPorTelefonoNormalizadoTestV1
+        @Override
+        public List<Cliente> buscarActivosPorTelefonoNormalizado(
+                java.sql.Connection conexion,
+                String telefonoNormalizado) {
+            if (telefonoNormalizado == null) {
+                return new ArrayList<>();
+            }
+            String buscado = telefonoNormalizado.replaceAll("\\D", "");
+            List<Cliente> coincidencias = new ArrayList<>();
+            for (Cliente cliente : clientes) {
+                if (!cliente.isActivo() || cliente.getTelefono() == null) {
+                    continue;
+                }
+                String telefonoCliente = cliente.getTelefono()
+                        .replaceAll("\\D", "");
+                if (buscado.equals(telefonoCliente)) {
+                    coincidencias.add(cliente);
+                }
+            }
+            return coincidencias;
         }
 
         @Override

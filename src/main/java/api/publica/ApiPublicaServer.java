@@ -46,6 +46,8 @@ public final class ApiPublicaServer {
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
     private final AutenticacionClienteHandler autenticacionHandler;
     private final CuentaClienteHandler cuentaClienteHandler;
+    // torneoPublicoHandlerV1
+    private final TorneoPublicoHandler torneoPublicoHandler;
     private HttpServer servidor;
     private ExecutorService ejecutor;
 
@@ -92,6 +94,12 @@ public final class ApiPublicaServer {
         cuentaClienteHandler = new CuentaClienteHandler(
                 autenticacionClienteService,
                 new CuentaClienteService(),
+                mapper);
+        // inscripcionTorneoPublicaV1
+        torneoPublicoHandler = new TorneoPublicoHandler(
+                new TorneoPublicoService(),
+                new servicio.InscripcionTorneoWebService(),
+                seguridad,
                 mapper);
     }
 
@@ -146,6 +154,12 @@ public final class ApiPublicaServer {
 
             if (autenticacionHandler.puedeProcesar(ruta)) {
                 autenticacionHandler.procesar(
+                        x, ruta, metodo, ip, operacionId);
+                return;
+            }
+
+            if (torneoPublicoHandler.puedeProcesar(ruta)) {
+                torneoPublicoHandler.procesar(
                         x, ruta, metodo, ip, operacionId);
                 return;
             }

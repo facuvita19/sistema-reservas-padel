@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import config.ConexionBD;
 import negocio.Cliente;
+import util.NormalizadorTelefono;
 
 public class ClienteDAOMySQL implements ClienteDAO {
 
@@ -131,10 +132,27 @@ public class ClienteDAOMySQL implements ClienteDAO {
 
     @Override
     public Cliente buscar(long id) {
-        String sql = consultaBase() + " WHERE id = ?";
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            return buscar(conexion, id);
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo buscar el cliente en MySQL.",
+                    exception);
+        }
+    }
 
-        try (Connection conexion = ConexionBD.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+    @Override
+    public Cliente buscar(Connection conexion, long id) {
+        if (conexion == null) {
+            throw new IllegalArgumentException(
+                    "La conexion no puede ser nula.");
+        }
+        if (id <= 0) {
+            throw new IllegalArgumentException(
+                    "El ID del cliente debe ser positivo.");
+        }
+        String sql = consultaBase() + " WHERE id = ?";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setLong(1, id);
             try (ResultSet resultado = sentencia.executeQuery()) {
                 return resultado.next()
@@ -147,7 +165,6 @@ public class ClienteDAOMySQL implements ClienteDAO {
                     exception);
         }
     }
-
     @Override
     public Cliente buscarPorDocumento(String documento) {
         try (Connection conexion = ConexionBD.obtenerConexion()) {
@@ -212,6 +229,36 @@ public class ClienteDAOMySQL implements ClienteDAO {
         } catch (SQLException exception) {
             throw new RuntimeException(
                     "No se pudo buscar el cliente.",
+                    exception);
+        }
+    }
+
+    @Override
+    public List<Cliente> buscarActivosPorTelefonoNormalizado(
+            Connection conexion,
+            String telefonoNormalizado) {
+        if (conexion == null) {
+            throw new IllegalArgumentException(
+                    "La conexion no puede ser nula.");
+        }
+        String numero = NormalizadorTelefono.normalizar(
+                telefonoNormalizado);
+        String expresion = "REGEXP_REPLACE(telefono, '[^0-9]', '')";
+        String sql = consultaBase()
+                + " WHERE activo = TRUE AND " + expresion + " = ? "
+                + "ORDER BY id ASC";
+        List<Cliente> clientes = new ArrayList<>();
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, numero);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                while (resultado.next()) {
+                    clientes.add(convertirResultado(resultado));
+                }
+            }
+            return clientes;
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron buscar clientes por telefono.",
                     exception);
         }
     }

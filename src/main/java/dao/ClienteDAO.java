@@ -14,6 +14,7 @@ public interface ClienteDAO {
     void eliminar(long id);
 
     Cliente buscar(long id);
+    Cliente buscar(Connection conexion, long id);
 
     Cliente buscarPorDocumento(String documento);
 
@@ -22,6 +23,11 @@ public interface ClienteDAO {
     Cliente buscarPorEmail(String email);
 
     Cliente buscarPorEmail(Connection conexion, String email);
+
+    // buscarActivosPorTelefonoNormalizadoV1
+    List<Cliente> buscarActivosPorTelefonoNormalizado(
+            Connection conexion,
+            String telefonoNormalizado);
 
     List<Cliente> listar();
 

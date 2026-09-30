@@ -287,6 +287,11 @@ public class DashboardAdminController {
 	private void abrirSolicitudesWeb() {
 		Navegacion.mostrarSolicitudesWeb();
 	}
+	
+	@FXML
+	private void abrirTorneosInscripciones() {
+		Navegacion.mostrarTorneosInscripciones();
+	}
 
 	@FXML
 	private void abrirCanchas() {

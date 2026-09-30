@@ -1,5 +1,7 @@
 package servicio;
 
+import util.NormalizadorTelefono;
+
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
@@ -75,21 +77,12 @@ public class WhatsAppService {
     }
 
     public String normalizarTelefono(String telefono) {
-        if (telefono == null || telefono.isBlank()) {
+        try {
+            return NormalizadorTelefono.normalizar(telefono);
+        } catch (IllegalArgumentException exception) {
             throw new IllegalArgumentException(
-                    "El cliente no tiene un teléfono registrado."
-            );
+                    "El telefono debe incluir el codigo de pais "
+                            + "y contener entre 8 y 15 digitos.",
+                    exception);
         }
-
-        String numero = telefono.replaceAll("\\D", "");
-
-        if (numero.length() < 8 || numero.length() > 15) {
-            throw new IllegalArgumentException(
-                    "El teléfono debe incluir el código de país "
-                            + "y contener entre 8 y 15 dígitos."
-            );
-        }
-
-        return numero;
-    }
-}
+    }}
