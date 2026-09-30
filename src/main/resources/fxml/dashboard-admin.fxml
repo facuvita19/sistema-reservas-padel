@@ -43,6 +43,11 @@
                                 prefHeight="39"
                                 onAction="#abrirSolicitudesWeb"
                                 styleClass="nav-button" />
+                                                <Button text="Torneos"
+                                                        maxWidth="Infinity"
+                                                        prefHeight="39"
+                                                        onAction="#abrirTorneos"
+                                                        styleClass="nav-button" />
                                                 <Button text="Torneos e inscripciones"
                                 maxWidth="Infinity"
                                 prefHeight="39"

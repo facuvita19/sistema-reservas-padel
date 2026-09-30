@@ -818,3 +818,83 @@ Desarrollar la administración de torneos y categorías desde JavaFX:
 ### Estado de continuidad
 
 El módulo de inscripciones quedó funcional y validado. La prioridad siguiente es la administración de torneos y categorías. Las mejoras visuales quedan registradas para una etapa posterior de pulido general.
+---
+
+## 17. Administración integral de torneos completada
+
+### Funcionalidades incorporadas
+
+- Creación de torneos en estado `BORRADOR`.
+- Edición de nombre, descripción, fechas, período de inscripción y reglamento.
+- Conservación del usuario creador original.
+- Creación, edición y desactivación de categorías.
+- Gestión de nombre, rama, cupo de parejas y precio informativo.
+- Visualización de parejas confirmadas y cupos disponibles.
+- Protección contra cupos inferiores a las parejas confirmadas.
+- Bloqueo de desactivación con inscripciones activas.
+- Prevención del traslado de categorías entre torneos.
+- Transacciones con `commit` y `rollback`.
+
+### Ciclo de vida implementado
+
+```text
+BORRADOR -> PUBLICADO
+PUBLICADO -> INSCRIPCION_ABIERTA
+INSCRIPCION_ABIERTA -> INSCRIPCION_CERRADA
+INSCRIPCION_CERRADA -> EN_CURSO
+EN_CURSO -> FINALIZADO
+Estados no finales -> CANCELADO
+```
+
+- Se bloquean las transiciones no permitidas.
+- Para abrir inscripciones se exige al menos una categoría activa.
+- Los estados `FINALIZADO` y `CANCELADO` son finales.
+
+### Administración JavaFX
+
+- Nueva opción `Torneos` en el dashboard.
+- Pantalla con listado, búsqueda y filtro por estado.
+- Formularios para crear y editar torneos.
+- Formularios para crear y editar categorías.
+- Acciones del ciclo de vida habilitadas según el estado actual.
+- Acceso directo a `Torneos e inscripciones`.
+- Integración visual con el tema administrativo.
+
+### Web pública
+
+- Nueva sección `Torneos disponibles`.
+- Carga dinámica desde `GET /api/publica/torneos`.
+- Visualización de fechas, categorías, ramas, cupos y precios.
+- Indicador de disponibilidad según estado y período de inscripción.
+- Formulario público para inscribir una pareja.
+- Precarga del responsable cuando existe una sesión iniciada.
+- Inscripción manual sin cuenta.
+- Comentarios opcionales.
+- Envío a `/api/publica/torneos/inscripciones`.
+- Confirmación con número de solicitud.
+- Diseño adaptable a dispositivos móviles.
+
+### Validaciones realizadas
+
+- Creación y edición de torneos desde JavaFX.
+- Creación y edición de categorías.
+- Publicación y apertura de inscripciones.
+- Inscripción pública sin cuenta.
+- Inscripción pública con cuenta iniciada.
+- Vinculación automática del responsable autenticado.
+- Recepción de solicitudes en la bandeja administrativa.
+- Confirmación administrativa de inscripciones.
+- Actualización dinámica de cupos en la web.
+- Compilación Maven y pruebas automatizadas correctas.
+
+### Mejoras pendientes
+
+- Modernizar los diálogos estándar de JavaFX.
+- Agregar confirmaciones visuales personalizadas para cambios de estado y desactivaciones.
+- Mejorar la presentación de fechas y horarios en la pantalla administrativa.
+- Corregir los iconos dañados del selector de tema de la web pública.
+- Incorporar una vista pública del reglamento completo.
+
+### Continuidad recomendada
+
+El flujo de torneos quedó integrado entre JavaFX, API pública, web y MySQL. El siguiente bloque puede orientarse a cuadros, partidos, resultados y programación de encuentros, o bien a un pulido visual general antes de continuar con nuevas funciones.

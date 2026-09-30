@@ -1378,3 +1378,24 @@ body.customer-authenticated #form .check:has(#rememberData) {
 .dev-recovery { margin: 4px 0 14px; padding: 14px; border: 1px dashed var(--line); border-radius: 12px; background: var(--soft); }
 .dev-recovery small, .dev-recovery span { display: block; color: var(--muted); }
 .dev-recovery a { display: inline-block; margin: 7px 0; font-weight: 850; overflow-wrap: anywhere; }
+/* torneos-web-publica-v1 */
+.tournaments-section{padding:56px 0;background:var(--soft)}
+.tournaments-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:18px;margin-top:18px}
+.tournament-card{display:flex;flex-direction:column;gap:14px}
+.tournament-card-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.tournament-card-head h3{margin:8px 0 0}
+.tournament-card-head>strong{white-space:nowrap;color:var(--muted);font-size:.86rem}
+.tournament-facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tournament-facts span{display:flex;flex-direction:column;gap:4px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--soft)}
+.tournament-categories{display:flex;flex-direction:column;gap:9px}
+.tournament-category{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px;border:1px solid var(--line);border-radius:12px}
+.tournament-category>div:first-child{display:flex;flex-direction:column;gap:4px}
+.tournament-category small{color:var(--muted)}
+.tournament-category-actions{display:flex;align-items:center;gap:10px}
+.tournament-category-actions span{font-weight:850;white-space:nowrap}
+.tournament-register:disabled{opacity:.55;cursor:not-allowed}
+.tournament-modal-card{max-height:92vh;overflow:auto}
+.tournament-player-block{padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)}
+.tournament-player-block h3{margin:0 0 10px}
+#tournamentComments{width:100%;resize:vertical}
+@media(max-width:720px){.tournaments-grid{grid-template-columns:1fr}.tournament-facts{grid-template-columns:1fr}.tournament-category{align-items:stretch;flex-direction:column}.tournament-category-actions{justify-content:space-between}.tournament-category-actions .button{width:auto}.tournaments-section{padding:38px 0}}

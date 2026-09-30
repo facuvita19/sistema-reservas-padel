@@ -289,6 +289,16 @@ public class DashboardAdminController {
 	}
 	
 	@FXML
+	
+	private void abrirTorneos() {
+	
+	        Navegacion.mostrarTorneos();
+	
+	}
+
+	
+	@FXML
+	
 	private void abrirTorneosInscripciones() {
 		Navegacion.mostrarTorneosInscripciones();
 	}

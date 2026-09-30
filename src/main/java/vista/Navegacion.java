@@ -21,7 +21,7 @@ public final class Navegacion {
 	private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/reservas.css",
 			"/css/bloqueos.css", "/css/pagos.css", "/css/dashboard.css", "/css/estadisticas.css",
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
-			"/css/solicitudes-web.css", "/css/torneos-inscripciones.css" };
+			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css" };
 
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
@@ -155,6 +155,17 @@ public final class Navegacion {
 		mostrarVista("/fxml/solicitudes-web.fxml", 1400, 840, true);
 		escenario.setTitle("Padel Reservas - Solicitudes web");
 	}
+
+	public static void mostrarTorneos() {
+
+	        verificarSesion();
+
+	        mostrarVista("/fxml/torneos.fxml", 1440, 880, true);
+
+	        escenario.setTitle("Padel Reservas - Torneos");
+
+	}
+
 
 	public static void mostrarTorneosInscripciones() {
 		verificarSesion();

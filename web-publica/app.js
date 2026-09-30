@@ -1458,3 +1458,178 @@ decorateBookingStepsV3();
     });
     openResetFromUrl();
 })();
+// torneos-web-publica-v1
+(function () {
+    const list = document.getElementById('tournamentsList');
+    const status = document.getElementById('tournamentsStatus');
+    const refresh = document.getElementById('refreshTournaments');
+    const modal = document.getElementById('tournamentModal');
+    const closeButton = document.getElementById('closeTournamentModal');
+    const form = document.getElementById('tournamentForm');
+    if (!list || !status || !refresh || !modal || !closeButton || !form) return;
+
+    const field = id => document.getElementById(id);
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[char]);
+    const dateText = value => value
+        ? new Intl.DateTimeFormat('es-AR', { dateStyle: 'medium' }).format(new Date(value + (value.length === 10 ? 'T12:00:00' : '')))
+        : '-';
+    const moneyText = value => new Intl.NumberFormat('es-AR', {
+        style: 'currency', currency: 'ARS', maximumFractionDigits: 0
+    }).format(Number(value || 0));
+
+    function showTournamentError(text) {
+        field('tournamentError').textContent = text || '';
+        field('tournamentError').classList.toggle('hidden', !text);
+    }
+
+    function showTournamentSuccess(text) {
+        field('tournamentSuccess').textContent = text || '';
+        field('tournamentSuccess').classList.toggle('hidden', !text);
+    }
+
+    async function getProfile() {
+        const response = await fetch(API + '/cliente/perfil', {
+            method: 'GET', credentials: 'include', headers: { 'Content-Type': 'application/json' }
+        });
+        if (response.status === 401) return null;
+        if (!response.ok) return null;
+        return response.json();
+    }
+
+    async function openTournament(tournamentId, categoryId, tournamentName, categoryName) {
+        form.reset();
+        showTournamentError('');
+        showTournamentSuccess('');
+        field('tournamentCategoryId').value = categoryId;
+        field('tournamentModalTitle').textContent = 'Inscribir pareja';
+        field('tournamentSelection').textContent = tournamentName + ' · ' + categoryName;
+        field('tournamentProfileHint').textContent = 'Podés completar los datos manualmente.';
+        try {
+            const profile = await getProfile();
+            if (profile) {
+                field('tournamentResponsibleName').value = profile.nombre || '';
+                field('tournamentResponsibleLastname').value = profile.apellido || '';
+                field('tournamentResponsiblePhone').value = profile.telefono || '';
+                field('tournamentProfileHint').textContent = 'Usamos los datos de tu perfil. Podés revisarlos antes de enviar.';
+            }
+        } catch (error) {
+            console.warn('No se pudo precargar el perfil para el torneo.', error);
+        }
+        modal.classList.remove('hidden');
+        document.body.classList.add('modal-open');
+        field('tournamentPartnerName').focus();
+    }
+
+    function closeTournament() {
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
+    }
+
+    function categoryHtml(category, tournament) {
+        const enabled = Boolean(tournament.inscripcionDisponible && category.disponible && category.cuposDisponibles > 0);
+        return `<article class="tournament-category">
+            <div><strong>${escapeHtml(category.nombre)} · ${escapeHtml(category.rama)}</strong>
+            <small>${category.cuposDisponibles} de ${category.cupoParejas} cupos disponibles</small></div>
+            <div class="tournament-category-actions"><span>${moneyText(category.precioInscripcion)}</span>
+            <button class="button primary tournament-register" type="button"
+                data-tournament-id="${tournament.id}" data-category-id="${category.id}"
+                data-tournament-name="${escapeHtml(tournament.nombre)}"
+                data-category-name="${escapeHtml(category.nombre)} · ${escapeHtml(category.rama)}"
+                ${enabled ? '' : 'disabled'}>${enabled ? 'Inscribir pareja' : 'No disponible'}</button></div>
+        </article>`;
+    }
+
+    async function loadTournamentDetail(summary) {
+        const detail = await api('/torneos/' + summary.id);
+        return `<article class="card tournament-card">
+            <div class="tournament-card-head"><div><span class="badge">${escapeHtml(detail.estado)}</span>
+            <h3>${escapeHtml(detail.nombre)}</h3></div><strong>${detail.categorias.length} categoría(s)</strong></div>
+            <p class="muted">${escapeHtml(detail.descripcion || '')}</p>
+            <div class="tournament-facts"><span><b>Fechas</b>${dateText(detail.fechaInicio)} al ${dateText(detail.fechaFin)}</span>
+            <span><b>Inscripción</b>${dateText(detail.inscripcionDesde)} al ${dateText(detail.inscripcionHasta)}</span></div>
+            <div class="tournament-categories">${detail.categorias.map(category => categoryHtml(category, detail)).join('')}</div>
+        </article>`;
+    }
+
+    async function loadTournaments() {
+        status.textContent = 'Cargando torneos...';
+        list.innerHTML = '';
+        refresh.disabled = true;
+        try {
+            const summaries = await api('/torneos');
+            if (!summaries.length) {
+                status.textContent = 'No hay torneos publicados por el momento.';
+                return;
+            }
+            const cards = await Promise.all(summaries.map(loadTournamentDetail));
+            list.innerHTML = cards.join('');
+            status.textContent = summaries.length + ' torneo(s) disponible(s).';
+        } catch (error) {
+            status.textContent = error.message || 'No se pudieron cargar los torneos.';
+        } finally {
+            refresh.disabled = false;
+        }
+    }
+
+    list.addEventListener('click', event => {
+        const button = event.target.closest('.tournament-register');
+        if (!button || button.disabled) return;
+        openTournament(button.dataset.tournamentId, button.dataset.categoryId,
+            button.dataset.tournamentName, button.dataset.categoryName);
+    });
+
+    form.addEventListener('submit', async event => {
+        event.preventDefault();
+        showTournamentError('');
+        showTournamentSuccess('');
+        const submit = field('submitTournament');
+        const payload = {
+            torneoCategoriaId: Number(field('tournamentCategoryId').value),
+            responsable: {
+                nombre: field('tournamentResponsibleName').value.trim(),
+                apellido: field('tournamentResponsibleLastname').value.trim(),
+                telefono: field('tournamentResponsiblePhone').value.trim()
+            },
+            pareja: {
+                nombre: field('tournamentPartnerName').value.trim(),
+                apellido: field('tournamentPartnerLastname').value.trim(),
+                telefono: field('tournamentPartnerPhone').value.trim()
+            },
+            comentarios: field('tournamentComments').value.trim() || null
+        };
+        if (!payload.responsable.nombre || !payload.responsable.apellido || !payload.responsable.telefono
+                || !payload.pareja.nombre || !payload.pareja.apellido || !payload.pareja.telefono) {
+            showTournamentError('Completá los datos obligatorios de ambos integrantes.');
+            return;
+        }
+        submit.disabled = true;
+        submit.textContent = 'Enviando...';
+        try {
+            const created = await api('/torneos/inscripciones', {
+                method: 'POST', body: JSON.stringify(payload)
+            });
+            showTournamentSuccess((created.mensaje || 'Inscripción enviada correctamente.')
+                + ' Número de solicitud: ' + created.inscripcionId + '.');
+            submit.classList.add('hidden');
+            await loadTournaments();
+        } catch (error) {
+            showTournamentError(error.message || 'No se pudo enviar la inscripción.');
+        } finally {
+            submit.disabled = false;
+            submit.textContent = 'Enviar inscripción';
+        }
+    });
+
+    refresh.addEventListener('click', loadTournaments);
+    closeButton.addEventListener('click', closeTournament);
+    modal.addEventListener('click', event => { if (event.target === modal) closeTournament(); });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && !modal.classList.contains('hidden')) closeTournament();
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') loadTournaments();
+    });
+    loadTournaments();
+})();
