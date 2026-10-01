@@ -86,6 +86,99 @@ public class ResultadoPartidoTorneoService {
         return partidoDAO.buscar(partidoId);
     }
 
+    public TorneoPartido corregirResultado(
+            long partidoId,
+            List<TorneoPartidoSet> sets,
+            long usuarioId,
+            String observaciones) {
+        if (partidoId <= 0 || usuarioId <= 0) {
+            throw new IllegalArgumentException(
+                    "El partido y el usuario son obligatorios.");
+        }
+        int ladoGanador = determinarLadoGanador(sets);
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            conexion.setAutoCommit(false);
+            try {
+                TorneoPartido partido = partidoDAO.buscarParaActualizar(
+                        conexion, partidoId);
+                validarCorreccion(partido);
+                Long ganadoraAnterior = partido.getGanadoraInscripcionId();
+                Long ganadoraNueva = ladoGanador == 1
+                        ? partido.getPareja1InscripcionId()
+                        : partido.getPareja2InscripcionId();
+                corregirAvance(conexion, partido,
+                        ganadoraAnterior, ganadoraNueva);
+                setDAO.reemplazarPorPartido(conexion, partidoId, sets);
+                partido.setSets(sets);
+                partido.setGanadoraInscripcionId(ganadoraNueva);
+                partido.setUsuarioResultadoId(usuarioId);
+                partido.setFechaFinalizacion(LocalDateTime.now());
+                partido.setObservaciones(limpiarObservaciones(observaciones));
+                partidoDAO.guardar(conexion, partido);
+                conexion.commit();
+            } catch (RuntimeException | SQLException exception) {
+                rollbackSeguro(conexion, exception);
+                throw exception;
+            } finally {
+                restaurarAutoCommit(conexion);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo corregir el resultado.", exception);
+        }
+        return partidoDAO.buscar(partidoId);
+    }
+
+    private void validarCorreccion(TorneoPartido partido) {
+        if (partido == null) {
+            throw new IllegalArgumentException("El partido no existe.");
+        }
+        if (partido.isBye() || !partido.tieneDosParejas()
+                || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO
+                || partido.getGanadoraInscripcionId() == null) {
+            throw new IllegalArgumentException(
+                    "Solo puede corregirse un partido finalizado manualmente.");
+        }
+    }
+
+    private void corregirAvance(Connection conexion,
+            TorneoPartido partido, Long anterior, Long nueva) {
+        if (partido.getPartidoSiguienteId() == null) return;
+        TorneoPartido siguiente = partidoDAO.buscarParaActualizar(
+                conexion, partido.getPartidoSiguienteId());
+        if (siguiente == null) {
+            throw new IllegalStateException(
+                    "No se encontro el partido siguiente.");
+        }
+        if (siguiente.getEstado() != EstadoPartidoTorneo.PENDIENTE
+                || siguiente.estaProgramado()
+                || siguiente.getGanadoraInscripcionId() != null) {
+            throw new IllegalArgumentException(
+                    "No puede corregirse porque el partido siguiente ya fue programado o disputado.");
+        }
+        if (partido.getPosicionSiguiente()
+                == PosicionPartidoSiguiente.PAREJA_1) {
+            if (siguiente.getPareja1InscripcionId() != null
+                    && !siguiente.getPareja1InscripcionId().equals(anterior)) {
+                throw new IllegalArgumentException(
+                        "La posicion siguiente fue modificada por otro proceso.");
+            }
+            siguiente.setPareja1InscripcionId(nueva);
+        } else if (partido.getPosicionSiguiente()
+                == PosicionPartidoSiguiente.PAREJA_2) {
+            if (siguiente.getPareja2InscripcionId() != null
+                    && !siguiente.getPareja2InscripcionId().equals(anterior)) {
+                throw new IllegalArgumentException(
+                        "La posicion siguiente fue modificada por otro proceso.");
+            }
+            siguiente.setPareja2InscripcionId(nueva);
+        } else {
+            throw new IllegalStateException(
+                    "El partido no tiene una posicion de avance valida.");
+        }
+        partidoDAO.guardar(conexion, siguiente);
+    }
+
     public static int determinarLadoGanador(List<TorneoPartidoSet> sets) {
         validarSets(sets);
         int ganados1 = 0;

@@ -25,6 +25,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableRow;
+import javafx.scene.Node;
 import negocio.Cancha;
 import negocio.EstadoPartidoTorneo;
 import negocio.FaseTorneo;
@@ -94,6 +96,7 @@ public class TorneoCuadroController {
     @FXML private Button botonProgramar;
     @FXML private Button botonQuitar;
     @FXML private Button botonResultado;
+    @FXML private Button botonCorregirResultado;
 
     @FXML
     private void initialize() {
@@ -157,6 +160,17 @@ public class TorneoCuadroController {
         tablaPartidos.setItems(filtrados);
         tablaPartidos.getSelectionModel().selectedItemProperty()
                 .addListener((o, anterior, actual) -> mostrar(actual));
+        tablaPartidos.setOnMousePressed(evento -> {
+            Node nodo = evento.getPickResult().getIntersectedNode();
+            while (nodo != null
+                    && nodo != tablaPartidos
+                    && !(nodo instanceof TableRow<?>)) {
+                nodo = nodo.getParent();
+            }
+            if (!(nodo instanceof TableRow<?> fila) || fila.isEmpty()) {
+                tablaPartidos.getSelectionModel().clearSelection();
+            }
+        });
     }
 
     private void configurarFiltros() {
@@ -263,6 +277,25 @@ public class TorneoCuadroController {
     }
 
     @FXML
+    private void corregirResultado() {
+        TorneoPartido partido = seleccionado();
+        if (partido == null) return;
+        if (!Dialogos.confirmarPeligro("Corregir resultado",
+                "La correccion reemplazara el marcador y puede cambiar "
+                        + "la pareja ganadora.\n\nQueres continuar?")) {
+            return;
+        }
+        TorneoPartido actualizado =
+                new ResultadoPartidoTorneoDialog(partido, true).mostrar();
+        if (actualizado != null) {
+            cargar();
+            seleccionarPorId(actualizado.getId());
+            Dialogos.exito("Resultado corregido",
+                    "El marcador y la ganadora fueron actualizados.");
+        }
+    }
+
+    @FXML
     private void quitarProgramacion() {
         TorneoPartido partido = seleccionado();
         if (partido == null) return;
@@ -292,6 +325,8 @@ public class TorneoCuadroController {
                 || !partido.tieneDosParejas()
                 || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
                     && partido.getEstado() != EstadoPartidoTorneo.EN_CURSO));
+        botonCorregirResultado.setDisable(!hay || partido.isBye()
+                || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO);
         if (!hay) {
             etiquetaTituloPanel.setText("DETALLE DEL PARTIDO");
             etiquetaPartido.setText("Selecciona un partido");

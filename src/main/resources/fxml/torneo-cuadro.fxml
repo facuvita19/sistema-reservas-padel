@@ -67,37 +67,44 @@
                         </TableView>
                     </VBox>
 
-                    <VBox spacing="13" styleClass="bracket-card">
-                        <Label fx:id="etiquetaTituloPanel" text="DETALLE DEL PARTIDO" styleClass="bracket-overline"/>
-                        <Label fx:id="etiquetaPartido" text="Seleccioná un partido" wrapText="true" styleClass="bracket-detail-title"/>
-                        <VBox fx:id="panelResultado" visible="false" managed="false" spacing="7" styleClass="bracket-result-card">
-                            <Label text="RESULTADO" styleClass="bracket-field-label"/>
-                            <Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-result-score"/>
-                            <Label text="GANADORA" styleClass="bracket-field-label"/>
-                            <Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-result-winner"/>
-                            <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
-                            <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>
-                        </VBox>
-                        <Separator/>
-                        <Label text="Cancha" styleClass="bracket-field-label"/>
-                        <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>
-                        <Label text="Fecha" styleClass="bracket-field-label"/>
-                        <DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="bracket-date"/>
-                        <HBox spacing="9">
-                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                <Label text="Inicio" styleClass="bracket-field-label"/>
-                                <ComboBox fx:id="comboInicio" maxWidth="Infinity" styleClass="bracket-combo"/>
+                    <VBox minWidth="320" prefWidth="350" styleClass="bracket-card">
+                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
+                                    vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS"
+                                    styleClass="bracket-detail-scroll">
+                            <VBox spacing="11">
+                                                        <Label fx:id="etiquetaTituloPanel" text="DETALLE DEL PARTIDO" styleClass="bracket-overline"/>
+                                                        <Label fx:id="etiquetaPartido" text="Seleccioná un partido" wrapText="true" styleClass="bracket-detail-title"/>
+                                                        <VBox fx:id="panelResultado" visible="false" managed="false" spacing="7" styleClass="bracket-result-card">
+                                                            <Label text="RESULTADO" styleClass="bracket-field-label"/>
+                                                            <Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-result-score"/>
+                                                            <Label text="GANADORA" styleClass="bracket-field-label"/>
+                                                            <Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-result-winner"/>
+                                                            <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
+                                                            <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>
+                                                        </VBox>
+                                                        <Separator/>
+                                                        <Label text="Cancha" styleClass="bracket-field-label"/>
+                                                        <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>
+                                                        <Label text="Fecha" styleClass="bracket-field-label"/>
+                                                        <DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="bracket-date"/>
+                                                        <HBox spacing="9">
+                                                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                                                <Label text="Inicio" styleClass="bracket-field-label"/>
+                                                                <ComboBox fx:id="comboInicio" maxWidth="Infinity" styleClass="bracket-combo"/>
+                                                            </VBox>
+                                                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                                                <Label text="Fin" styleClass="bracket-field-label"/>
+                                                                <ComboBox fx:id="comboFin" maxWidth="Infinity" styleClass="bracket-combo"/>
+                                                            </VBox>
+                                                        </HBox>
+                                                        <Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programar" maxWidth="Infinity" styleClass="bracket-primary-button"/>
+                                                        <Button fx:id="botonQuitar" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
+                                                        <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="bracket-primary-button"/>
+                                                        <Button fx:id="botonCorregirResultado" text="CORREGIR RESULTADO" onAction="#corregirResultado" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
+                                                        <Region VBox.vgrow="ALWAYS"/>
+                                                        <Label fx:id="etiquetaMensaje" wrapText="true" styleClass="bracket-message"/>
                             </VBox>
-                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                <Label text="Fin" styleClass="bracket-field-label"/>
-                                <ComboBox fx:id="comboFin" maxWidth="Infinity" styleClass="bracket-combo"/>
-                            </VBox>
-                        </HBox>
-                        <Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programar" maxWidth="Infinity" styleClass="bracket-primary-button"/>
-                        <Button fx:id="botonQuitar" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
-                        <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="bracket-primary-button"/>
-                        <Region VBox.vgrow="ALWAYS"/>
-                        <Label fx:id="etiquetaMensaje" wrapText="true" styleClass="bracket-message"/>
+                        </ScrollPane>
                     </VBox>
                 </items>
             </SplitPane>

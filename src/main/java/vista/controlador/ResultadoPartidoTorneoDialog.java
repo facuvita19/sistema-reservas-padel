@@ -25,6 +25,7 @@ public class ResultadoPartidoTorneoDialog {
 
     private final TorneoPartido partido;
     private final ResultadoPartidoTorneoService service;
+    private final boolean correccion;
     private final Dialog<TorneoPartido> dialogo = new Dialog<>();
     private final ComboBox<Integer> set1Pareja1 = puntosSet();
     private final ComboBox<Integer> set1Pareja2 = puntosSet();
@@ -40,18 +41,31 @@ public class ResultadoPartidoTorneoDialog {
     private String error;
 
     public ResultadoPartidoTorneoDialog(TorneoPartido partido) {
-        this(partido, new ResultadoPartidoTorneoService());
+        this(partido, new ResultadoPartidoTorneoService(), false);
+    }
+
+    public ResultadoPartidoTorneoDialog(
+            TorneoPartido partido, boolean correccion) {
+        this(partido, new ResultadoPartidoTorneoService(), correccion);
     }
 
     ResultadoPartidoTorneoDialog(
             TorneoPartido partido,
             ResultadoPartidoTorneoService service) {
+        this(partido, service, false);
+    }
+
+    ResultadoPartidoTorneoDialog(
+            TorneoPartido partido,
+            ResultadoPartidoTorneoService service,
+            boolean correccion) {
         if (partido == null || service == null) {
             throw new IllegalArgumentException(
                     "El partido y el servicio son obligatorios.");
         }
         this.partido = partido;
         this.service = service;
+        this.correccion = correccion;
         construir();
     }
 
@@ -60,11 +74,13 @@ public class ResultadoPartidoTorneoDialog {
     }
 
     private void construir() {
-        dialogo.setTitle("Registrar resultado");
+        dialogo.setTitle(correccion
+                ? "Corregir resultado" : "Registrar resultado");
         dialogo.setHeaderText(partido.getFase() + " #"
                 + partido.getOrdenFase());
         ButtonType guardar = new ButtonType(
-                "REGISTRAR RESULTADO", ButtonBar.ButtonData.OK_DONE);
+                correccion ? "GUARDAR CORRECCION" : "REGISTRAR RESULTADO",
+                ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelar = new ButtonType(
                 "VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogo.getDialogPane().getButtonTypes().setAll(guardar, cancelar);
@@ -83,6 +99,7 @@ public class ResultadoPartidoTorneoDialog {
         incluirTercero.selectedProperty().addListener(
                 (o, anterior, actual) -> actualizarTercerSet(actual));
         actualizarTercerSet(false);
+        if (correccion) cargarResultadoActual();
 
         var botonGuardar = dialogo.getDialogPane().lookupButton(guardar);
         botonGuardar.addEventFilter(
@@ -101,16 +118,42 @@ public class ResultadoPartidoTorneoDialog {
         dialogo.setResultConverter(tipo -> {
             if (tipo != guardar || error != null) return null;
             try {
-                return service.registrarResultado(
-                        partido.getId(), crearSets(),
-                        Navegacion.getUsuarioActual().getId(),
-                        observaciones.getText());
+                return correccion
+                        ? service.corregirResultado(
+                                partido.getId(), crearSets(),
+                                Navegacion.getUsuarioActual().getId(),
+                                observaciones.getText())
+                        : service.registrarResultado(
+                                partido.getId(), crearSets(),
+                                Navegacion.getUsuarioActual().getId(),
+                                observaciones.getText());
             } catch (RuntimeException exception) {
                 Dialogos.error("No se pudo registrar el resultado",
                         exception.getMessage());
                 return null;
             }
         });
+    }
+
+    private void cargarResultadoActual() {
+        List<TorneoPartidoSet> actuales = partido.getSets();
+        if (actuales.size() < 2) return;
+        cargarSet(actuales.get(0), set1Pareja1, set1Pareja2);
+        cargarSet(actuales.get(1), set2Pareja1, set2Pareja2);
+        if (actuales.size() >= 3) {
+            incluirTercero.setSelected(true);
+            actualizarTercerSet(true);
+            cargarSet(actuales.get(2), set3Pareja1, set3Pareja2);
+            superTieBreak.setSelected(actuales.get(2).getTipo()
+                    == TipoSetTorneo.SUPER_TIE_BREAK);
+        }
+        observaciones.setText(partido.getObservaciones());
+    }
+
+    private void cargarSet(TorneoPartidoSet set,
+            ComboBox<Integer> pareja1, ComboBox<Integer> pareja2) {
+        pareja1.setValue(set.getPuntosPareja1());
+        pareja2.setValue(set.getPuntosPareja2());
     }
 
     private VBox contenido() {
