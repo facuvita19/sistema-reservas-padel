@@ -25,6 +25,16 @@
         <VBox spacing="14" styleClass="bracket-content">
             <padding><Insets top="18" right="22" bottom="20" left="22"/></padding>
 
+            <HBox fx:id="tarjetaCampeona" spacing="14" alignment="CENTER_LEFT" styleClass="bracket-champion-card">
+                <VBox spacing="3">
+                    <Label text="CAMPEONA DE LA CATEGORÍA" styleClass="bracket-overline"/>
+                    <Label fx:id="etiquetaCampeona" text="Campeona por definir" wrapText="true" styleClass="bracket-champion-name"/>
+                    <Label fx:id="etiquetaResultadoFinal" text="La final todavía no tiene resultado." styleClass="bracket-champion-result"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="etiquetaTrofeo" text="★" styleClass="bracket-trophy"/>
+            </HBox>
+
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="bracket-filter-card">
                 <Label text="FASE" styleClass="bracket-overline"/>
                 <ComboBox fx:id="filtroFase" promptText="Todas las fases" prefWidth="190" styleClass="bracket-combo"/>
@@ -45,7 +55,7 @@
                                 <TableColumn fx:id="colOrden" text="#" prefWidth="42"/>
                                 <TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="205"/>
                                 <TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="205"/>
-                                <TableColumn fx:id="colProgramacion" text="PROGRAMACIÓN" prefWidth="190"/>
+                                <TableColumn fx:id="colResultado" text="RESULTADO" prefWidth="155"/>
                                 <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="105"/>
                             </columns>
                             <placeholder>
@@ -58,8 +68,16 @@
                     </VBox>
 
                     <VBox spacing="13" styleClass="bracket-card">
-                        <Label text="PROGRAMAR PARTIDO" styleClass="bracket-overline"/>
+                        <Label fx:id="etiquetaTituloPanel" text="DETALLE DEL PARTIDO" styleClass="bracket-overline"/>
                         <Label fx:id="etiquetaPartido" text="Seleccioná un partido" wrapText="true" styleClass="bracket-detail-title"/>
+                        <VBox fx:id="panelResultado" visible="false" managed="false" spacing="7" styleClass="bracket-result-card">
+                            <Label text="RESULTADO" styleClass="bracket-field-label"/>
+                            <Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-result-score"/>
+                            <Label text="GANADORA" styleClass="bracket-field-label"/>
+                            <Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-result-winner"/>
+                            <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
+                            <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>
+                        </VBox>
                         <Separator/>
                         <Label text="Cancha" styleClass="bracket-field-label"/>
                         <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>

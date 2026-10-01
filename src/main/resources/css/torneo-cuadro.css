@@ -34,3 +34,59 @@
 .bracket-empty-state { -fx-padding: 30; }
 .bracket-empty-title { -fx-text-fill: #c9dce4; -fx-font-size: 15px; -fx-font-weight: 900; }
 .bracket-empty-text { -fx-text-fill: #718c99; -fx-font-size: 12px; }
+
+
+/* bracket-results-v5c */
+.bracket-champion-card {
+    -fx-background-color: linear-gradient(to right, #3d3420, #2b2a25);
+    -fx-background-radius: 15;
+    -fx-border-color: #8f7844;
+    -fx-border-radius: 15;
+    -fx-padding: 16 19;
+}
+.bracket-champion-name {
+    -fx-text-fill: #fff0bd;
+    -fx-font-size: 19px;
+    -fx-font-weight: 900;
+}
+.bracket-champion-result {
+    -fx-text-fill: #c8b98d;
+    -fx-font-size: 12px;
+}
+.bracket-trophy {
+    -fx-text-fill: #e4bd5c;
+    -fx-font-size: 34px;
+    -fx-font-weight: 900;
+}
+.bracket-result-card {
+    -fx-background-color: #0c1821;
+    -fx-background-radius: 11;
+    -fx-border-color: #315060;
+    -fx-border-radius: 11;
+    -fx-padding: 13;
+}
+.bracket-result-score {
+    -fx-text-fill: #f4f8fa;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+.bracket-result-winner {
+    -fx-text-fill: #f0cf78;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+.bracket-result-meta {
+    -fx-text-fill: #829ca9;
+    -fx-font-size: 11px;
+}
+.bracket-result-cell {
+    -fx-text-fill: #bad8e5;
+    -fx-font-weight: 800;
+}
+.bracket-winner-cell {
+    -fx-text-fill: #ffe29a;
+    -fx-font-weight: 900;
+}
+.bracket-loser-cell {
+    -fx-opacity: .52;
+}

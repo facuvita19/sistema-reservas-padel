@@ -43,6 +43,8 @@ public class TorneoCuadroController {
             DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter FECHA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FECHA_HORA =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final TorneoPartidoDAO partidoDAO =
             new TorneoPartidoDAOMySQL();
@@ -66,6 +68,15 @@ public class TorneoCuadroController {
     @FXML private Label etiquetaResumen;
     @FXML private Label etiquetaPartido;
     @FXML private Label etiquetaMensaje;
+    @FXML private Label etiquetaCampeona;
+    @FXML private Label etiquetaResultadoFinal;
+    @FXML private Label etiquetaTrofeo;
+    @FXML private Label etiquetaTituloPanel;
+    @FXML private Label etiquetaMarcador;
+    @FXML private Label etiquetaGanadora;
+    @FXML private Label etiquetaFinalizacion;
+    @FXML private Label etiquetaObservaciones;
+    @FXML private javafx.scene.layout.VBox panelResultado;
     @FXML private ComboBox<FaseTorneo> filtroFase;
     @FXML private ComboBox<EstadoPartidoTorneo> filtroEstado;
     @FXML private TableView<TorneoPartido> tablaPartidos;
@@ -73,7 +84,7 @@ public class TorneoCuadroController {
     @FXML private TableColumn<TorneoPartido, Integer> colOrden;
     @FXML private TableColumn<TorneoPartido, String> colPareja1;
     @FXML private TableColumn<TorneoPartido, String> colPareja2;
-    @FXML private TableColumn<TorneoPartido, String> colProgramacion;
+    @FXML private TableColumn<TorneoPartido, String> colResultado;
     @FXML private TableColumn<TorneoPartido, EstadoPartidoTorneo> colEstado;
     @FXML private ComboBox<Cancha> comboCancha;
     @FXML private DatePicker selectorFecha;
@@ -109,18 +120,22 @@ public class TorneoCuadroController {
         colPareja2.setCellValueFactory(d ->
                 new SimpleStringProperty(nombrePareja(
                         d.getValue().getPareja2InscripcionId())));
-        colProgramacion.setCellValueFactory(d ->
-                new SimpleStringProperty(programacion(d.getValue())));
+        colResultado.setCellValueFactory(d ->
+                new SimpleStringProperty(resultado(d.getValue())));
         colEstado.setCellValueFactory(d ->
                 new SimpleObjectProperty<>(d.getValue().getEstado()));
         tablaPartidos.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
-        colProgramacion.setCellFactory(columna -> new TableCell<>() {
+        colPareja1.setCellFactory(columna -> crearCeldaPareja(true));
+        colPareja2.setCellFactory(columna -> crearCeldaPareja(false));
+        colResultado.setCellFactory(columna -> new TableCell<>() {
             @Override
             protected void updateItem(String texto, boolean vacia) {
                 super.updateItem(texto, vacia);
                 setText(vacia ? null : texto);
                 setWrapText(true);
+                getStyleClass().remove("bracket-result-cell");
+                if (!vacia) getStyleClass().add("bracket-result-cell");
             }
         });
         colEstado.setCellFactory(columna -> new TableCell<>() {
@@ -182,6 +197,7 @@ public class TorneoCuadroController {
             filtrar();
             botonGenerar.setDisable(!partidos.isEmpty());
             etiquetaResumen.setText(partidos.size() + " partido(s)");
+            actualizarCampeona();
             etiquetaMensaje.setText(partidos.isEmpty()
                     ? "El cuadro todavía no fue generado."
                     : "Cuadro actualizado correctamente.");
@@ -277,7 +293,10 @@ public class TorneoCuadroController {
                 || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
                     && partido.getEstado() != EstadoPartidoTorneo.EN_CURSO));
         if (!hay) {
+            etiquetaTituloPanel.setText("DETALLE DEL PARTIDO");
             etiquetaPartido.setText("Selecciona un partido");
+            panelResultado.setVisible(false);
+            panelResultado.setManaged(false);
             limpiarFormulario();
             return;
         }
@@ -293,6 +312,7 @@ public class TorneoCuadroController {
                 : comboCancha.getItems().stream()
                     .filter(c -> c.getId() == partido.getCanchaId())
                     .findFirst().orElse(null));
+        mostrarResultado(partido);
     }
 
     private String nombrePareja(Long inscripcionId) {
@@ -305,6 +325,87 @@ public class TorneoCuadroController {
                 .reduce((a, b) -> a + " / " + b)
                 .orElse("Inscripcion #" + inscripcionId);
         return nombres;
+    }
+
+    private TableCell<TorneoPartido, String> crearCeldaPareja(
+            boolean pareja1) {
+        return new TableCell<>() {
+            @Override
+            protected void updateItem(String texto, boolean vacia) {
+                super.updateItem(texto, vacia);
+                setText(vacia ? null : texto);
+                setWrapText(true);
+                getStyleClass().removeAll(
+                        "bracket-winner-cell", "bracket-loser-cell");
+                if (vacia || getTableRow() == null
+                        || getTableRow().getItem() == null) return;
+                TorneoPartido partido = getTableRow().getItem();
+                Long lado = pareja1 ? partido.getPareja1InscripcionId()
+                        : partido.getPareja2InscripcionId();
+                if (partido.getGanadoraInscripcionId() != null) {
+                    getStyleClass().add(
+                            partido.getGanadoraInscripcionId().equals(lado)
+                                    ? "bracket-winner-cell"
+                                    : "bracket-loser-cell");
+                    if (partido.getGanadoraInscripcionId().equals(lado)) {
+                        setText("★ " + texto);
+                    }
+                }
+            }
+        };
+    }
+
+    private String resultado(TorneoPartido partido) {
+        if (partido.isBye()) return "Clasifica por BYE";
+        if (partido.getSets().isEmpty()) return "Sin resultado";
+        return partido.getSets().stream()
+                .map(set -> set.getPuntosPareja1() + "-"
+                        + set.getPuntosPareja2())
+                .reduce((a, b) -> a + " / " + b)
+                .orElse("Sin resultado");
+    }
+
+    private void actualizarCampeona() {
+        TorneoPartido finalPartido = partidos.stream()
+                .filter(p -> p.getFase() == FaseTorneo.FINAL)
+                .findFirst().orElse(null);
+        boolean definida = finalPartido != null
+                && finalPartido.getGanadoraInscripcionId() != null
+                && finalPartido.getEstado()
+                    == EstadoPartidoTorneo.FINALIZADO;
+        etiquetaCampeona.setText(definida
+                ? nombrePareja(finalPartido.getGanadoraInscripcionId())
+                : "Campeona por definir");
+        etiquetaResultadoFinal.setText(definida
+                ? "Resultado de la final: " + resultado(finalPartido)
+                : "La final todavía no tiene un resultado registrado.");
+        etiquetaTrofeo.setVisible(definida);
+        etiquetaTrofeo.setManaged(definida);
+    }
+
+    private void mostrarResultado(TorneoPartido partido) {
+        boolean finalizado = partido.getEstado()
+                == EstadoPartidoTorneo.FINALIZADO;
+        panelResultado.setVisible(finalizado);
+        panelResultado.setManaged(finalizado);
+        etiquetaTituloPanel.setText(finalizado
+                ? "RESULTADO DEL PARTIDO"
+                : partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO
+                    ? "PROGRAMACIÓN Y RESULTADO"
+                    : "PROGRAMAR PARTIDO");
+        if (!finalizado) return;
+        etiquetaMarcador.setText(resultado(partido));
+        etiquetaGanadora.setText(nombrePareja(
+                partido.getGanadoraInscripcionId()));
+        etiquetaFinalizacion.setText(partido.getFechaFinalizacion() == null
+                ? "Finalización sin fecha registrada"
+                : "Finalizado: "
+                    + FECHA_HORA.format(partido.getFechaFinalizacion()));
+        etiquetaObservaciones.setText(
+                partido.getObservaciones() == null
+                    || partido.getObservaciones().isBlank()
+                        ? "Sin observaciones"
+                        : partido.getObservaciones());
     }
 
     private String programacion(TorneoPartido partido) {
