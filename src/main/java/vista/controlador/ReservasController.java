@@ -48,6 +48,7 @@ import servicio.ReservaService;
 import servicio.WhatsAppService;
 import util.FormateadorMoneda;
 import vista.FiltroReservas;
+import vista.Dialogos;
 import vista.Navegacion;
 import vista.SolicitudFiltroReservas;
 import vista.SolicitudReservaAgenda;
@@ -674,14 +675,16 @@ public class ReservasController {
     }
 
     private void ofrecerReprogramacionAdministrativa(String restriccion) {
-        Alert aviso = new Alert(Alert.AlertType.WARNING);
-        aviso.setTitle("Reprogramación fuera de plazo");
-        aviso.setHeaderText("La reserva no puede reprogramarse normalmente.");
-        configurarTextoLargo(aviso, restriccion + "\n\nSi el cambio corresponde a una situación atribuible al complejo, podés realizar una reprogramación administrativa.");
-        ButtonType continuar = new ButtonType("Reprogramación administrativa");
-        ButtonType volver = new ButtonType("Volver", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        aviso.getButtonTypes().setAll(continuar, volver);
-        aviso.showAndWait().ifPresent(r -> { if (r == continuar) prepararModoReprogramacion(true); });
+        String detalle = restriccion
+                + "\n\nSi el cambio corresponde a una situacion atribuible "
+                + "al complejo, podes realizar una reprogramacion administrativa.";
+        if (Dialogos.confirmarAccion(
+                "Reprogramacion fuera de plazo",
+                "La reserva no puede reprogramarse normalmente",
+                detalle,
+                "REPROGRAMACION ADMINISTRATIVA")) {
+            prepararModoReprogramacion(true);
+        }
     }
 
     private void guardarReprogramacion() {
@@ -744,65 +747,98 @@ public class ReservasController {
 
     private void mostrarOpcionesCancelacionDentroDePlazo() {
         boolean tienePagos = tienePagosAcreditados();
-        ButtonType reprogramar = new ButtonType("Reprogramar");
-        ButtonType cancelar = new ButtonType(tienePagos ? "Cancelar y reembolsar" : "Cancelar reserva");
-        ButtonType volver = new ButtonType("Volver", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION);
-        dialogo.setTitle("Cancelar reserva"); dialogo.setHeaderText("La reserva está dentro del plazo permitido.");
-        String pagos = tienePagos ? "\nPagos acreditados: " + totalAcreditadoSeleccionado()
-                + "\n\nLa seña puede trasladarse a otro horario o reembolsarse." : "\nLa reserva no tiene pagos acreditados.";
-        dialogo.setContentText(reservaSeleccionada.getNombreCliente() + "\n" + reservaSeleccionada.getNombreCancha()
-                + "\n" + reservaSeleccionada.getFecha().format(FORMATO_FECHA) + " "
-                + reservaSeleccionada.getHoraInicio().format(FORMATO_HORA) + pagos);
-        dialogo.getButtonTypes().setAll(reprogramar, cancelar, volver);
-        dialogo.showAndWait().ifPresent(r -> {
-            if (r == reprogramar) iniciarReprogramacion();
-            else if (r == cancelar) { if (tienePagos) confirmarCancelacionConReembolso(false); else confirmarCancelacionSinPagos(); }
-        });
+        String pagos = tienePagos
+                ? "\nPagos acreditados: " + totalAcreditadoSeleccionado()
+                        + "\n\nLa seÃ±a puede trasladarse a otro horario o reembolsarse."
+                : "\nLa reserva no tiene pagos acreditados.";
+        String detalle = reservaSeleccionada.getNombreCliente() + "\n"
+                + reservaSeleccionada.getNombreCancha() + "\n"
+                + reservaSeleccionada.getFecha().format(FORMATO_FECHA) + " "
+                + reservaSeleccionada.getHoraInicio().format(FORMATO_HORA)
+                + pagos;
+        Dialogos.Opcion opcion = Dialogos.elegir(
+                "Cancelar reserva",
+                "La reserva esta dentro del plazo permitido",
+                detalle,
+                "REPROGRAMAR",
+                tienePagos ? "CANCELAR Y REEMBOLSAR" : "CANCELAR RESERVA",
+                false,
+                true);
+        if (opcion == Dialogos.Opcion.PRINCIPAL) {
+            iniciarReprogramacion();
+        } else if (opcion == Dialogos.Opcion.ALTERNATIVA) {
+            if (tienePagos) confirmarCancelacionConReembolso(false);
+            else confirmarCancelacionSinPagos();
+        }
     }
 
     private void confirmarCancelacionSinPagos() {
-        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-        alerta.setTitle("Cancelar reserva"); alerta.setHeaderText("¿Confirmar la cancelación?");
-        alerta.setContentText("La reserva no tiene pagos acreditados. El horario volverá a quedar disponible.");
-        alerta.showAndWait().ifPresent(r -> { if (r == ButtonType.OK) ejecutarCancelacionNormal(); });
+        if (Dialogos.confirmarPeligro(
+                "Cancelar reserva",
+                "La reserva no tiene pagos acreditados.\n\n"
+                        + "El horario volvera a quedar disponible.")) {
+            ejecutarCancelacionNormal();
+        }
     }
 
     private void mostrarOpcionesCancelacionFueraDePlazo(String restriccion) {
-        ButtonType retener = new ButtonType(tienePagosAcreditados() ? "Cancelar y retener seña" : "Cancelar reserva");
-        ButtonType administrativa = new ButtonType("Excepción administrativa");
-        ButtonType volver = new ButtonType("Volver", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        Alert dialogo = new Alert(Alert.AlertType.WARNING);
-        dialogo.setTitle("Cancelación fuera de plazo"); dialogo.setHeaderText("La reserva está fuera del plazo permitido.");
-        String pago = tienePagosAcreditados() ? "\n\nLa seña acreditada de " + totalAcreditadoSeleccionado() + " quedará retenida." : "";
-        configurarTextoLargo(dialogo, restriccion + pago + "\n\nUna excepción administrativa solo debe utilizarse cuando la cancelación sea responsabilidad del complejo.");
-        dialogo.getButtonTypes().setAll(retener, administrativa, volver);
-        dialogo.showAndWait().ifPresent(r -> { if (r == retener) confirmarCancelacionConSeniaRetenida(true); else if (r == administrativa) mostrarOpcionesAdministrativas(); });
+        boolean tienePagos = tienePagosAcreditados();
+        String pago = tienePagos
+                ? "\n\nLa seÃ±a acreditada de " + totalAcreditadoSeleccionado()
+                        + " quedara retenida."
+                : "";
+        Dialogos.Opcion opcion = Dialogos.elegir(
+                "Cancelacion fuera de plazo",
+                "La reserva esta fuera del plazo permitido",
+                restriccion + pago
+                        + "\n\nUna excepcion administrativa solo debe utilizarse "
+                        + "cuando la cancelacion sea responsabilidad del complejo.",
+                tienePagos ? "CANCELAR Y RETENER SEÃ‘A" : "CANCELAR RESERVA",
+                "EXCEPCION ADMINISTRATIVA",
+                true,
+                false);
+        if (opcion == Dialogos.Opcion.PRINCIPAL) {
+            confirmarCancelacionConSeniaRetenida(true);
+        } else if (opcion == Dialogos.Opcion.ALTERNATIVA) {
+            mostrarOpcionesAdministrativas();
+        }
     }
 
     private void mostrarOpcionesAdministrativas() {
         boolean tienePagos = tienePagosAcreditados();
-        ButtonType reprogramar = new ButtonType("Reprogramar");
-        ButtonType cancelar = new ButtonType(tienePagos ? "Cancelar y reembolsar" : "Cancelar reserva");
-        ButtonType volver = new ButtonType("Volver", javafx.scene.control.ButtonBar.ButtonData.CANCEL_CLOSE);
-        Alert dialogo = new Alert(Alert.AlertType.CONFIRMATION);
-        dialogo.setTitle("Excepción administrativa"); dialogo.setHeaderText("Seleccioná la solución para el cliente.");
-        dialogo.setContentText("Esta operación debe utilizarse únicamente por lluvia, mantenimiento, corte de energía u otra situación atribuible al complejo.");
-        dialogo.getButtonTypes().setAll(reprogramar, cancelar, volver);
-        dialogo.showAndWait().ifPresent(r -> { if (r == reprogramar) prepararModoReprogramacion(true); else if (r == cancelar) solicitarMotivoAdministrativo(tienePagos); });
+        Dialogos.Opcion opcion = Dialogos.elegir(
+                "Excepcion administrativa",
+                "Selecciona la solucion para el cliente",
+                "Esta operacion debe utilizarse unicamente por lluvia, "
+                        + "mantenimiento, corte de energia u otra situacion "
+                        + "atribuible al complejo.",
+                "REPROGRAMAR",
+                tienePagos ? "CANCELAR Y REEMBOLSAR" : "CANCELAR RESERVA",
+                false,
+                true);
+        if (opcion == Dialogos.Opcion.PRINCIPAL) {
+            prepararModoReprogramacion(true);
+        } else if (opcion == Dialogos.Opcion.ALTERNATIVA) {
+            solicitarMotivoAdministrativo(tienePagos);
+        }
     }
 
     private void confirmarCancelacionConSeniaRetenida(boolean fueraDePlazo) {
-        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-        alerta.setTitle("Confirmar cancelación");
-        alerta.setHeaderText(tienePagosAcreditados() ? "¿Cancelar y retener la seña?" : "¿Cancelar la reserva?");
-        String detalle = tienePagosAcreditados() ? "El importe acreditado de " + totalAcreditadoSeleccionado() + " no será reembolsado." : "La reserva quedará cancelada.";
-        if (fueraDePlazo) detalle += "\n\nLa cancelación se registrará fuera del plazo permitido.";
-        alerta.setContentText(detalle);
-        alerta.showAndWait().ifPresent(r -> { if (r == ButtonType.OK) ejecutarCancelacionNormal(); });
-    }
-
-    private void ejecutarCancelacionNormal() {
+        boolean tienePagos = tienePagosAcreditados();
+        String detalle = tienePagos
+                ? "El importe acreditado de " + totalAcreditadoSeleccionado()
+                        + " no sera reembolsado."
+                : "La reserva quedara cancelada.";
+        if (fueraDePlazo) {
+            detalle += "\n\nLa cancelacion se registrara fuera del plazo permitido.";
+        }
+        String titulo = tienePagos
+                ? "Cancelar y retener la seÃ±a"
+                : "Cancelar reserva";
+        if (Dialogos.confirmarPeligro(titulo, detalle)) {
+            ejecutarCancelacionNormal();
+        }
+    }    private void ejecutarCancelacionNormal() {
         try {
             LocalDate fecha = reservaSeleccionada.getFecha(); boolean teniaSenia = tienePagosAcreditados();
             reservaService.cancelarNormal(reservaSeleccionada.getId());
@@ -811,13 +847,14 @@ public class ReservasController {
     }
 
     private void confirmarCancelacionConReembolso(boolean administrativa) {
-        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-        alerta.setTitle("Cancelar y reembolsar");
-        alerta.setHeaderText("¿Cancelar la reserva y reembolsar " + totalAcreditadoSeleccionado() + "?");
-        alerta.setContentText("Todos los pagos acreditados de esta reserva pasarán a estado Reembolsado.");
-        alerta.showAndWait().ifPresent(r -> {
-            if (r == ButtonType.OK) { if (administrativa) solicitarMotivoAdministrativo(true); else ejecutarCancelacionYReembolsoNormal(); }
-        });
+        if (Dialogos.confirmarPeligro(
+                "Cancelar y reembolsar",
+                "Se cancelara la reserva y se reembolsara "
+                        + totalAcreditadoSeleccionado() + ".\n\n"
+                        + "Todos los pagos acreditados pasaran a estado Reembolsado.")) {
+            if (administrativa) solicitarMotivoAdministrativo(true);
+            else ejecutarCancelacionYReembolsoNormal();
+        }
     }
 
     private void ejecutarCancelacionYReembolsoNormal() {

@@ -54,11 +54,72 @@ public final class Dialogos {
         Alert alerta = new Alert(Alert.AlertType.CONFIRMATION, mensaje, aceptar, cancelar);
         alerta.setTitle(titulo);
         alerta.setHeaderText(titulo);
+        alerta.setGraphic(null);
         preparar(alerta, peligro ? "dialog-danger" : "dialog-confirm");
         Optional<ButtonType> resultado = alerta.showAndWait();
         return resultado.orElse(cancelar) == aceptar;
     }
 
+    public enum Opcion {
+        PRINCIPAL,
+        ALTERNATIVA,
+        VOLVER
+    }
+
+    public static Opcion elegir(
+            String titulo,
+            String encabezado,
+            String mensaje,
+            String textoPrincipal,
+            String textoAlternativa,
+            boolean principalPeligrosa,
+            boolean alternativaPeligrosa) {
+        ButtonType principal = new ButtonType(
+                textoPrincipal, ButtonBar.ButtonData.OK_DONE);
+        ButtonType alternativa = new ButtonType(
+                textoAlternativa, ButtonBar.ButtonData.OTHER);
+        ButtonType volver = new ButtonType(
+                "VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alerta = new Alert(Alert.AlertType.NONE,
+                mensaje, principal, alternativa, volver);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(encabezado);
+        alerta.setGraphic(null);
+        preparar(alerta, "dialog-choice");
+        javafx.scene.Node botonPrincipal = alerta.getDialogPane()
+                .lookupButton(principal);
+        javafx.scene.Node botonAlternativa = alerta.getDialogPane()
+                .lookupButton(alternativa);
+        botonPrincipal.getStyleClass().add(principalPeligrosa
+                ? "dialog-action-danger" : "dialog-action-primary");
+        botonAlternativa.getStyleClass().add(alternativaPeligrosa
+                ? "dialog-action-danger" : "dialog-action-alternative");
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        ButtonType elegido = resultado.orElse(volver);
+        if (elegido == principal) return Opcion.PRINCIPAL;
+        if (elegido == alternativa) return Opcion.ALTERNATIVA;
+        return Opcion.VOLVER;
+    }
+    public static boolean confirmarAccion(
+            String titulo,
+            String encabezado,
+            String mensaje,
+            String textoAccion) {
+        ButtonType aceptar = new ButtonType(
+                textoAccion, ButtonBar.ButtonData.OK_DONE);
+        ButtonType volver = new ButtonType(
+                "VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alerta = new Alert(
+                Alert.AlertType.NONE, mensaje, aceptar, volver);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(encabezado);
+        alerta.setGraphic(null);
+        preparar(alerta, "dialog-custom-action");
+        javafx.scene.Node botonAceptar = alerta.getDialogPane()
+                .lookupButton(aceptar);
+        botonAceptar.getStyleClass().add("dialog-action-primary");
+        return alerta.showAndWait().orElse(volver) == aceptar;
+    }
     public static void error(String titulo, String mensaje) {
         mostrar(Alert.AlertType.ERROR, titulo, mensaje, "dialog-error");
     }
@@ -76,6 +137,7 @@ public final class Dialogos {
         Alert alerta = new Alert(tipo, mensaje, cerrar);
         alerta.setTitle(titulo);
         alerta.setHeaderText(titulo);
+        alerta.setGraphic(null);
         preparar(alerta, clase);
         alerta.showAndWait();
     }

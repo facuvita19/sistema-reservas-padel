@@ -82,6 +82,12 @@
                                                             <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
                                                             <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>
                                                         </VBox>
+                                                        <VBox fx:id="panelHistorial" visible="false" managed="false" spacing="8" styleClass="bracket-history-card">
+                                                            <Label text="HISTORIAL DE CORRECCIONES" styleClass="bracket-field-label"/>
+                                                            <VBox fx:id="contenedorHistorial" spacing="8"/>
+                                                        </VBox>
+                                                        <Label fx:id="etiquetaSinHistorial" text="Este partido no tiene correcciones registradas."
+                                                               visible="false" managed="false" wrapText="true" styleClass="bracket-history-empty"/>
                                                         <Separator/>
                                                         <Label text="Cancha" styleClass="bracket-field-label"/>
                                                         <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>

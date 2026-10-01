@@ -37,9 +37,11 @@ import negocio.TorneoInscripcion;
 import negocio.TorneoPartido;
 import negocio.Torneo;
 import negocio.EstadoTorneo;
+import negocio.CorreccionResultadoTorneo;
 import servicio.CanchaService;
 import servicio.CuadroEliminacionTorneoService;
 import servicio.ProgramacionPartidoTorneoService;
+import servicio.HistorialCorreccionResultadoTorneoService;
 import vista.Dialogos;
 import vista.Navegacion;
 
@@ -64,6 +66,8 @@ public class TorneoCuadroController {
             new CuadroEliminacionTorneoService();
     private final ProgramacionPartidoTorneoService programacionService =
             new ProgramacionPartidoTorneoService();
+    private final HistorialCorreccionResultadoTorneoService historialService =
+            new HistorialCorreccionResultadoTorneoService();
     private final ObservableList<TorneoPartido> partidos =
             FXCollections.observableArrayList();
 
@@ -85,6 +89,9 @@ public class TorneoCuadroController {
     @FXML private Label etiquetaFinalizacion;
     @FXML private Label etiquetaObservaciones;
     @FXML private javafx.scene.layout.VBox panelResultado;
+    @FXML private javafx.scene.layout.VBox panelHistorial;
+    @FXML private javafx.scene.layout.VBox contenedorHistorial;
+    @FXML private Label etiquetaSinHistorial;
     @FXML private ComboBox<FaseTorneo> filtroFase;
     @FXML private ComboBox<EstadoPartidoTorneo> filtroEstado;
     @FXML private TableView<TorneoPartido> tablaPartidos;
@@ -351,6 +358,7 @@ public class TorneoCuadroController {
             etiquetaPartido.setText("Selecciona un partido");
             panelResultado.setVisible(false);
             panelResultado.setManaged(false);
+            limpiarHistorial();
             limpiarFormulario();
             return;
         }
@@ -367,6 +375,81 @@ public class TorneoCuadroController {
                     .filter(c -> c.getId() == partido.getCanchaId())
                     .findFirst().orElse(null));
         mostrarResultado(partido);
+        cargarHistorial(partido);
+    }
+
+    private void cargarHistorial(TorneoPartido partido) {
+        contenedorHistorial.getChildren().clear();
+        try {
+            List<CorreccionResultadoTorneo> historial =
+                    historialService.listar(partido.getId());
+            boolean tiene = !historial.isEmpty();
+            panelHistorial.setVisible(tiene);
+            panelHistorial.setManaged(tiene);
+            etiquetaSinHistorial.setVisible(!tiene);
+            etiquetaSinHistorial.setManaged(!tiene);
+            for (CorreccionResultadoTorneo correccion : historial) {
+                contenedorHistorial.getChildren().add(
+                        crearTarjetaCorreccion(correccion));
+            }
+        } catch (RuntimeException exception) {
+            panelHistorial.setVisible(true);
+            panelHistorial.setManaged(true);
+            etiquetaSinHistorial.setVisible(false);
+            etiquetaSinHistorial.setManaged(false);
+            Label error = new Label(exception.getMessage() == null
+                    ? "No se pudo consultar el historial."
+                    : exception.getMessage());
+            error.setWrapText(true);
+            error.getStyleClass().add("bracket-history-error");
+            contenedorHistorial.getChildren().add(error);
+        }
+    }
+
+    private javafx.scene.layout.VBox crearTarjetaCorreccion(
+            CorreccionResultadoTorneo correccion) {
+        Label fechaUsuario = new Label(formatearFechaUsuario(correccion));
+        fechaUsuario.getStyleClass().add("bracket-history-meta");
+        Label anterior = new Label(valorO(correccion.getResultadoAnterior(), "Sin resultado"));
+        anterior.setWrapText(true);
+        anterior.getStyleClass().add("bracket-history-old-score");
+        Label flecha = new Label("↓");
+        flecha.getStyleClass().add("bracket-history-arrow");
+        Label nuevo = new Label(valorO(correccion.getResultadoNuevo(), "Sin resultado"));
+        nuevo.setWrapText(true);
+        nuevo.getStyleClass().add("bracket-history-new-score");
+        Label ganadora = new Label("Ganadora: "
+                + nombrePareja(correccion.getGanadoraAnteriorInscripcionId())
+                + "\n→ " + nombrePareja(correccion.getGanadoraNuevaInscripcionId()));
+        ganadora.setWrapText(true);
+        ganadora.getStyleClass().add("bracket-history-winner");
+        String motivo = correccion.getMotivo() == null || correccion.getMotivo().isBlank()
+                ? "Sin motivo informado" : correccion.getMotivo();
+        Label motivoLabel = new Label("Motivo: " + motivo);
+        motivoLabel.setWrapText(true);
+        motivoLabel.getStyleClass().add("bracket-history-reason");
+        javafx.scene.layout.VBox tarjeta = new javafx.scene.layout.VBox(
+                5, fechaUsuario, anterior, flecha, nuevo, ganadora, motivoLabel);
+        tarjeta.getStyleClass().add("bracket-history-entry");
+        return tarjeta;
+    }
+
+    private String formatearFechaUsuario(CorreccionResultadoTorneo correccion) {
+        String fecha = correccion.getFechaCorreccion() == null
+                ? "Fecha sin registrar" : FECHA_HORA.format(correccion.getFechaCorreccion());
+        return fecha + " · " + valorO(correccion.getUsuario(), "Usuario desconocido");
+    }
+
+    private String valorO(String valor, String alternativo) {
+        return valor == null || valor.isBlank() ? alternativo : valor;
+    }
+
+    private void limpiarHistorial() {
+        panelHistorial.setVisible(false);
+        panelHistorial.setManaged(false);
+        etiquetaSinHistorial.setVisible(false);
+        etiquetaSinHistorial.setManaged(false);
+        contenedorHistorial.getChildren().clear();
     }
 
     private String nombrePareja(Long inscripcionId) {

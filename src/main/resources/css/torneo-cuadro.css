@@ -90,3 +90,15 @@
 .bracket-loser-cell {
     -fx-opacity: .52;
 }
+
+/* bracket-history-styles-v1 */
+.bracket-history-card { -fx-background-color:#0d1d27; -fx-border-color:#294653; -fx-border-radius:11; -fx-background-radius:11; -fx-padding:13; }
+.bracket-history-entry { -fx-background-color:#09151d; -fx-border-color:#27434f; -fx-border-radius:9; -fx-background-radius:9; -fx-padding:11; }
+.bracket-history-meta { -fx-text-fill:#8da6b2; -fx-font-size:11px; -fx-font-weight:700; }
+.bracket-history-old-score { -fx-text-fill:#d7a5ab; -fx-font-size:13px; -fx-font-weight:800; }
+.bracket-history-arrow { -fx-text-fill:#6f91a1; -fx-font-size:15px; -fx-font-weight:900; }
+.bracket-history-new-score { -fx-text-fill:#9bd3b8; -fx-font-size:14px; -fx-font-weight:900; }
+.bracket-history-winner { -fx-text-fill:#d7e5eb; -fx-font-size:11px; }
+.bracket-history-reason { -fx-text-fill:#9eb2bc; -fx-font-size:11px; -fx-font-style:italic; }
+.bracket-history-empty { -fx-background-color:#0b1821; -fx-border-color:#294653; -fx-border-radius:9; -fx-background-radius:9; -fx-padding:11; -fx-text-fill:#8299a4; -fx-font-size:11px; }
+.bracket-history-error { -fx-text-fill:#ef9ca7; -fx-font-size:11px; }

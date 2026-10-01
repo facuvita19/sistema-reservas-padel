@@ -11,9 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -30,6 +28,7 @@ import servicio.GestionInscripcionTorneoService;
 import servicio.GestionVinculacionJugadorTorneoService;
 import servicio.WhatsAppService;
 import util.FormateadorMoneda;
+import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneosInscripcionesController {
@@ -174,8 +173,9 @@ public class TorneosInscripcionesController {
         if (id != null) {
             cargarInscripciones();
             seleccionarPorId(id);
-            mostrarExito("Pareja agregada",
-                    "La inscripcion administrativa fue creada correctamente.");
+            Dialogos.exito(
+             "Pareja agregada",
+            "La inscripción administrativa fue creada correctamente.");
         }
     }
 
@@ -309,15 +309,10 @@ public class TorneosInscripcionesController {
         }
     }
 
-    private boolean confirmarAccion(String titulo, String mensaje) {
-        Alert alerta = new Alert(
-                Alert.AlertType.CONFIRMATION,
-                mensaje,
-                ButtonType.OK,
-                ButtonType.CANCEL);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        return alerta.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK;
+    private boolean confirmarAccion(
+            String titulo,
+            String mensaje) {
+        return Dialogos.confirmar(titulo, mensaje);
     }
     @FXML private void vincularResponsable() {
         vincular(seleccionada == null ? null : seleccionada.responsable());
@@ -377,29 +372,25 @@ public class TorneosInscripcionesController {
         }
     }
 
-    private void mostrarError(RuntimeException exception, String alternativo) {
+    private void mostrarError(
+            RuntimeException exception,
+            String alternativo) {
         String mensaje = exception.getMessage();
         String texto = mensaje == null || mensaje.isBlank()
                 ? alternativo
                 : mensaje;
 
         etiquetaMensaje.setText(texto);
-
-        Alert alerta = new Alert(Alert.AlertType.ERROR);
-        alerta.setTitle("No se pudo completar la operación");
-        alerta.setHeaderText("Revisá la información e intentá nuevamente.");
-        alerta.setContentText(texto);
-        alerta.showAndWait();
+        Dialogos.error(
+                "No se pudo completar la operacion",
+                texto);
     }
 
-    private void mostrarExito(String titulo, String mensaje) {
+    private void mostrarExito(
+            String titulo,
+            String mensaje) {
         etiquetaMensaje.setText(mensaje);
-
-        Alert alerta = new Alert(Alert.AlertType.INFORMATION);
-        alerta.setTitle(titulo);
-        alerta.setHeaderText(null);
-        alerta.setContentText(mensaje);
-        alerta.showAndWait();
+        Dialogos.exito(titulo, mensaje);
     }
     @FXML private void abrirWhatsappResponsable() { abrirWhatsapp(seleccionada == null ? null : seleccionada.responsable()); }
     @FXML private void abrirWhatsappPareja() { abrirWhatsapp(seleccionada == null ? null : seleccionada.pareja()); }

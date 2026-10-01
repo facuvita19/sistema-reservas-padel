@@ -33,6 +33,7 @@ import servicio.CierreCajaService;
 import servicio.DetallePagoCajaService;
 import servicio.MovimientoCajaService;
 import util.FormateadorMoneda;
+import vista.Dialogos;
 import vista.Navegacion;
 
 public class CierreCajaController {
@@ -380,25 +381,32 @@ public class CierreCajaController {
 
     @FXML
     private void cerrarCaja() {
-        if (cierreExistente != null) { mostrarError("La caja de esta fecha ya fue cerrada."); return; }
+        if (cierreExistente != null) {
+            mostrarError("La caja de esta fecha ya fue cerrada.");
+            return;
+        }
         Usuario usuario = Navegacion.getUsuarioActual();
-        if (usuario == null) { mostrarError("La sesión administrativa finalizó."); return; }
+        if (usuario == null) {
+            mostrarError("La sesion administrativa finalizo.");
+            return;
+        }
         try {
-            BigDecimal declarado = leerImporte(campoEfectivoDeclarado.getText());
-            BigDecimal diferencia = declarado.subtract(resumenActual.getEfectivoEsperado());
-            Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-            confirmacion.setTitle("Confirmar cierre de caja");
-            confirmacion.setHeaderText("¿Cerrar definitivamente la caja del "
-                    + selectorFecha.getValue().format(FORMATO_FECHA) + "?");
-            confirmacion.setContentText("Efectivo esperado: "
+            BigDecimal declarado = leerImporte(
+                    campoEfectivoDeclarado.getText());
+            BigDecimal diferencia = declarado.subtract(
+                    resumenActual.getEfectivoEsperado());
+            String detalle = "Efectivo esperado: "
                     + formatearMoneda(resumenActual.getEfectivoEsperado())
                     + "\nEfectivo declarado: " + formatearMoneda(declarado)
                     + "\nDiferencia: " + formatearMonedaConSigno(diferencia)
                     + (resumenActual.getPagosPendientes() > 0
-                            ? "\n\nAdvertencia: hay pagos pendientes de acreditar." : ""));
-            confirmacion.showAndWait().ifPresent(respuesta -> {
-                if (respuesta == ButtonType.OK) ejecutarCierre(declarado);
-            });
+                            ? "\n\nAdvertencia: hay pagos pendientes de acreditar."
+                            : "");
+            String titulo = "Cerrar caja del "
+                    + selectorFecha.getValue().format(FORMATO_FECHA);
+            if (Dialogos.confirmarPeligro(titulo, detalle)) {
+                ejecutarCierre(declarado);
+            }
         } catch (IllegalArgumentException exception) {
             mostrarError(exception.getMessage());
         }

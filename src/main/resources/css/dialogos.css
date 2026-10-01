@@ -506,3 +506,142 @@
     -fx-border-width: 1;
     -fx-padding: 0;
 }
+
+/* dialog-choice-modern-v1 */
+.admin-dialog .graphic-container,
+.admin-dialog > .graphic-container {
+    -fx-pref-width: 0;
+    -fx-min-width: 0;
+    -fx-max-width: 0;
+    -fx-padding: 0;
+    visibility: hidden;
+}
+.dialog-choice > .header-panel {
+    -fx-background-color: linear-gradient(to right, #183747, #24536a);
+}
+.dialog-choice > .content.label {
+    -fx-background-color: #0f1d26;
+    -fx-text-fill: #d3e0e6;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 22 26 20 26;
+    -fx-min-width: 520;
+    -fx-pref-width: 620;
+}
+.admin-dialog .dialog-action-primary {
+    -fx-background-color: #4f7f9c;
+    -fx-border-color: #78a3ba;
+    -fx-text-fill: white;
+}
+.admin-dialog .dialog-action-alternative {
+    -fx-background-color: #365464;
+    -fx-border-color: #638295;
+    -fx-text-fill: #f3f8fa;
+}
+.admin-dialog .dialog-action-danger {
+    -fx-background-color: #7a3540;
+    -fx-border-color: #b05261;
+    -fx-text-fill: white;
+}
+.admin-dialog .dialog-action-primary:hover { -fx-background-color: #6493ad; }
+.admin-dialog .dialog-action-alternative:hover { -fx-background-color: #466b7d; }
+.admin-dialog .dialog-action-danger:hover { -fx-background-color: #91424e; }
+/* dialog-choice-buttons-v2 */
+.dialog-choice {
+    -fx-pref-width: 840;
+    -fx-min-width: 760;
+}
+
+.dialog-choice > .content.label {
+    -fx-min-width: 700;
+    -fx-pref-width: 760;
+    -fx-max-width: 760;
+    -fx-wrap-text: true;
+}
+
+.dialog-choice .button-bar {
+    -fx-padding: 14 24 18 24;
+}
+
+.dialog-choice .button-bar > .container {
+    -fx-alignment: center;
+    -fx-spacing: 12;
+}
+
+.dialog-choice .button-bar .button {
+    -fx-min-width: 230;
+    -fx-pref-width: 230;
+    -fx-max-width: 230;
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-padding: 10 12;
+    -fx-font-size: 13px;
+    -fx-alignment: center;
+    -fx-text-overrun: clip;
+}
+
+.dialog-choice .button-bar .button .text {
+    -fx-text-alignment: center;
+}
+
+.dialog-confirm .button-bar > .container,
+.dialog-danger .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 12;
+}
+
+.dialog-confirm .button-bar .button,
+.dialog-danger .button-bar .button {
+    -fx-min-width: 138;
+    -fx-pref-width: 138;
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-alignment: center;
+}
+
+/* dialog-custom-action-v1 */
+.dialog-custom-action {
+    -fx-pref-width: 720;
+    -fx-min-width: 650;
+}
+
+.dialog-custom-action > .header-panel {
+    -fx-background-color: linear-gradient(to right, #183747, #24536a);
+}
+
+.dialog-custom-action > .content.label {
+    -fx-background-color: #0f1d26;
+    -fx-text-fill: #d3e0e6;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 22 26 20 26;
+    -fx-min-width: 590;
+    -fx-pref-width: 650;
+    -fx-wrap-text: true;
+}
+
+.dialog-custom-action .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 12;
+}
+
+.dialog-custom-action .button-bar .button {
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-alignment: center;
+}
+
+.dialog-custom-action .dialog-action-primary {
+    -fx-min-width: 285;
+    -fx-pref-width: 285;
+    -fx-max-width: 285;
+    -fx-background-color: #4f7f9c;
+    -fx-border-color: #78a3ba;
+    -fx-text-fill: white;
+}
+
+.dialog-custom-action .button:cancel {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
+}
