@@ -1,13 +1,13 @@
 package servicio;
 
-import util.NormalizadorTelefono;
-
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
+import util.NormalizadorTelefono;
 
 public class WhatsAppService {
 

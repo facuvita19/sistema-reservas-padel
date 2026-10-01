@@ -11,6 +11,7 @@ public class Cliente {
     private String documento;
     private String telefono;
     private String email;
+    private PosicionJugador posicionPreferida;
     private boolean activo = true;
     private LocalDateTime fechaCreacion;
 
@@ -60,6 +61,14 @@ public class Cliente {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public PosicionJugador getPosicionPreferida() {
+        return posicionPreferida;
+    }
+
+    public void setPosicionPreferida(PosicionJugador posicionPreferida) {
+        this.posicionPreferida = posicionPreferida;
     }
 
     public boolean isActivo() {

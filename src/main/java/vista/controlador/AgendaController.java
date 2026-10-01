@@ -40,6 +40,7 @@ import servicio.MensajeReservaService;
 import servicio.PagoService;
 import servicio.ReservaService;
 import servicio.WhatsAppService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class AgendaController {
@@ -591,8 +592,7 @@ public class AgendaController {
     }
 
     private String formatearMoneda(BigDecimal importe) {
-        BigDecimal valor = importe == null ? BigDecimal.ZERO : importe;
-        return "ARS " + valor.setScale(2, RoundingMode.HALF_UP).toPlainString();
+        return FormateadorMoneda.pesos(importe);
     }
 
     private void limpiarDetalle() {

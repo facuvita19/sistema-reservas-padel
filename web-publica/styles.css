@@ -1399,3 +1399,418 @@ body.customer-authenticated #form .check:has(#rememberData) {
 .tournament-player-block h3{margin:0 0 10px}
 #tournamentComments{width:100%;resize:vertical}
 @media(max-width:720px){.tournaments-grid{grid-template-columns:1fr}.tournament-facts{grid-template-columns:1fr}.tournament-category{align-items:stretch;flex-direction:column}.tournament-category-actions{justify-content:space-between}.tournament-category-actions .button{width:auto}.tournaments-section{padding:38px 0}}
+/* theme-control-enabled-v2 */
+#themeToggle.theme-toggle {
+    display: inline-flex !important;
+}
+/* light-theme-polish-v1 */
+html[data-effective-theme="light"] body {
+    background: #f4f7f9;
+    color: #172934;
+}
+
+html[data-effective-theme="light"] .booking,
+html[data-effective-theme="light"] .history-section,
+html[data-effective-theme="light"] .tournaments-section,
+html[data-effective-theme="light"] .info {
+    background: #f4f7f9;
+    color: #172934;
+}
+
+html[data-effective-theme="light"] .history-section {
+    border-color: #d4e0e6;
+}
+
+html[data-effective-theme="light"] .card,
+html[data-effective-theme="light"] .panel,
+html[data-effective-theme="light"] .booking-mini,
+html[data-effective-theme="light"] .history-item,
+html[data-effective-theme="light"] .tournament-card,
+html[data-effective-theme="light"] .faq-card {
+    background: #ffffff;
+    color: #172934;
+    border-color: #cbd9df;
+    box-shadow: 0 16px 38px rgba(40, 69, 83, .13);
+}
+
+html[data-effective-theme="light"] .steps span {
+    background: #ffffff;
+    color: #617784;
+    border-color: #cbd9df;
+}
+
+html[data-effective-theme="light"] .steps span.active {
+    background: #e3eef4;
+    color: #173a4d;
+    border-color: #739bb0;
+}
+
+html[data-effective-theme="light"] .draft,
+html[data-effective-theme="light"] .summary,
+html[data-effective-theme="light"] .receipt,
+html[data-effective-theme="light"] .fact,
+html[data-effective-theme="light"] .tracking-item,
+html[data-effective-theme="light"] .tournament-facts span,
+html[data-effective-theme="light"] .tournament-player-block {
+    background: #edf3f6;
+    color: #172934;
+    border-color: #cbd9df;
+}
+
+html[data-effective-theme="light"] .court-card,
+html[data-effective-theme="light"] .date-chip,
+html[data-effective-theme="light"] .time,
+html[data-effective-theme="light"] .tournament-category {
+    background: #f7fafb;
+    color: #172934;
+    border-color: #c5d5dc;
+}
+
+html[data-effective-theme="light"] .court-card.selected,
+html[data-effective-theme="light"] .date-chip.selected {
+    background: #dceaf1;
+    border-color: #648ea4;
+    box-shadow: 0 0 0 3px rgba(72, 107, 134, .13);
+}
+
+html[data-effective-theme="light"] .court-meta span {
+    background: #e5eef2;
+    color: #294653;
+}
+
+html[data-effective-theme="light"] #date,
+html[data-effective-theme="light"] .field input,
+html[data-effective-theme="light"] .field select,
+html[data-effective-theme="light"] .field textarea,
+html[data-effective-theme="light"] .input-action input {
+    background: #ffffff;
+    color: #172934;
+    border-color: #bfcfd7;
+}
+
+html[data-effective-theme="light"] .muted,
+html[data-effective-theme="light"] .court-card p,
+html[data-effective-theme="light"] .booking-mini p,
+html[data-effective-theme="light"] .history-item p,
+html[data-effective-theme="light"] .tournament-category small {
+    color: #5d7480;
+}
+
+html[data-effective-theme="light"] .eyebrow {
+    color: #527f97;
+}
+
+html[data-effective-theme="light"] .link {
+    color: #356f8e;
+}
+
+html[data-effective-theme="light"] .secondary,
+html[data-effective-theme="light"] .alert-action {
+    background: #edf3f6;
+    color: #244654;
+    border-color: #c2d2da;
+}
+
+html[data-effective-theme="light"] .tournament-category-actions span,
+html[data-effective-theme="light"] .court-price strong,
+html[data-effective-theme="light"] .booking-mini strong {
+    color: #163748;
+}
+
+html[data-effective-theme="light"] .faq-list details {
+    border-color: #cbd9df;
+}
+
+html[data-effective-theme="light"] .faq-list summary {
+    color: #223d4a;
+}
+
+html[data-effective-theme="light"] .modal {
+    background: rgba(17, 35, 44, .58);
+}
+
+html[data-effective-theme="light"] .modal-card {
+    background: #ffffff;
+    color: #172934;
+    border-color: #cbd9df;
+    box-shadow: 0 24px 70px rgba(28, 54, 66, .24);
+}
+
+html[data-effective-theme="light"] footer {
+    background: #f4f7f9;
+}
+
+html[data-effective-theme="light"] .footer {
+    color: #637b87;
+}
+/* light-theme-polish-v2 */
+html[data-effective-theme="light"] {
+    --bg: #eaf0f3;
+    --surface: #f7fafb;
+    --soft: #e1ebef;
+    --line: #aebfc8;
+    --text: #102b39;
+    --muted: #425f6d;
+    --shadow: 0 14px 34px rgba(30, 57, 70, .14);
+}
+
+html[data-effective-theme="light"] body {
+    background: #eaf0f3;
+    color: #102b39;
+}
+
+html[data-effective-theme="light"] .hero {
+    color: #102b39;
+    background:
+        radial-gradient(circle at 76% 22%, rgba(var(--prgb), .20), transparent 36%),
+        linear-gradient(145deg, #dbe7ec 0%, #edf3f6 54%, #d5e3e9 100%);
+    border-bottom: 1px solid #b9cbd3;
+}
+
+html[data-effective-theme="light"] .hero .brand,
+html[data-effective-theme="light"] .hero h1 {
+    color: #102b39;
+}
+
+html[data-effective-theme="light"] .hero .brand small,
+html[data-effective-theme="light"] .hero .lead {
+    color: #385968;
+}
+
+html[data-effective-theme="light"] .hero .eyebrow {
+    color: #2f6f90;
+}
+
+html[data-effective-theme="light"] .hero .pill {
+    background: #d8eee4;
+    border-color: #8eb8a5;
+    color: #165b3f;
+}
+
+html[data-effective-theme="light"] .hero .court-art {
+    border-color: #7795a4;
+    background: linear-gradient(145deg, rgba(var(--prgb), .24), #e6eef2);
+    box-shadow: 0 18px 42px rgba(34, 65, 79, .15);
+}
+
+html[data-effective-theme="light"] .hero .court-art:before {
+    border-color: rgba(36, 72, 88, .38);
+}
+
+html[data-effective-theme="light"] .hero .court-art:after {
+    background: rgba(36, 72, 88, .30);
+}
+
+html[data-effective-theme="light"] .nav-btn,
+html[data-effective-theme="light"] .theme-toggle {
+    background: rgba(247, 250, 251, .88);
+    color: #173746;
+    border-color: #9eb4bf;
+    box-shadow: 0 5px 16px rgba(32, 61, 75, .08);
+}
+
+html[data-effective-theme="light"] .nav-btn:hover,
+html[data-effective-theme="light"] .theme-toggle:hover {
+    background: #ffffff;
+    border-color: #668c9f;
+}
+
+html[data-effective-theme="light"] .booking,
+html[data-effective-theme="light"] .tournaments-section,
+html[data-effective-theme="light"] .history-section,
+html[data-effective-theme="light"] .info,
+html[data-effective-theme="light"] footer {
+    background: #eaf0f3;
+}
+
+html[data-effective-theme="light"] .tournaments-section,
+html[data-effective-theme="light"] .history-section,
+html[data-effective-theme="light"] .info {
+    border-color: #b8c9d1;
+}
+
+html[data-effective-theme="light"] .card,
+html[data-effective-theme="light"] .panel,
+html[data-effective-theme="light"] .booking-mini,
+html[data-effective-theme="light"] .history-item,
+html[data-effective-theme="light"] .tournament-card,
+html[data-effective-theme="light"] .faq-card {
+    background: #f8fbfc;
+    color: #102b39;
+    border-color: #afc2cb;
+    box-shadow: 0 14px 34px rgba(30, 57, 70, .14);
+}
+
+html[data-effective-theme="light"] .muted,
+html[data-effective-theme="light"] .court-card p,
+html[data-effective-theme="light"] .booking-mini p,
+html[data-effective-theme="light"] .history-item p,
+html[data-effective-theme="light"] .tournament-category small,
+html[data-effective-theme="light"] .metric-detail,
+html[data-effective-theme="light"] .small-caption {
+    color: #425f6d;
+}
+
+html[data-effective-theme="light"] .eyebrow {
+    color: #2d6f91;
+}
+
+html[data-effective-theme="light"] .steps span {
+    background: #f8fbfc;
+    color: #355563;
+    border-color: #afc2cb;
+}
+
+html[data-effective-theme="light"] .steps span.active {
+    background: #cfe1e9;
+    color: #12394d;
+    border-color: #5f8da4;
+}
+
+html[data-effective-theme="light"] .draft,
+html[data-effective-theme="light"] .summary,
+html[data-effective-theme="light"] .receipt,
+html[data-effective-theme="light"] .fact,
+html[data-effective-theme="light"] .tracking-item,
+html[data-effective-theme="light"] .tournament-facts span,
+html[data-effective-theme="light"] .tournament-player-block {
+    background: #dfe9ed;
+    color: #102b39;
+    border-color: #afc2cb;
+}
+
+html[data-effective-theme="light"] .court-card,
+html[data-effective-theme="light"] .date-chip,
+html[data-effective-theme="light"] .time,
+html[data-effective-theme="light"] .tournament-category {
+    background: #eef4f6;
+    color: #102b39;
+    border-color: #a9bec8;
+}
+
+html[data-effective-theme="light"] .court-card.selected,
+html[data-effective-theme="light"] .date-chip.selected {
+    background: #cfe1e9;
+    border-color: #5f8da4;
+    box-shadow: 0 0 0 3px rgba(72, 107, 134, .16);
+}
+
+html[data-effective-theme="light"] .court-meta span {
+    background: #d5e3e9;
+    color: #1d4557;
+}
+
+html[data-effective-theme="light"] #date,
+html[data-effective-theme="light"] .field input,
+html[data-effective-theme="light"] .field select,
+html[data-effective-theme="light"] .field textarea,
+html[data-effective-theme="light"] .input-action input {
+    background: #ffffff;
+    color: #102b39;
+    border-color: #9fb6c1;
+}
+
+html[data-effective-theme="light"] .field input::placeholder,
+html[data-effective-theme="light"] .field textarea::placeholder,
+html[data-effective-theme="light"] .input-action input::placeholder {
+    color: #607984;
+    opacity: 1;
+}
+
+html[data-effective-theme="light"] .link {
+    color: #236d92;
+}
+
+html[data-effective-theme="light"] .secondary,
+html[data-effective-theme="light"] .alert-action {
+    background: #dfe9ed;
+    color: #173f51;
+    border-color: #a7bcc6;
+}
+
+html[data-effective-theme="light"] .tournament-category-actions span,
+html[data-effective-theme="light"] .court-price strong,
+html[data-effective-theme="light"] .booking-mini strong,
+html[data-effective-theme="light"] .history-item strong {
+    color: #0e3345;
+}
+
+html[data-effective-theme="light"] .faq-list details {
+    border-color: #adbec7;
+}
+
+html[data-effective-theme="light"] .faq-list summary {
+    color: #173b4b;
+}
+
+html[data-effective-theme="light"] .modal {
+    background: rgba(21, 42, 52, .48);
+}
+
+html[data-effective-theme="light"] .modal-card {
+    background: #f8fbfc;
+    color: #102b39;
+    border-color: #aebfc8;
+    box-shadow: 0 24px 70px rgba(25, 51, 64, .25);
+}
+
+html[data-effective-theme="light"] .footer {
+    color: #456574;
+}
+/* modal-close-interaction-v1 */
+.modal .close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .16s ease,
+                border-color .16s ease,
+                color .16s ease,
+                transform .12s ease,
+                box-shadow .16s ease;
+}
+
+.modal .close:hover {
+    background: rgba(239, 143, 155, .14);
+    border-color: rgba(239, 143, 155, .42);
+    color: #ffb5be;
+    transform: scale(1.07);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, .18);
+}
+
+.modal .close:focus-visible {
+    outline: 3px solid rgba(var(--prgb), .35);
+    outline-offset: 2px;
+    border-color: var(--p);
+}
+
+.modal .close:active {
+    background: rgba(239, 143, 155, .24);
+    border-color: rgba(239, 143, 155, .65);
+    transform: scale(.92) rotate(4deg);
+    box-shadow: none;
+}
+
+html[data-effective-theme="light"] .modal .close:hover {
+    background: #f8e1e5;
+    border-color: #d98d98;
+    color: #8d2735;
+}
+
+html[data-effective-theme="light"] .modal .close:active {
+    background: #f2cdd3;
+    border-color: #c96d7a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal .close {
+        transition: none;
+    }
+
+    .modal .close:hover,
+    .modal .close:active {
+        transform: none;
+    }
+}

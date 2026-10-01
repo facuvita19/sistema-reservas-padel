@@ -22,6 +22,7 @@ import api.publica.CuentaClienteDTO.ReservaResumen;
 import config.ConexionBD;
 import negocio.Cliente;
 import negocio.ConfiguracionComplejo;
+import negocio.PosicionJugador;
 
 public class CuentaClienteService {
 
@@ -57,7 +58,8 @@ public class CuentaClienteService {
     public Perfil obtenerPerfil(long clienteId) {
         validarClienteId(clienteId);
         String sql = "SELECT id, nombre, apellido, documento, telefono, "
-                + "email, activo FROM clientes WHERE id = ?";
+                + "email, posicion_preferida, activo "
+                + "FROM clientes WHERE id = ?";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
@@ -90,7 +92,10 @@ public class CuentaClienteService {
                 cliente.getApellido(),
                 cliente.getDocumento(),
                 cliente.getTelefono(),
-                cliente.getEmail());
+                cliente.getEmail(),
+                cliente.getPosicionPreferida() == null
+                        ? null
+                        : cliente.getPosicionPreferida().name());
     }
 
     public Perfil actualizarPerfil(
@@ -116,7 +121,10 @@ public class CuentaClienteService {
                         datos.apellido(),
                         documento,
                         datos.telefono(),
-                        datos.email());
+                        datos.email(),
+                        datos.posicionPreferida() == null
+                                ? null
+                                : datos.posicionPreferida().name());
             } catch (SQLException | RuntimeException exception) {
                 rollbackSeguro(conexion, exception);
                 if (exception instanceof SQLException sql
@@ -189,14 +197,19 @@ public class CuentaClienteService {
             long clienteId,
             DatosPerfil datos) throws SQLException {
         String sql = "UPDATE clientes SET nombre = ?, apellido = ?, "
-                + "telefono = ?, email = ? "
+                + "telefono = ?, email = ?, posicion_preferida = ? "
                 + "WHERE id = ? AND activo = TRUE";
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             sentencia.setString(1, datos.nombre());
             sentencia.setString(2, datos.apellido());
             sentencia.setString(3, datos.telefono());
             sentencia.setString(4, datos.email());
-            sentencia.setLong(5, clienteId);
+            if (datos.posicionPreferida() == null) {
+                sentencia.setNull(5, java.sql.Types.VARCHAR);
+            } else {
+                sentencia.setString(5, datos.posicionPreferida().name());
+            }
+            sentencia.setLong(6, clienteId);
             if (sentencia.executeUpdate() == 0) {
                 throw new RecursoClienteNoEncontradoException(
                         "El perfil del cliente no esta disponible.");
@@ -256,6 +269,8 @@ public class CuentaClienteService {
         String email = entrada.email() == null
                 ? ""
                 : entrada.email().trim().toLowerCase(Locale.ROOT);
+        PosicionJugador posicionPreferida = normalizarPosicion(
+                entrada.posicionPreferida());
 
         if (nombre.isBlank()) {
             throw new IllegalArgumentException(
@@ -273,7 +288,19 @@ public class CuentaClienteService {
             throw new IllegalArgumentException(
                     "El correo electronico no tiene un formato valido.");
         }
-        return new DatosPerfil(nombre, apellido, telefono, email);
+        return new DatosPerfil(
+                nombre, apellido, telefono, email, posicionPreferida);
+    }
+
+    private PosicionJugador normalizarPosicion(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        try {
+            return PosicionJugador.valueOf(
+                    valor.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    "La posicion preferida debe ser DRIVE o REVES.");
+        }
     }
 
     private String normalizarNombre(String valor) {
@@ -313,7 +340,8 @@ public class CuentaClienteService {
             String nombre,
             String apellido,
             String telefono,
-            String email) {
+            String email,
+            PosicionJugador posicionPreferida) {
     }
 
     // cambiarPasswordClienteV1
@@ -492,7 +520,8 @@ public class CuentaClienteService {
                 resultado.getString("apellido"),
                 resultado.getString("documento"),
                 resultado.getString("telefono"),
-                resultado.getString("email"));
+                resultado.getString("email"),
+                resultado.getString("posicion_preferida"));
     }
 
     private boolean esAnterior(

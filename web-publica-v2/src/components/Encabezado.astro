@@ -1,0 +1,27 @@
+---
+interface Props { actual?: 'inicio' | 'reservar' | 'torneos' | 'reservas' | 'cuenta'; }
+const { actual = 'inicio' } = Astro.props;
+const enlaces = [['inicio','/','Inicio'],['reservar','/reservar','Reservar'],['torneos','/torneos','Torneos'],['reservas','/mis-reservas','Mis reservas']] as const;
+---
+<header class="sticky top-0 z-50 border-b border-ink-700/80 bg-ink-950/90 backdrop-blur-xl">
+  <nav class="container-site flex min-h-20 items-center gap-6" aria-label="Navegación principal">
+    <a href="/" class="focus-ring flex items-center gap-3 rounded-xl"><span class="grid size-11 place-items-center rounded-xl border border-brand-300/50 bg-brand-500/20 text-xl font-black text-brand-100">P</span><span class="hidden sm:block"><strong id="marcaNombre" class="block text-base">Pádel Reservas</strong><small class="text-xs text-slate-400">Reservas online</small></span></a>
+    <button id="menuButton" class="focus-ring ml-auto rounded-lg border border-ink-700 px-3 py-2 text-sm font-bold lg:hidden" type="button" aria-expanded="false" aria-controls="mainMenu">Menú</button>
+    <div id="mainMenu" class="hidden absolute left-4 right-4 top-[74px] flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-3 shadow-2xl lg:static lg:ml-auto lg:flex lg:flex-row lg:items-center lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
+      {enlaces.map(([id,href,texto]) => <a href={href} class:list={['focus-ring rounded-lg px-4 py-2.5 text-sm font-extrabold uppercase tracking-wide transition',actual===id?'bg-brand-500 text-white':'text-slate-300 hover:bg-ink-800 hover:text-white']} aria-current={actual===id?'page':undefined}>{texto}</a>)}
+      <button id="abrirAutenticacion" class="focus-ring rounded-lg border border-ink-700 px-4 py-2.5 text-sm font-extrabold uppercase text-slate-200 transition hover:border-brand-300 hover:bg-ink-800" type="button">Ingresar</button>
+      <div id="menuUsuario" class="relative hidden">
+        <button id="botonUsuario" class="focus-ring rounded-lg border border-brand-500/50 bg-brand-500/10 px-4 py-2.5 text-sm font-extrabold uppercase text-brand-100" type="button" aria-expanded="false" aria-controls="desplegableUsuario"><span id="nombreUsuario">Cuenta</span> ▾</button>
+        <div id="desplegableUsuario" class="absolute right-0 top-[calc(100%+.6rem)] hidden min-w-52 rounded-xl border border-ink-700 bg-ink-900 p-2 shadow-2xl">
+          <a class="block rounded-lg px-4 py-3 text-sm font-bold hover:bg-ink-800" href="/mis-datos">Mis datos</a>
+          <button id="cerrarSesion" class="w-full rounded-lg px-4 py-3 text-left text-sm font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+<script>
+  const button=document.querySelector<HTMLButtonElement>('#menuButton');
+  const menu=document.querySelector<HTMLElement>('#mainMenu');
+  button?.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));menu?.classList.toggle('hidden',open);menu?.classList.toggle('flex',!open);});
+</script>

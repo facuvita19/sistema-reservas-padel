@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import config.ConexionBD;
 import negocio.Cliente;
+import negocio.PosicionJugador;
 import util.NormalizadorTelefono;
 
 public class ClienteDAOMySQL implements ClienteDAO {
@@ -48,13 +49,15 @@ public class ClienteDAOMySQL implements ClienteDAO {
 
     private void insertar(Connection conexion, Cliente cliente) {
         String sql = "INSERT INTO clientes "
-                + "(nombre, apellido, documento, telefono, email, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "(nombre, apellido, documento, telefono, email, "
+                + "posicion_preferida, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement sentencia = conexion.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             cargarParametros(sentencia, cliente);
-            sentencia.setBoolean(6, cliente.isActivo());
+            cargarPosicion(sentencia, 6, cliente.getPosicionPreferida());
+            sentencia.setBoolean(7, cliente.isActivo());
 
             if (sentencia.executeUpdate() == 0) {
                 throw new RuntimeException(
@@ -75,13 +78,15 @@ public class ClienteDAOMySQL implements ClienteDAO {
 
     private void actualizar(Connection conexion, Cliente cliente) {
         String sql = "UPDATE clientes SET nombre = ?, apellido = ?, "
-                + "documento = ?, telefono = ?, email = ?, activo = ? "
+                + "documento = ?, telefono = ?, email = ?, "
+                + "posicion_preferida = ?, activo = ? "
                 + "WHERE id = ?";
 
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, cliente);
-            sentencia.setBoolean(6, cliente.isActivo());
-            sentencia.setLong(7, cliente.getId());
+            cargarPosicion(sentencia, 6, cliente.getPosicionPreferida());
+            sentencia.setBoolean(7, cliente.isActivo());
+            sentencia.setLong(8, cliente.getId());
 
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException(
@@ -107,6 +112,17 @@ public class ClienteDAOMySQL implements ClienteDAO {
             sentencia.setNull(5, Types.VARCHAR);
         } else {
             sentencia.setString(5, normalizarEmail(cliente.getEmail()));
+        }
+    }
+
+    private void cargarPosicion(
+            PreparedStatement sentencia,
+            int indice,
+            PosicionJugador posicion) throws SQLException {
+        if (posicion == null) {
+            sentencia.setNull(indice, Types.VARCHAR);
+        } else {
+            sentencia.setString(indice, posicion.name());
         }
     }
 
@@ -165,6 +181,7 @@ public class ClienteDAOMySQL implements ClienteDAO {
                     exception);
         }
     }
+
     @Override
     public Cliente buscarPorDocumento(String documento) {
         try (Connection conexion = ConexionBD.obtenerConexion()) {
@@ -329,7 +346,7 @@ public class ClienteDAOMySQL implements ClienteDAO {
 
     private String consultaBase() {
         return "SELECT id, nombre, apellido, documento, telefono, email, "
-                + "activo, fecha_creacion FROM clientes";
+                + "posicion_preferida, activo, fecha_creacion FROM clientes";
     }
 
     private Cliente convertirResultado(ResultSet resultado)
@@ -341,6 +358,12 @@ public class ClienteDAOMySQL implements ClienteDAO {
         cliente.setDocumento(resultado.getString("documento"));
         cliente.setTelefono(resultado.getString("telefono"));
         cliente.setEmail(resultado.getString("email"));
+
+        String posicion = resultado.getString("posicion_preferida");
+        if (posicion != null && !posicion.isBlank()) {
+            cliente.setPosicionPreferida(PosicionJugador.valueOf(posicion));
+        }
+
         cliente.setActivo(resultado.getBoolean("activo"));
 
         Timestamp fecha = resultado.getTimestamp("fecha_creacion");
@@ -372,3 +395,4 @@ public class ClienteDAOMySQL implements ClienteDAO {
         return new RuntimeException(mensaje, exception);
     }
 }
+

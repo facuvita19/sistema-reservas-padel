@@ -7,7 +7,7 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
             <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
-            <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+            <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
             <VBox spacing="3">
                 <Label text="Gestión de reservas" styleClass="page-title" />
                 <Label text="Consultá disponibilidad y administrá la agenda del complejo." styleClass="page-subtitle" />

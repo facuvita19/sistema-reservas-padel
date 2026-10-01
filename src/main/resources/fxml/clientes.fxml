@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.ClientesController" styleClass="module-root">
  <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header"><padding><Insets top="22" right="28" bottom="22" left="28"/></padding>
-  <Button text="← Inicio" onAction="#volver" styleClass="back-button"/><VBox spacing="3"><Label text="Gestión de clientes" styleClass="page-title"/><Label text="Administrá los datos de contacto y consultá el historial completo." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="NUEVO CLIENTE" onAction="#nuevo" styleClass="primary-button"/>
+  <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/><VBox spacing="3"><Label text="Gestión de clientes" styleClass="page-title"/><Label text="Administrá los datos de contacto y consultá el historial completo." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="NUEVO CLIENTE" onAction="#nuevo" styleClass="primary-button"/>
  </HBox></top>
  <center><SplitPane dividerPositions="0.38" styleClass="module-split">
   <VBox spacing="16" styleClass="list-panel"><padding><Insets top="22" right="18" bottom="22" left="28"/></padding>

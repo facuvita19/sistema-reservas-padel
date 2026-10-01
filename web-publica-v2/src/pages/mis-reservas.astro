@@ -1,0 +1,66 @@
+---
+import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
+---
+<LayoutPrincipal titulo="Mis reservas | Pádel Reservas" actual="reservas">
+  <section class="border-b border-ink-700 bg-ink-900">
+    <div class="container-site py-14">
+      <p class="text-xs font-black uppercase tracking-[.2em] text-brand-300">Seguimiento</p>
+      <h1 class="mt-3 text-5xl font-black">Mis reservas</h1>
+      <p class="mt-4 max-w-2xl text-lg text-slate-400">Consultá el estado, el pago y los datos de tu próxima reserva.</p>
+    </div>
+  </section>
+
+  <section class="container-site py-12">
+    <div id="estadoCuenta" class="surface-card p-6 sm:p-8">
+      <p class="text-slate-400">Comprobando tu sesión...</p>
+    </div>
+
+    <section id="modoVisitante" class="mt-6 hidden grid gap-6 lg:grid-cols-[.82fr_1.18fr]">
+      <form id="formSeguimiento" class="surface-card p-6 sm:p-8">
+        <p class="text-xs font-black uppercase tracking-widest text-brand-300">Consulta rápida</p>
+        <h2 class="mt-2 text-3xl font-black">Ingresá tu código</h2>
+        <p class="mt-3 text-slate-400">El código se muestra al finalizar una solicitud.</p>
+        <label class="mt-6 block"><span class="etiqueta-web">Código de seguimiento</span><input id="codigoSeguimiento" class="field-web font-mono" autocomplete="off" placeholder="Ejemplo: 67cb4678-bcf6-..." /></label>
+        <div id="errorSeguimiento" class="mt-4 hidden rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-bold text-rose-200"></div>
+        <button id="consultarSeguimiento" class="mt-5 w-full rounded-xl bg-brand-500 px-6 py-3 font-black text-white transition hover:bg-brand-600 active:scale-[.98] disabled:cursor-wait disabled:opacity-60" type="submit">Consultar reserva</button>
+      </form>
+
+      <aside class="surface-card p-6 sm:p-8">
+        <p class="text-xs font-black uppercase tracking-widest text-brand-300">Cuenta de cliente</p>
+        <h2 class="mt-2 text-3xl font-black">Todas tus reservas en un lugar</h2>
+        <ul class="mt-6 grid gap-3 text-slate-300">
+          <li class="rounded-xl border border-ink-700 bg-ink-900 p-4">Consultá próximas reservas e historial.</li>
+          <li class="rounded-xl border border-ink-700 bg-ink-900 p-4">Revisá pagos acreditados y saldos pendientes.</li>
+          <li class="rounded-xl border border-ink-700 bg-ink-900 p-4">Completá más rápido futuras reservas.</li>
+        </ul>
+        <p class="mt-5 text-sm text-slate-500">El acceso y registro de clientes se incorporará en el próximo bloque.</p>
+      </aside>
+    </section>
+
+    <!-- consulta-codigo-siempre-v1 -->
+    <section id="consultaCodigoSiempre" class="mt-6 hidden">
+      <form id="formSeguimientoCuenta" class="surface-card p-6 sm:p-8">
+        <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <p class="text-xs font-black uppercase tracking-widest text-brand-300">Consulta por código</p>
+            <h2 class="mt-2 text-2xl font-black">Consultar otra reserva</h2>
+            <p class="mt-2 text-sm text-slate-400">Podés consultar cualquier solicitud aunque no aparezca en tu historial.</p>
+          </div>
+          <div class="flex w-full flex-col gap-3 sm:flex-row lg:max-w-2xl">
+            <input id="codigoSeguimientoCuenta" class="field-web min-w-0 flex-1 font-mono" autocomplete="off" placeholder="Código de seguimiento" />
+            <button class="shrink-0 rounded-xl bg-brand-500 px-6 py-3 font-black text-white transition hover:bg-brand-600 active:scale-[.98]" type="submit">Consultar reserva</button>
+          </div>
+        </div>
+        <div id="errorSeguimientoCuenta" class="mt-4 hidden rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-bold text-rose-200"></div>
+      </form>
+    </section>
+
+    <section id="resultadoSeguimiento" class="mt-6 hidden"></section>
+
+    <section id="modoAutenticado" class="mt-6 hidden">
+      <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-xs font-black uppercase tracking-widest text-brand-300">Tu cuenta</p><h2 id="saludoCliente" class="mt-2 text-3xl font-black">Tus reservas</h2></div><button id="actualizarReservas" class="boton-volver-paso" type="button">Actualizar</button></div>
+      <div id="reservasCuenta" class="grid gap-6"></div>
+    </section>
+  </section>
+  <script>import '../scripts/mis-reservas';</script>
+</LayoutPrincipal>

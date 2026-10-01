@@ -8,7 +8,7 @@
         <VBox spacing="8" styleClass="module-header">
             <padding><Insets top="14" right="22" bottom="12" left="22" /></padding>
             <HBox alignment="CENTER_LEFT" spacing="12">
-                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
                 <VBox spacing="1">
                     <Label text="Agenda diaria" styleClass="page-title" />
                     <Label fx:id="etiquetaFecha" text="Agenda del complejo" styleClass="page-subtitle" />

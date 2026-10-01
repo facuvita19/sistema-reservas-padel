@@ -1,0 +1,64 @@
+---
+import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
+---
+<LayoutPrincipal titulo="Reservar cancha | Pádel Reservas" actual="reservar">
+  <section class="border-b border-ink-700 bg-ink-900">
+    <div class="container-site py-14">
+      <p class="text-xs font-black uppercase tracking-[.2em] text-brand-300">Reservas online</p>
+      <h1 class="mt-3 text-5xl font-black">Reservar cancha</h1>
+      <p class="mt-4 max-w-2xl text-lg text-slate-400">Elegí cancha, fecha y horario. La reserva quedará pendiente hasta acreditar la seña.</p>
+    </div>
+  </section>
+
+  <section class="container-site py-12">
+    <ol class="mb-8 grid gap-3 sm:grid-cols-4" aria-label="Pasos de la reserva">
+      <li class="paso-reserva activo" data-paso-indicador="1"><b>1</b><span>Cancha</span></li>
+      <li class="paso-reserva" data-paso-indicador="2"><b>2</b><span>Horario</span></li>
+      <li class="paso-reserva" data-paso-indicador="3"><b>3</b><span>Datos</span></li>
+      <li class="paso-reserva" data-paso-indicador="4"><b>4</b><span>Confirmación</span></li>
+    </ol>
+
+    <div id="mensajeReserva" class="hidden mb-6 rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 font-bold text-rose-200" role="alert"></div>
+
+    <section class="panel-reserva" data-panel="1">
+      <div class="surface-card p-6 sm:p-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div><p class="text-xs font-black uppercase tracking-widest text-brand-300">Paso 1</p><h2 class="mt-2 text-3xl font-black">Elegí cancha y fecha</h2></div>
+          <label><span class="mb-2 block text-xs font-black uppercase text-slate-400">Fecha</span><input id="fechaReserva" class="field-web" type="date" /></label>
+        </div>
+        <div id="listaCanchasReserva" class="mt-7 grid gap-4 lg:grid-cols-3"><p class="text-slate-400">Cargando canchas...</p></div>
+        <div class="mt-7 flex justify-end"><button id="buscarHorarios" class="rounded-xl bg-brand-500 px-6 py-3 font-black text-white transition hover:bg-brand-600 active:scale-[.98]" type="button">Buscar horarios</button></div>
+      </div>
+    </section>
+
+    <section class="panel-reserva hidden" data-panel="2">
+      <div class="surface-card p-6 sm:p-8">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"><div><p class="text-xs font-black uppercase tracking-widest text-brand-300">Paso 2</p><h2 class="mt-2 text-3xl font-black">Seleccioná un horario</h2><p id="tituloHorarios" class="mt-2 text-slate-400"></p></div><button class="boton-volver-paso" data-volver="1" type="button">Cambiar cancha</button></div>
+        <div id="listaHorarios" class="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4"></div>
+      </div>
+    </section>
+
+    <section class="panel-reserva hidden" data-panel="3">
+      <form id="formReserva" class="surface-card p-6 sm:p-8" novalidate>
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p class="text-xs font-black uppercase tracking-widest text-brand-300">Paso 3</p><h2 class="mt-2 text-3xl font-black">Completá tus datos</h2></div><button class="boton-volver-paso" data-volver="2" type="button">Cambiar horario</button></div>
+        <div id="resumenTurno" class="mt-6 rounded-2xl border border-brand-500/30 bg-brand-500/10 p-5"></div>
+        <div class="mt-7 grid gap-4 sm:grid-cols-2">
+          <label><span class="etiqueta-web">Nombre *</span><input id="clienteNombre" class="field-web" maxlength="100" autocomplete="given-name" /></label>
+          <label><span class="etiqueta-web">Apellido *</span><input id="clienteApellido" class="field-web" maxlength="100" autocomplete="family-name" /></label>
+          <label><span class="etiqueta-web">Documento *</span><input id="clienteDocumento" class="field-web" inputmode="numeric" maxlength="10" placeholder="7 a 10 números" /></label>
+          <label><span class="etiqueta-web">Teléfono *</span><input id="clienteTelefono" class="field-web" inputmode="tel" maxlength="30" autocomplete="tel" /></label>
+          <label><span class="etiqueta-web">Correo electrónico</span><input id="clienteEmail" class="field-web" type="email" autocomplete="email" /></label>
+          <label><span class="etiqueta-web">Cantidad de jugadores *</span><input id="cantidadJugadores" class="field-web" type="number" min="1" max="8" value="4" /></label>
+          <label class="sm:col-span-2"><span class="etiqueta-web">Comentarios opcionales</span><textarea id="comentariosReserva" class="field-web min-h-28 resize-y" maxlength="500"></textarea></label>
+        </div>
+        <label class="mt-5 flex cursor-pointer items-start gap-3 text-sm text-slate-300"><input id="aceptarCondiciones" class="mt-1 size-4 accent-brand-500" type="checkbox" /><span>Acepto que el turno quedará reservado temporalmente y deberá acreditarse la seña dentro del plazo indicado.</span></label>
+        <div class="mt-7 flex justify-end"><button id="enviarReserva" class="rounded-xl bg-brand-500 px-6 py-3 font-black text-white transition hover:bg-brand-600 active:scale-[.98] disabled:cursor-wait disabled:opacity-60" type="submit">Solicitar reserva</button></div>
+      </form>
+    </section>
+
+    <section class="panel-reserva hidden" data-panel="4">
+      <div class="surface-card p-6 sm:p-8"><p class="text-xs font-black uppercase tracking-widest text-emerald-300">Solicitud creada</p><h2 class="mt-2 text-3xl font-black">Tu turno quedó reservado temporalmente</h2><div id="confirmacionReserva" class="mt-7"></div><div class="mt-7 flex flex-wrap gap-3"><a class="rounded-xl bg-brand-500 px-6 py-3 font-black text-white" href="/mis-reservas">Ver mis reservas</a><button id="nuevaReserva" class="rounded-xl border border-ink-700 px-6 py-3 font-black text-slate-200 hover:bg-ink-800" type="button">Nueva reserva</button></div></div>
+    </section>
+  </section>
+  <script>import '../scripts/reservar';</script>
+</LayoutPrincipal>

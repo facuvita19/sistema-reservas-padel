@@ -1,9 +1,14 @@
 package vista.controlador;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import dao.TorneoCategoriaDAO;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoDAO;
+import dao.TorneoDAOMySQL;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,23 +18,26 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import negocio.EstadoTorneo;
 import negocio.Torneo;
 import negocio.TorneoCategoria;
 import servicio.GestionTorneoService;
-import dao.TorneoCategoriaDAO;
-import dao.TorneoCategoriaDAOMySQL;
-import dao.TorneoDAO;
-import dao.TorneoDAOMySQL;
+import util.FormateadorMoneda;
+import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneosController {
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FECHA_HORA =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
     private final TorneoCategoriaDAO categoriaDAO = new TorneoCategoriaDAOMySQL();
     private final GestionTorneoService gestionService = new GestionTorneoService();
@@ -79,6 +87,19 @@ public class TorneosController {
         colInicio.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getFechaInicio()));
         colFin.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getFechaFin()));
         colEstado.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getEstado()));
+        configurarCeldaFecha(colInicio);
+        configurarCeldaFecha(colFin);
+        colEstado.setCellFactory(columna -> new TableCell<>() {
+            @Override protected void updateItem(EstadoTorneo estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                setText(vacia || estado == null ? null : estado.toString());
+                getStyleClass().removeIf(clase -> clase.startsWith("tournament-status-"));
+                if (!vacia && estado != null) {
+                    getStyleClass().add("tournament-status-"
+                            + estado.name().toLowerCase(Locale.ROOT).replace('_', '-'));
+                }
+            }
+        });
         tablaTorneos.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> seleccionar(n));
 
         colCategoria.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNombre()));
@@ -86,10 +107,31 @@ public class TorneosController {
         colCupo.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCupoParejas()).asObject());
         colConfirmadas.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getParejasConfirmadas()).asObject());
         colDisponibles.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCuposDisponibles()).asObject());
-        colPrecio.setCellValueFactory(d -> new SimpleStringProperty("ARS " + d.getValue().getPrecioInscripcion().toPlainString()));
+        colPrecio.setCellValueFactory(d -> new SimpleStringProperty(
+                formatearMoneda(d.getValue().getPrecioInscripcion())));
+        tablaCategorias.setRowFactory(tabla -> new TableRow<>() {
+            @Override protected void updateItem(TorneoCategoria categoria, boolean vacia) {
+                super.updateItem(categoria, vacia);
+                pseudoClassStateChanged(
+                        javafx.css.PseudoClass.getPseudoClass("inactive"),
+                        !vacia && categoria != null && !categoria.isActivo());
+            }
+        });
         tablaCategorias.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> actualizarBotonesCategoria());
     }
 
+    private void configurarCeldaFecha(TableColumn<Torneo, LocalDate> columna) {
+        columna.setCellFactory(valor -> new TableCell<>() {
+            @Override protected void updateItem(LocalDate fecha, boolean vacia) {
+                super.updateItem(fecha, vacia);
+                setText(vacia || fecha == null ? null : FECHA.format(fecha));
+            }
+        });
+    }
+
+    private String formatearMoneda(BigDecimal valor) {
+        return FormateadorMoneda.pesos(valor);
+    }
     private void configurarFiltros() {
         filtroEstado.setItems(FXCollections.observableArrayList(EstadoTorneo.values()));
         filtrados = new FilteredList<>(torneos, t -> true);
@@ -123,8 +165,15 @@ public class TorneosController {
         if (torneo == null) { categorias.clear(); actualizarBotones(); return; }
         detalleNombre.setText(torneo.getNombre());
         detalleEstado.setText(torneo.getEstado().toString());
+        detalleEstado.getStyleClass().removeIf(
+                clase -> clase.startsWith("tournament-state-"));
+        detalleEstado.getStyleClass().add("tournament-state-"
+                + torneo.getEstado().name().toLowerCase(Locale.ROOT).replace('_', '-'));
         detalleFechas.setText(FECHA.format(torneo.getFechaInicio()) + " al " + FECHA.format(torneo.getFechaFin()));
-        detalleInscripcion.setText(torneo.getInscripcionDesde() + " al " + torneo.getInscripcionHasta());
+        detalleInscripcion.setText(
+                FECHA_HORA.format(torneo.getInscripcionDesde())
+                        + " al "
+                        + FECHA_HORA.format(torneo.getInscripcionHasta()));
         categorias.setAll(categoriaDAO.listarPorTorneo(torneo.getId()));
         tablaCategorias.setItems(categorias);
         actualizarBotones();
@@ -190,6 +239,8 @@ public class TorneosController {
     @FXML private void desactivarCategoria() {
         TorneoCategoria categoria = tablaCategorias.getSelectionModel().getSelectedItem();
         if (categoria == null) return;
+        if (!Dialogos.confirmarPeligro("Desactivar categoría",
+                "La categoría dejará de estar disponible para nuevas inscripciones.\n\n¿Querés continuar?")) return;
         try {
             gestionService.desactivarCategoria(categoria.getId());
             seleccionar(seleccionado);
@@ -199,11 +250,24 @@ public class TorneosController {
 
     @FXML private void publicar() { cambiar(() -> gestionService.publicar(seleccionado.getId())); }
     @FXML private void abrirInscripciones() { cambiar(() -> gestionService.abrirInscripciones(seleccionado.getId())); }
-    @FXML private void cerrarInscripciones() { cambiar(() -> gestionService.cerrarInscripciones(seleccionado.getId())); }
-    @FXML private void iniciarTorneo() { cambiar(() -> gestionService.iniciar(seleccionado.getId())); }
-    @FXML private void finalizarTorneo() { cambiar(() -> gestionService.finalizar(seleccionado.getId())); }
-    @FXML private void cancelarTorneo() { cambiar(() -> gestionService.cancelar(seleccionado.getId())); }
-
+    @FXML private void cerrarInscripciones() {
+        if (Dialogos.confirmar("Cerrar inscripciones",
+                "El torneo dejará de aceptar nuevas parejas desde la web.\n\n¿Querés continuar?"))
+            cambiar(() -> gestionService.cerrarInscripciones(seleccionado.getId()));
+    }
+    @FXML private void iniciarTorneo() {
+        if (Dialogos.confirmar("Iniciar torneo", "El torneo pasará a estado En curso.\n\n¿Querés continuar?"))
+            cambiar(() -> gestionService.iniciar(seleccionado.getId()));
+    }
+    @FXML private void finalizarTorneo() {
+        if (Dialogos.confirmarPeligro("Finalizar torneo", "El torneo quedará finalizado y no podrá reabrirse.\n\n¿Querés continuar?"))
+            cambiar(() -> gestionService.finalizar(seleccionado.getId()));
+    }
+    @FXML private void cancelarTorneo() {
+        if (Dialogos.confirmarPeligro("Cancelar torneo",
+                "El torneo quedará cancelado y no podrá reabrirse.\nLas inscripciones existentes no se modificarán automáticamente.\n\n¿Querés continuar?"))
+            cambiar(() -> gestionService.cancelar(seleccionado.getId()));
+    }
     private void cambiar(Runnable accion) {
         if (seleccionado == null) return;
         try { accion.run(); cargarTorneos(); mostrarExito("Estado actualizado correctamente."); }
@@ -216,11 +280,11 @@ public class TorneosController {
     private void mostrarError(RuntimeException ex) {
         String mensaje = ex.getMessage() == null ? "No se pudo completar la operación." : ex.getMessage();
         etiquetaMensaje.setText(mensaje);
-        new Alert(Alert.AlertType.ERROR, mensaje).showAndWait();
+        Dialogos.error("No se pudo completar la operación", mensaje);
     }
 
     private void mostrarExito(String mensaje) {
         etiquetaMensaje.setText(mensaje);
-        new Alert(Alert.AlertType.INFORMATION, mensaje).showAndWait();
+        Dialogos.exito("Operación completada", mensaje);
     }
 }

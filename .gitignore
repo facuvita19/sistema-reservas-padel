@@ -1,21 +1,30 @@
-# Compilacion Maven y Eclipse
+# Compilacion Java, Maven y Eclipse
 target/
 bin/
 *.class
 
-# Configuracion privada
-database.properties
+# Node, Astro y frontend
+node_modules/
+dist/
+.astro/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Eclipse
+# Configuracion privada y credenciales
+.env
+.env.*
+!.env.example
+database.properties
+database.local.properties
+src/main/resources/database.properties
+
+# IDE
 .classpath
 .project
 .settings/
-
-# IntelliJ IDEA
 .idea/
 *.iml
-
-# Visual Studio Code
 .vscode/
 
 # Sistema operativo
@@ -28,34 +37,13 @@ Thumbs.db
 *.bak
 ~$*
 
-# Instalador y paquetes generados
+# Instaladores y paquetes generados
 installer/input/
 installer/output/
 installer/package/
 
-# Credenciales y configuración privada
-.env
-database.properties
-database.local.properties
-src/main/resources/database.properties
-
-# Backups y datos temporales
+# Backups locales
 backups/
-*.bak
 
-# Compilación
-target/
-
-# Eclipse
-.settings/
-.classpath
-.project
-
-# Sistema operativo
-.DS_Store
-Thumbs.db
-
-# Archivos temporales
-*.tmp
-*.log
-database/docker-init/
+# Paquetes y scripts auxiliares temporales
+*.zip

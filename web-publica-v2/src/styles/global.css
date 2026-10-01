@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f2f7f9;
+  --color-brand-100: #dce9ee;
+  --color-brand-300: #91b3c3;
+  --color-brand-500: #527f9c;
+  --color-brand-600: #416b85;
+  --color-brand-700: #31566d;
+  --color-ink-950: #071018;
+  --color-ink-900: #0b151e;
+  --color-ink-850: #0f1d27;
+  --color-ink-800: #142632;
+  --color-ink-700: #213b4a;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: Inter, "Segoe UI", system-ui, sans-serif;
+  background: #071018;
+  color: #edf5f7;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; min-width: 320px; background: #071018; }
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+
+.container-site {
+  width: min(1180px, calc(100% - 32px));
+  margin-inline: auto;
+}
+
+.surface-card {
+  border: 1px solid #294351;
+  background: #0f1d27;
+  border-radius: 20px;
+  box-shadow: 0 20px 55px rgba(0, 0, 0, .22);
+}
+
+.focus-ring:focus-visible {
+  outline: 3px solid rgba(82, 127, 156, .45);
+  outline-offset: 3px;
+}
+.field-web {
+  width: 100%;
+  border: 1px solid #294351;
+  border-radius: 12px;
+  background: #071018;
+  color: #edf5f7;
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color .16s ease, box-shadow .16s ease, background-color .16s ease;
+}
+.field-web::placeholder { color: #627d8b; }
+.field-web:hover { border-color: #527f9c; }
+.field-web:focus { border-color: #91b3c3; box-shadow: 0 0 0 3px rgba(82,127,156,.22); background: #0b1821; }
+.paso-reserva { display:flex; align-items:center; gap:.65rem; border:1px solid #213b4a; border-radius:12px; padding:.75rem 1rem; color:#718996; background:#0b151e; font-size:.8rem; font-weight:800; text-transform:uppercase; }
+.paso-reserva b { display:grid; place-items:center; width:1.85rem; height:1.85rem; border-radius:999px; background:#142632; color:#91b3c3; }
+.paso-reserva.activo { color:#fff; border-color:#527f9c; background:rgba(82,127,156,.14); }
+.paso-reserva.activo b { color:#fff; background:#527f9c; }
+.etiqueta-web { display:block; margin-bottom:.5rem; color:#94a9b4; font-size:.75rem; font-weight:900; text-transform:uppercase; letter-spacing:.04em; }
+.boton-volver-paso { border:1px solid #294351; border-radius:10px; padding:.65rem 1rem; color:#c9d6dc; font-weight:800; cursor:pointer; transition:.16s ease; }
+.boton-volver-paso:hover { border-color:#527f9c; background:#142632; color:white; }
+/* copiar-codigo-interaccion-v1 */
+.copiar-codigo {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .4rem;
+  min-height: 34px;
+  border-radius: 9px;
+  padding: .35rem .65rem;
+  cursor: pointer;
+  transition: color .16s ease,
+              background-color .16s ease,
+              border-color .16s ease,
+              box-shadow .16s ease,
+              transform .12s ease;
+}
+
+.copiar-codigo:hover {
+  color: #ffffff;
+  background: rgba(82, 127, 156, .16);
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .16);
+  transform: translateY(-1px);
+}
+
+.copiar-codigo:active {
+  transform: translateY(0) scale(.96);
+  box-shadow: none;
+}
+
+.copiar-codigo.copiado {
+  color: #8ff0c7;
+  background: rgba(16, 185, 129, .15);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, .10);
+  animation: confirmar-copia .34s ease-out;
+}
+
+.copiar-codigo.error-copia {
+  color: #ffb3bd;
+  background: rgba(244, 63, 94, .14);
+  animation: error-copia .28s ease-out;
+}
+
+@keyframes confirmar-copia {
+  0% { transform: scale(.92); }
+  55% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+@keyframes error-copia {
+  0%, 100% { transform: translateX(0); }
+  35% { transform: translateX(-3px); }
+  70% { transform: translateX(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .copiar-codigo {
+    transition: none;
+  }
+
+  .copiar-codigo:hover,
+  .copiar-codigo:active,
+  .copiar-codigo.copiado,
+  .copiar-codigo.error-copia {
+    animation: none;
+    transform: none;
+  }
+}
+.tab-auth { border-radius:.55rem; padding:.7rem 1rem; color:#91a5b0; font-weight:900; transition:.16s ease; cursor:pointer; }
+.tab-auth:hover { color:white; background:#142632; }
+.tab-auth.activo { color:white; background:#527f9c; box-shadow:0 6px 18px rgba(82,127,156,.2); }

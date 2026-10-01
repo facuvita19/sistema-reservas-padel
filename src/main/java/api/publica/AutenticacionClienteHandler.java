@@ -132,7 +132,8 @@ public final class AutenticacionClienteHandler {
                                 entrada.documento(),
                                 entrada.telefono(),
                                 entrada.email(),
-                                entrada.password()));
+                                entrada.password(),
+                                entrada.posicionPreferida()));
 
         escribirCookie(intercambio, resultado.token());
         responder(intercambio, 201, Sesion.desde(resultado));

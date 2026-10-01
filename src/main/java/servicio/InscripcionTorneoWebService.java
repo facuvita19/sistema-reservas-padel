@@ -18,7 +18,6 @@ import dao.TorneoInscripcionJugadorDAO;
 import dao.TorneoInscripcionJugadorDAOMySQL;
 import negocio.EstadoInscripcionTorneo;
 import negocio.OrigenInscripcionTorneo;
-import negocio.TipoVinculacionTorneo;
 import negocio.Torneo;
 import negocio.TorneoCategoria;
 import negocio.TorneoInscripcion;

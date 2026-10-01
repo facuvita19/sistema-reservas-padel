@@ -3,6 +3,7 @@ package vista.controlador;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
 import javafx.geometry.Insets;
@@ -13,11 +14,15 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import negocio.Torneo;
+import vista.Dialogos;
 
 public class TorneoDialog {
-    private final Dialog<Torneo> dialogo = new Dialog<>();
+    private final Dialog<ButtonType> dialogo = new Dialog<>();
     private final TextField nombre = new TextField();
     private final TextArea descripcion = new TextArea();
     private final DatePicker fechaInicio = new DatePicker();
@@ -27,7 +32,9 @@ public class TorneoDialog {
     private final TextField horaDesde = new TextField("08:00");
     private final TextField horaHasta = new TextField("23:00");
     private final TextArea reglamento = new TextArea();
+    private final Label error = new Label();
     private final Torneo original;
+    private final ButtonType guardar = new ButtonType("GUARDAR CAMBIOS", ButtonBar.ButtonData.OK_DONE);
 
     public TorneoDialog(Torneo torneo) {
         original = torneo;
@@ -35,44 +42,80 @@ public class TorneoDialog {
         if (torneo != null) cargar(torneo);
     }
 
-    public Optional<Torneo> mostrar() { return dialogo.showAndWait(); }
+    public Optional<Torneo> mostrar() {
+        while (true) {
+            Optional<ButtonType> resultado = dialogo.showAndWait();
+            if (resultado.isEmpty() || resultado.get() != guardar) return Optional.empty();
+            try {
+                error.setText("");
+                return Optional.of(construir());
+            } catch (IllegalArgumentException exception) {
+                error.setText(exception.getMessage());
+            }
+        }
+    }
 
     private void configurar() {
-        dialogo.setTitle(original == null ? "Nuevo torneo" : "Editar torneo");
-        dialogo.setHeaderText(original == null
-                ? "Completá los datos generales del torneo."
-                : "Actualizá los datos generales del torneo.");
-        ButtonType guardar = new ButtonType("GUARDAR", ButtonBar.ButtonData.OK_DONE);
-        dialogo.getDialogPane().getButtonTypes().addAll(guardar, ButtonType.CANCEL);
+        boolean nuevo = original == null;
+        dialogo.setTitle(nuevo ? "Nuevo torneo" : "Editar torneo");
+        dialogo.setHeaderText(nuevo ? "Crear un nuevo torneo" : "Actualizar datos del torneo");
+        dialogo.getDialogPane().getButtonTypes().addAll(
+                guardar, new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
+        Dialogos.preparar(dialogo, "tournament-editor-dialog");
 
+        nombre.setPromptText("Ejemplo: Copa Primavera 2026");
+        descripcion.setPromptText("Descripción visible para los participantes");
+        reglamento.setPromptText("Reglamento, condiciones y aclaraciones");
         descripcion.setPrefRowCount(3);
         descripcion.setWrapText(true);
         reglamento.setPrefRowCount(4);
         reglamento.setWrapText(true);
         horaDesde.setPromptText("HH:mm");
         horaHasta.setPromptText("HH:mm");
+        aplicarCampo(nombre, descripcion, fechaInicio, fechaFin, inscripcionDesde,
+                inscripcionHasta, horaDesde, horaHasta, reglamento);
 
         GridPane grilla = new GridPane();
-        grilla.setHgap(10);
+        grilla.setHgap(12);
         grilla.setVgap(10);
-        grilla.setPadding(new Insets(10));
-        agregar(grilla, 0, "Nombre", nombre);
+        ColumnConstraints etiqueta = new ColumnConstraints(150);
+        ColumnConstraints campo = new ColumnConstraints();
+        campo.setHgrow(Priority.ALWAYS);
+        ColumnConstraints hora = new ColumnConstraints(105);
+        grilla.getColumnConstraints().addAll(etiqueta, campo, hora);
+
+        agregar(grilla, 0, "Nombre *", nombre);
         agregar(grilla, 1, "Descripción", descripcion);
-        agregar(grilla, 2, "Inicio del torneo", fechaInicio);
-        agregar(grilla, 3, "Fin del torneo", fechaFin);
-        agregar(grilla, 4, "Inscripción desde", inscripcionDesde);
+        agregar(grilla, 2, "Inicio del torneo *", fechaInicio);
+        agregar(grilla, 3, "Fin del torneo *", fechaFin);
+        agregar(grilla, 4, "Inscripción desde *", inscripcionDesde);
         grilla.add(horaDesde, 2, 4);
-        agregar(grilla, 5, "Inscripción hasta", inscripcionHasta);
+        agregar(grilla, 5, "Inscripción hasta *", inscripcionHasta);
         grilla.add(horaHasta, 2, 5);
         agregar(grilla, 6, "Reglamento", reglamento);
-        dialogo.getDialogPane().setContent(grilla);
-        dialogo.getDialogPane().setPrefSize(720, 650);
-        dialogo.setResultConverter(tipo -> tipo == guardar ? construir() : null);
+
+        Label ayuda = new Label("Las horas deben ingresarse en formato HH:mm, por ejemplo 08:00 o 23:30.");
+        ayuda.getStyleClass().add("dialog-help");
+        ayuda.setWrapText(true);
+        error.getStyleClass().add("dialog-validation-error");
+        error.setWrapText(true);
+
+        VBox contenido = new VBox(14, grilla, ayuda, error);
+        contenido.setPadding(new Insets(4, 2, 2, 2));
+        dialogo.getDialogPane().setContent(contenido);
+        dialogo.getDialogPane().setPrefSize(760, 680);
     }
 
-    private void agregar(GridPane grilla, int fila, String etiqueta, javafx.scene.Node control) {
-        grilla.add(new Label(etiqueta), 0, fila);
+    private void aplicarCampo(javafx.scene.Node... controles) {
+        for (javafx.scene.Node control : controles) control.getStyleClass().add("dialog-field");
+    }
+
+    private void agregar(GridPane grilla, int fila, String texto, javafx.scene.Node control) {
+        Label etiqueta = new Label(texto);
+        etiqueta.getStyleClass().add("dialog-field-label");
+        grilla.add(etiqueta, 0, fila);
         grilla.add(control, 1, fila);
+        GridPane.setHgrow(control, Priority.ALWAYS);
     }
 
     private void cargar(Torneo torneo) {
@@ -92,16 +135,23 @@ public class TorneoDialog {
     }
 
     private Torneo construir() {
+        if (nombre.getText() == null || nombre.getText().isBlank()) {
+            throw new IllegalArgumentException("Ingresá el nombre del torneo.");
+        }
         LocalDate inicio = requerido(fechaInicio.getValue(), "La fecha de inicio es obligatoria.");
         LocalDate fin = requerido(fechaFin.getValue(), "La fecha de fin es obligatoria.");
         LocalDate desde = requerido(inscripcionDesde.getValue(), "La apertura de inscripción es obligatoria.");
         LocalDate hasta = requerido(inscripcionHasta.getValue(), "El cierre de inscripción es obligatorio.");
-        LocalTime horaApertura = LocalTime.parse(horaDesde.getText().trim());
-        LocalTime horaCierre = LocalTime.parse(horaHasta.getText().trim());
+        LocalTime horaApertura = hora(horaDesde.getText(), "La hora de apertura no es válida.");
+        LocalTime horaCierre = hora(horaHasta.getText(), "La hora de cierre no es válida.");
+        if (fin.isBefore(inicio)) throw new IllegalArgumentException("La fecha de fin no puede ser anterior al inicio.");
+        if (LocalDateTime.of(hasta, horaCierre).isBefore(LocalDateTime.of(desde, horaApertura))) {
+            throw new IllegalArgumentException("El cierre de inscripción no puede ser anterior a la apertura.");
+        }
 
         Torneo torneo = new Torneo();
         if (original != null) torneo.setId(original.getId());
-        torneo.setNombre(nombre.getText());
+        torneo.setNombre(nombre.getText().trim());
         torneo.setDescripcion(descripcion.getText());
         torneo.setFechaInicio(inicio);
         torneo.setFechaFin(fin);
@@ -109,6 +159,11 @@ public class TorneoDialog {
         torneo.setInscripcionHasta(LocalDateTime.of(hasta, horaCierre));
         torneo.setReglamento(reglamento.getText());
         return torneo;
+    }
+
+    private LocalTime hora(String texto, String mensaje) {
+        try { return LocalTime.parse(texto == null ? "" : texto.trim()); }
+        catch (DateTimeParseException exception) { throw new IllegalArgumentException(mensaje); }
     }
 
     private <T> T requerido(T valor, String mensaje) {

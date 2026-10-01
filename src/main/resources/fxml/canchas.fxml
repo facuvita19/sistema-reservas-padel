@@ -12,7 +12,7 @@
         <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="module-header">
             <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
             <children>
-                <Button text="← Inicio" onAction="#volver" styleClass="back-button" />
+                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
                 <VBox spacing="3">
                     <children>
                         <Label text="Gestión de canchas" styleClass="page-title" />

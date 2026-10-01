@@ -1,7 +1,6 @@
 package vista.controlador;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +29,7 @@ import servicio.MensajeReservaService;
 import servicio.PagoService;
 import servicio.ReservaService;
 import servicio.WhatsAppService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class SolicitudesWebController {
@@ -305,8 +305,7 @@ public class SolicitudesWebController {
     }
 
     private String moneda(BigDecimal valor) {
-        BigDecimal importe = valor == null ? BigDecimal.ZERO : valor;
-        return "ARS " + importe.setScale(2, RoundingMode.HALF_UP).toPlainString();
+        return FormateadorMoneda.pesos(valor);
     }
 
     private void configurarBoton(Button boton, boolean visible) {

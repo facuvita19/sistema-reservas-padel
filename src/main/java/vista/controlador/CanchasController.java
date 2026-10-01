@@ -26,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import negocio.Cancha;
 import negocio.TipoCancha;
 import servicio.CanchaService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class CanchasController {
@@ -132,6 +133,15 @@ public class CanchasController {
 				datos.getValue().getHoraApertura().format(FORMATO_HORA) + " - "
 						+ datos.getValue().getHoraCierre().format(FORMATO_HORA)));
 		columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
+		columnaPrecio.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
+		        @Override
+		        protected void updateItem(BigDecimal importe, boolean vacia) {
+		                super.updateItem(importe, vacia);
+		                setText(vacia || importe == null
+		                        ? null
+		                        : FormateadorMoneda.pesos(importe));
+		        }
+		});
 		columnaEstado.setCellValueFactory(datos -> new javafx.beans.property.SimpleStringProperty(
 				datos.getValue().isActivo() ? "Activa" : "Inactiva"));
 

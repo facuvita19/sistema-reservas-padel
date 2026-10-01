@@ -2,11 +2,9 @@ package vista.controlador;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -34,6 +32,7 @@ import negocio.Usuario;
 import servicio.CierreCajaService;
 import servicio.DetallePagoCajaService;
 import servicio.MovimientoCajaService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class CierreCajaController {
@@ -431,8 +430,9 @@ public class CierreCajaController {
     }
 
     private String formatearMoneda(BigDecimal valor) {
-        return NumberFormat.getCurrencyInstance(new Locale("es", "AR"))
-                .format(valor == null ? BigDecimal.ZERO : valor);
+
+            return FormateadorMoneda.pesos(valor);
+
     }
     private String formatearMonedaConSigno(BigDecimal valor) {
         BigDecimal seguro = valor == null ? BigDecimal.ZERO : valor;

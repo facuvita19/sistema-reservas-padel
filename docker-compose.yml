@@ -56,15 +56,15 @@ services:
         condition: service_healthy
 
   web:
-    build:
-      context: .
-      dockerfile: Dockerfile.web
-    container_name: padel-web
-    restart: unless-stopped
-    ports:
-      - "5173:80"
-    depends_on:
-      - api
+   build:
+     context: ./web-publica-v2
+     dockerfile: Dockerfile
+   container_name: padel-web
+   restart: unless-stopped
+   ports:
+     - "5173:80"
+   depends_on:
+     - api
 
 volumes:
   padel_mysql_data:

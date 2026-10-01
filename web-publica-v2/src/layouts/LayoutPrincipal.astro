@@ -1,0 +1,9 @@
+---
+import Encabezado from '../components/Encabezado.astro';
+import PiePagina from '../components/PiePagina.astro';
+import ModalAutenticacion from '../components/ModalAutenticacion.astro';
+import '../styles/global.css';
+interface Props { titulo:string; descripcion?:string; actual?:'inicio'|'reservar'|'torneos'|'reservas'|'cuenta'; }
+const { titulo, descripcion='Reservas online de pádel', actual='inicio' }=Astro.props;
+---
+<!doctype html><html lang="es-AR"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width"/><meta name="description" content={descripcion}/><meta name="theme-color" content="#071018"/><title>{titulo}</title></head><body><Encabezado actual={actual}/><main><slot/></main><PiePagina/><ModalAutenticacion/><script>import '../scripts/autenticacion';</script></body></html>

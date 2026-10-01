@@ -1,7 +1,6 @@
 package vista.controlador;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +28,7 @@ import negocio.Reserva;
 import servicio.ClienteService;
 import servicio.PagoService;
 import servicio.ReservaService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class ClientesController {
@@ -241,7 +241,7 @@ public class ClientesController {
     }
 
     private String formatearMoneda(BigDecimal valor) {
-        return "ARS " + (valor == null ? BigDecimal.ZERO : valor).setScale(2, RoundingMode.HALF_UP).toPlainString();
+        return FormateadorMoneda.pesos(valor);
     }
 
     private void limpiarHistorial() {

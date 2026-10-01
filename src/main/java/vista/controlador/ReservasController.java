@@ -46,6 +46,7 @@ import servicio.PoliticaReservaService;
 import servicio.ReprogramacionReservaService;
 import servicio.ReservaService;
 import servicio.WhatsAppService;
+import util.FormateadorMoneda;
 import vista.FiltroReservas;
 import vista.Navegacion;
 import vista.SolicitudFiltroReservas;
@@ -138,6 +139,15 @@ public class ReservasController {
         columnaCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
         columnaEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
         columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
+        columnaPrecio.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
+            @Override
+            protected void updateItem(BigDecimal importe, boolean vacia) {
+                super.updateItem(importe, vacia);
+                setText(vacia || importe == null
+                        ? null
+                        : FormateadorMoneda.pesos(importe));
+            }
+        });
         tablaReservas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, actual) -> {
             if (actual != null) mostrarDetalle(actual);
         });
@@ -469,9 +479,9 @@ public class ReservasController {
         spinnerJugadores.getValueFactory().setValue(reserva.getCantidadJugadores());
         campoComentarios.setText(reserva.getComentarios());
         campoObservaciones.setText(reserva.getObservacionesAdministrativas());
-        etiquetaPrecio.setText("ARS " + reserva.getPrecioTotal().toPlainString());
+        etiquetaPrecio.setText(FormateadorMoneda.pesos(reserva.getPrecioTotal()));
         try {
-            etiquetaSaldoPendiente.setText("ARS " + pagoService.calcularSaldo(reserva.getId()).toPlainString());
+            etiquetaSaldoPendiente.setText(FormateadorMoneda.pesos(pagoService.calcularSaldo(reserva.getId())));
         } catch (RuntimeException exception) { etiquetaSaldoPendiente.setText("No disponible"); }
         actualizarAccionesReserva();
         mostrarDetalleCancelacion(reserva);
@@ -561,7 +571,7 @@ public class ReservasController {
 
     private void actualizarResumenPrecio() {
         Cancha cancha = comboCancha.getValue();
-        etiquetaPrecio.setText(cancha == null ? "ARS 0" : "ARS " + cancha.getPrecio().toPlainString());
+        etiquetaPrecio.setText(FormateadorMoneda.pesos(cancha == null ? null : cancha.getPrecio()));
     }
 
     private void actualizarAccionesReserva() {
@@ -728,8 +738,8 @@ public class ReservasController {
     }
 
     private String totalAcreditadoSeleccionado() {
-        if (reservaSeleccionada == null) return "ARS 0.00";
-        return "ARS " + pagoService.totalAcreditado(reservaSeleccionada.getId()).toPlainString();
+        if (reservaSeleccionada == null) return FormateadorMoneda.pesos(null);
+        return FormateadorMoneda.pesos(pagoService.totalAcreditado(reservaSeleccionada.getId()));
     }
 
     private void mostrarOpcionesCancelacionDentroDePlazo() {

@@ -16,7 +16,8 @@ public final class AutenticacionClienteDTO {
             String documento,
             String telefono,
             String email,
-            String password) {
+            String password,
+            String posicionPreferida) {
     }
 
     public record Login(
@@ -29,7 +30,8 @@ public final class AutenticacionClienteDTO {
             String nombre,
             String apellido,
             String email,
-            String telefono) {
+            String telefono,
+            String posicionPreferida) {
     }
 
     public record Sesion(
@@ -50,7 +52,8 @@ public final class AutenticacionClienteDTO {
                             resultado.nombre(),
                             resultado.apellido(),
                             resultado.email(),
-                            resultado.telefono()));
+                            resultado.telefono(),
+                            resultado.posicionPreferida()));
         }
 
         public static Sesion desde(SesionAutenticada autenticada) {
@@ -62,7 +65,11 @@ public final class AutenticacionClienteDTO {
                             autenticada.cliente().getNombre(),
                             autenticada.cliente().getApellido(),
                             autenticada.cliente().getEmail(),
-                            autenticada.cliente().getTelefono()));
+                            autenticada.cliente().getTelefono(),
+                            autenticada.cliente().getPosicionPreferida() == null
+                                    ? null
+                                    : autenticada.cliente()
+                                            .getPosicionPreferida().name()));
         }
     }
 

@@ -17,14 +17,16 @@ public final class CuentaClienteDTO {
             String apellido,
             String documento,
             String telefono,
-            String email) {
+            String email,
+            String posicionPreferida) {
     }
 
     public record ActualizarPerfil(
             String nombre,
             String apellido,
             String telefono,
-            String email) {
+            String email,
+            String posicionPreferida) {
     }
 
     public record ReservaResumen(

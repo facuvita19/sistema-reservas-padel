@@ -1,13 +1,12 @@
 package vista.controlador;
 
 import java.awt.Desktop;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
+import dao.ClienteDAOMySQL;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -22,15 +21,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
 import servicio.ConsultaInscripcionTorneoService;
-import servicio.GestionInscripcionTorneoService;
-import servicio.GestionVinculacionJugadorTorneoService;
-import dao.ClienteDAOMySQL;
-import negocio.Cliente;
 import servicio.ConsultaInscripcionTorneoService.InscripcionResumen;
 import servicio.ConsultaInscripcionTorneoService.JugadorResumen;
+import servicio.GestionInscripcionTorneoService;
+import servicio.GestionVinculacionJugadorTorneoService;
 import servicio.WhatsAppService;
+import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class TorneosInscripcionesController {
@@ -194,8 +193,7 @@ public class TorneosInscripcionesController {
         detalleEstado.setText(valor.estado().toString());
         detalleOrigen.setText(valor.origen());
         detalleFecha.setText(valor.fechaSolicitud() == null ? "-" : valor.fechaSolicitud().format(FECHA_HORA));
-        BigDecimal precio = valor.precioInscripcion() == null ? BigDecimal.ZERO : valor.precioInscripcion();
-        detallePrecio.setText("ARS " + precio.setScale(2, RoundingMode.HALF_UP).toPlainString());
+        detallePrecio.setText(FormateadorMoneda.pesos(valor.precioInscripcion()));
         cargarJugador(valor.responsable(), responsableNombre, responsableTelefono,
                 responsableVinculacion, botonWhatsappResponsable,
                 botonVincularResponsable, botonDesvincularResponsable);

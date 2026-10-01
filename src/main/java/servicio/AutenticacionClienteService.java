@@ -9,6 +9,7 @@ import config.ConexionBD;
 import dao.ClienteDAO;
 import dao.ClienteDAOMySQL;
 import negocio.Cliente;
+import negocio.PosicionJugador;
 import negocio.RolUsuario;
 import negocio.SesionCliente;
 import negocio.Usuario;
@@ -160,6 +161,7 @@ public class AutenticacionClienteService {
         cliente.setDocumento(datos.documento());
         cliente.setTelefono(datos.telefono());
         cliente.setEmail(datos.email());
+        cliente.setPosicionPreferida(datos.posicionPreferida());
         clienteDAO.guardar(conexion, cliente);
         return cliente;
     }
@@ -187,7 +189,10 @@ public class AutenticacionClienteService {
                 cliente.getNombre(),
                 cliente.getApellido(),
                 cliente.getEmail(),
-                cliente.getTelefono());
+                cliente.getTelefono(),
+                cliente.getPosicionPreferida() == null
+                        ? null
+                        : cliente.getPosicionPreferida().name());
     }
 
     private DatosNormalizados validarYNormalizar(
@@ -204,6 +209,8 @@ public class AutenticacionClienteService {
                 ? ""
                 : entrada.telefono().trim();
         String email = normalizarEmail(entrada.email());
+        PosicionJugador posicionPreferida = normalizarPosicion(
+                entrada.posicionPreferida());
 
         if (nombre.isBlank()) {
             throw new IllegalArgumentException(
@@ -233,7 +240,19 @@ public class AutenticacionClienteService {
         }
 
         return new DatosNormalizados(
-                nombre, apellido, documento, telefono, email);
+                nombre, apellido, documento, telefono, email,
+                posicionPreferida);
+    }
+
+    private PosicionJugador normalizarPosicion(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        try {
+            return PosicionJugador.valueOf(
+                    valor.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException(
+                    "La posicion preferida debe ser DRIVE o REVES.");
+        }
     }
 
     private String normalizarNombre(String valor) {
@@ -284,7 +303,8 @@ public class AutenticacionClienteService {
             String apellido,
             String documento,
             String telefono,
-            String email) {
+            String email,
+            PosicionJugador posicionPreferida) {
     }
 
     public record RegistroCliente(
@@ -293,7 +313,8 @@ public class AutenticacionClienteService {
             String documento,
             String telefono,
             String email,
-            String password) {
+            String password,
+            String posicionPreferida) {
     }
 
     public record ResultadoAutenticacion(
@@ -304,7 +325,8 @@ public class AutenticacionClienteService {
             String nombre,
             String apellido,
             String email,
-            String telefono) {
+            String telefono,
+            String posicionPreferida) {
     }
 
     public record SesionAutenticada(

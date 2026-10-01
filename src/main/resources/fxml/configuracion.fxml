@@ -16,9 +16,9 @@
                 <Insets top="18" right="26" bottom="18" left="26" />
             </padding>
             <children>
-                <Button text="← Inicio"
+                <Button text="INICIO"
                         onAction="#volver"
-                        styleClass="back-button" />
+                        styleClass="admin-home-button" />
                 <VBox spacing="2">
                     <children>
                         <Label text="Configuración del complejo"
