@@ -1,11 +1,15 @@
 ---
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 import ModalInscripcionTorneo from '../components/ModalInscripcionTorneo.astro';
+import ModalCuadroTorneo from '../components/ModalCuadroTorneo.astro';
+
 ---
 <LayoutPrincipal titulo="Torneos | Pádel Reservas" actual="torneos">
   <section class="border-b border-ink-700 bg-ink-900"><div class="container-site py-16"><p class="text-xs font-black uppercase tracking-[.2em] text-brand-300">Competencias</p><h1 class="mt-3 text-5xl font-black">Torneos disponibles</h1><p class="mt-4 max-w-2xl text-lg text-slate-400">Consultá fechas, categorías, cupos y enviá la solicitud de tu pareja.</p></div></section>
   <section class="container-site py-14"><div id="listaTorneos" class="grid gap-6"></div></section>
   <ModalInscripcionTorneo />
+  <ModalCuadroTorneo />
+
   <script>
     import '../scripts/torneos';
   </script>

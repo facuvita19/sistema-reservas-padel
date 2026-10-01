@@ -1,4 +1,5 @@
 import { api, type TorneoDetalle, type TorneoResumen } from './api';
+import { abrirCuadroTorneo } from './cuadro-torneo';
 import { etiqueta, fecha, fechaHora, moneda } from './formatos';
 
 type Perfil = { nombre?: string; apellido?: string; telefono?: string };
@@ -34,7 +35,10 @@ function tarjeta(torneo: TorneoDetalle) {
       <div class="flex items-start justify-between gap-3"><div><strong class="text-lg">${escapeHtml(categoria.nombre)}</strong><small class="mt-1 block text-slate-400">${escapeHtml(etiqueta(categoria.rama))}</small></div><span class="font-black">${moneda(categoria.precioInscripcion)}</span></div>
       <div class="mt-4 h-2 overflow-hidden rounded-full bg-ink-700"><div class="h-full rounded-full bg-brand-500" style="width:${Math.min(100, categoria.cupoParejas ? categoria.parejasConfirmadas / categoria.cupoParejas * 100 : 0)}%"></div></div>
       <div class="mt-2 flex justify-between text-xs text-slate-400"><span>${categoria.parejasConfirmadas} confirmadas</span><span>${categoria.cuposDisponibles} disponibles</span></div>
-      <button class="mt-4 w-full rounded-lg px-4 py-2.5 font-black transition active:scale-[.98] ${habilitada ? 'inscribir-pareja bg-brand-500 text-white hover:bg-brand-600' : 'cursor-not-allowed bg-ink-700 text-slate-500'}" ${habilitada ? '' : 'disabled'} type="button" data-categoria-id="${categoria.id}" data-resumen="${escapeHtml(`${torneo.nombre} · ${categoria.nombre} · ${etiqueta(categoria.rama)} · ${moneda(categoria.precioInscripcion)}`)}">${habilitada ? 'Inscribir pareja' : 'No disponible'}</button>
+      <div class="mt-4 grid gap-2 sm:grid-cols-2">
+        <button class="ver-cuadro rounded-lg border border-brand-500/45 bg-brand-500/10 px-4 py-2.5 font-black text-brand-100 transition hover:bg-brand-500/20 active:scale-[.98]" type="button" data-categoria-id="${categoria.id}">Ver cuadro</button>
+        <button class="rounded-lg px-4 py-2.5 font-black transition active:scale-[.98] ${habilitada ? 'inscribir-pareja bg-brand-500 text-white hover:bg-brand-600' : 'cursor-not-allowed bg-ink-700 text-slate-500'}" ${habilitada ? '' : 'disabled'} type="button" data-categoria-id="${categoria.id}" data-resumen="${escapeHtml(`${torneo.nombre} · ${categoria.nombre} · ${etiqueta(categoria.rama)} · ${moneda(categoria.precioInscripcion)}`)}">${habilitada ? 'Inscribir pareja' : 'No disponible'}</button>
+      </div>
     </div>`;
   }).join('');
   return `<article class="surface-card p-7">
@@ -117,7 +121,9 @@ async function cargar() {
 
 document.getElementById('listaTorneos')?.addEventListener('click', evento => {
   const boton = (evento.target as HTMLElement).closest<HTMLButtonElement>('.inscribir-pareja');
-  if (boton && !boton.disabled) abrirInscripcion(boton);
+  if (boton && !boton.disabled) { abrirInscripcion(boton); return; }
+  const cuadro = (evento.target as HTMLElement).closest<HTMLButtonElement>('.ver-cuadro');
+  if (cuadro) abrirCuadroTorneo(Number(cuadro.dataset.categoriaId), cuadro);
 });
 
 document.getElementById('cerrarInscripcion')?.addEventListener('click', cerrarInscripcion);

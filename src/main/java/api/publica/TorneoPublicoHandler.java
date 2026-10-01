@@ -23,6 +23,7 @@ public final class TorneoPublicoHandler {
             PREFIJO + "/inscripciones";
 
     private final TorneoPublicoService torneoService;
+    private final CuadroTorneoPublicoService cuadroService;
     private final InscripcionTorneoWebService inscripcionService;
     private final SeguridadApiPublica seguridad;
     private final ObjectMapper mapper;
@@ -38,6 +39,7 @@ public final class TorneoPublicoHandler {
                     "Las dependencias del handler no pueden ser nulas.");
         }
         this.torneoService = torneoService;
+        this.cuadroService = new CuadroTorneoPublicoService();
         this.inscripcionService = inscripcionService;
         this.seguridad = seguridad;
         this.mapper = mapper;
@@ -77,8 +79,28 @@ public final class TorneoPublicoHandler {
                         operacionId);
                 return;
             }
-            long id = parsearId(ruta.substring((PREFIJO + "/").length()));
+            String prefijoCategoria = PREFIJO + "/categorias/";
+            if (ruta.startsWith(prefijoCategoria)
+                    && ruta.endsWith("/cuadro")) {
+                String valor = ruta.substring(prefijoCategoria.length(),
+                        ruta.length() - "/cuadro".length());
+                responder(intercambio, 200,
+                        cuadroService.buscarPorCategoria(parsearId(valor)));
+                return;
+            }
+            String relativo = ruta.substring((PREFIJO + "/").length());
+            if (relativo.endsWith("/cuadro")) {
+                String valor = relativo.substring(0,
+                        relativo.length() - "/cuadro".length());
+                responder(intercambio, 200,
+                        cuadroService.buscarPorTorneo(parsearId(valor)));
+                return;
+            }
+            long id = parsearId(relativo);
             responder(intercambio, 200, torneoService.buscar(id));
+        } catch (CuadroTorneoPublicoService.CuadroNoEncontradoException exception) {
+            error(intercambio, 404, "CUADRO_NO_ENCONTRADO",
+                    exception.getMessage(), operacionId);
         } catch (TorneoPublicoNoEncontradoException exception) {
             error(intercambio, 404, "TORNEO_NO_ENCONTRADO",
                     exception.getMessage(), operacionId);

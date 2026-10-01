@@ -88,3 +88,16 @@ export interface TorneoDetalle extends Omit<TorneoResumen, 'cantidadCategorias'>
   reglamento?: string;
   categorias: CategoriaTorneo[];
 }
+
+export interface ParejaCuadroPublica { inscripcionId:number; jugadores:string[]; }
+export interface SetCuadroPublico { numero:number; tipo:string; puntosPareja1:number; puntosPareja2:number; }
+export interface PartidoCuadroPublico { id:number; fase:string; orden:number; estado:string; bye:boolean; pareja1?:ParejaCuadroPublica|null; pareja2?:ParejaCuadroPublica|null; ganadoraInscripcionId?:number|null; resultado?:string|null; sets:SetCuadroPublico[]; fecha?:string|null; horaInicio?:string|null; horaFin?:string|null; canchaId?:number|null; cancha?:string|null; fechaFinalizacion?:string|null; }
+export interface FaseCuadroPublica { nombre:string; partidos:PartidoCuadroPublico[]; }
+export interface CampeonaCuadroPublica extends ParejaCuadroPublica { resultadoFinal?:string|null; }
+export interface CuadroCategoriaPublico { torneo:{id:number;nombre:string;estado:string;fechaInicio:string;fechaFin:string}; categoria:{id:number;nombre:string;rama:string}; campeona?:CampeonaCuadroPublica|null; fases:FaseCuadroPublica[]; }
+
+
+
+
+
+
