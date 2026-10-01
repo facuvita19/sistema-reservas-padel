@@ -1,8 +1,8 @@
-﻿# Plan de desarrollo
+# Plan de desarrollo
 
 ## 1. Propósito del documento
 
-Este documento registra el estado real, la arquitectura, la metodología de trabajo y las próximas etapas del sistema de reservas para un complejo de pádel.
+Este documento registra el estado real, la arquitectura, las decisiones funcionales, la metodología de trabajo y las próximas etapas del sistema de reservas para un complejo de pádel.
 
 Su objetivo es permitir que el desarrollo continúe de forma ordenada y segura, incluso cuando sea necesario cambiar de conversación, entorno de trabajo o equipo. Debe actualizarse después de completar cada bloque funcional importante.
 
@@ -10,14 +10,14 @@ Su objetivo es permitir que el desarrollo continúe de forma ordenada y segura, 
 
 Desarrollar una solución integral para administrar un complejo de pádel mediante componentes conectados a una misma lógica de negocio y una misma base de datos:
 
-1. Una aplicación administrativa de escritorio desarrollada en Java y JavaFX.
-2. Una API pública para compartir las funciones necesarias con otros clientes.
-3. Una web pública para registro, autenticación, consulta y reserva de turnos.
-4. Una futura aplicación móvil conectada al mismo backend.
+1. Aplicación administrativa de escritorio desarrollada en Java y JavaFX.
+2. API pública para compartir funciones con la web y futuros clientes.
+3. Web pública para registro, autenticación, reservas, torneos y autogestión de clientes.
+4. Futura aplicación móvil conectada al mismo backend.
 
-El sistema debe centralizar la gestión de canchas, clientes, reservas, pagos, caja, usuarios, solicitudes web, estadísticas, torneos e inscripciones.
+El sistema centraliza la gestión de canchas, clientes, reservas, pagos, caja, usuarios, solicitudes web, estadísticas, torneos e inscripciones.
 
-## 3. Tecnologías y herramientas conocidas
+## 3. Tecnologías y herramientas
 
 - Java
 - JavaFX
@@ -27,111 +27,21 @@ El sistema debe centralizar la gestión de canchas, clientes, reservas, pagos, c
 - MySQL
 - JDBC
 - JUnit y pruebas automatizadas
-- API pública en Java
-- HTML, CSS y JavaScript para la web pública
+- API HTTP pública en Java
+- Astro
+- TypeScript
+- Tailwind CSS
+- HTML, CSS y JavaScript
 - Docker y Docker Compose
-- Nginx para servir la web pública
-- Git para control de versiones
-- Eclipse como entorno principal de desarrollo
-- PowerShell para automatizar cambios y verificaciones
+- Nginx
+- Gmail SMTP con contraseña de aplicación
+- Git y GitHub
+- PowerShell
+- Eclipse y Visual Studio Code
 
 ## 4. Arquitectura actual
 
-### 4.1 Aplicación administrativa de escritorio
-
-La aplicación JavaFX contiene las pantallas administrativas y utiliza controladores, servicios, DAO y entidades de negocio.
-
-Módulos registrados actualmente:
-
-- Inicio de sesión administrativo
-- Dashboard
-- Agenda
-- Reservas
-- Canchas
-- Bloqueos de canchas
-- Clientes
-- Pagos
-- Caja y cierre diario
-- Estadísticas
-- Solicitudes web
-- Usuarios
-- Configuración del complejo
-- Torneos e inscripciones, actualmente en desarrollo
-
-### 4.2 Capas del proyecto Java
-
-#### API pública
-
-Ubicación principal:
-
-```text
-src/main/java/api/publica
-```
-
-Responsabilidades:
-
-- Exponer disponibilidad y solicitudes de reserva.
-- Gestionar autenticación y sesiones de clientes.
-- Gestionar el perfil de clientes.
-- Gestionar recuperación de contraseña.
-- Incorporar consultas e inscripciones públicas a torneos.
-
-#### Configuración
-
-Ubicación principal:
-
-```text
-src/main/java/config
-```
-
-Responsabilidades:
-
-- Configurar la conexión con la base de datos.
-- Configurar el correo electrónico.
-- Preparar el usuario administrador inicial.
-
-#### Acceso a datos
-
-Ubicación principal:
-
-```text
-src/main/java/dao
-```
-
-Responsabilidades:
-
-- Definir interfaces DAO.
-- Implementar persistencia MySQL.
-- Separar el acceso a datos de la lógica de negocio.
-
-#### Negocio
-
-Ubicación principal:
-
-```text
-src/main/java/negocio
-```
-
-Responsabilidades:
-
-- Representar las entidades y estados del dominio.
-- Modelar reservas, clientes, canchas, pagos, caja, usuarios y torneos.
-
-#### Servicios
-
-Ubicación principal:
-
-```text
-src/main/java/servicio
-```
-
-Responsabilidades:
-
-- Aplicar reglas de negocio.
-- Coordinar DAO y procesos.
-- Gestionar reservas, vencimientos, pagos, caja, autenticación, correo, clientes y torneos.
-
-#### Interfaz JavaFX
+### 4.1 Aplicación administrativa JavaFX
 
 Ubicaciones principales:
 
@@ -142,636 +52,383 @@ src/main/resources/fxml
 src/main/resources/css
 ```
 
-Responsabilidades:
+Módulos disponibles:
 
-- Navegación entre pantallas.
-- Controladores JavaFX.
-- Vistas FXML.
-- Estilos visuales.
-- Tema dinámico de la aplicación.
+- Inicio de sesión administrativo.
+- Dashboard.
+- Agenda.
+- Reservas.
+- Canchas.
+- Bloqueos de canchas.
+- Clientes.
+- Pagos.
+- Caja y cierre diario.
+- Estadísticas.
+- Solicitudes web.
+- Usuarios.
+- Configuración del complejo.
+- Administración de torneos y categorías.
+- Bandeja y gestión de inscripciones a torneos.
+- Vinculación automática y manual de jugadores con clientes.
 
-### 4.3 Web pública
+### 4.2 API pública
+
+Ubicación principal:
+
+```text
+src/main/java/api/publica
+```
+
+Responsabilidades actuales:
+
+- Configuración pública del complejo.
+- Consulta de canchas y disponibilidad.
+- Creación y seguimiento de solicitudes de reserva.
+- Autenticación y sesiones de clientes.
+- Registro y cierre de sesión.
+- Perfil e historial de reservas.
+- Actualización de datos personales.
+- Cambio de contraseña.
+- Recuperación de contraseña por correo.
+- Consulta pública de torneos y categorías.
+- Inscripción pública de parejas.
+
+### 4.3 Servicios, negocio y persistencia
+
+Ubicaciones:
+
+```text
+src/main/java/servicio
+src/main/java/negocio
+src/main/java/dao
+src/main/java/config
+```
+
+La aplicación utiliza:
+
+- Entidades de negocio para clientes, reservas, pagos, caja, usuarios y torneos.
+- Servicios para reglas de negocio y transacciones.
+- DAO e implementaciones MySQL.
+- Configuración mediante variables de entorno y propiedades.
+- Sesiones de clientes almacenadas en base de datos.
+- Contraseñas protegidas.
+- Procesamiento automático de vencimientos.
+- Correo SMTP para recuperación de acceso.
+
+### 4.4 Web pública definitiva
 
 Ubicación:
+
+```text
+web-publica-v2
+```
+
+Tecnología:
+
+```text
+Astro + TypeScript + Tailwind CSS + Nginx
+```
+
+Dirección definitiva local:
+
+```text
+http://localhost:5173
+```
+
+Páginas principales:
+
+```text
+/
+/reservar
+/torneos
+/mis-reservas
+/mis-datos
+/restablecer
+```
+
+Funciones completadas:
+
+- Portada pública adaptable.
+- Consulta de canchas.
+- Consulta de disponibilidad.
+- Creación de solicitudes de reserva.
+- Seguimiento por código.
+- Datos de transferencia y acceso a WhatsApp.
+- Registro de clientes.
+- Inicio y cierre de sesión.
+- Persistencia de sesión mediante cookie.
+- Historial de reservas próximas y anteriores.
+- Perfil del cliente.
+- Cambio de nombre, apellido, teléfono y correo.
+- Documento visible pero no editable.
+- Posición preferida opcional: `DRIVE`, `REVES` o sin preferencia.
+- Cambio de contraseña.
+- Recuperación de contraseña por Gmail.
+- Consulta pública de torneos, categorías, ramas y cupos.
+- Inscripción pública de parejas con o sin sesión.
+- Precarga de datos del cliente autenticado.
+- Navegación directa y recarga de rutas mediante Nginx.
+- Despliegue Docker de producción local.
+
+La carpeta anterior:
 
 ```text
 web-publica
 ```
 
-Componentes conocidos:
+se conserva temporalmente como referencia histórica, pero la web activa y definitiva es `web-publica-v2`.
 
-- `index.html`
-- `app.js`
-- `styles.css`
-- `manifest.webmanifest`
-- `service-worker.js`
-- `offline.html`
-- Iconos de la aplicación web
-- Configuración de Nginx
-- Script de inicio para PowerShell
+### 4.5 Docker
 
-Funciones desarrolladas:
-
-- Consulta de disponibilidad.
-- Creación de solicitudes de reserva.
-- Confirmación y seguimiento de solicitudes.
-- Registro e inicio de sesión de clientes.
-- Persistencia de sesión.
-- Perfil del cliente.
-- Actualización de datos personales.
-- Historial y vinculación de reservas.
-- Cambio de contraseña.
-- Recuperación de contraseña por correo.
-- Soporte de instalación y funcionamiento como aplicación web progresiva.
-- Consulta e inscripción pública a torneos, actualmente en desarrollo.
-
-### 4.4 Base de datos
-
-Ubicación de migraciones:
+Servicios definitivos:
 
 ```text
-database
+padel-mysql
+padel-api
+padel-web
 ```
 
-Migraciones registradas:
-
-- Configuración del complejo.
-- Cancelación administrativa.
-- Historial de reprogramaciones.
-- Gestión de usuarios.
-- Cierre diario de caja.
-- Vencimiento de reservas pendientes.
-- Auditoría de reservas.
-- Origen de reservas.
-- Movimientos de caja.
-- Usuario del sistema web.
-- Seguimiento de solicitudes web.
-- Instrucciones de pago web.
-- Cuentas de clientes web.
-- Recuperación de contraseña de clientes.
-
-Migración local todavía no confirmada:
+Puertos locales:
 
 ```text
+Web pública: http://localhost:5173
+API pública: http://localhost:8080
+MySQL:       localhost:3307
+```
+
+La web se construye desde:
+
+```text
+web-publica-v2/Dockerfile
+```
+
+Nginx utiliza:
+
+```text
+web-publica-v2/nginx.conf
+```
+
+Nginx sirve los archivos estáticos de Astro y redirige `/api/` al servicio `api` dentro de Docker.
+
+### 4.6 Base de datos
+
+Migraciones principales:
+
+```text
+database/02_configuracion_complejo.sql
+database/03_cancelacion_administrativa.sql
+database/04_historial_reprogramaciones.sql
+database/05_gestion_usuarios.sql
+database/06_cierre_diario_caja.sql
+database/07_vencimiento_reservas_pendientes.sql
+database/08_auditoria_reservas.sql
+database/09_origen_reservas.sql
+database/10_movimientos_caja.sql
+database/11_usuario_sistema_web.sql
+database/12_seguimiento_solicitudes_web.sql
+database/13_instrucciones_pago_web.sql
+database/14_cuentas_clientes_web.sql
+database/15_recuperacion_password_clientes.sql
 database/16_torneos_inscripciones.sql
+database/17_posicion_preferida_clientes.sql
 ```
 
-### 4.5 Pruebas
+La migración 17 agrega al cliente:
 
-El proyecto contiene pruebas para:
+```text
+posicion_preferida: DRIVE, REVES o NULL
+```
 
-- API pública y seguridad.
-- Disponibilidad pública.
-- Integración de reservas con MySQL.
-- Entidades de reserva.
-- Agenda.
-- Bloqueos.
-- Canchas.
-- Caja.
-- Clientes.
-- Configuración.
-- Dashboard.
-- Estadísticas.
-- Mensajes de reservas.
-- Pagos y confirmación de señas.
-- Políticas de reserva.
-- Vencimientos automáticos.
-- Estados y operaciones de reservas.
-- Usuarios.
-- WhatsApp.
-- Protección de contraseñas.
-- Servicios de torneos e inscripciones, actualmente en desarrollo local.
-- Normalización de teléfonos y vinculación con clientes, actualmente en desarrollo local.
+Las copias para inicialización de Docker se encuentran en:
 
-## 5. Desarrollo completado y respaldado en Git
+```text
+database/docker-init
+```
 
-### 5.1 Aplicación administrativa
+## 5. Estado actual confirmado
 
-- Gestión de usuarios.
-- Agenda y mejoras de uso.
-- Estadísticas avanzadas.
-- Gestión de solicitudes web.
-- Caja operativa.
-- Gestión de pagos.
-- Vencimientos automáticos de reservas pendientes.
-- Auditoría y seguimiento operativo.
+### 5.1 Git
 
-### 5.2 Web pública
-
-- API pública.
-- Web de reservas.
-- Seguridad básica de la API.
-- Entorno Docker.
-- Mejoras visuales y de experiencia.
-- Fechas y horarios disponibles.
-- Flujo guiado de reservas.
-- Confirmaciones y preguntas frecuentes.
-- Funcionamiento offline y recursos de PWA.
-
-### 5.3 Calidad y operación
-
-- Pruebas de reservas y vencimientos.
-- Pruebas de integración con MySQL.
-- Pruebas de API y seguridad.
-- Separación y automatización de pruebas de integración.
-- Documentación operativa.
-
-### 5.4 Cuentas de clientes
-
-Los siguientes bloques están confirmados en siete commits locales, todavía no publicados en `origin/master`:
-
-1. Autenticación y sesiones para clientes.
-2. Perfil e historial de reservas.
-3. Vinculación de reservas con cuentas de clientes.
-4. Perfil y reservas vinculadas.
-5. Perfil y seguridad de cuentas.
-6. Recuperación de contraseña.
-7. Recuperación de contraseña por correo.
-
-## 6. Estado actual de Git
-
-### 6.1 Rama
+Rama:
 
 ```text
 master
 ```
 
-### 6.2 Commit actual
+Último commit confirmado y publicado:
 
 ```text
-5f302714a31980634a02b1d337221217ab028dad
+7af6b88 Agregar nueva web pública, cuentas de clientes y mejoras de torneos
 ```
 
-Mensaje:
+Sincronización:
 
 ```text
-Agregar recuperación de contraseña por correo
+HEAD = master = origin/master
 ```
 
-Etiqueta:
+Estado del directorio de trabajo al cerrar el último bloque:
 
 ```text
-cuentas-clientes-correo
+limpio, sin cambios pendientes
 ```
 
-### 6.3 Diferencia con el repositorio remoto
-
-La rama local está siete commits por delante de `origin/master`:
+Repositorio remoto:
 
 ```text
-master...origin/master [ahead 7]
+https://github.com/facuvita19/sistema-reservas-padel.git
 ```
 
-El último commit conocido de `origin/master` es:
+### 5.2 Validaciones completadas
+
+- `mvn clean test` correcto.
+- `npm run build` correcto en `web-publica-v2`.
+- `docker compose config` correcto.
+- API, MySQL y web activos en Docker.
+- Rutas públicas respondiendo correctamente.
+- Inicio y cierre de sesión validados.
+- Reserva pública validada.
+- Historial y seguimiento validados.
+- Perfil y posición preferida validados.
+- Cambio de contraseña validado.
+- Recuperación por correo Gmail validada.
+- Enlace de recuperación y token de un solo uso validados.
+- Torneos e inscripciones validados desde web y JavaFX.
+- Administración de torneos y categorías validada.
+
+## 6. Funciones completadas
+
+### 6.1 Reservas y operación
+
+- Consulta de disponibilidad.
+- Solicitudes de reserva pública.
+- Reservas administrativas.
+- Vencimientos automáticos.
+- Pagos y señas.
+- Seguimiento público.
+- Estados de reserva.
+- Agenda y reprogramaciones.
+- Bloqueos de canchas.
+- Auditoría.
+- Caja y cierre diario.
+
+### 6.2 Cuentas de clientes
+
+- Registro.
+- Inicio y cierre de sesión.
+- Cookies de sesión.
+- Perfil.
+- Historial de reservas.
+- Vinculación de reservas.
+- Actualización de datos.
+- Posición preferida Drive o Revés.
+- Cambio de contraseña.
+- Recuperación de contraseña.
+- Envío de correo por Gmail SMTP.
+
+### 6.3 Torneos e inscripciones
+
+#### Administración de torneos
+
+- Creación en estado `BORRADOR`.
+- Edición de datos generales.
+- Período de inscripción.
+- Reglamento.
+- Conservación del usuario creador.
+- Gestión de categorías.
+- Rama, cupos y precio informativo.
+- Cálculo de parejas confirmadas y cupos disponibles.
+- Protección contra cupos inválidos.
+- Desactivación controlada de categorías.
+
+#### Ciclo de vida
 
 ```text
-53b4f37 Mejorar confirmación, preguntas frecuentes e interacción de horarios
+BORRADOR -> PUBLICADO
+PUBLICADO -> INSCRIPCION_ABIERTA
+INSCRIPCION_ABIERTA -> INSCRIPCION_CERRADA
+INSCRIPCION_CERRADA -> EN_CURSO
+EN_CURSO -> FINALIZADO
+Estados no finales -> CANCELADO
 ```
 
-Etiqueta:
-
-```text
-web-publica-estable
-```
-
-### 6.4 Precaución importante
-
-El módulo de torneos y otras correcciones recientes todavía contienen archivos modificados y archivos nuevos sin commit.
-
-Hasta respaldar correctamente ese trabajo, no ejecutar comandos destructivos como:
-
-```text
-git reset --hard
-git clean -fd
-git checkout -- .
-git restore .
-```
-
-Tampoco cambiar de rama sin proteger antes los cambios actuales.
-
-## 7. Módulo de torneos e inscripciones en desarrollo
-
-### 7.1 Elementos implementados localmente
-
-#### Dominio
-
-- Torneo.
-- Categoría de torneo.
-- Inscripción a torneo.
-- Jugadores de una inscripción.
-- Estado del torneo.
-- Estado de la inscripción.
-- Rama del torneo.
-- Origen de la inscripción.
-- Tipo de vinculación con clientes.
-
-#### Persistencia
-
-- DAO de torneos.
-- DAO de categorías.
-- DAO de inscripciones.
-- DAO de jugadores por inscripción.
-- Implementaciones MySQL.
-- Migración `16_torneos_inscripciones.sql`.
-
-#### Servicios
-
-- Consulta de inscripciones.
-- Gestión administrativa de inscripciones.
-- Inscripción a torneos desde la web.
-- Vinculación de inscripciones con clientes por teléfono.
-- Normalización de teléfonos.
-
-#### API y web pública
-
-- DTO de torneos públicos.
-- DTO de inscripción pública.
-- Handler de torneos públicos.
-- Servicio de torneos públicos.
-- Endpoint de inscripción.
-- Consulta pública de torneos.
-
-#### Aplicación JavaFX
-
-- Controlador de torneos e inscripciones.
-- Vista FXML de inscripciones.
-- Hoja de estilos específica.
-- Integración con navegación y dashboard.
-
-#### Pruebas
-
-- Consulta de inscripciones.
-- Gestión de inscripciones.
-- Inscripción desde la web.
-- Vinculación de clientes por teléfono.
-- Normalización de teléfonos.
-- Ajustes de mocks y manejo de `SQLException`.
-
-### 7.2 Decisiones funcionales observadas
-
-- Los clientes pueden manejar más de un teléfono.
-- Los teléfonos deben normalizarse antes de comparar o vincular datos.
-- La inscripción web debe poder vincular jugadores con clientes existentes.
-- El módulo de torneos no debe depender de una seña si esa regla fue eliminada del flujo.
-- La aplicación administrativa necesita una bandeja para revisar y gestionar inscripciones.
-
-### 7.3 Problema actual conocido
-
-La bandeja administrativa informa:
-
-```text
-No se pudieron recuperar las inscripciones de torneos.
-```
-
-Este problema debe tratarse como independiente de la corrección de codificación del dashboard.
-
-### 7.4 Corrección visual completada
-
-Se repararon textos dañados por codificación UTF-8 en:
-
-```text
-src/main/resources/fxml/dashboard-admin.fxml
-```
-
-Los textos verificados incluyen:
-
-```text
-INGRESOS DEL DÍA
-Cerrar caja del día
-```
-
-## 8. Próximo paso técnico
-
-Investigar el error de recuperación de inscripciones sin modificar otros módulos hasta encontrar la causa.
-
-Orden recomendado:
-
-1. Reproducir el error abriendo la bandeja de torneos.
-2. Copiar el error completo y la traza de la consola.
-3. Confirmar que `database/16_torneos_inscripciones.sql` se aplicó en la base utilizada por la aplicación.
-4. Verificar las tablas y columnas creadas por la migración.
-5. Revisar `TorneoInscripcionDAOMySQL` y consultas relacionadas.
-6. Revisar la construcción de dependencias en `Navegacion`.
-7. Revisar la inicialización de `TorneosInscripcionesController`.
-8. Confirmar que la aplicación JavaFX se conecta a la base esperada.
-9. Ejecutar `mvn clean compile`.
-10. Ejecutar `mvn test`.
-11. Abrir nuevamente la bandeja y revisar consola.
-12. Confirmar el comportamiento visual antes de crear el commit.
-
-## 9. Plan de trabajo por etapas
-
-### Etapa A: estabilizar torneos e inscripciones
-
-- Resolver la recuperación de inscripciones.
-- Validar la migración de base de datos.
-- Revisar altas y consultas públicas.
-- Verificar vinculación de jugadores con clientes.
-- Confirmar normalización de teléfonos.
-- Revisar estados y transiciones de las inscripciones.
-- Ejecutar todas las pruebas.
-- Realizar pruebas manuales desde web y escritorio.
-- Limpiar scripts temporales solo después de confirmar el resultado.
-- Crear un commit descriptivo del módulo.
-
-### Etapa B: estabilización general
-
-- Revisar errores de consola de JavaFX.
-- Revisar errores del navegador con las herramientas de desarrollo.
-- Probar registro, sesión, perfil y recuperación de contraseña.
-- Probar reservas con y sin cuenta.
-- Probar clientes, pagos, caja y solicitudes web.
-- Verificar que actualizar páginas o usar `F5` no rompa el estado.
-- Validar mensajes de error y estados vacíos.
-- Ampliar pruebas automatizadas donde existan casos sin cobertura.
-
-### Etapa C: integración completa
-
-- Confirmar que escritorio y web usen la misma información.
-- Evitar reservas simultáneas incompatibles.
-- Sincronizar disponibilidad y estados.
-- Centralizar clientes, reservas, pagos y torneos.
-- Definir claramente qué operaciones pertenecen a la API pública.
-- Preparar la API para futuros clientes móviles.
-
-### Etapa D: seguridad
-
-- Revisar autenticación y autorización administrativa.
-- Revisar sesiones de clientes.
-- Confirmar almacenamiento seguro de contraseñas.
-- Proteger endpoints públicos y administrativos.
-- Gestionar secretos mediante variables de entorno.
-- Evitar credenciales dentro del repositorio.
-- Revisar expiración y revocación de sesiones.
-- Revisar recuperación de contraseña y vencimiento de tokens.
-- Registrar operaciones importantes mediante auditoría.
-
-### Etapa E: despliegue
-
-- Separar configuración de desarrollo y producción.
-- Versionar migraciones de base de datos.
-- Preparar copias de seguridad y restauración.
-- Publicar la API.
-- Publicar la web pública.
-- Configurar dominio y HTTPS.
-- Configurar correo de producción.
-- Definir monitoreo y registros.
-- Documentar instalación, actualización y recuperación.
-
-### Etapa F: aplicación móvil
-
-- Definir si será nativa, multiplataforma o una evolución de la PWA.
-- Reutilizar la API y las reglas de negocio existentes.
-- Implementar registro e inicio de sesión.
-- Consultar disponibilidad.
-- Crear, consultar y cancelar reservas según las reglas del complejo.
-- Consultar torneos e inscripciones.
-- Mostrar historial y perfil.
-- Incorporar notificaciones cuando la infraestructura esté preparada.
-
-## 10. Metodología segura de trabajo
-
-Cada cambio debe seguir este orden:
-
-1. Describir el problema observado.
-2. Reproducirlo y conservar el error completo.
-3. Revisar el estado de Git.
-4. Identificar los archivos realmente involucrados.
-5. Evitar modificar archivos basándose en suposiciones.
-6. Aplicar un cambio controlado y pequeño.
-7. Verificar el contenido modificado.
-8. Compilar.
-9. Ejecutar pruebas automatizadas.
-10. Probar manualmente.
-11. Revisar consola y registros.
-12. Confirmar que no se rompieron funciones anteriores.
-13. Eliminar archivos temporales cuando ya no sean necesarios.
-14. Crear un commit simple y descriptivo.
-15. Actualizar este documento si cambió el estado del proyecto.
-
-## 11. Criterios para considerar terminada una tarea
-
-Una tarea se considera terminada únicamente cuando:
-
-- El código compila.
-- Las pruebas pasan.
-- La función fue probada manualmente.
-- No aparecen errores inesperados en consola.
-- No se rompieron flujos existentes.
-- La base de datos quedó en el estado esperado.
-- Los archivos temporales fueron revisados.
-- Los cambios quedaron respaldados en Git.
-- El estado del proyecto quedó documentado.
-
-## 12. Convenciones de Git
-
-### 12.1 Mensajes de commit
-
-Usar mensajes simples y descriptivos, sin prefijos innecesarios.
-
-Ejemplos:
-
-```text
-Agregar autenticación y sesiones para clientes
-Agregar recuperación de contraseña por correo
-Integrar torneos e inscripciones en la web y el escritorio
-Corregir recuperación de inscripciones de torneos
-```
-
-### 12.2 Antes de cada commit
-
-Ejecutar:
-
-```powershell
-git status -sb
-git diff --stat
-git diff
-```
-
-Luego compilar y probar:
-
-```powershell
-mvn clean compile
-mvn test
-```
-
-### 12.3 Publicación en GitHub
-
-Un commit local no se publica automáticamente. Para enviar los commits al remoto se necesita, cuando el estado esté revisado y protegido:
-
-```powershell
-git push origin master
-```
-
-No ejecutar el `push` como parte automática de una corrección. Primero revisar qué commits y archivos serán publicados.
-
-## 13. Archivos temporales y scripts de intervención
-
-Actualmente existen scripts para aplicar, corregir o restaurar cambios relacionados con:
-
-- Bandeja de torneos.
-- Consulta pública de torneos.
-- Endpoint de inscripción.
-- Normalización de teléfonos.
-- Vinculación de inscripciones.
-- Manejo de señas en torneos.
-- Mocks y pruebas.
-- Restauración de cambios anteriores.
-
-No eliminarlos en conjunto hasta:
-
-1. Confirmar qué versión quedó aplicada.
-2. Verificar compilación y pruebas.
-3. Probar el módulo manualmente.
-4. Crear un commit con el resultado definitivo.
-5. Conservar solo los scripts que tengan valor operativo o documental.
-
-El archivo temporal `reparar_dashboard_utf8.py` puede revisarse para eliminación porque la reparación visual ya fue confirmada.
-
-## 14. Mantenimiento de este documento
-
-Actualizar este archivo cuando ocurra cualquiera de estas situaciones:
-
-- Se completa un módulo.
-- Cambia la arquitectura.
-- Se agrega una migración.
-- Se resuelve un problema conocido.
-- Se decide una nueva regla de negocio.
-- Se crea una etiqueta o un punto estable.
-- Se publica trabajo local en GitHub.
-- Cambia el próximo paso prioritario.
-
-Al terminar cada sesión importante, actualizar al menos:
-
-- Estado actual.
-- Último cambio confirmado.
-- Problemas conocidos.
-- Próximo paso exacto.
-- Commit o etiqueta de referencia.
-
-## 15. Resumen de continuidad
-
-### Último cambio confirmado manualmente
-
-Corrección de textos dañados por codificación UTF-8 en el dashboard administrativo.
-
-### Bloque actualmente en desarrollo
-
-Torneos e inscripciones desde la web pública y la aplicación JavaFX.
-
-### Problema que debe investigarse ahora
-
-```text
-No se pudieron recuperar las inscripciones de torneos.
-```
-
-### Referencia Git local
-
-```text
-5f302714a31980634a02b1d337221217ab028dad
-```
-
-### Situación frente al remoto
-
-```text
-La rama master local está siete commits por delante de origin/master.
-El módulo de torneos todavía incluye cambios sin commit.
-```
----
-
-## 16. Actualización de estado del 30 de septiembre de 2026
-
-### Módulo de torneos e inscripciones completado
-
-Se completó y validó la primera versión funcional del módulo de torneos e inscripciones, integrada entre la web pública, la API, MySQL Docker y la aplicación administrativa JavaFX.
-
-### Funciones completadas
-
-#### Web pública y API
-
-- Consulta pública de torneos, categorías y ramas.
-- Inscripción de parejas con o sin una cuenta iniciada.
-- Datos del responsable obtenidos desde la sesión cuando corresponde.
-- Registro manual de ambos integrantes cuando no existe sesión.
-- Comentario opcional en la solicitud.
-- Creación de solicitudes con estado `PENDIENTE` y origen `WEB`.
-
-#### Vinculación automática
+#### Inscripciones
+
+- Inscripción pública con o sin cuenta.
+- Responsable autenticado precargado.
+- Registro de ambos integrantes.
+- Solicitudes en estado `PENDIENTE` y origen `WEB`.
+- Bandeja administrativa.
+- Búsqueda y filtros.
+- Confirmación, rechazo, cancelación y lista de espera.
+- Control de cupos.
+- Prevención de duplicados.
+- Observaciones administrativas.
+- Acceso a WhatsApp.
+
+#### Vinculación con clientes
 
 - Normalización de teléfonos.
-- Búsqueda de clientes activos por teléfono normalizado.
-- Vinculación automática ante una coincidencia única.
-- Registro sin `cliente_id` cuando no existe coincidencia.
-- Marcado para revisión cuando la coincidencia es ambigua.
-- La falta de coincidencia no bloquea la inscripción.
+- Vinculación automática ante coincidencia única.
+- Revisión ante coincidencias ambiguas.
+- Vinculación manual.
+- Cambio y desvinculación.
+- Prevención del mismo cliente en ambos integrantes.
+- Prevención de participación duplicada en una categoría.
 
-#### Bandeja administrativa JavaFX
-
-- Acceso desde el dashboard administrativo.
-- Vista integrada con navegación y estilos propios.
-- Consulta de solicitudes desde MySQL Docker.
-- Métricas de total, pendientes, confirmadas y lista de espera.
-- Búsqueda por número, torneo, categoría, integrante y teléfono.
-- Filtro por estado.
-- Tabla y panel de detalle de la inscripción.
-- Visualización de ambos integrantes y su vinculación.
-- Comentarios y observaciones administrativas.
-- Acceso a WhatsApp para ambos integrantes.
-- Columnas JavaFX compatibles con `record`.
-- Textos y codificación UTF-8 corregidos.
-
-#### Gestión administrativa
-
-- Confirmación de inscripciones.
-- Envío a lista de espera.
-- Rechazo y cancelación.
-- Validación de transiciones permitidas.
-- Control de cupos antes de confirmar.
-- Prevención de participaciones duplicadas en una categoría.
-- Registro de observaciones, `usuario_gestion_id`, `fecha_confirmacion` y `fecha_cancelacion`.
-- Transacciones con `commit` y `rollback`.
-- Recarga automática, conservación de selección y actualización de métricas.
-
-#### Vinculación manual
-
-- Buscador de clientes activos por ID, nombre, apellido, documento y teléfono.
-- Vinculación manual del responsable y del segundo integrante.
-- Cambio de una vinculación existente.
-- Desvinculación de integrantes.
-- Sincronización de `responsable_cliente_id`.
-- Registro de `tipo_vinculacion = MANUAL`.
-- Limpieza de `requiere_revision`.
-- Prevención del mismo cliente para ambos integrantes.
-- Prevención de participación en otra pareja de la misma categoría.
-- Persistencia verificada directamente en MySQL.
-
-#### Pruebas y verificaciones
-
-- Compilación Maven correcta.
-- Pruebas automatizadas correctas.
-- Pruebas manuales desde la web pública y JavaFX.
-- Auditoría directa en MySQL.
-- Validación de vinculación, cambio y desvinculación.
-- Validación del bloqueo de clientes duplicados.
-- Verificación de codificación de los archivos del módulo.
-- Verificación de eliminación de la seña del módulo de torneos.
-
-### Regla definitiva sobre pagos
+#### Regla definitiva de pagos
 
 El módulo de torneos no gestiona señas ni pagos.
 
-Se eliminaron definitivamente:
+Se eliminaron:
 
 ```text
 importe_senia
 PENDIENTE_PAGO
 ```
 
-El campo `precio_inscripcion` se conserva únicamente como valor informativo.
+`precio_inscripcion` se conserva solamente como valor informativo.
 
-### Configuración para pruebas integradas
+## 7. Decisiones técnicas y operativas importantes
 
-La web pública y la API utilizan MySQL Docker. Para conectar la administración a la misma base:
+### 7.1 Sesiones en localhost
+
+Las cookies se comparten por dominio y no por puerto. Durante pruebas entre `4321`, `4173` y `5173` pueden quedar sesiones inconsistentes.
+
+Ante una sesión visualmente incorrecta:
+
+1. Borrar datos de `localhost` en el navegador.
+2. Cerrar pestañas de todos los puertos anteriores.
+3. Abrir únicamente `http://localhost:5173`.
+4. Iniciar sesión nuevamente.
+
+### 7.2 Correo Gmail
+
+Variables SMTP necesarias:
+
+```text
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=<correo Gmail>
+SMTP_PASSWORD=<contraseña de aplicación sin espacios>
+SMTP_FROM_EMAIL=<correo Gmail>
+SMTP_FROM_NAME=Padel Reservas
+SMTP_STARTTLS=true
+SMTP_SSL=false
+SMTP_TIMEOUT_MS=10000
+```
+
+La URL pública local definitiva es:
+
+```text
+API_WEB_PUBLICA_URL=http://localhost:5173/
+```
+
+La contraseña de aplicación y las demás credenciales deben permanecer fuera de Git.
+
+### 7.3 Configuración de base para JavaFX
+
+Para conectar la administración a MySQL Docker:
 
 ```powershell
 .\usar-base-docker.ps1
@@ -794,107 +451,297 @@ Para volver a la base local habitual:
 
 Siempre se debe cerrar la aplicación administrativa antes de cambiar de base.
 
-### Mejoras visuales pendientes
+## 8. Próximo módulo aprobado: cuadros y partidos de torneos
 
-- Modernizar las alertas estándar de JavaFX.
-- Crear diálogos personalizados acordes al tema oscuro.
-- Modernizar el buscador de clientes.
-- Mejorar selección, botones y estados vacíos de la tabla.
-- Corregir por separado los iconos dañados del selector de tema de la web pública.
+### 8.1 Objetivo
 
-### Próximo bloque funcional recomendado
+Incorporar la programación y gestión deportiva de los torneos después del cierre de inscripciones.
 
-Desarrollar la administración de torneos y categorías desde JavaFX:
+El módulo abarcará:
 
-1. Crear y editar torneos.
-2. Publicar y abrir inscripciones.
-3. Cerrar inscripciones.
-4. Gestionar categorías, ramas, cupos y precios.
-5. Consultar ocupación por categoría.
-6. Validar fechas y transiciones de estado.
-7. Incorporar pruebas automatizadas.
-8. Mejorar posteriormente los diálogos y el buscador.
+1. Modelo y migración de partidos.
+2. Generación del cuadro por categoría.
+3. Sorteo manual o aleatorio de parejas.
+4. Manejo de lugares libres mediante `BYE`.
+5. Programación de fecha, hora y cancha.
+6. Registro de resultados por sets.
+7. Determinación y avance automático de ganadores.
+8. Administración desde JavaFX.
+9. Consulta pública del cuadro desde la web.
+10. Pruebas automatizadas y manuales.
 
-### Estado de continuidad
+### 8.2 Primera versión funcional
 
-El módulo de inscripciones quedó funcional y validado. La prioridad siguiente es la administración de torneos y categorías. Las mejoras visuales quedan registradas para una etapa posterior de pulido general.
----
+La primera versión usará eliminación directa.
 
-## 17. Administración integral de torneos completada
-
-### Funcionalidades incorporadas
-
-- Creación de torneos en estado `BORRADOR`.
-- Edición de nombre, descripción, fechas, período de inscripción y reglamento.
-- Conservación del usuario creador original.
-- Creación, edición y desactivación de categorías.
-- Gestión de nombre, rama, cupo de parejas y precio informativo.
-- Visualización de parejas confirmadas y cupos disponibles.
-- Protección contra cupos inferiores a las parejas confirmadas.
-- Bloqueo de desactivación con inscripciones activas.
-- Prevención del traslado de categorías entre torneos.
-- Transacciones con `commit` y `rollback`.
-
-### Ciclo de vida implementado
+Fases previstas:
 
 ```text
-BORRADOR -> PUBLICADO
-PUBLICADO -> INSCRIPCION_ABIERTA
-INSCRIPCION_ABIERTA -> INSCRIPCION_CERRADA
-INSCRIPCION_CERRADA -> EN_CURSO
-EN_CURSO -> FINALIZADO
-Estados no finales -> CANCELADO
+DIECISEISAVOS
+OCTAVOS
+CUARTOS
+SEMIFINAL
+FINAL
 ```
 
-- Se bloquean las transiciones no permitidas.
-- Para abrir inscripciones se exige al menos una categoría activa.
-- Los estados `FINALIZADO` y `CANCELADO` son finales.
+Estados previstos:
 
-### Administración JavaFX
+```text
+PENDIENTE
+PROGRAMADO
+EN_CURSO
+FINALIZADO
+CANCELADO
+```
 
-- Nueva opción `Torneos` en el dashboard.
-- Pantalla con listado, búsqueda y filtro por estado.
-- Formularios para crear y editar torneos.
-- Formularios para crear y editar categorías.
-- Acciones del ciclo de vida habilitadas según el estado actual.
-- Acceso directo a `Torneos e inscripciones`.
-- Integración visual con el tema administrativo.
+Cada partido debería registrar como mínimo:
 
-### Web pública
+```text
+Torneo
+Categoría
+Fase
+Número u orden del partido
+Pareja 1
+Pareja 2
+Fecha
+Hora
+Cancha
+Estado
+Pareja ganadora
+Partido siguiente
+Posición en el partido siguiente
+```
 
-- Nueva sección `Torneos disponibles`.
-- Carga dinámica desde `GET /api/publica/torneos`.
-- Visualización de fechas, categorías, ramas, cupos y precios.
-- Indicador de disponibilidad según estado y período de inscripción.
-- Formulario público para inscribir una pareja.
-- Precarga del responsable cuando existe una sesión iniciada.
-- Inscripción manual sin cuenta.
-- Comentarios opcionales.
-- Envío a `/api/publica/torneos/inscripciones`.
-- Confirmación con número de solicitud.
-- Diseño adaptable a dispositivos móviles.
+### 8.3 Resultados por sets
 
-### Validaciones realizadas
+El resultado no debe guardarse como texto libre.
 
-- Creación y edición de torneos desde JavaFX.
-- Creación y edición de categorías.
-- Publicación y apertura de inscripciones.
-- Inscripción pública sin cuenta.
-- Inscripción pública con cuenta iniciada.
-- Vinculación automática del responsable autenticado.
-- Recepción de solicitudes en la bandeja administrativa.
-- Confirmación administrativa de inscripciones.
-- Actualización dinámica de cupos en la web.
-- Compilación Maven y pruebas automatizadas correctas.
+Ejemplo:
 
-### Mejoras pendientes
+```text
+Set 1: 6-4
+Set 2: 3-6
+Set 3: 10-7
+```
 
-- Modernizar los diálogos estándar de JavaFX.
-- Agregar confirmaciones visuales personalizadas para cambios de estado y desactivaciones.
-- Mejorar la presentación de fechas y horarios en la pantalla administrativa.
-- Corregir los iconos dañados del selector de tema de la web pública.
-- Incorporar una vista pública del reglamento completo.
+La estructura deberá permitir:
 
-### Continuidad recomendada
+- Validar el ganador.
+- Admitir partidos a dos sets con un tercer set o super tie-break configurable.
+- Mostrar resultados claramente.
+- Avanzar automáticamente a la pareja ganadora.
+- Calcular estadísticas en una etapa posterior.
 
-El flujo de torneos quedó integrado entre JavaFX, API pública, web y MySQL. El siguiente bloque puede orientarse a cuadros, partidos, resultados y programación de encuentros, o bien a un pulido visual general antes de continuar con nuevas funciones.
+### 8.4 Funciones posteriores
+
+Después de estabilizar eliminación directa se podrán incorporar:
+
+- Fase de grupos.
+- Cabezas de serie.
+- Ranking.
+- Reprogramaciones.
+- Estadísticas deportivas.
+- Notificaciones.
+- Configuración de formato por categoría.
+
+### 8.5 Primer paso técnico exacto
+
+Antes de crear la migración 18:
+
+1. Buscar clases existentes relacionadas con partidos, cuadros, encuentros o resultados.
+2. Revisar entidades actuales de torneo, categoría e inscripción.
+3. Revisar la migración 16.
+4. Confirmar nombres de tablas, claves y estados actuales.
+5. Definir el diseño del cuadro sin duplicar estructuras.
+6. Crear la migración 18 y sus pruebas en un bloque controlado.
+
+## 9. Etapas futuras
+
+### Etapa A: cuadros y partidos
+
+- Modelo de partidos.
+- Cuadro de eliminación directa.
+- Programación.
+- Resultados.
+- Avance automático.
+- JavaFX.
+- Web pública.
+- Pruebas.
+
+### Etapa B: pulido visual
+
+- Modernizar diálogos JavaFX.
+- Mejorar buscadores.
+- Mejorar estados vacíos.
+- Mejorar selector de tema e iconos.
+- Revisar accesibilidad y navegación por teclado.
+- Unificar mensajes de éxito, advertencia y error.
+
+### Etapa C: estabilización general
+
+- Revisar consola de JavaFX.
+- Revisar consola y red del navegador.
+- Probar todos los flujos con y sin sesión.
+- Probar reservas simultáneas.
+- Verificar estados vacíos y errores controlados.
+- Ampliar cobertura automatizada.
+
+### Etapa D: seguridad
+
+- Revisar autenticación y autorización administrativa.
+- Revisar sesiones de clientes.
+- Revisar expiración y revocación.
+- Proteger endpoints por rol y contexto.
+- Mantener secretos fuera del repositorio.
+- Revisar auditoría de operaciones críticas.
+- Preparar HTTPS y cookies seguras para producción.
+
+### Etapa E: despliegue
+
+- Separar configuración de desarrollo y producción.
+- Versionar todas las migraciones.
+- Definir copias de seguridad y restauración.
+- Publicar API y web.
+- Configurar dominio y HTTPS.
+- Configurar correo de producción.
+- Incorporar monitoreo y registros.
+- Documentar actualización y recuperación.
+
+### Etapa F: aplicación móvil
+
+- Definir tecnología.
+- Reutilizar API y reglas de negocio.
+- Registro e inicio de sesión.
+- Disponibilidad y reservas.
+- Historial y perfil.
+- Torneos, cuadros y resultados.
+- Notificaciones cuando exista infraestructura.
+
+## 10. Metodología segura de trabajo
+
+Cada cambio debe seguir este orden:
+
+1. Describir el problema u objetivo.
+2. Reproducir el estado actual.
+3. Revisar Git.
+4. Identificar archivos involucrados.
+5. Evitar modificar archivos basándose en suposiciones.
+6. Aplicar un cambio pequeño y controlado.
+7. Crear copia de seguridad cuando corresponda.
+8. Verificar el contenido modificado.
+9. Compilar.
+10. Ejecutar pruebas automatizadas.
+11. Probar manualmente.
+12. Revisar consola y registros.
+13. Confirmar que no se rompieron funciones anteriores.
+14. Limpiar archivos temporales.
+15. Crear un commit simple y descriptivo.
+16. Actualizar este documento.
+17. Publicar en GitHub únicamente después de revisar el commit.
+
+## 11. Criterios de finalización
+
+Una tarea se considera terminada cuando:
+
+- El código compila.
+- Las pruebas pasan.
+- La función fue probada manualmente.
+- No aparecen errores inesperados.
+- No se rompieron flujos existentes.
+- La base de datos quedó en el estado esperado.
+- Docker funciona si el cambio afecta el despliegue.
+- Los archivos temporales fueron revisados.
+- Los cambios quedaron respaldados en Git.
+- El estado quedó documentado.
+
+## 12. Convenciones de Git
+
+### Mensajes
+
+Usar mensajes simples y descriptivos, sin prefijos innecesarios.
+
+Ejemplos:
+
+```text
+Agregar cuadros y partidos de torneos
+Agregar programación y resultados de partidos
+Publicar cuadros de torneos en la web
+Corregir avance automático de ganadores
+```
+
+### Antes de cada commit
+
+```powershell
+git status -sb
+git --no-pager diff --stat
+git --no-pager diff
+mvn clean test
+```
+
+Si cambia la web:
+
+```powershell
+cd .\web-publica-v2
+npm run build
+cd ..
+```
+
+Si cambia Docker:
+
+```powershell
+docker compose config --quiet
+docker compose ps
+```
+
+### Publicación
+
+```powershell
+git push origin HEAD
+```
+
+No ejecutar el push automáticamente como parte de una corrección. Primero revisar el commit y el estado del repositorio.
+
+## 13. Resumen de continuidad
+
+### Último cambio confirmado
+
+Nueva web pública en Astro, cuentas de clientes, recuperación por Gmail, posición Drive o Revés, mejoras administrativas y torneos integrados.
+
+### Estado Git
+
+```text
+Rama: master
+Commit: 7af6b88
+Remoto: origin/master
+Directorio de trabajo: limpio
+```
+
+### Servicios definitivos
+
+```text
+Web:  http://localhost:5173
+API:  http://localhost:8080
+MySQL: localhost:3307
+```
+
+### Próximo bloque
+
+```text
+Cuadros, partidos, programación y resultados de torneos
+```
+
+### Primer paso al retomar
+
+Ejecutar búsquedas de clases, tablas y referencias existentes relacionadas con:
+
+```text
+Partido
+Cuadro
+Resultado
+Encuentro
+Clasificado
+Semifinal
+Final
+```
+
+Luego revisar `Torneo`, `TorneoCategoria`, las inscripciones confirmadas y la migración 16 antes de diseñar la migración 18.
