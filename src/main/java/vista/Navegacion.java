@@ -21,7 +21,8 @@ public final class Navegacion {
 	private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/reservas.css",
 			"/css/bloqueos.css", "/css/pagos.css", "/css/dashboard.css", "/css/estadisticas.css",
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
-			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css" };
+			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css",
+							"/css/torneo-cuadro.css", "/css/torneo-resultado.css" };
 
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
@@ -35,6 +36,7 @@ public final class Navegacion {
 	private static Stage escenario;
 	private static Usuario usuarioActual;
 	private static Object controladorActual;
+	private static long categoriaCuadroTorneoId;
 
 	private Navegacion() {
 	}
@@ -166,6 +168,22 @@ public final class Navegacion {
 
 	}
 
+
+	public static void mostrarCuadroTorneo(long categoriaId) {
+		verificarSesion();
+		if (categoriaId <= 0) {
+			throw new IllegalArgumentException("La categoria no es valida.");
+		}
+		categoriaCuadroTorneoId = categoriaId;
+		mostrarVista("/fxml/torneo-cuadro.fxml", 1480, 900, true);
+		escenario.setTitle("Padel Reservas - Cuadro de torneo");
+	}
+
+	public static long consumirCategoriaCuadroTorneo() {
+		long id = categoriaCuadroTorneoId;
+		categoriaCuadroTorneoId = 0;
+		return id;
+	}
 
 	public static void mostrarTorneosInscripciones() {
 		verificarSesion();

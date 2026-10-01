@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.TorneoCuadroController"
+            styleClass="bracket-admin-root">
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="bracket-header">
+            <padding><Insets top="17" right="24" bottom="17" left="24"/></padding>
+            <Button text="VOLVER A TORNEOS" onAction="#volver" styleClass="bracket-secondary-button"/>
+            <VBox spacing="3">
+                <Label text="Cuadro de torneo" styleClass="bracket-page-title"/>
+                <Label fx:id="etiquetaContexto" text="Categoría seleccionada" styleClass="bracket-page-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="botonGenerar" text="GENERAR CUADRO" onAction="#generarCuadro" styleClass="bracket-primary-button"/>
+            <Button text="ACTUALIZAR" onAction="#cargar" styleClass="bracket-secondary-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" styleClass="bracket-content">
+            <padding><Insets top="18" right="22" bottom="20" left="22"/></padding>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="bracket-filter-card">
+                <Label text="FASE" styleClass="bracket-overline"/>
+                <ComboBox fx:id="filtroFase" promptText="Todas las fases" prefWidth="190" styleClass="bracket-combo"/>
+                <Label text="ESTADO" styleClass="bracket-overline"/>
+                <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="190" styleClass="bracket-combo"/>
+                <Button text="LIMPIAR" onAction="#limpiarFiltros" styleClass="bracket-ghost-button"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label fx:id="etiquetaResumen" text="Sin partidos" styleClass="bracket-summary"/>
+            </HBox>
+
+            <SplitPane dividerPositions="0.72" VBox.vgrow="ALWAYS" styleClass="bracket-split">
+                <items>
+                    <VBox spacing="10" styleClass="bracket-card">
+                        <Label text="PARTIDOS DEL CUADRO" styleClass="bracket-overline"/>
+                        <TableView fx:id="tablaPartidos" VBox.vgrow="ALWAYS" fixedCellSize="66" styleClass="bracket-table">
+                            <columns>
+                                <TableColumn fx:id="colFase" text="FASE" prefWidth="95"/>
+                                <TableColumn fx:id="colOrden" text="#" prefWidth="42"/>
+                                <TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="205"/>
+                                <TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="205"/>
+                                <TableColumn fx:id="colProgramacion" text="PROGRAMACIÓN" prefWidth="190"/>
+                                <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="105"/>
+                            </columns>
+                            <placeholder>
+                                <VBox alignment="CENTER" spacing="8" styleClass="bracket-empty-state">
+                                    <Label text="Todavía no hay partidos" styleClass="bracket-empty-title"/>
+                                    <Label text="Cerrá las inscripciones y generá el cuadro." styleClass="bracket-empty-text"/>
+                                </VBox>
+                            </placeholder>
+                        </TableView>
+                    </VBox>
+
+                    <VBox spacing="13" styleClass="bracket-card">
+                        <Label text="PROGRAMAR PARTIDO" styleClass="bracket-overline"/>
+                        <Label fx:id="etiquetaPartido" text="Seleccioná un partido" wrapText="true" styleClass="bracket-detail-title"/>
+                        <Separator/>
+                        <Label text="Cancha" styleClass="bracket-field-label"/>
+                        <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>
+                        <Label text="Fecha" styleClass="bracket-field-label"/>
+                        <DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="bracket-date"/>
+                        <HBox spacing="9">
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="Inicio" styleClass="bracket-field-label"/>
+                                <ComboBox fx:id="comboInicio" maxWidth="Infinity" styleClass="bracket-combo"/>
+                            </VBox>
+                            <VBox spacing="5" HBox.hgrow="ALWAYS">
+                                <Label text="Fin" styleClass="bracket-field-label"/>
+                                <ComboBox fx:id="comboFin" maxWidth="Infinity" styleClass="bracket-combo"/>
+                            </VBox>
+                        </HBox>
+                        <Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programar" maxWidth="Infinity" styleClass="bracket-primary-button"/>
+                        <Button fx:id="botonQuitar" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
+                        <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="bracket-primary-button"/>
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <Label fx:id="etiquetaMensaje" wrapText="true" styleClass="bracket-message"/>
+                    </VBox>
+                </items>
+            </SplitPane>
+        </VBox>
+    </center>
+</BorderPane>

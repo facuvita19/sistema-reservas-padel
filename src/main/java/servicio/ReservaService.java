@@ -25,10 +25,12 @@ public class ReservaService {
     private final BloqueoCanchaDAO bloqueoDAO;
     private final CanchaService canchaService;
     private final ConfiguracionComplejoService configuracionService;
+    private final DisponibilidadCanchaService disponibilidadCanchaService;
 
     public ReservaService() {
         this(new ReservaDAOMySQL(), new BloqueoCanchaDAOMySQL(),
-                new CanchaService(), new ConfiguracionComplejoService());
+                new CanchaService(), new ConfiguracionComplejoService(),
+                new DisponibilidadCanchaService());
     }
 
     public ReservaService(
@@ -36,7 +38,10 @@ public class ReservaService {
             BloqueoCanchaDAO bloqueoDAO,
             CanchaService canchaService) {
         this(reservaDAO, bloqueoDAO, canchaService,
-                new ConfiguracionComplejoService());
+                new ConfiguracionComplejoService(),
+                new DisponibilidadCanchaService(
+                        reservaDAO, bloqueoDAO,
+                        new dao.TorneoPartidoDAOMySQL()));
     }
 
     public ReservaService(
@@ -44,8 +49,21 @@ public class ReservaService {
             BloqueoCanchaDAO bloqueoDAO,
             CanchaService canchaService,
             ConfiguracionComplejoService configuracionService) {
+        this(reservaDAO, bloqueoDAO, canchaService, configuracionService,
+                new DisponibilidadCanchaService(
+                        reservaDAO, bloqueoDAO,
+                        new dao.TorneoPartidoDAOMySQL()));
+    }
+
+    public ReservaService(
+            ReservaDAO reservaDAO,
+            BloqueoCanchaDAO bloqueoDAO,
+            CanchaService canchaService,
+            ConfiguracionComplejoService configuracionService,
+            DisponibilidadCanchaService disponibilidadCanchaService) {
         if (reservaDAO == null || bloqueoDAO == null
-                || canchaService == null || configuracionService == null) {
+                || canchaService == null || configuracionService == null
+                || disponibilidadCanchaService == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de reservas no pueden ser nulas.");
         }
@@ -53,6 +71,7 @@ public class ReservaService {
         this.bloqueoDAO = bloqueoDAO;
         this.canchaService = canchaService;
         this.configuracionService = configuracionService;
+        this.disponibilidadCanchaService = disponibilidadCanchaService;
     }
 
     public void guardar(Reserva reserva) {
@@ -128,11 +147,11 @@ public class ReservaService {
             LocalTime fin = inicio.plusMinutes(duracion);
             boolean pasado = fecha.equals(LocalDate.now())
                     && !inicio.isAfter(LocalTime.now());
-            boolean ocupado = reservaDAO.horarioOcupado(
-                    canchaId, fecha, inicio, fin, reservaExcluidaId);
-            boolean bloqueado = bloqueoDAO.horarioBloqueado(
-                    canchaId, fecha, inicio, fin, 0L);
-            if (!pasado && !ocupado && !bloqueado) horarios.add(inicio);
+            boolean disponible = disponibilidadCanchaService
+                    .estaDisponibleParaReserva(
+                            canchaId, fecha, inicio, fin,
+                            reservaExcluidaId);
+            if (!pasado && disponible) horarios.add(inicio);
             inicio = fin;
         }
         return horarios;
@@ -298,6 +317,13 @@ public class ReservaService {
                 reserva.getHoraInicio(), reserva.getHoraFin(), 0L)) {
             throw new IllegalArgumentException(
                     "La cancha se encuentra bloqueada en ese horario.");
+        }
+        if (!disponibilidadCanchaService.estaDisponibleParaReserva(
+                reserva.getCanchaId(), reserva.getFecha(),
+                reserva.getHoraInicio(), reserva.getHoraFin(),
+                reserva.getId())) {
+            throw new IllegalArgumentException(
+                    "La cancha tiene un partido programado en ese horario.");
         }
     }
 

@@ -1,0 +1,371 @@
+package vista.controlador;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import dao.TorneoCategoriaDAO;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
+import dao.TorneoPartidoDAO;
+import dao.TorneoPartidoDAOMySQL;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import negocio.Cancha;
+import negocio.EstadoPartidoTorneo;
+import negocio.FaseTorneo;
+import negocio.TorneoCategoria;
+import negocio.TorneoInscripcion;
+import negocio.TorneoPartido;
+import servicio.CanchaService;
+import servicio.CuadroEliminacionTorneoService;
+import servicio.ProgramacionPartidoTorneoService;
+import vista.Dialogos;
+import vista.Navegacion;
+
+public class TorneoCuadroController {
+
+    private static final DateTimeFormatter HORA =
+            DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter FECHA =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    private final TorneoPartidoDAO partidoDAO =
+            new TorneoPartidoDAOMySQL();
+    private final TorneoCategoriaDAO categoriaDAO =
+            new TorneoCategoriaDAOMySQL();
+    private final TorneoInscripcionDAO inscripcionDAO =
+            new TorneoInscripcionDAOMySQL();
+    private final CanchaService canchaService = new CanchaService();
+    private final CuadroEliminacionTorneoService cuadroService =
+            new CuadroEliminacionTorneoService();
+    private final ProgramacionPartidoTorneoService programacionService =
+            new ProgramacionPartidoTorneoService();
+    private final ObservableList<TorneoPartido> partidos =
+            FXCollections.observableArrayList();
+
+    private FilteredList<TorneoPartido> filtrados;
+    private long categoriaId;
+    private TorneoCategoria categoria;
+
+    @FXML private Label etiquetaContexto;
+    @FXML private Label etiquetaResumen;
+    @FXML private Label etiquetaPartido;
+    @FXML private Label etiquetaMensaje;
+    @FXML private ComboBox<FaseTorneo> filtroFase;
+    @FXML private ComboBox<EstadoPartidoTorneo> filtroEstado;
+    @FXML private TableView<TorneoPartido> tablaPartidos;
+    @FXML private TableColumn<TorneoPartido, FaseTorneo> colFase;
+    @FXML private TableColumn<TorneoPartido, Integer> colOrden;
+    @FXML private TableColumn<TorneoPartido, String> colPareja1;
+    @FXML private TableColumn<TorneoPartido, String> colPareja2;
+    @FXML private TableColumn<TorneoPartido, String> colProgramacion;
+    @FXML private TableColumn<TorneoPartido, EstadoPartidoTorneo> colEstado;
+    @FXML private ComboBox<Cancha> comboCancha;
+    @FXML private DatePicker selectorFecha;
+    @FXML private ComboBox<LocalTime> comboInicio;
+    @FXML private ComboBox<LocalTime> comboFin;
+    @FXML private Button botonGenerar;
+    @FXML private Button botonProgramar;
+    @FXML private Button botonQuitar;
+    @FXML private Button botonResultado;
+
+    @FXML
+    private void initialize() {
+        categoriaId = Navegacion.consumirCategoriaCuadroTorneo();
+        if (categoriaId <= 0) {
+            throw new IllegalStateException(
+                    "No se indico una categoria para gestionar el cuadro.");
+        }
+        configurarTabla();
+        configurarFiltros();
+        cargarCanchasYHorarios();
+        cargar();
+    }
+
+    private void configurarTabla() {
+        colFase.setCellValueFactory(d ->
+                new SimpleObjectProperty<>(d.getValue().getFase()));
+        colOrden.setCellValueFactory(d ->
+                new SimpleIntegerProperty(d.getValue().getOrdenFase())
+                        .asObject());
+        colPareja1.setCellValueFactory(d ->
+                new SimpleStringProperty(nombrePareja(
+                        d.getValue().getPareja1InscripcionId())));
+        colPareja2.setCellValueFactory(d ->
+                new SimpleStringProperty(nombrePareja(
+                        d.getValue().getPareja2InscripcionId())));
+        colProgramacion.setCellValueFactory(d ->
+                new SimpleStringProperty(programacion(d.getValue())));
+        colEstado.setCellValueFactory(d ->
+                new SimpleObjectProperty<>(d.getValue().getEstado()));
+        tablaPartidos.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        colProgramacion.setCellFactory(columna -> new TableCell<>() {
+            @Override
+            protected void updateItem(String texto, boolean vacia) {
+                super.updateItem(texto, vacia);
+                setText(vacia ? null : texto);
+                setWrapText(true);
+            }
+        });
+        colEstado.setCellFactory(columna -> new TableCell<>() {
+            @Override
+            protected void updateItem(
+                    EstadoPartidoTorneo estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                setText(vacia || estado == null ? null : estado.toString());
+                getStyleClass().removeIf(
+                        clase -> clase.startsWith("bracket-status-"));
+                if (!vacia && estado != null) {
+                    getStyleClass().add("bracket-status-"
+                            + estado.name().toLowerCase()
+                                .replace('_', '-'));
+                }
+            }
+        });
+        filtrados = new FilteredList<>(partidos, p -> true);
+        tablaPartidos.setItems(filtrados);
+        tablaPartidos.getSelectionModel().selectedItemProperty()
+                .addListener((o, anterior, actual) -> mostrar(actual));
+    }
+
+    private void configurarFiltros() {
+        filtroFase.setItems(FXCollections.observableArrayList(
+                FaseTorneo.values()));
+        filtroEstado.setItems(FXCollections.observableArrayList(
+                EstadoPartidoTorneo.values()));
+        filtroFase.valueProperty().addListener((o, a, n) -> filtrar());
+        filtroEstado.valueProperty().addListener((o, a, n) -> filtrar());
+    }
+
+    private void cargarCanchasYHorarios() {
+        List<Cancha> activas = canchaService.listar().stream()
+                .filter(Cancha::isActivo)
+                .toList();
+        comboCancha.setItems(FXCollections.observableArrayList(activas));
+        ObservableList<LocalTime> horas = FXCollections.observableArrayList();
+        for (int hora = 6; hora <= 23; hora++) {
+            horas.add(LocalTime.of(hora, 0));
+            if (hora < 23) horas.add(LocalTime.of(hora, 30));
+        }
+        comboInicio.setItems(horas);
+        comboFin.setItems(FXCollections.observableArrayList(horas));
+    }
+
+    @FXML
+    public void cargar() {
+        try {
+            categoria = categoriaDAO.buscar(categoriaId);
+            if (categoria == null) {
+                throw new IllegalArgumentException(
+                        "La categoria ya no existe.");
+            }
+            etiquetaContexto.setText(categoria.getNombreTorneo()
+                    + " · " + categoria.getNombre()
+                    + " · " + categoria.getRama());
+            partidos.setAll(partidoDAO.listarPorCategoria(categoriaId));
+            filtrar();
+            botonGenerar.setDisable(!partidos.isEmpty());
+            etiquetaResumen.setText(partidos.size() + " partido(s)");
+            etiquetaMensaje.setText(partidos.isEmpty()
+                    ? "El cuadro todavía no fue generado."
+                    : "Cuadro actualizado correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception);
+        }
+    }
+
+    @FXML
+    private void generarCuadro() {
+        if (!Dialogos.confirmar("Generar cuadro",
+                "Las parejas confirmadas se sortearan aleatoriamente.\n\n"
+                + "Esta accion no puede repetirse para la categoria.\n\n"
+                + "¿Queres continuar?")) return;
+        try {
+            cuadroService.generarCuadro(categoriaId);
+            cargar();
+            Dialogos.exito("Cuadro generado",
+                    "El cuadro se genero correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception);
+        }
+    }
+
+    @FXML
+    private void programar() {
+        TorneoPartido partido = seleccionado();
+        if (partido == null) return;
+        try {
+            if (comboCancha.getValue() == null
+                    || selectorFecha.getValue() == null
+                    || comboInicio.getValue() == null
+                    || comboFin.getValue() == null) {
+                throw new IllegalArgumentException(
+                        "Selecciona cancha, fecha y horario completo.");
+            }
+            long id = partido.getId();
+            programacionService.programar(id,
+                    comboCancha.getValue().getId(),
+                    selectorFecha.getValue(), comboInicio.getValue(),
+                    comboFin.getValue());
+            cargar();
+            seleccionarPorId(id);
+            Dialogos.exito("Partido programado",
+                    "La programacion se guardo correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception);
+        }
+    }
+
+    @FXML
+    private void registrarResultado() {
+        TorneoPartido partido = seleccionado();
+        if (partido == null) return;
+        TorneoPartido actualizado =
+                new ResultadoPartidoTorneoDialog(partido).mostrar();
+        if (actualizado != null) {
+            cargar();
+            seleccionarPorId(actualizado.getId());
+            Dialogos.exito("Resultado registrado",
+                    "El resultado y el avance del cuadro se guardaron correctamente.");
+        }
+    }
+
+    @FXML
+    private void quitarProgramacion() {
+        TorneoPartido partido = seleccionado();
+        if (partido == null) return;
+        if (!Dialogos.confirmarPeligro("Quitar programacion",
+                "El partido volvera a estado Pendiente.\n\n"
+                + "¿Queres continuar?")) return;
+        try {
+            programacionService.quitarProgramacion(partido.getId());
+            cargar();
+            Dialogos.exito("Programacion eliminada",
+                    "El partido volvio a estado Pendiente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception);
+        }
+    }
+
+    private void mostrar(TorneoPartido partido) {
+        boolean hay = partido != null;
+        botonProgramar.setDisable(!hay || partido.isBye()
+                || !partido.tieneDosParejas()
+                || (partido.getEstado() != EstadoPartidoTorneo.PENDIENTE
+                    && partido.getEstado()
+                        != EstadoPartidoTorneo.PROGRAMADO));
+        botonQuitar.setDisable(!hay
+                || partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO);
+        botonResultado.setDisable(!hay || partido.isBye()
+                || !partido.tieneDosParejas()
+                || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
+                    && partido.getEstado() != EstadoPartidoTorneo.EN_CURSO));
+        if (!hay) {
+            etiquetaPartido.setText("Selecciona un partido");
+            limpiarFormulario();
+            return;
+        }
+        etiquetaPartido.setText(partido.getFase() + " #"
+                + partido.getOrdenFase() + " · "
+                + nombrePareja(partido.getPareja1InscripcionId())
+                + " vs "
+                + nombrePareja(partido.getPareja2InscripcionId()));
+        selectorFecha.setValue(partido.getFecha());
+        comboInicio.setValue(partido.getHoraInicio());
+        comboFin.setValue(partido.getHoraFin());
+        comboCancha.setValue(partido.getCanchaId() == null ? null
+                : comboCancha.getItems().stream()
+                    .filter(c -> c.getId() == partido.getCanchaId())
+                    .findFirst().orElse(null));
+    }
+
+    private String nombrePareja(Long inscripcionId) {
+        if (inscripcionId == null) return "Por definir";
+        TorneoInscripcion inscripcion = inscripcionDAO.buscar(inscripcionId);
+        if (inscripcion == null) return "Inscripcion #" + inscripcionId;
+        String nombres = inscripcion.getJugadores().stream()
+                .map(j -> j.getNombreCompleto())
+                .filter(n -> !n.isBlank())
+                .reduce((a, b) -> a + " / " + b)
+                .orElse("Inscripcion #" + inscripcionId);
+        return nombres;
+    }
+
+    private String programacion(TorneoPartido partido) {
+        if (partido.isBye()) return "Clasifica por BYE";
+        if (!partido.estaProgramado()) return "Sin programar";
+        String cancha = comboCancha.getItems().stream()
+                .filter(c -> c.getId() == partido.getCanchaId())
+                .map(Cancha::getNombre)
+                .findFirst().orElse("Cancha #" + partido.getCanchaId());
+        return FECHA.format(partido.getFecha()) + " · "
+                + HORA.format(partido.getHoraInicio()) + "-"
+                + HORA.format(partido.getHoraFin()) + "\n" + cancha;
+    }
+
+    @FXML
+    private void limpiarFiltros() {
+        filtroFase.getSelectionModel().clearSelection();
+        filtroEstado.getSelectionModel().clearSelection();
+    }
+
+    private void filtrar() {
+        FaseTorneo fase = filtroFase.getValue();
+        EstadoPartidoTorneo estado = filtroEstado.getValue();
+        filtrados.setPredicate(p -> (fase == null || p.getFase() == fase)
+                && (estado == null || p.getEstado() == estado));
+        etiquetaResumen.setText(filtrados.size() + " de "
+                + partidos.size() + " partido(s)");
+    }
+
+    private TorneoPartido seleccionado() {
+        TorneoPartido partido = tablaPartidos.getSelectionModel()
+                .getSelectedItem();
+        if (partido == null) {
+            Dialogos.informacion("Seleccion requerida",
+                    "Selecciona un partido de la tabla.");
+        }
+        return partido;
+    }
+
+    private void seleccionarPorId(long id) {
+        partidos.stream().filter(p -> p.getId() == id).findFirst()
+                .ifPresent(p -> tablaPartidos.getSelectionModel().select(p));
+    }
+
+    private void limpiarFormulario() {
+        comboCancha.getSelectionModel().clearSelection();
+        selectorFecha.setValue(null);
+        comboInicio.getSelectionModel().clearSelection();
+        comboFin.getSelectionModel().clearSelection();
+    }
+
+    private void mostrarError(RuntimeException exception) {
+        String mensaje = exception.getMessage() == null
+                ? "No se pudo completar la operacion."
+                : exception.getMessage();
+        etiquetaMensaje.setText(mensaje);
+        Dialogos.error("No se pudo completar la operacion", mensaje);
+    }
+
+    @FXML
+    private void volver() {
+        Navegacion.mostrarTorneos();
+    }
+}

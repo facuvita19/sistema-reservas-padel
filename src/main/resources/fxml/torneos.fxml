@@ -129,6 +129,7 @@
                                 <HBox spacing="9" alignment="CENTER_LEFT">
                                     <Button fx:id="botonEditarCategoria" text="EDITAR CATEGORÍA" onAction="#editarCategoria" disable="true" styleClass="tournaments-secondary-button"/>
                                     <Button fx:id="botonDesactivarCategoria" text="DESACTIVAR" onAction="#desactivarCategoria" disable="true" styleClass="tournaments-danger-outline-button"/>
+                                    <Button fx:id="botonGestionarCuadro" text="GESTIONAR CUADRO" onAction="#gestionarCuadro" disable="true" styleClass="tournaments-primary-button"/>
                                 </HBox>
                             </VBox>
                         </VBox>

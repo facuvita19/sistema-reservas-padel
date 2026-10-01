@@ -8,6 +8,7 @@ public enum EstadoCeldaAgenda {
     CANCELADA,
     AUSENTE,
     BLOQUEADA,
+    PARTIDO_TORNEO,
     NO_DISPONIBLE,
     PASADA
 }

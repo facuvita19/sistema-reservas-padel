@@ -1,52 +1,176 @@
-.agenda-root,
-.agenda-content,
-.agenda-scroll,
-.agenda-scroll > .viewport { -fx-background-color: #0b1017; }
-.agenda-scroll { -fx-background-insets: 0; -fx-padding: 0; }
-.agenda-status { -fx-text-fill: #728594; -fx-font-size: 12px; }
-.agenda-status-ok { -fx-text-fill: #79ad99; }
-.agenda-status-error { -fx-text-fill: #df8585; }
-.agenda-help { -fx-text-fill: #607684; -fx-font-size: 10px; }
-.agenda-nav-button { -fx-min-width: 38; -fx-pref-width: 38; -fx-max-width: 38; -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; -fx-background-color: #1d2935; -fx-background-radius: 8; -fx-border-color: #30414f; -fx-border-radius: 8; -fx-text-fill: #cbd7df; -fx-font-size: 20px; -fx-font-weight: 700; -fx-cursor: hand; -fx-padding: 0; }
-.agenda-nav-button:hover { -fx-background-color: #293b49; -fx-border-color: -color-principal; }
-.agenda-grid { -fx-background-color: #263541; -fx-padding: 1; }
-.agenda-header { -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44; -fx-background-color: #15212c; -fx-text-fill: #dce6ed; -fx-font-size: 12px; -fx-font-weight: 800; -fx-padding: 7 9; }
-.agenda-time-header { -fx-text-fill: #7f929f; }
-.agenda-time-cell { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; -fx-background-color: #101923; -fx-text-fill: #738895; -fx-font-size: 11px; -fx-font-weight: 700; -fx-padding: 4 6; }
-.agenda-cell { -fx-background-color: #121c26; -fx-text-fill: #93a4b0; -fx-font-size: 11px; -fx-font-weight: 600; -fx-padding: 8 10 6 10; -fx-cursor: hand; -fx-alignment: top-left; }
-.agenda-cell:hover { -fx-effect: innershadow(gaussian, rgba(255,255,255,0.13), 8, 0.15, 0, 0); }
-.agenda-disponible { -fx-background-color: #172631; -fx-text-fill: #9bb2c1; -fx-border-color: #304959; -fx-border-width: 1; }
-.agenda-disponible:hover { -fx-background-color: -color-principal-transparente; -fx-text-fill: #eef6fa; -fx-border-color: -color-principal; }
-.agenda-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; -fx-border-color: #b58a3b; -fx-border-width: 0 0 0 3; -fx-font-weight: 800; }
-.agenda-confirmada { -fx-background-color: #315f7d; -fx-text-fill: #f2f8fc; -fx-border-color: #6f9fbd; -fx-border-width: 0 0 0 3; -fx-font-weight: 800; }
-.agenda-completada { -fx-background-color: #20382f; -fx-text-fill: #88bca8; }
-.agenda-ausente { -fx-background-color: #3a242a; -fx-text-fill: #d8949f; }
-.agenda-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e09999; }
-.agenda-cancelada, .agenda-no-disponible, .agenda-pasada { -fx-background-color: #10171e; -fx-text-fill: transparent; -fx-cursor: default; }
-.agenda-pasada { -fx-opacity: 0.52; }
-.legend-item { -fx-background-radius: 12; -fx-border-radius: 12; -fx-font-size: 9px; -fx-font-weight: 700; -fx-padding: 4 7; }
-.legend-disponible { -fx-background-color: #14212b; -fx-text-fill: #7894a6; -fx-border-color: #294150; }
+.agenda-root { -fx-background-color: #09121a; }
+.agenda-header-shell { -fx-background-color: linear-gradient(to right, #0c1822, #102332); -fx-border-color: transparent transparent #294150 transparent; -fx-border-width: 0 0 1 0; }
+.agenda-page-title { -fx-text-fill: #f4f8fa; -fx-font-size: 28px; -fx-font-weight: 900; }
+.agenda-page-subtitle { -fx-text-fill: #91a9b6; -fx-font-size: 13px; }
+.agenda-date-controls, .agenda-meta-bar { -fx-background-color: #111f29; -fx-background-radius: 13; -fx-border-color: #293f4d; -fx-border-radius: 13; }
+.agenda-date-controls { -fx-padding: 6; }
+.agenda-meta-bar { -fx-padding: 8 12; }
+.agenda-workspace { -fx-background-color: #0d1821; }
+.agenda-board-card, .agenda-detail-panel { -fx-background-color: #111f29; -fx-background-radius: 15; -fx-border-color: #293f4d; -fx-border-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,.18), 18, 0, 0, 7); }
+.agenda-board-card { -fx-padding: 8; }
+.agenda-fixed-header-shell { -fx-background-color: #142733; -fx-background-radius: 9 9 0 0; -fx-min-height: 48; -fx-pref-height: 48; -fx-max-height: 48; }
+.agenda-header-scroll, .agenda-header-scroll > .viewport, .agenda-scroll, .agenda-scroll > .viewport { -fx-background-color: transparent; }
+.agenda-header-scroll, .agenda-scroll { -fx-background-insets: 0; -fx-padding: 0; }
+.agenda-fixed-header, .agenda-grid { -fx-background-color: #294552; -fx-padding: 1; }
+.agenda-header { -fx-min-height: 46; -fx-pref-height: 46; -fx-max-height: 46; -fx-background-color: #142733; -fx-text-fill: #e2edf2; -fx-font-size: 12px; -fx-font-weight: 900; -fx-padding: 8 10; }
+.agenda-time-header { -fx-text-fill: #7e98a5; }
+.agenda-time-cell { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; -fx-background-color: #0c1821; -fx-text-fill: #7893a0; -fx-font-size: 11px; -fx-font-weight: 800; -fx-padding: 5 6; }
+.agenda-cell { -fx-background-color: #111f29; -fx-text-fill: #a4b8c2; -fx-font-size: 11px; -fx-font-weight: 600; -fx-padding: 8 10; -fx-cursor: hand; -fx-alignment: top-left; }
+.agenda-cell:hover { -fx-effect: innershadow(gaussian, rgba(255,255,255,.14), 8, .14, 0, 0); }
+.agenda-disponible { -fx-background-color: #172b37; -fx-text-fill: #afd0df; -fx-border-color: #34596b; -fx-border-width: 1; }
+.agenda-disponible:hover { -fx-background-color: -color-principal-transparente; -fx-text-fill: white; -fx-border-color: -color-principal-hover; }
+.agenda-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; -fx-border-color: #d1a047; -fx-border-width: 0 0 0 4; -fx-font-weight: 900; }
+.agenda-confirmada { -fx-background-color: #315f7d; -fx-text-fill: #f2f8fc; -fx-border-color: #79b1d2; -fx-border-width: 0 0 0 4; -fx-font-weight: 900; }
+.agenda-completada { -fx-background-color: #20382f; -fx-text-fill: #9fd1bd; }
+.agenda-ausente { -fx-background-color: #3a242a; -fx-text-fill: #e09aa5; }
+.agenda-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e6a3a3; }
+.agenda-partido-torneo { -fx-background-color: linear-gradient(to bottom right, #493b78, #352d5b); -fx-text-fill: #f4efff; -fx-border-color: #9a86df; -fx-border-width: 0 0 0 4; -fx-font-weight: 900; }
+.agenda-cancelada, .agenda-pasada { -fx-background-color: #0d171f; -fx-text-fill: transparent; -fx-cursor: default; }
+.agenda-no-disponible { -fx-background-color: #111f29; -fx-text-fill: transparent; -fx-cursor: default; -fx-border-color: #182c37; -fx-border-width: 0 0 1 0; }
+.agenda-pasada { -fx-opacity: .48; }
+.agenda-status { -fx-text-fill: #86a2af; -fx-font-size: 11px; }
+.agenda-status-ok { -fx-text-fill: #79c3a6; }
+.agenda-status-error { -fx-text-fill: #e69099; }
+.agenda-nav-button, .agenda-today-button, .agenda-update-button { -fx-cursor: hand; -fx-font-weight: 900; -fx-background-radius: 9; -fx-border-radius: 9; -fx-min-height: 36; }
+.agenda-nav-button { -fx-min-width: 36; -fx-pref-width: 36; -fx-max-width: 36; -fx-background-color: #162733; -fx-border-color: #335062; -fx-text-fill: #dceaf0; -fx-font-size: 18px; }
+.agenda-today-button { -fx-background-color: #162733; -fx-border-color: #335062; -fx-text-fill: #dceaf0; -fx-padding: 0 13; }
+.agenda-update-button { -fx-background-color: -color-principal; -fx-border-color: -color-principal-hover; -fx-text-fill: white; -fx-padding: 0 16; }
+.agenda-nav-button:hover, .agenda-today-button:hover { -fx-background-color: #203746; }
+.agenda-update-button:hover { -fx-background-color: -color-principal-hover; }
+.agenda-date-picker { -fx-background-color: #09151e; -fx-border-color: #345060; -fx-border-radius: 9; -fx-background-radius: 9; }
+.agenda-date-picker .text-field { -fx-background-color: #09151e; -fx-text-fill: #e5eef2; }
+.legend-item { -fx-background-radius: 13; -fx-border-radius: 13; -fx-font-size: 9px; -fx-font-weight: 800; -fx-padding: 4 7; }
+.legend-disponible { -fx-background-color: #172b37; -fx-text-fill: #afd0df; -fx-border-color: #34596b; }
 .legend-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; -fx-border-color: #b58a3b; }
-.legend-confirmada { -fx-background-color: #20384a; -fx-text-fill: #a9cbe1; -fx-border-color: #6f9fbd; }
-.legend-completada { -fx-background-color: #20382f; -fx-text-fill: #88bca8; }
-.legend-ausente { -fx-background-color: #3a242a; -fx-text-fill: #d8949f; }
-.legend-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e09999; }
-.agenda-empty-title { -fx-text-fill: #d9e2e8; -fx-font-size: 20px; -fx-font-weight: 800; }
-.agenda-empty-copy { -fx-text-fill: #70818e; -fx-font-size: 13px; }
-.agenda-detail-panel { -fx-background-color: #101a23; -fx-border-color: #2a3c49; -fx-border-width: 0 0 0 1; }
-.agenda-detail-title { -fx-text-fill: #e2ebf1; -fx-font-size: 19px; -fx-font-weight: 800; }
-.agenda-detail-close { -fx-background-color: transparent; -fx-text-fill: #7e929f; -fx-font-size: 15px; -fx-cursor: hand; -fx-padding: 4 7; }
-.agenda-detail-close:hover { -fx-text-fill: #e7eff4; -fx-background-color: #243440; -fx-background-radius: 7; }
-.agenda-detail-status { -fx-background-color: #223440; -fx-background-radius: 12; -fx-text-fill: #b8c9d4; -fx-font-size: 11px; -fx-font-weight: 800; -fx-padding: 5 9; }
+.legend-confirmada { -fx-background-color: #274c65; -fx-text-fill: #c4e1f2; -fx-border-color: #6f9fbd; }
+.legend-completada { -fx-background-color: #20382f; -fx-text-fill: #9bd0bb; }
+.legend-ausente { -fx-background-color: #3a242a; -fx-text-fill: #dfa0aa; }
+.legend-bloqueada { -fx-background-color: #422529; -fx-text-fill: #e6a3a3; }
+.legend-partido-torneo { -fx-background-color: #493b78; -fx-text-fill: #f4efff; -fx-border-color: #9a86df; }
+.agenda-empty-title { -fx-text-fill: #d9e5ea; -fx-font-size: 18px; -fx-font-weight: 900; }
+.agenda-empty-copy { -fx-text-fill: #758d99; -fx-font-size: 12px; }
+.agenda-detail-panel { -fx-padding: 18; }
+.agenda-detail-overline { -fx-text-fill: #6fa6c3; -fx-font-size: 10px; -fx-font-weight: 900; }
+.agenda-detail-title { -fx-text-fill: #eef5f7; -fx-font-size: 19px; -fx-font-weight: 900; }
+.agenda-detail-close { -fx-background-color: transparent; -fx-text-fill: #8ba1ad; -fx-font-size: 15px; -fx-cursor: hand; -fx-padding: 5 8; }
+.agenda-detail-close:hover { -fx-text-fill: white; -fx-background-color: #243946; -fx-background-radius: 8; }
+.agenda-detail-status { -fx-background-color: #223844; -fx-background-radius: 13; -fx-text-fill: #c1d2da; -fx-font-size: 11px; -fx-font-weight: 900; -fx-padding: 6 10; }
 .detail-status-pendiente { -fx-background-color: #5a431f; -fx-text-fill: #ffe0a0; }
 .detail-status-confirmada { -fx-background-color: #274c65; -fx-text-fill: #c4e1f2; }
 .detail-status-completada { -fx-background-color: #20382f; -fx-text-fill: #9bd0bb; }
 .detail-status-ausente, .detail-status-bloqueada { -fx-background-color: #42272c; -fx-text-fill: #e4a4ad; }
 .detail-status-disponible { -fx-background-color: #1f3b31; -fx-text-fill: #94c6af; }
-.agenda-detail-label { -fx-text-fill: #718693; -fx-font-size: 10px; -fx-font-weight: 800; }
-.agenda-detail-value { -fx-text-fill: #d4dfe6; -fx-font-size: 12px; -fx-font-weight: 700; }
-.agenda-finance-card { -fx-background-color: #162630; -fx-background-radius: 9; -fx-border-color: #2d4453; -fx-border-radius: 9; -fx-padding: 12; }
-.agenda-finance-value { -fx-text-fill: #b8ccd9; -fx-font-size: 13px; -fx-font-weight: 800; }
-.agenda-finance-paid { -fx-text-fill: #8eceb6; -fx-font-size: 13px; -fx-font-weight: 800; }
-.agenda-finance-balance { -fx-text-fill: #e0b761; -fx-font-size: 13px; -fx-font-weight: 800; }
-.agenda-detail-help { -fx-text-fill: #758b99; -fx-font-size: 11px; -fx-line-spacing: 2px; }
+.detail-status-partido-torneo { -fx-background-color: #493b78; -fx-text-fill: #f4efff; }
+.agenda-detail-card, .agenda-finance-card { -fx-background-color: #0c1821; -fx-background-radius: 11; -fx-border-color: #273e4b; -fx-border-radius: 11; -fx-padding: 13; }
+.agenda-detail-label { -fx-text-fill: #7894a2; -fx-font-size: 9px; -fx-font-weight: 900; }
+.agenda-detail-value { -fx-text-fill: #dce8ed; -fx-font-size: 12px; -fx-font-weight: 700; }
+.agenda-finance-value { -fx-text-fill: #b8ccd9; -fx-font-size: 13px; -fx-font-weight: 900; }
+.agenda-finance-paid { -fx-text-fill: #8eceb6; -fx-font-size: 13px; -fx-font-weight: 900; }
+.agenda-finance-balance { -fx-text-fill: #e0b761; -fx-font-size: 13px; -fx-font-weight: 900; }
+.agenda-detail-help { -fx-text-fill: #7e96a3; -fx-font-size: 11px; -fx-line-spacing: 2px; }
+
+
+/* agenda-card-polish-v2 */
+.agenda-grid {
+    -fx-background-color: #0c1821;
+    -fx-hgap: 4;
+    -fx-vgap: 3;
+    -fx-padding: 4;
+}
+
+.agenda-time-cell {
+    -fx-background-color: #0f1d27;
+    -fx-background-radius: 7;
+    -fx-border-color: #213944;
+    -fx-border-radius: 7;
+    -fx-alignment: TOP_CENTER;
+}
+
+.agenda-cell {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-insets: 1;
+    -fx-border-insets: 1;
+    -fx-padding: 10 12;
+}
+
+.agenda-disponible {
+    -fx-background-color: linear-gradient(to bottom right, #1a3542, #142b36);
+    -fx-text-fill: #d7edf6;
+    -fx-border-color: #416b7e;
+    -fx-border-width: 1 1 1 4;
+    -fx-font-weight: 700;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .16), 8, 0, 0, 3);
+}
+
+.agenda-disponible:hover {
+    -fx-background-color: linear-gradient(to bottom right,
+            -color-principal, #203d4a);
+    -fx-text-fill: #ffffff;
+    -fx-border-color: -color-principal-hover;
+    -fx-effect: dropshadow(gaussian,
+            -color-principal-transparente, 13, .16, 0, 4);
+}
+
+.agenda-partido-torneo {
+    -fx-background-color: linear-gradient(to bottom right, #55458a, #392f62);
+    -fx-text-fill: #f8f4ff;
+    -fx-border-color: #a28bea;
+    -fx-border-width: 1 1 1 4;
+    -fx-font-weight: 900;
+    -fx-effect: dropshadow(gaussian, rgba(71, 54, 121, .30), 12, .14, 0, 4);
+}
+
+.agenda-pendiente,
+.agenda-confirmada,
+.agenda-completada,
+.agenda-ausente,
+.agenda-bloqueada {
+    -fx-border-width: 1 1 1 4;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .18), 9, 0, 0, 3);
+}
+
+.agenda-no-disponible {
+    -fx-background-color: #101e28;
+    -fx-background-radius: 7;
+    -fx-border-color: #1b313c;
+    -fx-border-radius: 7;
+    -fx-border-width: 1;
+    -fx-opacity: .62;
+}
+
+
+/* agenda-continuous-surface-v3 */
+.agenda-grid {
+    -fx-background-color: #10202a;
+    -fx-hgap: 4;
+    -fx-vgap: 3;
+    -fx-padding: 4;
+}
+
+.agenda-no-disponible {
+    -fx-background-color: #142630;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-border-radius: 0;
+    -fx-effect: none;
+    -fx-opacity: 1;
+    -fx-cursor: default;
+    -fx-padding: 0;
+}
+
+.agenda-no-disponible:hover {
+    -fx-background-color: #142630;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+.agenda-pasada,
+.agenda-cancelada {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}

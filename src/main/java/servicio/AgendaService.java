@@ -13,6 +13,12 @@ import dao.CanchaDAO;
 import dao.CanchaDAOMySQL;
 import dao.ReservaDAO;
 import dao.ReservaDAOMySQL;
+import dao.TorneoCategoriaDAO;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
+import dao.TorneoPartidoDAO;
+import dao.TorneoPartidoDAOMySQL;
 import negocio.AgendaDiaria;
 import negocio.BloqueoCancha;
 import negocio.Cancha;
@@ -21,16 +27,24 @@ import negocio.EstadoCeldaAgenda;
 import negocio.EstadoReserva;
 import negocio.FilaAgenda;
 import negocio.Reserva;
+import negocio.TorneoCategoria;
+import negocio.TorneoInscripcion;
+import negocio.TorneoPartido;
 
 public class AgendaService {
 
     private final CanchaDAO canchaDAO;
     private final ReservaDAO reservaDAO;
     private final BloqueoCanchaDAO bloqueoDAO;
+    private final TorneoPartidoDAO partidoDAO;
+    private final TorneoCategoriaDAO categoriaDAO;
+    private final TorneoInscripcionDAO inscripcionDAO;
 
     public AgendaService() {
         this(new CanchaDAOMySQL(), new ReservaDAOMySQL(),
-                new BloqueoCanchaDAOMySQL());
+                new BloqueoCanchaDAOMySQL(), new TorneoPartidoDAOMySQL(),
+                new TorneoCategoriaDAOMySQL(),
+                new TorneoInscripcionDAOMySQL());
     }
 
     public AgendaService(
@@ -38,13 +52,31 @@ public class AgendaService {
             ReservaDAO reservaDAO,
             BloqueoCanchaDAO bloqueoDAO) {
 
-        if (canchaDAO == null || reservaDAO == null || bloqueoDAO == null) {
+        this(canchaDAO, reservaDAO, bloqueoDAO,
+                new TorneoPartidoDAOMySQL(),
+                new TorneoCategoriaDAOMySQL(),
+                new TorneoInscripcionDAOMySQL());
+    }
+
+    public AgendaService(
+            CanchaDAO canchaDAO,
+            ReservaDAO reservaDAO,
+            BloqueoCanchaDAO bloqueoDAO,
+            TorneoPartidoDAO partidoDAO,
+            TorneoCategoriaDAO categoriaDAO,
+            TorneoInscripcionDAO inscripcionDAO) {
+        if (canchaDAO == null || reservaDAO == null || bloqueoDAO == null
+                || partidoDAO == null || categoriaDAO == null
+                || inscripcionDAO == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de la agenda no pueden ser nulas.");
         }
         this.canchaDAO = canchaDAO;
         this.reservaDAO = reservaDAO;
         this.bloqueoDAO = bloqueoDAO;
+        this.partidoDAO = partidoDAO;
+        this.categoriaDAO = categoriaDAO;
+        this.inscripcionDAO = inscripcionDAO;
     }
 
     public AgendaDiaria obtener(LocalDate fecha) {
@@ -68,6 +100,7 @@ public class AgendaService {
 
         List<Reserva> reservas = reservaDAO.listarPorFecha(fecha);
         List<BloqueoCancha> bloqueos = obtenerBloqueos(canchas, fecha);
+        List<TorneoPartido> partidos = partidoDAO.listarPorFecha(fecha);
 
         LocalTime aperturaGeneral = canchas.stream()
                 .map(Cancha::getHoraApertura)
@@ -93,7 +126,7 @@ public class AgendaService {
 
             for (Cancha cancha : canchas) {
                 fila.agregarCelda(crearCelda(
-                        cancha, fecha, hora, reservas, bloqueos));
+                        cancha, fecha, hora, reservas, bloqueos, partidos));
             }
             agenda.agregarFila(fila);
         }
@@ -119,7 +152,8 @@ public class AgendaService {
             LocalDate fecha,
             LocalTime hora,
             List<Reserva> reservas,
-            List<BloqueoCancha> bloqueos) {
+            List<BloqueoCancha> bloqueos,
+            List<TorneoPartido> partidos) {
 
         CeldaAgenda celda = new CeldaAgenda();
         celda.setCanchaId(cancha.getId());
@@ -147,6 +181,13 @@ public class AgendaService {
             celda.setEstado(EstadoCeldaAgenda.BLOQUEADA);
             celda.setBloqueoId(bloqueo.getId());
             celda.setDetalle(bloqueo.getMotivo());
+            return celda;
+        }
+
+        TorneoPartido partido = buscarPartido(
+                cancha.getId(), hora, partidos);
+        if (partido != null) {
+            cargarPartido(celda, partido);
             return celda;
         }
 
@@ -185,6 +226,13 @@ public class AgendaService {
             return celda;
         }
 
+        if (hayPartidoSuperpuesto(
+                cancha.getId(), hora, horaFinReserva, partidos)) {
+            celda.setEstado(EstadoCeldaAgenda.NO_DISPONIBLE);
+            celda.setDetalle("Horario ocupado por un partido de torneo");
+            return celda;
+        }
+
         celda.setHoraFin(horaFinReserva);
         celda.setEstado(EstadoCeldaAgenda.DISPONIBLE);
         celda.setDetalle("Disponible");
@@ -203,6 +251,51 @@ public class AgendaService {
                         && hora.isBefore(reserva.getHoraFin()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    private TorneoPartido buscarPartido(
+            long canchaId,
+            LocalTime hora,
+            List<TorneoPartido> partidos) {
+        return partidos.stream()
+                .filter(partido -> partido.getCanchaId() != null
+                        && partido.getCanchaId() == canchaId)
+                .filter(partido -> partido.getHoraInicio() != null
+                        && partido.getHoraFin() != null)
+                .filter(partido -> !hora.isBefore(partido.getHoraInicio())
+                        && hora.isBefore(partido.getHoraFin()))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private void cargarPartido(
+            CeldaAgenda celda,
+            TorneoPartido partido) {
+        TorneoCategoria categoria = categoriaDAO.buscar(
+                partido.getTorneoCategoriaId());
+        String categoriaTexto = categoria == null
+                ? "Categoria #" + partido.getTorneoCategoriaId()
+                : categoria.getNombre() + " " + categoria.getRama();
+        String pareja1 = nombrePareja(partido.getPareja1InscripcionId());
+        String pareja2 = nombrePareja(partido.getPareja2InscripcionId());
+        celda.setPartidoId(partido.getId());
+        celda.setTorneoCategoriaId(partido.getTorneoCategoriaId());
+        celda.setHoraFin(partido.getHoraFin());
+        celda.setEstado(EstadoCeldaAgenda.PARTIDO_TORNEO);
+        celda.setDetalle("PARTIDO DE TORNEO\n"
+                + partido.getFase() + " · " + categoriaTexto
+                + "\n" + pareja1 + " vs " + pareja2);
+    }
+
+    private String nombrePareja(Long inscripcionId) {
+        if (inscripcionId == null) return "Por definir";
+        TorneoInscripcion inscripcion = inscripcionDAO.buscar(inscripcionId);
+        if (inscripcion == null) return "Inscripcion #" + inscripcionId;
+        return inscripcion.getJugadores().stream()
+                .map(jugador -> jugador.getNombreCompleto())
+                .filter(nombre -> !nombre.isBlank())
+                .reduce((a, b) -> a + " / " + b)
+                .orElse("Inscripcion #" + inscripcionId);
     }
 
     private BloqueoCancha buscarBloqueo(
@@ -259,6 +352,21 @@ public class AgendaService {
     private boolean ocupaHorario(Reserva reserva) {
         return reserva.getEstado() != EstadoReserva.CANCELADA
                 && reserva.getEstado() != EstadoReserva.EXPIRADA;
+    }
+
+    private boolean hayPartidoSuperpuesto(
+            long canchaId,
+            LocalTime inicio,
+            LocalTime fin,
+            List<TorneoPartido> partidos) {
+        return partidos.stream()
+                .filter(partido -> partido.getCanchaId() != null
+                        && partido.getCanchaId() == canchaId)
+                .filter(partido -> partido.getHoraInicio() != null
+                        && partido.getHoraFin() != null)
+                .anyMatch(partido -> seSuperpone(
+                        inicio, fin,
+                        partido.getHoraInicio(), partido.getHoraFin()));
     }
 
     private boolean hayBloqueoSuperpuesto(

@@ -1,0 +1,165 @@
+.dialog-tournament-result {
+    -fx-background-color: #0f202a;
+}
+
+.dialog-tournament-result .header-panel {
+    -fx-background-color: #122733;
+    -fx-border-color: transparent transparent #315060 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 18 22;
+}
+
+.dialog-tournament-result .header-panel .label {
+    -fx-text-fill: #f3f7f9;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+}
+
+.dialog-tournament-result > .content,
+.dialog-tournament-result .content.label {
+    -fx-background-color: #0f202a;
+    -fx-text-fill: #b9ccd5;
+    -fx-font-size: 12px;
+}
+
+.dialog-tournament-result .label {
+    -fx-text-fill: #dce8ed;
+    -fx-font-weight: 700;
+}
+
+.dialog-tournament-result .result-sets-grid {
+    -fx-background-color: #111f29;
+    -fx-background-radius: 13;
+    -fx-border-color: #31505f;
+    -fx-border-radius: 13;
+    -fx-padding: 16;
+}
+
+.dialog-tournament-result .combo-box-base {
+    -fx-background-color: #091820;
+    -fx-background-radius: 9;
+    -fx-border-color: #446779;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-pref-height: 38;
+}
+
+.dialog-tournament-result .combo-box-base:hover,
+.dialog-tournament-result .combo-box-base:focused {
+    -fx-border-color: -color-principal-hover;
+    -fx-effect: dropshadow(gaussian,
+            -color-principal-transparente, 10, .12, 0, 2);
+}
+
+.dialog-tournament-result .combo-box .list-cell {
+    -fx-background-color: #091820;
+    -fx-text-fill: #eef5f7;
+    -fx-padding: 7 10;
+}
+
+.dialog-tournament-result .combo-box .arrow-button {
+    -fx-background-color: #193441;
+    -fx-background-radius: 0 8 8 0;
+}
+
+.dialog-tournament-result .combo-box .arrow {
+    -fx-background-color: #b8d0da;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #0c1b24;
+    -fx-border-color: #446779;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4;
+}
+
+.combo-box-popup .list-cell {
+    -fx-background-color: #0c1b24;
+    -fx-text-fill: #e8f1f4;
+    -fx-padding: 8 11;
+}
+
+.combo-box-popup .list-cell:hover,
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -color-principal;
+    -fx-text-fill: #ffffff;
+}
+
+.dialog-tournament-result .text-area {
+    -fx-background-color: #091820;
+    -fx-text-fill: #e8f1f4;
+    -fx-prompt-text-fill: #7895a3;
+    -fx-border-color: #446779;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+}
+
+.dialog-tournament-result .text-area .scroll-pane,
+.dialog-tournament-result .text-area .scroll-pane .viewport,
+.dialog-tournament-result .text-area .content {
+    -fx-background-color: #091820;
+    -fx-background-radius: 9;
+}
+
+.dialog-tournament-result .text-area:focused {
+    -fx-border-color: -color-principal-hover;
+}
+
+.dialog-tournament-result .check-box {
+    -fx-text-fill: #d5e2e7;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.dialog-tournament-result .check-box .box {
+    -fx-background-color: #091820;
+    -fx-border-color: #527386;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+
+.dialog-tournament-result .check-box:selected .box {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+}
+
+.dialog-tournament-result .check-box:selected .mark {
+    -fx-background-color: #ffffff;
+}
+
+.dialog-tournament-result .check-box:disabled {
+    -fx-opacity: .42;
+}
+
+.dialog-tournament-result .button-bar {
+    -fx-background-color: #0b1820;
+    -fx-border-color: #294653 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 14 18;
+}
+
+.dialog-tournament-result .button-bar .button {
+    -fx-min-height: 42;
+    -fx-padding: 0 20;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+
+.dialog-tournament-result .button-bar .button:default {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+    -fx-text-fill: #ffffff;
+}
+
+.dialog-tournament-result .button-bar .button:default:hover {
+    -fx-background-color: -color-principal-hover;
+}
+
+.dialog-tournament-result .button-bar .button:cancel {
+    -fx-background-color: #192d39;
+    -fx-border-color: #3d5f70;
+    -fx-text-fill: #e0ebef;
+}

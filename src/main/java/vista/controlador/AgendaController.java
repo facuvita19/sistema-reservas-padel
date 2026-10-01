@@ -20,6 +20,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.ScrollPane;
+import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -74,6 +75,8 @@ public class AgendaController {
     @FXML private ProgressIndicator indicadorCarga;
     @FXML private Button botonActualizar;
     @FXML private ScrollPane scrollAgenda;
+    @FXML private ScrollPane scrollEncabezado;
+    @FXML private GridPane grillaEncabezado;
     @FXML private GridPane grillaAgenda;
 
     @FXML private VBox panelDetalle;
@@ -102,8 +105,15 @@ public class AgendaController {
                         cargarAgenda();
                     }
                 });
+        configurarScrollSincronizado();
         limpiarDetalle();
         Platform.runLater(this::cargarAgenda);
+    }
+
+    private void configurarScrollSincronizado() {
+        ChangeListener<Number> sincronizador = (obs, anterior, actual) ->
+                scrollEncabezado.setHvalue(actual.doubleValue());
+        scrollAgenda.hvalueProperty().addListener(sincronizador);
     }
 
     @FXML
@@ -182,6 +192,8 @@ public class AgendaController {
         grillaAgenda.getChildren().clear();
         grillaAgenda.getColumnConstraints().clear();
         grillaAgenda.getRowConstraints().clear();
+        grillaEncabezado.getChildren().clear();
+        grillaEncabezado.getColumnConstraints().clear();
 
         boolean vacia = agenda.getCanchas().isEmpty();
         contenedorSinCanchas.setVisible(vacia);
@@ -202,7 +214,7 @@ public class AgendaController {
         Set<String> posicionesOcupadas = new HashSet<>();
         for (int filaIndice = 0; filaIndice < agenda.getFilas().size(); filaIndice++) {
             FilaAgenda fila = agenda.getFilas().get(filaIndice);
-            int filaVisual = filaIndice + 1;
+            int filaVisual = filaIndice;
             agregarHora(fila.getHoraInicio(), filaVisual);
 
             for (int columna = 0; columna < fila.getCeldas().size(); columna++) {
@@ -241,6 +253,10 @@ public class AgendaController {
             return contarBloqueoContinuo(
                     agenda, filaInicial, columna, celdaInicial.getBloqueoId());
         }
+        if (celdaInicial.getPartidoId() != null) {
+            return contarPartidoContinuo(
+                    agenda, filaInicial, columna, celdaInicial.getPartidoId());
+        }
         return 1;
     }
 
@@ -261,6 +277,17 @@ public class AgendaController {
         for (int fila = filaInicial; fila < agenda.getFilas().size(); fila++) {
             CeldaAgenda siguiente = obtenerCelda(agenda, fila, columna);
             if (!bloqueoId.equals(siguiente.getBloqueoId())) break;
+            cantidad++;
+        }
+        return Math.max(1, cantidad);
+    }
+
+    private int contarPartidoContinuo(
+            AgendaDiaria agenda, int filaInicial, int columna, Long partidoId) {
+        int cantidad = 0;
+        for (int fila = filaInicial; fila < agenda.getFilas().size(); fila++) {
+            CeldaAgenda siguiente = obtenerCelda(agenda, fila, columna);
+            if (!partidoId.equals(siguiente.getPartidoId())) break;
             cantidad++;
         }
         return Math.max(1, cantidad);
@@ -298,6 +325,7 @@ public class AgendaController {
         hora.setHgrow(Priority.NEVER);
         hora.setFillWidth(true);
         grillaAgenda.getColumnConstraints().add(hora);
+        grillaEncabezado.getColumnConstraints().add(copiarRestriccion(hora));
 
         for (int indice = 0; indice < agenda.getCanchas().size(); indice++) {
             ColumnConstraints cancha = new ColumnConstraints();
@@ -307,7 +335,19 @@ public class AgendaController {
             cancha.setHgrow(Priority.ALWAYS);
             cancha.setFillWidth(true);
             grillaAgenda.getColumnConstraints().add(cancha);
+            grillaEncabezado.getColumnConstraints().add(
+                    copiarRestriccion(cancha));
         }
+    }
+
+    private ColumnConstraints copiarRestriccion(ColumnConstraints original) {
+        ColumnConstraints copia = new ColumnConstraints();
+        copia.setMinWidth(original.getMinWidth());
+        copia.setPrefWidth(original.getPrefWidth());
+        copia.setMaxWidth(original.getMaxWidth());
+        copia.setHgrow(original.getHgrow());
+        copia.setFillWidth(original.isFillWidth());
+        return copia;
     }
 
     private void agregarEncabezadoHora() {
@@ -315,7 +355,7 @@ public class AgendaController {
         etiqueta.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         etiqueta.setAlignment(Pos.CENTER);
         etiqueta.getStyleClass().addAll("agenda-header", "agenda-time-header");
-        grillaAgenda.add(etiqueta, 0, 0);
+        grillaEncabezado.add(etiqueta, 0, 0);
     }
 
     private void agregarEncabezadoCancha(Cancha cancha, int columna) {
@@ -329,7 +369,7 @@ public class AgendaController {
                         + " - " + cancha.getHoraCierre().format(FORMATO_HORA)
                         + "\nReservas de " + cancha.getDuracionReserva()
                         + " minutos"));
-        grillaAgenda.add(etiqueta, columna, 0);
+        grillaEncabezado.add(etiqueta, columna, 0);
     }
 
     private void agregarHora(LocalTime hora, int fila) {
@@ -360,7 +400,15 @@ public class AgendaController {
                 + "\nDoble clic: abrir acción";
         Tooltip.install(etiqueta, new Tooltip(tooltip));
 
-        etiqueta.setOnMouseClicked(evento -> manejarClic(evento, celda));
+        boolean interactiva = celda.getEstado()
+                != EstadoCeldaAgenda.NO_DISPONIBLE
+                && celda.getEstado() != EstadoCeldaAgenda.PASADA
+                && celda.getEstado() != EstadoCeldaAgenda.CANCELADA;
+        etiqueta.setMouseTransparent(!interactiva);
+        if (interactiva) {
+            etiqueta.setOnMouseClicked(
+                    evento -> manejarClic(evento, celda));
+        }
         return etiqueta;
     }
 
@@ -368,7 +416,9 @@ public class AgendaController {
         String horario = celda.getHoraInicio().format(FORMATO_HORA)
                 + " - " + horaFinalVisual.format(FORMATO_HORA);
         return switch (celda.getEstado()) {
-            case DISPONIBLE -> horario + "\nDisponible";
+            case DISPONIBLE -> horario + "\nDISPONIBLE";
+            case PARTIDO_TORNEO -> horario + "\nPARTIDO DE TORNEO\n"
+                    + resumenPartido(celda.getDetalle());
             case BLOQUEADA -> horario + "\n"
                     + (celda.getDetalle() == null
                             ? "Bloqueada" : celda.getDetalle());
@@ -378,6 +428,12 @@ public class AgendaController {
                             ? formatoEstado(celda.getEstado())
                             : celda.getDetalle());
         };
+    }
+
+    private String resumenPartido(String detalle) {
+        if (detalle == null || detalle.isBlank()) return "Encuentro programado";
+        String[] lineas = detalle.split("\\n");
+        return lineas.length > 1 ? lineas[1] : detalle;
     }
 
     private void manejarClic(MouseEvent evento, CeldaAgenda celda) {
@@ -401,6 +457,11 @@ public class AgendaController {
         }
         if (celda.getEstado() == EstadoCeldaAgenda.BLOQUEADA) {
             Navegacion.mostrarBloqueos();
+            return;
+        }
+        if (celda.getEstado() == EstadoCeldaAgenda.PARTIDO_TORNEO
+                && celda.getTorneoCategoriaId() != null) {
+            Navegacion.mostrarCuadroTorneo(celda.getTorneoCategoriaId());
         }
     }
 
@@ -445,8 +506,26 @@ public class AgendaController {
             return;
         }
 
+        if (celda.getEstado() == EstadoCeldaAgenda.PARTIDO_TORNEO) {
+            detalleTitulo.setText("Partido de torneo");
+            detalleCliente.setText(celda.getDetalle() == null
+                    ? "Encuentro programado" : celda.getDetalle());
+            detalleTelefono.setText("Sin cliente asociado");
+            detalleAyuda.setText(
+                    "Doble clic o usa el boton para abrir el cuadro de la categoria.");
+            configurarBoton(botonAccionDetalle,
+                    celda.getTorneoCategoriaId() != null,
+                    "ABRIR CUADRO");
+            ocultarBoton(botonAbrirReserva);
+            ocultarBoton(botonAbrirPagos);
+            ocultarBoton(botonWhatsApp);
+            botonAccionDetalle.setOnAction(evento ->
+                    Navegacion.mostrarCuadroTorneo(
+                            celda.getTorneoCategoriaId()));
+            return;
+        }
+
         if (celda.getEstado() == EstadoCeldaAgenda.BLOQUEADA) {
-            detalleTitulo.setText("Cancha bloqueada");
             detalleCliente.setText(celda.getDetalle() == null
                     ? "Bloqueo operativo" : celda.getDetalle());
             detalleTelefono.setText("Sin cliente asociado");
@@ -598,8 +677,21 @@ public class AgendaController {
     private void limpiarDetalle() {
         reservaSeleccionada = null;
         clienteSeleccionado = null;
-        panelDetalle.setVisible(false);
-        panelDetalle.setManaged(false);
+        panelDetalle.setVisible(true);
+        panelDetalle.setManaged(true);
+        detalleTitulo.setText("Sin seleccion");
+        detalleEstado.setText("Selecciona una celda");
+        detalleCancha.setText("-");
+        detalleHorario.setText("-");
+        detalleCliente.setText("-");
+        detalleTelefono.setText("-");
+        detalleAyuda.setText(
+                "Selecciona un horario, una reserva, un bloqueo o un partido para ver sus datos.");
+        ocultarDatosFinancieros();
+        ocultarBoton(botonAccionDetalle);
+        ocultarBoton(botonAbrirReserva);
+        ocultarBoton(botonAbrirPagos);
+        ocultarBoton(botonWhatsApp);
     }
 
     @FXML

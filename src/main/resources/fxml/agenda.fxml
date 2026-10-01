@@ -2,90 +2,106 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.AgendaController" styleClass="agenda-root">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.AgendaController"
+            styleClass="agenda-root">
     <top>
-        <VBox spacing="8" styleClass="module-header">
-            <padding><Insets top="14" right="22" bottom="12" left="22" /></padding>
-            <HBox alignment="CENTER_LEFT" spacing="12">
-                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
+        <VBox spacing="10" styleClass="agenda-header-shell">
+            <padding><Insets top="14" right="20" bottom="12" left="20"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="14">
+                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/>
                 <VBox spacing="1">
-                    <Label text="Agenda diaria" styleClass="page-title" />
-                    <Label fx:id="etiquetaFecha" text="Agenda del complejo" styleClass="page-subtitle" />
+                    <Label text="Agenda diaria" styleClass="agenda-page-title"/>
+                    <Label fx:id="etiquetaFecha" text="Agenda del complejo" styleClass="agenda-page-subtitle"/>
                 </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button text="‹" onAction="#diaAnterior" styleClass="agenda-nav-button" />
-                <Button text="HOY" onAction="#irHoy" styleClass="secondary-button" />
-                <Button text="›" onAction="#diaSiguiente" styleClass="agenda-nav-button" />
-                <DatePicker fx:id="selectorFecha" prefWidth="145" styleClass="modern-date" />
-                <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarAgenda" styleClass="primary-button" />
+                <Region HBox.hgrow="ALWAYS"/>
+                <HBox alignment="CENTER" spacing="7" styleClass="agenda-date-controls">
+                    <Button text="‹" onAction="#diaAnterior" styleClass="agenda-nav-button"/>
+                    <Button text="HOY" onAction="#irHoy" styleClass="agenda-today-button"/>
+                    <Button text="›" onAction="#diaSiguiente" styleClass="agenda-nav-button"/>
+                    <DatePicker fx:id="selectorFecha" prefWidth="155" styleClass="agenda-date-picker"/>
+                    <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarAgenda" styleClass="agenda-update-button"/>
+                </HBox>
             </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <ProgressIndicator fx:id="indicadorCarga" visible="false" maxWidth="16" maxHeight="16" />
-                <Label fx:id="etiquetaEstado" text="Preparando agenda..." styleClass="agenda-status" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Label text="Un clic: detalle · Doble clic: abrir" styleClass="agenda-help" />
-                <FlowPane hgap="6" vgap="5" alignment="CENTER_RIGHT" prefWrapLength="690">
-                    <Label text="Disponible" styleClass="legend-item, legend-disponible" />
-                    <Label text="Pendiente" styleClass="legend-item, legend-pendiente" />
-                    <Label text="Confirmada" styleClass="legend-item, legend-confirmada" />
-                    <Label text="Completada" styleClass="legend-item, legend-completada" />
-                    <Label text="Ausente" styleClass="legend-item, legend-ausente" />
-                    <Label text="Bloqueada" styleClass="legend-item, legend-bloqueada" />
+            <HBox alignment="CENTER_LEFT" spacing="10" styleClass="agenda-meta-bar">
+                <ProgressIndicator fx:id="indicadorCarga" visible="false" maxWidth="16" maxHeight="16"/>
+                <Label fx:id="etiquetaEstado" text="Preparando agenda..." styleClass="agenda-status"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <FlowPane hgap="6" vgap="5" alignment="CENTER_RIGHT" prefWrapLength="670">
+                    <Label text="Disponible" styleClass="legend-item, legend-disponible"/>
+                    <Label text="Pendiente" styleClass="legend-item, legend-pendiente"/>
+                    <Label text="Confirmada" styleClass="legend-item, legend-confirmada"/>
+                    <Label text="Completada" styleClass="legend-item, legend-completada"/>
+                    <Label text="Ausente" styleClass="legend-item, legend-ausente"/>
+                    <Label text="Bloqueada" styleClass="legend-item, legend-bloqueada"/>
+                    <Label text="Partido" styleClass="legend-item, legend-partido-torneo"/>
                 </FlowPane>
             </HBox>
         </VBox>
     </top>
     <center>
-        <HBox spacing="0" styleClass="agenda-content">
-            <StackPane HBox.hgrow="ALWAYS">
-                <padding><Insets top="10" right="14" bottom="14" left="14" /></padding>
-                <ScrollPane fx:id="scrollAgenda" fitToHeight="false" fitToWidth="true"
-                            pannable="false" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
-                            styleClass="agenda-scroll">
-                    <GridPane fx:id="grillaAgenda" minWidth="0" hgap="1" vgap="1" styleClass="agenda-grid" />
-                </ScrollPane>
-                <VBox fx:id="contenedorSinCanchas" alignment="CENTER" spacing="8"
-                      visible="false" managed="false" mouseTransparent="true">
-                    <Label text="No hay canchas activas para mostrar." styleClass="agenda-empty-title" />
-                    <Label text="Registrá o activá una cancha para comenzar a usar la agenda." styleClass="agenda-empty-copy" />
-                </VBox>
-            </StackPane>
-            <VBox fx:id="panelDetalle" prefWidth="330" minWidth="310" maxWidth="360"
-                  visible="false" managed="false" spacing="13" styleClass="agenda-detail-panel">
-                <padding><Insets top="18" right="18" bottom="18" left="18" /></padding>
+        <HBox spacing="12" styleClass="agenda-workspace">
+            <padding><Insets top="12" right="16" bottom="16" left="16"/></padding>
+            <VBox spacing="0" HBox.hgrow="ALWAYS" styleClass="agenda-board-card">
+                <StackPane styleClass="agenda-fixed-header-shell">
+                    <ScrollPane fx:id="scrollEncabezado" fitToWidth="true"
+                                hbarPolicy="NEVER" vbarPolicy="NEVER"
+                                mouseTransparent="true" styleClass="agenda-header-scroll">
+                        <GridPane fx:id="grillaEncabezado" minWidth="0" hgap="2" styleClass="agenda-fixed-header"/>
+                    </ScrollPane>
+                </StackPane>
+                <StackPane VBox.vgrow="ALWAYS">
+                    <ScrollPane fx:id="scrollAgenda" fitToHeight="false" fitToWidth="true"
+                                pannable="false" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                                styleClass="agenda-scroll">
+                        <GridPane fx:id="grillaAgenda" minWidth="0" hgap="2" vgap="1" styleClass="agenda-grid"/>
+                    </ScrollPane>
+                    <VBox fx:id="contenedorSinCanchas" alignment="CENTER" spacing="8"
+                          visible="false" managed="false" mouseTransparent="true">
+                        <Label text="No hay canchas activas para mostrar." styleClass="agenda-empty-title"/>
+                        <Label text="Registrá o activá una cancha para comenzar a usar la agenda." styleClass="agenda-empty-copy"/>
+                    </VBox>
+                </StackPane>
+            </VBox>
+            <VBox fx:id="panelDetalle" prefWidth="335" minWidth="315" maxWidth="370"
+                  spacing="13" styleClass="agenda-detail-panel">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
                 <HBox alignment="CENTER_LEFT">
-                    <Label fx:id="detalleTitulo" text="Detalle" styleClass="agenda-detail-title" />
-                    <Region HBox.hgrow="ALWAYS" />
-                    <Button text="✕" onAction="#cerrarDetalle" styleClass="agenda-detail-close" />
+                    <VBox spacing="2">
+                        <Label text="DETALLE DEL BLOQUE" styleClass="agenda-detail-overline"/>
+                        <Label fx:id="detalleTitulo" text="Sin selección" wrapText="true" styleClass="agenda-detail-title"/>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="✕" onAction="#cerrarDetalle" styleClass="agenda-detail-close"/>
                 </HBox>
-                <Label fx:id="detalleEstado" text="Estado" styleClass="agenda-detail-status" />
-                <GridPane hgap="10" vgap="7">
-                    <Label text="CANCHA" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleCancha" GridPane.columnIndex="1" styleClass="agenda-detail-value" />
-                    <Label text="HORARIO" GridPane.rowIndex="1" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleHorario" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="agenda-detail-value" />
-                    <Label text="CLIENTE" GridPane.rowIndex="2" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleCliente" GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value" />
-                    <Label text="TELÉFONO" GridPane.rowIndex="3" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleTelefono" GridPane.rowIndex="3" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value" />
+                <Label fx:id="detalleEstado" text="Seleccioná una celda" styleClass="agenda-detail-status"/>
+                <GridPane hgap="10" vgap="9" styleClass="agenda-detail-card">
+                    <Label text="CANCHA" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleCancha" text="-" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
+                    <Label text="HORARIO" GridPane.rowIndex="1" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleHorario" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="agenda-detail-value"/>
+                    <Label text="CLIENTE / EVENTO" GridPane.rowIndex="2" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleCliente" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
+                    <Label text="CONTACTO" GridPane.rowIndex="3" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleTelefono" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
                 </GridPane>
                 <GridPane hgap="8" vgap="5" styleClass="agenda-finance-card">
-                    <Label text="PRECIO" styleClass="agenda-detail-label" />
-                    <Label fx:id="detallePrecio" GridPane.columnIndex="1" styleClass="agenda-finance-value" />
-                    <Label text="ACREDITADO" GridPane.rowIndex="1" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleAcreditado" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="agenda-finance-paid" />
-                    <Label text="SALDO" GridPane.rowIndex="2" styleClass="agenda-detail-label" />
-                    <Label fx:id="detalleSaldo" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="agenda-finance-balance" />
+                    <Label text="PRECIO" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detallePrecio" GridPane.columnIndex="1" styleClass="agenda-finance-value"/>
+                    <Label text="ACREDITADO" GridPane.rowIndex="1" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleAcreditado" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="agenda-finance-paid"/>
+                    <Label text="SALDO" GridPane.rowIndex="2" styleClass="agenda-detail-label"/>
+                    <Label fx:id="detalleSaldo" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="agenda-finance-balance"/>
                 </GridPane>
-                <Label fx:id="detalleAyuda" wrapText="true" styleClass="agenda-detail-help" />
-                <Region VBox.vgrow="ALWAYS" />
-                <Button fx:id="botonAccionDetalle" visible="false" managed="false" maxWidth="Infinity" styleClass="primary-button" />
+                <Label fx:id="detalleAyuda" text="Seleccioná un horario, una reserva, un bloqueo o un partido para ver sus datos." wrapText="true" styleClass="agenda-detail-help"/>
+                <Region VBox.vgrow="ALWAYS"/>
+                <Button fx:id="botonAccionDetalle" visible="false" managed="false" maxWidth="Infinity" styleClass="primary-button"/>
                 <HBox spacing="8">
-                    <Button fx:id="botonAbrirReserva" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button" />
-                    <Button fx:id="botonAbrirPagos" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button" />
+                    <Button fx:id="botonAbrirReserva" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button"/>
+                    <Button fx:id="botonAbrirPagos" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button"/>
                 </HBox>
-                <Button fx:id="botonWhatsApp" visible="false" managed="false" maxWidth="Infinity" styleClass="whatsapp-button" />
+                <Button fx:id="botonWhatsApp" visible="false" managed="false" maxWidth="Infinity" styleClass="whatsapp-button"/>
             </VBox>
         </HBox>
     </center>

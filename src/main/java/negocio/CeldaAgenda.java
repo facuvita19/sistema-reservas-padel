@@ -11,6 +11,8 @@ public class CeldaAgenda {
     private EstadoCeldaAgenda estado;
     private Long reservaId;
     private Long bloqueoId;
+    private Long partidoId;
+    private Long torneoCategoriaId;
     private String detalle;
 
     public long getCanchaId() { return canchaId; }
@@ -27,6 +29,10 @@ public class CeldaAgenda {
     public void setReservaId(Long valor) { reservaId = valor; }
     public Long getBloqueoId() { return bloqueoId; }
     public void setBloqueoId(Long valor) { bloqueoId = valor; }
+    public Long getPartidoId() { return partidoId; }
+    public void setPartidoId(Long valor) { partidoId = valor; }
+    public Long getTorneoCategoriaId() { return torneoCategoriaId; }
+    public void setTorneoCategoriaId(Long valor) { torneoCategoriaId = valor; }
     public String getDetalle() { return detalle; }
     public void setDetalle(String valor) { detalle = valor; }
 

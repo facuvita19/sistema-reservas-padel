@@ -69,6 +69,7 @@ public class TorneosController {
     @FXML private Button botonNuevaCategoria;
     @FXML private Button botonEditarCategoria;
     @FXML private Button botonDesactivarCategoria;
+    @FXML private Button botonGestionarCuadro;
     @FXML private Button botonPublicar;
     @FXML private Button botonAbrir;
     @FXML private Button botonCerrar;
@@ -199,6 +200,11 @@ public class TorneosController {
                 && seleccionado.getEstado() != EstadoTorneo.EN_CURSO;
         botonEditarCategoria.setDisable(c == null || !editable);
         botonDesactivarCategoria.setDisable(c == null || !c.isActivo() || !editable);
+        botonGestionarCuadro.setDisable(c == null || seleccionado == null
+                || seleccionado.getEstado() == EstadoTorneo.BORRADOR
+                || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
+                || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
+                || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
     }
 
     @FXML private void nuevoTorneo() {
@@ -272,6 +278,16 @@ public class TorneosController {
         if (seleccionado == null) return;
         try { accion.run(); cargarTorneos(); mostrarExito("Estado actualizado correctamente."); }
         catch (RuntimeException ex) { mostrarError(ex); }
+    }
+
+    @FXML private void gestionarCuadro() {
+        TorneoCategoria categoria = tablaCategorias.getSelectionModel().getSelectedItem();
+        if (categoria == null) {
+            Dialogos.informacion("Seleccion requerida",
+                    "Selecciona una categoria para gestionar su cuadro.");
+            return;
+        }
+        Navegacion.mostrarCuadroTorneo(categoria.getId());
     }
 
     @FXML private void verInscripciones() { Navegacion.mostrarTorneosInscripciones(); }
