@@ -11,10 +11,15 @@ import dao.TorneoDAO;
 import dao.TorneoDAOMySQL;
 import dao.TorneoInscripcionDAO;
 import dao.TorneoInscripcionDAOMySQL;
+import dao.TorneoPartidoDAO;
+import dao.TorneoPartidoDAOMySQL;
 import negocio.EstadoInscripcionTorneo;
 import negocio.EstadoTorneo;
 import negocio.Torneo;
 import negocio.TorneoCategoria;
+import negocio.TorneoPartido;
+import negocio.EstadoPartidoTorneo;
+import negocio.FaseTorneo;
 
 public class GestionTorneoService {
 
@@ -26,6 +31,7 @@ public class GestionTorneoService {
     private final TorneoDAO torneoDAO;
     private final TorneoCategoriaDAO categoriaDAO;
     private final TorneoInscripcionDAO inscripcionDAO;
+    private final TorneoPartidoDAO partidoDAO;
     private final ProveedorConexion proveedorConexion;
 
     public GestionTorneoService() {
@@ -33,6 +39,7 @@ public class GestionTorneoService {
                 new TorneoDAOMySQL(),
                 new TorneoCategoriaDAOMySQL(),
                 new TorneoInscripcionDAOMySQL(),
+                new TorneoPartidoDAOMySQL(),
                 ConexionBD::obtenerConexion);
     }
 
@@ -41,14 +48,26 @@ public class GestionTorneoService {
             TorneoCategoriaDAO categoriaDAO,
             TorneoInscripcionDAO inscripcionDAO,
             ProveedorConexion proveedorConexion) {
+        this(torneoDAO, categoriaDAO, inscripcionDAO,
+                new TorneoPartidoDAOMySQL(), proveedorConexion);
+    }
+
+    public GestionTorneoService(
+            TorneoDAO torneoDAO,
+            TorneoCategoriaDAO categoriaDAO,
+            TorneoInscripcionDAO inscripcionDAO,
+            TorneoPartidoDAO partidoDAO,
+            ProveedorConexion proveedorConexion) {
         if (torneoDAO == null || categoriaDAO == null
-                || inscripcionDAO == null || proveedorConexion == null) {
+                || inscripcionDAO == null || partidoDAO == null
+                || proveedorConexion == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de gestion no pueden ser nulas.");
         }
         this.torneoDAO = torneoDAO;
         this.categoriaDAO = categoriaDAO;
         this.inscripcionDAO = inscripcionDAO;
+        this.partidoDAO = partidoDAO;
         this.proveedorConexion = proveedorConexion;
     }
 
@@ -121,17 +140,134 @@ public class GestionTorneoService {
     }
 
     public Torneo iniciar(long torneoId) {
-        return cambiarEstado(
-                torneoId,
-                EstadoTorneo.EN_CURSO,
-                EstadoTorneo.INSCRIPCION_CERRADA);
+        validarId(torneoId, "El ID del torneo debe ser positivo.");
+        return ejecutar(conexion -> {
+            Torneo torneo = buscarTorneo(conexion, torneoId);
+            validarEditable(torneo);
+            validarInicio(torneo);
+            torneo.setEstado(EstadoTorneo.EN_CURSO);
+            torneoDAO.guardar(conexion, torneo);
+            return torneo;
+        }, "No se pudo iniciar el torneo.");
     }
 
     public Torneo finalizar(long torneoId) {
-        return cambiarEstado(
-                torneoId,
-                EstadoTorneo.FINALIZADO,
-                EstadoTorneo.EN_CURSO);
+        validarId(torneoId, "El ID del torneo debe ser positivo.");
+        return ejecutar(conexion -> {
+            Torneo torneo = buscarTorneo(conexion, torneoId);
+            validarEditable(torneo);
+            validarFinalizacion(torneo);
+            torneo.setEstado(EstadoTorneo.FINALIZADO);
+            torneoDAO.guardar(conexion, torneo);
+            return torneo;
+        }, "No se pudo finalizar el torneo.");
+    }
+
+    public ResumenCiclo resumenCiclo(long torneoId) {
+        validarId(torneoId, "El ID del torneo debe ser positivo.");
+        List<TorneoCategoria> categorias = categoriaDAO
+                .listarActivasPorTorneo(torneoId);
+        int categoriasCompetitivas = 0;
+        int categoriasConCuadro = 0;
+        int categoriasConCampeona = 0;
+        int partidos = 0;
+        int finalizados = 0;
+        for (TorneoCategoria categoria : categorias) {
+            int confirmadas = categoria.getParejasConfirmadas();
+            if (confirmadas < 2) continue;
+            categoriasCompetitivas++;
+            List<TorneoPartido> cuadro = partidoDAO
+                    .listarPorCategoria(categoria.getId());
+            if (!cuadro.isEmpty()) categoriasConCuadro++;
+            partidos += cuadro.size();
+            finalizados += (int) cuadro.stream()
+                    .filter(p -> p.getEstado()
+                            == EstadoPartidoTorneo.FINALIZADO)
+                    .count();
+            boolean campeona = cuadro.stream()
+                    .filter(p -> p.getFase() == FaseTorneo.FINAL)
+                    .anyMatch(p -> p.getEstado()
+                            == EstadoPartidoTorneo.FINALIZADO
+                            && p.getGanadoraInscripcionId() != null);
+            if (campeona) categoriasConCampeona++;
+        }
+        return new ResumenCiclo(categoriasCompetitivas,
+                categoriasConCuadro, categoriasConCampeona,
+                partidos, finalizados);
+    }
+
+    private void validarInicio(Torneo torneo) {
+        long torneoId = torneo.getId();
+        if (torneo.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA) {
+            throw new IllegalArgumentException(
+                    "El torneo debe tener las inscripciones cerradas.");
+        }
+        List<TorneoCategoria> categorias = categoriaDAO
+                .listarActivasPorTorneo(torneoId);
+        if (categorias.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "El torneo necesita al menos una categoria activa.");
+        }
+        int competitivas = 0;
+        for (TorneoCategoria categoria : categorias) {
+            int confirmadas = categoria.getParejasConfirmadas();
+            if (confirmadas == 1) {
+                throw new IllegalArgumentException(
+                        "La categoria " + categoria.getNombre()
+                                + " tiene una sola pareja confirmada.");
+            }
+            if (confirmadas < 2) continue;
+            competitivas++;
+            if (partidoDAO.listarPorCategoria(
+                    categoria.getId()).isEmpty()) {
+                throw new IllegalArgumentException(
+                        "Falta generar el cuadro de la categoria "
+                                + categoria.getNombre() + ".");
+            }
+        }
+        if (competitivas == 0) {
+            throw new IllegalArgumentException(
+                    "No hay categorias con al menos dos parejas confirmadas.");
+        }
+    }
+
+    private void validarFinalizacion(Torneo torneo) {
+        long torneoId = torneo.getId();
+        if (torneo.getEstado() != EstadoTorneo.EN_CURSO) {
+            throw new IllegalArgumentException(
+                    "El torneo debe estar en curso para finalizarlo.");
+        }
+        ResumenCiclo resumen = resumenCiclo(torneoId);
+        if (resumen.categoriasCompetitivas() == 0) {
+            throw new IllegalArgumentException(
+                    "El torneo no tiene categorias competitivas.");
+        }
+        if (resumen.categoriasConCuadro()
+                != resumen.categoriasCompetitivas()) {
+            throw new IllegalArgumentException(
+                    "Hay categorias sin cuadro generado.");
+        }
+        if (resumen.partidosFinalizados() != resumen.partidos()) {
+            throw new IllegalArgumentException(
+                    "Todavia hay " + resumen.partidosPendientes()
+                            + " partido(s) sin finalizar.");
+        }
+        if (resumen.categoriasConCampeona()
+                != resumen.categoriasCompetitivas()) {
+            throw new IllegalArgumentException(
+                    "Todas las categorias deben tener una campeona.");
+        }
+    }
+
+    public record ResumenCiclo(
+            int categoriasCompetitivas,
+            int categoriasConCuadro,
+            int categoriasConCampeona,
+            int partidos,
+            int partidosFinalizados) {
+        public int partidosPendientes() {
+            return Math.max(0, partidos - partidosFinalizados);
+        }
     }
 
     public Torneo cancelar(long torneoId) {

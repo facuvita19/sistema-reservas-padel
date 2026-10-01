@@ -22,8 +22,12 @@ import org.junit.jupiter.api.Test;
 import dao.TorneoCategoriaDAO;
 import dao.TorneoDAO;
 import dao.TorneoInscripcionDAO;
+import dao.TorneoPartidoDAO;
 import negocio.EstadoInscripcionTorneo;
 import negocio.EstadoTorneo;
+import negocio.EstadoPartidoTorneo;
+import negocio.FaseTorneo;
+import negocio.TorneoPartido;
 import negocio.RamaTorneo;
 import negocio.Torneo;
 import negocio.TorneoCategoria;
@@ -33,6 +37,7 @@ class GestionTorneoServiceTest {
     private TorneoDAO torneoDAO;
     private TorneoCategoriaDAO categoriaDAO;
     private TorneoInscripcionDAO inscripcionDAO;
+    private TorneoPartidoDAO partidoDAO;
     private Connection conexion;
     private GestionTorneoService servicio;
 
@@ -41,11 +46,13 @@ class GestionTorneoServiceTest {
         torneoDAO = mock(TorneoDAO.class);
         categoriaDAO = mock(TorneoCategoriaDAO.class);
         inscripcionDAO = mock(TorneoInscripcionDAO.class);
+        partidoDAO = mock(TorneoPartidoDAO.class);
         conexion = mock(Connection.class);
         servicio = new GestionTorneoService(
                 torneoDAO,
                 categoriaDAO,
                 inscripcionDAO,
+                partidoDAO,
                 () -> conexion);
     }
 
@@ -148,13 +155,29 @@ class GestionTorneoServiceTest {
         Torneo torneo = torneoValido();
         torneo.setId(10L);
         torneo.setEstado(EstadoTorneo.INSCRIPCION_ABIERTA);
+        TorneoCategoria categoria = categoriaValida();
+        categoria.setId(20L);
+        categoria.setTorneoId(10L);
+        categoria.setParejasConfirmadas(2);
+        TorneoPartido finalPartido = new TorneoPartido();
+        finalPartido.setId(30L);
+        finalPartido.setTorneoCategoriaId(20L);
+        finalPartido.setFase(FaseTorneo.FINAL);
+        finalPartido.setEstado(EstadoPartidoTorneo.PENDIENTE);
+
         when(torneoDAO.buscar(conexion, 10L)).thenReturn(torneo);
+        when(categoriaDAO.listarActivasPorTorneo(10L))
+                .thenReturn(List.of(categoria));
+        when(partidoDAO.listarPorCategoria(20L))
+                .thenReturn(List.of(finalPartido));
 
         assertEquals(EstadoTorneo.INSCRIPCION_CERRADA,
                 servicio.cerrarInscripciones(10L).getEstado());
-
         assertEquals(EstadoTorneo.EN_CURSO,
                 servicio.iniciar(10L).getEstado());
+
+        finalPartido.setEstado(EstadoPartidoTorneo.FINALIZADO);
+        finalPartido.setGanadoraInscripcionId(100L);
 
         assertEquals(EstadoTorneo.FINALIZADO,
                 servicio.finalizar(10L).getEstado());

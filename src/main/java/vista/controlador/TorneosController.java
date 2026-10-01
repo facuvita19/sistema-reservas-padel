@@ -262,12 +262,45 @@ public class TorneosController {
             cambiar(() -> gestionService.cerrarInscripciones(seleccionado.getId()));
     }
     @FXML private void iniciarTorneo() {
-        if (Dialogos.confirmar("Iniciar torneo", "El torneo pasará a estado En curso.\n\n¿Querés continuar?"))
-            cambiar(() -> gestionService.iniciar(seleccionado.getId()));
+        if (seleccionado == null) return;
+        try {
+            GestionTorneoService.ResumenCiclo resumen =
+                    gestionService.resumenCiclo(seleccionado.getId());
+            String mensaje = "Categorias con cuadro: "
+                    + resumen.categoriasConCuadro() + " de "
+                    + resumen.categoriasCompetitivas()
+                    + "\nPartidos generados: " + resumen.partidos()
+                    + "\n\nEl torneo pasara a estado En curso."
+                    + "\n\nQueres continuar?";
+            if (Dialogos.confirmar("Iniciar torneo", mensaje)) {
+                cambiar(() -> gestionService.iniciar(seleccionado.getId()));
+            }
+        } catch (RuntimeException ex) {
+            mostrarError(ex);
+        }
     }
+
     @FXML private void finalizarTorneo() {
-        if (Dialogos.confirmarPeligro("Finalizar torneo", "El torneo quedará finalizado y no podrá reabrirse.\n\n¿Querés continuar?"))
-            cambiar(() -> gestionService.finalizar(seleccionado.getId()));
+        if (seleccionado == null) return;
+        try {
+            GestionTorneoService.ResumenCiclo resumen =
+                    gestionService.resumenCiclo(seleccionado.getId());
+            String mensaje = "Categorias con campeona: "
+                    + resumen.categoriasConCampeona() + " de "
+                    + resumen.categoriasCompetitivas()
+                    + "\nPartidos finalizados: "
+                    + resumen.partidosFinalizados() + " de "
+                    + resumen.partidos()
+                    + "\nPartidos pendientes: "
+                    + resumen.partidosPendientes()
+                    + "\n\nEl torneo quedara finalizado y no podra reabrirse."
+                    + "\n\nQueres continuar?";
+            if (Dialogos.confirmarPeligro("Finalizar torneo", mensaje)) {
+                cambiar(() -> gestionService.finalizar(seleccionado.getId()));
+            }
+        } catch (RuntimeException ex) {
+            mostrarError(ex);
+        }
     }
     @FXML private void cancelarTorneo() {
         if (Dialogos.confirmarPeligro("Cancelar torneo",
