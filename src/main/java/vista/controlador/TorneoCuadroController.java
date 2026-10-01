@@ -11,6 +11,8 @@ import dao.TorneoInscripcionDAO;
 import dao.TorneoInscripcionDAOMySQL;
 import dao.TorneoPartidoDAO;
 import dao.TorneoPartidoDAOMySQL;
+import dao.TorneoDAO;
+import dao.TorneoDAOMySQL;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,6 +35,8 @@ import negocio.FaseTorneo;
 import negocio.TorneoCategoria;
 import negocio.TorneoInscripcion;
 import negocio.TorneoPartido;
+import negocio.Torneo;
+import negocio.EstadoTorneo;
 import servicio.CanchaService;
 import servicio.CuadroEliminacionTorneoService;
 import servicio.ProgramacionPartidoTorneoService;
@@ -50,6 +54,7 @@ public class TorneoCuadroController {
 
     private final TorneoPartidoDAO partidoDAO =
             new TorneoPartidoDAOMySQL();
+    private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
     private final TorneoCategoriaDAO categoriaDAO =
             new TorneoCategoriaDAOMySQL();
     private final TorneoInscripcionDAO inscripcionDAO =
@@ -65,6 +70,7 @@ public class TorneoCuadroController {
     private FilteredList<TorneoPartido> filtrados;
     private long categoriaId;
     private TorneoCategoria categoria;
+    private Torneo torneo;
 
     @FXML private Label etiquetaContexto;
     @FXML private Label etiquetaResumen;
@@ -207,6 +213,11 @@ public class TorneoCuadroController {
             etiquetaContexto.setText(categoria.getNombreTorneo()
                     + " · " + categoria.getNombre()
                     + " · " + categoria.getRama());
+            torneo = torneoDAO.buscar(categoria.getTorneoId());
+            if (torneo == null) {
+                throw new IllegalArgumentException(
+                        "El torneo de la categoria ya no existe.");
+            }
             partidos.setAll(partidoDAO.listarPorCategoria(categoriaId));
             filtrar();
             botonGenerar.setDisable(!partidos.isEmpty());
@@ -280,6 +291,11 @@ public class TorneoCuadroController {
     private void corregirResultado() {
         TorneoPartido partido = seleccionado();
         if (partido == null) return;
+        if (torneo == null || torneo.getEstado() != EstadoTorneo.EN_CURSO) {
+            Dialogos.informacion("Correccion no disponible",
+                    "Solo pueden corregirse resultados de un torneo en curso.");
+            return;
+        }
         if (!Dialogos.confirmarPeligro("Corregir resultado",
                 "La correccion reemplazara el marcador y puede cambiar "
                         + "la pareja ganadora.\n\nQueres continuar?")) {
@@ -325,8 +341,11 @@ public class TorneoCuadroController {
                 || !partido.tieneDosParejas()
                 || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
                     && partido.getEstado() != EstadoPartidoTorneo.EN_CURSO));
+        boolean torneoEnCurso = torneo != null
+                && torneo.getEstado() == EstadoTorneo.EN_CURSO;
         botonCorregirResultado.setDisable(!hay || partido.isBye()
-                || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO);
+                || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO
+                || !torneoEnCurso);
         if (!hay) {
             etiquetaTituloPanel.setText("DETALLE DEL PARTIDO");
             etiquetaPartido.setText("Selecciona un partido");

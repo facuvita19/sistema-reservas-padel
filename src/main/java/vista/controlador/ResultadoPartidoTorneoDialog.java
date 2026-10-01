@@ -38,7 +38,9 @@ public class ResultadoPartidoTorneoDialog {
     private final CheckBox superTieBreak =
             new CheckBox("Tercer set como super tie-break");
     private final TextArea observaciones = new TextArea();
+    private final TextArea motivoCorreccion = new TextArea();
     private String error;
+    private TorneoPartido resultadoGuardado;
 
     public ResultadoPartidoTorneoDialog(TorneoPartido partido) {
         this(partido, new ResultadoPartidoTorneoService(), false);
@@ -107,32 +109,32 @@ public class ResultadoPartidoTorneoDialog {
                 evento -> {
                     try {
                         validarSesion();
+                        resultadoGuardado = correccion
+                                ? service.corregirResultado(
+                                        partido.getId(), crearSets(),
+                                        Navegacion.getUsuarioActual().getId(),
+                                        observaciones.getText(),
+                                        motivoCorreccion.getText())
+                                : service.registrarResultado(
+                                        partido.getId(), crearSets(),
+                                        Navegacion.getUsuarioActual().getId(),
+                                        observaciones.getText());
                         error = null;
                     } catch (RuntimeException exception) {
                         error = exception.getMessage();
+                        resultadoGuardado = null;
                         evento.consume();
-                        Dialogos.error("Resultado invalido", error);
+                        Dialogos.error(correccion
+                                ? "No se pudo corregir el resultado"
+                                : "No se pudo registrar el resultado",
+                                error == null
+                                        ? "Revisa los datos ingresados."
+                                        : error);
                     }
                 });
 
-        dialogo.setResultConverter(tipo -> {
-            if (tipo != guardar || error != null) return null;
-            try {
-                return correccion
-                        ? service.corregirResultado(
-                                partido.getId(), crearSets(),
-                                Navegacion.getUsuarioActual().getId(),
-                                observaciones.getText())
-                        : service.registrarResultado(
-                                partido.getId(), crearSets(),
-                                Navegacion.getUsuarioActual().getId(),
-                                observaciones.getText());
-            } catch (RuntimeException exception) {
-                Dialogos.error("No se pudo registrar el resultado",
-                        exception.getMessage());
-                return null;
-            }
-        });
+        dialogo.setResultConverter(tipo ->
+                tipo == guardar ? resultadoGuardado : null);
     }
 
     private void cargarResultadoActual() {
@@ -168,6 +170,10 @@ public class ResultadoPartidoTorneoDialog {
         agregarFila(sets, 2, set2Pareja1, set2Pareja2);
         agregarFila(sets, 3, set3Pareja1, set3Pareja2);
 
+        motivoCorreccion.setPromptText(
+                "Motivo opcional de la correccion (hasta 500 caracteres)");
+        motivoCorreccion.setPrefRowCount(3);
+        motivoCorreccion.setWrapText(true);
         observaciones.setPromptText("Observaciones opcionales");
         observaciones.setPrefRowCount(3);
         observaciones.setWrapText(true);
@@ -175,6 +181,8 @@ public class ResultadoPartidoTorneoDialog {
         VBox caja = new VBox(12,
                 new Label("Cargá los sets ganados por cada pareja."),
                 sets, incluirTercero, superTieBreak,
+                new Label("MOTIVO DE LA CORRECCION (OPCIONAL)"),
+                motivoCorreccion,
                 new Label("OBSERVACIONES"), observaciones);
         caja.setPadding(new Insets(4));
         caja.setPrefWidth(480);

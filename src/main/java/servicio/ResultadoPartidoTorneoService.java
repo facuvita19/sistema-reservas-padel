@@ -12,6 +12,12 @@ import dao.TorneoPartidoDAO;
 import dao.TorneoPartidoDAOMySQL;
 import dao.TorneoPartidoSetDAO;
 import dao.TorneoPartidoSetDAOMySQL;
+import dao.CorreccionResultadoTorneoDAO;
+import dao.CorreccionResultadoTorneoDAOMySQL;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoDAOMySQL;
+import negocio.CorreccionResultadoTorneo;
+import negocio.EstadoTorneo;
 import negocio.EstadoPartidoTorneo;
 import negocio.PosicionPartidoSiguiente;
 import negocio.TipoSetTorneo;
@@ -22,6 +28,8 @@ public class ResultadoPartidoTorneoService {
 
     private final TorneoPartidoDAO partidoDAO;
     private final TorneoPartidoSetDAO setDAO;
+    private final CorreccionResultadoTorneoDAO correccionDAO =
+            new CorreccionResultadoTorneoDAOMySQL();
 
     public ResultadoPartidoTorneoService() {
         this(new TorneoPartidoDAOMySQL(),
@@ -90,18 +98,22 @@ public class ResultadoPartidoTorneoService {
             long partidoId,
             List<TorneoPartidoSet> sets,
             long usuarioId,
-            String observaciones) {
+            String observaciones,
+            String motivo) {
         if (partidoId <= 0 || usuarioId <= 0) {
             throw new IllegalArgumentException(
                     "El partido y el usuario son obligatorios.");
         }
         int ladoGanador = determinarLadoGanador(sets);
+        String motivoLimpio = validarMotivo(motivo);
         try (Connection conexion = ConexionBD.obtenerConexion()) {
             conexion.setAutoCommit(false);
             try {
                 TorneoPartido partido = partidoDAO.buscarParaActualizar(
                         conexion, partidoId);
                 validarCorreccion(partido);
+                validarTorneoEnCurso(partido);
+                List<TorneoPartidoSet> setsAnteriores = partido.getSets();
                 Long ganadoraAnterior = partido.getGanadoraInscripcionId();
                 Long ganadoraNueva = ladoGanador == 1
                         ? partido.getPareja1InscripcionId()
@@ -115,6 +127,8 @@ public class ResultadoPartidoTorneoService {
                 partido.setFechaFinalizacion(LocalDateTime.now());
                 partido.setObservaciones(limpiarObservaciones(observaciones));
                 partidoDAO.guardar(conexion, partido);
+                guardarAuditoria(conexion, partidoId, usuarioId, motivoLimpio,
+                        ganadoraAnterior, ganadoraNueva, setsAnteriores, sets);
                 conexion.commit();
             } catch (RuntimeException | SQLException exception) {
                 rollbackSeguro(conexion, exception);
@@ -127,6 +141,57 @@ public class ResultadoPartidoTorneoService {
                     "No se pudo corregir el resultado.", exception);
         }
         return partidoDAO.buscar(partidoId);
+    }
+
+    private void validarTorneoEnCurso(TorneoPartido partido) {
+        var categoria = new TorneoCategoriaDAOMySQL().buscar(
+                partido.getTorneoCategoriaId());
+        var torneo = categoria == null ? null
+                : new TorneoDAOMySQL().buscar(categoria.getTorneoId());
+        if (torneo == null || torneo.getEstado() != EstadoTorneo.EN_CURSO) {
+            throw new IllegalArgumentException(
+                    "Solo pueden corregirse resultados de un torneo en curso.");
+        }
+    }
+
+    private String validarMotivo(String motivo) {
+        if (motivo == null || motivo.isBlank()) return null;
+        String limpio = motivo.trim().replaceAll("\s+", " ");
+        if (limpio.length() > 500) {
+            throw new IllegalArgumentException(
+                    "El motivo no puede superar 500 caracteres.");
+        }
+        return limpio;
+    }
+
+    private void guardarAuditoria(Connection conexion, long partidoId,
+            long usuarioId, String motivo, Long anterior, Long nueva,
+            List<TorneoPartidoSet> setsAnteriores,
+            List<TorneoPartidoSet> setsNuevos) {
+        CorreccionResultadoTorneo c = new CorreccionResultadoTorneo();
+        c.setPartidoId(partidoId); c.setUsuarioId(usuarioId); c.setMotivo(motivo);
+        c.setGanadoraAnteriorInscripcionId(anterior);
+        c.setGanadoraNuevaInscripcionId(nueva);
+        c.setResultadoAnterior(resultado(setsAnteriores));
+        c.setResultadoNuevo(resultado(setsNuevos));
+        c.setSetsAnterioresJson(jsonSets(setsAnteriores));
+        c.setSetsNuevosJson(jsonSets(setsNuevos));
+        correccionDAO.guardar(conexion, c);
+    }
+
+    private String resultado(List<TorneoPartidoSet> sets) {
+        return sets.stream().map(x -> x.getPuntosPareja1() + "-"
+                + x.getPuntosPareja2()).reduce((a,b) -> a + " / " + b)
+                .orElse("Sin resultado");
+    }
+
+    private String jsonSets(List<TorneoPartidoSet> sets) {
+        return sets.stream().map(x -> "{\"numero\":" + x.getNumeroSet()
+                + ",\"tipo\":\"" + x.getTipo().name()
+                + "\",\"pareja1\":" + x.getPuntosPareja1()
+                + ",\"pareja2\":" + x.getPuntosPareja2() + "}")
+                .reduce((a,b) -> a + "," + b).map(x -> "[" + x + "]")
+                .orElse("[]");
     }
 
     private void validarCorreccion(TorneoPartido partido) {

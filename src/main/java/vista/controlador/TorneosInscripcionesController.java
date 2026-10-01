@@ -169,6 +169,16 @@ public class TorneosInscripcionesController {
         return valor != null && valor.toLowerCase(Locale.ROOT).contains(filtro);
     }
 
+    @FXML private void agregarPareja() {
+        Long id = new AltaAdministrativaInscripcionTorneoDialog().mostrar();
+        if (id != null) {
+            cargarInscripciones();
+            seleccionarPorId(id);
+            mostrarExito("Pareja agregada",
+                    "La inscripcion administrativa fue creada correctamente.");
+        }
+    }
+
     @FXML private void limpiarFiltros() {
         campoBuscar.clear();
         filtroEstado.getSelectionModel().clearSelection();
