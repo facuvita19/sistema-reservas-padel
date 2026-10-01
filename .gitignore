@@ -47,3 +47,8 @@ backups/
 
 # Paquetes y scripts auxiliares temporales
 *.zip
+# Archivos auxiliares generados
+/LEEME.txt
+/aplicar-*.mjs
+/corregir-*.mjs
+/backups/
