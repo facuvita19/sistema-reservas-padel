@@ -203,19 +203,22 @@ public class PropuestaEtapaEliminatoriaService {
             String instancia,
             int ronda) {
         List<String> disponibles = new ArrayList<>(clasificados);
+        List<ClasificadoEtapaEliminatoria> primerosPendientes =
+                new ArrayList<>(primeros);
         List<CrucePropuestoTorneo> resultado = new ArrayList<>();
         int orden = 1;
 
-        for (ClasificadoEtapaEliminatoria primero : primeros) {
+        while (!primerosPendientes.isEmpty() && !disponibles.isEmpty()) {
+            ClasificadoEtapaEliminatoria primero =
+                    primerosPendientes.remove(0);
+            String grupoPrimero = grupoDe(primero.referencia());
             String rival = disponibles.stream()
                     .filter(r -> posicionDe(r) == 2)
-                    .filter(r -> !grupoDe(r).equals(
-                            grupoDe(primero.referencia())))
+                    .filter(r -> !grupoDe(r).equals(grupoPrimero))
                     .findFirst()
                     .orElseGet(() -> disponibles.stream()
                             .filter(r -> posicionDe(r) > 1)
-                            .filter(r -> !grupoDe(r).equals(
-                                    grupoDe(primero.referencia())))
+                            .filter(r -> !grupoDe(r).equals(grupoPrimero))
                             .findFirst()
                             .orElseGet(() -> disponibles.stream()
                                     .filter(r -> posicionDe(r) == 2)
@@ -226,11 +229,16 @@ public class PropuestaEtapaEliminatoriaService {
                     orden++, primero.referencia(), rival));
         }
 
+        for (ClasificadoEtapaEliminatoria primero : primerosPendientes) {
+            disponibles.add(primero.referencia());
+        }
+
         while (disponibles.size() >= 2) {
             String a = disponibles.remove(0);
             String b = disponibles.stream()
                     .filter(r -> !grupoDe(r).equals(grupoDe(a)))
-                    .findFirst().orElse(disponibles.get(0));
+                    .findFirst()
+                    .orElseGet(() -> disponibles.get(0));
             disponibles.remove(b);
             resultado.add(new CrucePropuestoTorneo(instancia, ronda,
                     orden++, a, b));

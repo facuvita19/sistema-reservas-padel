@@ -767,6 +767,7 @@ public class TorneoCuadroController {
     }
 
     private void mostrarError(RuntimeException exception) {
+        exception.printStackTrace(System.err);
         String mensaje = exception.getMessage() == null
                 ? "No se pudo completar la operacion."
                 : exception.getMessage();
