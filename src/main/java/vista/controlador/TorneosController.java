@@ -70,6 +70,7 @@ public class TorneosController {
     @FXML private Button botonEditarCategoria;
     @FXML private Button botonDesactivarCategoria;
     @FXML private Button botonGestionarCuadro;
+    @FXML private Button botonGestionarGrupos;
     @FXML private Button botonPublicar;
     @FXML private Button botonAbrir;
     @FXML private Button botonCerrar;
@@ -200,6 +201,11 @@ public class TorneosController {
                 && seleccionado.getEstado() != EstadoTorneo.EN_CURSO;
         botonEditarCategoria.setDisable(c == null || !editable);
         botonDesactivarCategoria.setDisable(c == null || !c.isActivo() || !editable);
+        botonGestionarGrupos.setDisable(c == null || seleccionado == null || !c.usaFaseGrupos()
+                || seleccionado.getEstado() == EstadoTorneo.BORRADOR
+                || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
+                || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
+                || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
         botonGestionarCuadro.setDisable(c == null || seleccionado == null
                 || seleccionado.getEstado() == EstadoTorneo.BORRADOR
                 || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
@@ -311,6 +317,11 @@ public class TorneosController {
         if (seleccionado == null) return;
         try { accion.run(); cargarTorneos(); mostrarExito("Estado actualizado correctamente."); }
         catch (RuntimeException ex) { mostrarError(ex); }
+    }
+
+    @FXML private void gestionarGrupos() {
+        TorneoCategoria categoria = tablaCategorias.getSelectionModel().getSelectedItem();
+        if (categoria != null) Navegacion.mostrarGruposTorneo(categoria.getId());
     }
 
     @FXML private void gestionarCuadro() {

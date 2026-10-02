@@ -19,9 +19,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import negocio.Cliente;
+import vista.Dialogos;
 
 public class BusquedaClienteTorneoDialog {
-
     private final Dialog<Cliente> dialogo = new Dialog<>();
     private final TableView<Cliente> tabla = new TableView<>();
     private final FilteredList<Cliente> filtrados;
@@ -29,26 +29,36 @@ public class BusquedaClienteTorneoDialog {
     public BusquedaClienteTorneoDialog(
             List<Cliente> clientes,
             String integrante) {
+        this(clientes, integrante, "VINCULAR");
+    }
+
+    public BusquedaClienteTorneoDialog(
+            List<Cliente> clientes,
+            String integrante,
+            String textoAccion) {
         filtrados = new FilteredList<>(
                 FXCollections.observableArrayList(clientes), valor -> true);
-        configurarDialogo(integrante);
+        configurarDialogo(integrante, textoAccion);
     }
 
     public Optional<Cliente> mostrar() {
         return dialogo.showAndWait();
     }
 
-    private void configurarDialogo(String integrante) {
-        dialogo.setTitle("Vincular cliente");
+    private void configurarDialogo(String integrante, String textoAccion) {
+        dialogo.setTitle("Seleccionar cliente");
         dialogo.setHeaderText("Buscar cliente para " + integrante);
-        ButtonType vincular = new ButtonType(
-                "VINCULAR", ButtonBar.ButtonData.OK_DONE);
+        ButtonType seleccionar = new ButtonType(
+                textoAccion, ButtonBar.ButtonData.OK_DONE);
         dialogo.getDialogPane().getButtonTypes().addAll(
-                vincular, ButtonType.CANCEL);
+                seleccionar,
+                new ButtonType("VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE));
+        Dialogos.preparar(dialogo, "dialog-client-search");
 
         TextField buscar = new TextField();
         buscar.setPromptText(
                 "Buscar por ID, nombre, apellido, documento o telefono...");
+        buscar.getStyleClass().add("dialog-field");
         buscar.textProperty().addListener((obs, anterior, actual) ->
                 aplicarFiltro(actual));
 
@@ -56,6 +66,8 @@ public class BusquedaClienteTorneoDialog {
         tabla.setItems(filtrados);
         tabla.setPlaceholder(new Label("No hay clientes para mostrar."));
         tabla.setPrefSize(760, 420);
+        tabla.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
         VBox contenido = new VBox(10, buscar, tabla);
         contenido.setPadding(new Insets(8));
@@ -63,18 +75,18 @@ public class BusquedaClienteTorneoDialog {
         dialogo.getDialogPane().setContent(contenido);
         dialogo.getDialogPane().setPrefSize(800, 540);
 
-        javafx.scene.Node botonVincular =
-                dialogo.getDialogPane().lookupButton(vincular);
-        botonVincular.disableProperty().bind(
+        javafx.scene.Node botonSeleccionar =
+                dialogo.getDialogPane().lookupButton(seleccionar);
+        botonSeleccionar.disableProperty().bind(
                 tabla.getSelectionModel().selectedItemProperty().isNull());
         dialogo.setResultConverter(tipo ->
-                tipo == vincular
+                tipo == seleccionar
                         ? tabla.getSelectionModel().getSelectedItem()
                         : null);
         tabla.setOnMouseClicked(evento -> {
             if (evento.getClickCount() == 2
                     && tabla.getSelectionModel().getSelectedItem() != null) {
-                botonVincular.fireEvent(new javafx.event.ActionEvent());
+                botonSeleccionar.fireEvent(new javafx.event.ActionEvent());
             }
         });
     }
@@ -95,13 +107,15 @@ public class BusquedaClienteTorneoDialog {
         TableColumn<Cliente, String> documento =
                 new TableColumn<>("DOCUMENTO");
         documento.setCellValueFactory(datos ->
-                new SimpleStringProperty(valor(datos.getValue().getDocumento())));
+                new SimpleStringProperty(
+                        valor(datos.getValue().getDocumento())));
         documento.setPrefWidth(150);
 
         TableColumn<Cliente, String> telefono =
                 new TableColumn<>("TELEFONO");
         telefono.setCellValueFactory(datos ->
-                new SimpleStringProperty(valor(datos.getValue().getTelefono())));
+                new SimpleStringProperty(
+                        valor(datos.getValue().getTelefono())));
         telefono.setPrefWidth(190);
 
         tabla.getColumns().addAll(id, nombre, documento, telefono);

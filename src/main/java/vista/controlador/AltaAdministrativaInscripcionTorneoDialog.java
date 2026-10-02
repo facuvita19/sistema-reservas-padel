@@ -1,11 +1,28 @@
 package vista.controlador;
 
 import java.util.List;
+
+import dao.ClienteDAOMySQL;
+import dao.TorneoCategoriaDAO;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoDAO;
+import dao.TorneoDAOMySQL;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
-import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
 import negocio.EstadoTorneo;
 import negocio.Torneo;
@@ -13,187 +30,312 @@ import negocio.TorneoCategoria;
 import servicio.AltaAdministrativaInscripcionTorneoService;
 import servicio.AltaAdministrativaInscripcionTorneoService.DatosJugador;
 import servicio.AltaAdministrativaInscripcionTorneoService.Solicitud;
-import dao.TorneoDAO;
-import dao.TorneoDAOMySQL;
-import dao.TorneoCategoriaDAO;
-import dao.TorneoCategoriaDAOMySQL;
 import vista.Dialogos;
 import vista.Navegacion;
 
 public class AltaAdministrativaInscripcionTorneoDialog {
-    private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
-    private final TorneoCategoriaDAO categoriaDAO = new TorneoCategoriaDAOMySQL();
-    private final AltaAdministrativaInscripcionTorneoService service =
-            new AltaAdministrativaInscripcionTorneoService();
-    private final Dialog<Long> dialogo = new Dialog<>();
-    private final ComboBox<Torneo> torneo = new ComboBox<>();
-    private final ComboBox<TorneoCategoria> categoria = new ComboBox<>();
-    private final ComboBox<EstadoInscripcionTorneo> estado = new ComboBox<>();
-    private final TextField n1 = new TextField(), a1 = new TextField(), t1 = new TextField();
-    private final TextField n2 = new TextField(), a2 = new TextField(), t2 = new TextField();
-    private final TextArea comentarios = new TextArea(), observaciones = new TextArea();
-    private Long creadaId;
+        private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
+        private final TorneoCategoriaDAO categoriaDAO = new TorneoCategoriaDAOMySQL();
+        private final ClienteDAOMySQL clienteDAO = new ClienteDAOMySQL();
+        private final AltaAdministrativaInscripcionTorneoService service = new AltaAdministrativaInscripcionTorneoService();
+        private final Dialog<Long> dialogo = new Dialog<>();
+        private final ComboBox<Torneo> torneo = new ComboBox<>();
+        private final ComboBox<TorneoCategoria> categoria = new ComboBox<>();
+        private final ComboBox<EstadoInscripcionTorneo> estado = new ComboBox<>();
+        private final TextField n1 = new TextField();
+        private final TextField a1 = new TextField();
+        private final TextField t1 = new TextField();
+        private final TextField n2 = new TextField();
+        private final TextField a2 = new TextField();
+        private final TextField t2 = new TextField();
+        private final TextArea comentarios = new TextArea();
+        private final TextArea observaciones = new TextArea();
+        private final SeleccionJugador seleccionResponsable = new SeleccionJugador("RESPONSABLE", n1, a1, t1);
+        private final SeleccionJugador seleccionPareja = new SeleccionJugador("SEGUNDO INTEGRANTE", n2, a2, t2);
+        private Long creadaId;
 
-    public AltaAdministrativaInscripcionTorneoDialog() { construir(); }
-    public Long mostrar() { return dialogo.showAndWait().orElse(null); }
-
-    private void construir() {
-        dialogo.setTitle("Agregar pareja al torneo");
-        dialogo.setHeaderText("Alta administrativa de inscripcion");
-        ButtonType guardar = new ButtonType(
-                "AGREGAR PAREJA", ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelar = new ButtonType(
-                "CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialogo.getDialogPane().getButtonTypes().setAll(guardar, cancelar);
-        dialogo.getDialogPane().setContent(contenido());
-        Dialogos.preparar(dialogo, "dialog-tournament-registration");
-        var css = AltaAdministrativaInscripcionTorneoDialog.class
-                .getResource("/css/torneo-alta-pareja.css");
-        if (css != null) {
-            dialogo.getDialogPane().getStylesheets().add(
-                    css.toExternalForm());
+        public AltaAdministrativaInscripcionTorneoDialog() {
+                construir();
         }
-        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
-                Navegacion.getConfiguracionActual());
-        dialogo.setResizable(true);
-        dialogo.getDialogPane().setPrefSize(820, 700);
 
-        List<Torneo> administrables = torneoDAO.listarActivos().stream()
-                .filter(x -> x.getEstado() == EstadoTorneo.PUBLICADO
-                        || x.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
-                        || x.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA)
-                .toList();
-        torneo.setItems(FXCollections.observableArrayList(administrables));
-        torneo.setConverter(new javafx.util.StringConverter<>() {
-            public String toString(Torneo x) {
-                return x == null ? "" : x.getNombre() + " - " + x.getEstado();
-            }
-            public Torneo fromString(String x) { return null; }
-        });
-        categoria.setConverter(new javafx.util.StringConverter<>() {
-            public String toString(TorneoCategoria x) {
-                return x == null ? "" : x.getNombre() + " - " + x.getRama();
-            }
-            public TorneoCategoria fromString(String x) { return null; }
-        });
-        torneo.valueProperty().addListener((o, a, n) -> categoria.setItems(
-                FXCollections.observableArrayList(n == null ? List.of()
-                        : categoriaDAO.listarActivasPorTorneo(n.getId()))));
-        estado.setItems(FXCollections.observableArrayList(
-                EstadoInscripcionTorneo.CONFIRMADA,
-                EstadoInscripcionTorneo.PENDIENTE,
-                EstadoInscripcionTorneo.LISTA_ESPERA));
-        estado.setValue(EstadoInscripcionTorneo.CONFIRMADA);
+        public Long mostrar() {
+                return dialogo.showAndWait().orElse(null);
+        }
 
-        var boton = dialogo.getDialogPane().lookupButton(guardar);
-        boton.addEventFilter(javafx.event.ActionEvent.ACTION, e -> {
-            try {
-                if (torneo.getValue() == null || categoria.getValue() == null) {
-                    throw new IllegalArgumentException(
-                            "Selecciona torneo y categoria.");
+        private void construir() {
+                dialogo.setTitle("Agregar pareja al torneo");
+                dialogo.setHeaderText("Alta administrativa de inscripcion");
+                ButtonType guardar = new ButtonType(
+                                "AGREGAR PAREJA", ButtonBar.ButtonData.OK_DONE);
+                ButtonType cancelar = new ButtonType(
+                                "CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE);
+                dialogo.getDialogPane().getButtonTypes().setAll(guardar, cancelar);
+                dialogo.getDialogPane().setContent(contenido());
+                Dialogos.preparar(dialogo, "dialog-tournament-registration");
+                var css = AltaAdministrativaInscripcionTorneoDialog.class
+                                .getResource("/css/torneo-alta-pareja.css");
+                if (css != null) {
+                        dialogo.getDialogPane().getStylesheets().add(
+                                        css.toExternalForm());
                 }
-                if (torneo.getValue().getEstado()
-                        != EstadoTorneo.INSCRIPCION_ABIERTA
-                        && !Dialogos.confirmar("Alta administrativa",
-                        "El torneo no tiene las inscripciones abiertas.\n\n"
-                                + "Queres agregar la pareja igualmente?")) {
-                    e.consume();
-                    return;
+                vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
+                                Navegacion.getConfiguracionActual());
+                dialogo.setResizable(true);
+                dialogo.getDialogPane().setPrefSize(920, 760);
+
+                List<Torneo> administrables = torneoDAO.listarActivos().stream()
+                                .filter(valor -> valor.getEstado() == EstadoTorneo.PUBLICADO
+                                                || valor.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
+                                                || valor.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA)
+                                .toList();
+                torneo.setItems(FXCollections.observableArrayList(administrables));
+                torneo.setConverter(new javafx.util.StringConverter<>() {
+                        public String toString(Torneo valor) {
+                                return valor == null ? ""
+                                                : valor.getNombre() + " - " + valor.getEstado();
+                        }
+
+                        public Torneo fromString(String valor) {
+                                return null;
+                        }
+                });
+                categoria.setConverter(new javafx.util.StringConverter<>() {
+                        public String toString(TorneoCategoria valor) {
+                                return valor == null ? ""
+                                                : valor.getNombre() + " - " + valor.getRama();
+                        }
+
+                        public TorneoCategoria fromString(String valor) {
+                                return null;
+                        }
+                });
+                torneo.valueProperty()
+                                .addListener((obs, anterior,
+                                                actual) -> categoria.setItems(FXCollections.observableArrayList(
+                                                                actual == null ? List.of()
+                                                                                : categoriaDAO.listarActivasPorTorneo(
+                                                                                                actual.getId()))));
+                estado.setItems(FXCollections.observableArrayList(
+                                EstadoInscripcionTorneo.CONFIRMADA,
+                                EstadoInscripcionTorneo.PENDIENTE,
+                                EstadoInscripcionTorneo.LISTA_ESPERA));
+                estado.setValue(EstadoInscripcionTorneo.CONFIRMADA);
+
+                var boton = dialogo.getDialogPane().lookupButton(guardar);
+                boton.addEventFilter(javafx.event.ActionEvent.ACTION, evento -> {
+                        try {
+                                if (torneo.getValue() == null
+                                                || categoria.getValue() == null) {
+                                        throw new IllegalArgumentException(
+                                                        "Selecciona torneo y categoria.");
+                                }
+                                if (torneo.getValue().getEstado() != EstadoTorneo.INSCRIPCION_ABIERTA
+                                                && !Dialogos.confirmar("Alta administrativa",
+                                                                "El torneo no tiene las inscripciones abiertas.\n\n"
+                                                                                + "Queres agregar la pareja igualmente?")) {
+                                        evento.consume();
+                                        return;
+                                }
+                                if (Navegacion.getUsuarioActual() == null) {
+                                        throw new IllegalArgumentException(
+                                                        "La sesion administrativa finalizo.");
+                                }
+                                var creada = service.crear(new Solicitud(
+                                                categoria.getValue().getId(), estado.getValue(),
+                                                seleccionResponsable.datos(),
+                                                seleccionPareja.datos(),
+                                                comentarios.getText(), observaciones.getText(),
+                                                Navegacion.getUsuarioActual().getId()));
+                                creadaId = creada.getId();
+                        } catch (RuntimeException exception) {
+                                evento.consume();
+                                Dialogos.error("No se pudo agregar la pareja",
+                                                exception.getMessage());
+                        }
+                });
+                dialogo.setResultConverter(tipo -> tipo == guardar ? creadaId : null);
+        }
+
+        private ScrollPane contenido() {
+                prepararControles();
+                VBox tarjetaTorneo = tarjeta("TORNEO Y CATEGORIA",
+                                campo("Torneo", torneo), campo("Categoria", categoria),
+                                campo("Estado inicial", estado));
+                VBox responsable = seleccionResponsable.tarjeta();
+                VBox segundo = seleccionPareja.tarjeta();
+                HBox jugadores = new HBox(14, responsable, segundo);
+                HBox.setHgrow(responsable, Priority.ALWAYS);
+                HBox.setHgrow(segundo, Priority.ALWAYS);
+                VBox adicional = tarjeta("INFORMACION ADICIONAL",
+                                campo("Comentarios", comentarios),
+                                campo("Observaciones administrativas", observaciones));
+                Label intro = new Label(
+                                "Podes seleccionar clientes registrados o completar los "
+                                                + "datos manualmente. La carga manual conserva la "
+                                                + "vinculacion automatica por telefono.");
+                intro.getStyleClass().add("admin-registration-intro");
+                intro.setWrapText(true);
+                VBox cuerpo = new VBox(14, intro, tarjetaTorneo, jugadores, adicional);
+                cuerpo.getStyleClass().add("admin-registration-root");
+                ScrollPane scroll = new ScrollPane(cuerpo);
+                scroll.setFitToWidth(true);
+                scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+                scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+                scroll.getStyleClass().add("admin-registration-scroll");
+                scroll.setPrefViewportHeight(640);
+                return scroll;
+        }
+
+        private void prepararControles() {
+                for (TextField actual : List.of(n1, a1, t1, n2, a2, t2)) {
+                        actual.getStyleClass().add("admin-registration-field");
                 }
-                var creada = service.crear(new Solicitud(
-                        categoria.getValue().getId(), estado.getValue(),
-                        new DatosJugador(n1.getText(), a1.getText(), t1.getText()),
-                        new DatosJugador(n2.getText(), a2.getText(), t2.getText()),
-                        comentarios.getText(), observaciones.getText(),
-                        Navegacion.getUsuarioActual().getId()));
-                creadaId = creada.getId();
-            } catch (RuntimeException ex) {
-                e.consume();
-                Dialogos.error("No se pudo agregar la pareja", ex.getMessage());
-            }
-        });
-        dialogo.setResultConverter(x -> x == guardar ? creadaId : null);
-    }
-
-    private javafx.scene.control.ScrollPane contenido() {
-        prepararControles();
-        VBox torneoCard = tarjeta("TORNEO Y CATEGORIA",
-                campo("Torneo", torneo), campo("Categoria", categoria),
-                campo("Estado inicial", estado));
-        VBox responsable = tarjetaJugador("RESPONSABLE", n1, a1, t1);
-        VBox segundo = tarjetaJugador("SEGUNDO INTEGRANTE", n2, a2, t2);
-        javafx.scene.layout.HBox jugadores = new javafx.scene.layout.HBox(
-                14, responsable, segundo);
-        javafx.scene.layout.HBox.setHgrow(responsable,
-                javafx.scene.layout.Priority.ALWAYS);
-        javafx.scene.layout.HBox.setHgrow(segundo,
-                javafx.scene.layout.Priority.ALWAYS);
-        VBox adicional = tarjeta("INFORMACION ADICIONAL",
-                campo("Comentarios", comentarios),
-                campo("Observaciones administrativas", observaciones));
-        Label intro = new Label(
-                "Carga una pareja presencialmente. Si un telefono coincide "
-                        + "con un cliente activo, la vinculacion sera automatica.");
-        intro.getStyleClass().add("admin-registration-intro");
-        intro.setWrapText(true);
-        VBox cuerpo = new VBox(14, intro, torneoCard, jugadores, adicional);
-        cuerpo.getStyleClass().add("admin-registration-root");
-        javafx.scene.control.ScrollPane scroll =
-                new javafx.scene.control.ScrollPane(cuerpo);
-        scroll.setFitToWidth(true);
-        scroll.setHbarPolicy(
-                javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setVbarPolicy(
-                javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scroll.getStyleClass().add("admin-registration-scroll");
-        scroll.setPrefViewportHeight(580);
-        return scroll;
-    }
-
-    private void prepararControles() {
-        for (TextField campo : List.of(n1, a1, t1, n2, a2, t2)) {
-            campo.getStyleClass().add("admin-registration-field");
+                for (ComboBox<?> combo : List.of(torneo, categoria, estado)) {
+                        combo.getStyleClass().add("admin-registration-combo");
+                        combo.setMaxWidth(Double.MAX_VALUE);
+                }
+                for (TextArea area : List.of(comentarios, observaciones)) {
+                        area.getStyleClass().add("admin-registration-area");
+                        area.setWrapText(true);
+                        area.setPrefRowCount(3);
+                }
+                n1.setPromptText("Nombre");
+                a1.setPromptText("Apellido");
+                t1.setPromptText("Telefono");
+                n2.setPromptText("Nombre");
+                a2.setPromptText("Apellido");
+                t2.setPromptText("Telefono");
+                comentarios.setPromptText("Comentarios opcionales");
+                observaciones.setPromptText(
+                                "Observaciones administrativas opcionales");
         }
-        for (ComboBox<?> combo : List.of(torneo, categoria, estado)) {
-            combo.getStyleClass().add("admin-registration-combo");
-            combo.setMaxWidth(Double.MAX_VALUE);
+
+        private VBox tarjeta(String titulo, javafx.scene.Node... contenido) {
+                Label encabezado = new Label(titulo);
+                encabezado.getStyleClass().add("admin-registration-section-title");
+                VBox caja = new VBox(10);
+                caja.getChildren().add(encabezado);
+                caja.getChildren().addAll(contenido);
+                caja.getStyleClass().add("admin-registration-card");
+                return caja;
         }
-        for (TextArea area : List.of(comentarios, observaciones)) {
-            area.getStyleClass().add("admin-registration-area");
-            area.setWrapText(true);
-            area.setPrefRowCount(3);
+
+        private VBox campo(String etiqueta, Control control) {
+                Label texto = new Label(etiqueta.toUpperCase());
+                texto.getStyleClass().add("admin-registration-field-label");
+                control.setMaxWidth(Double.MAX_VALUE);
+                return new VBox(5, texto, control);
         }
-        n1.setPromptText("Nombre"); a1.setPromptText("Apellido");
-        t1.setPromptText("Telefono"); n2.setPromptText("Nombre");
-        a2.setPromptText("Apellido"); t2.setPromptText("Telefono");
-        comentarios.setPromptText("Comentarios opcionales");
-        observaciones.setPromptText(
-                "Observaciones administrativas opcionales");
-    }
 
-    private VBox tarjeta(String titulo, javafx.scene.Node... contenido) {
-        Label encabezado = new Label(titulo);
-        encabezado.getStyleClass().add("admin-registration-section-title");
-        VBox caja = new VBox(10);
-        caja.getChildren().add(encabezado);
-        caja.getChildren().addAll(contenido);
-        caja.getStyleClass().add("admin-registration-card");
-        return caja;
-    }
+        private final class SeleccionJugador {
+                private final String titulo;
+                private final TextField nombre;
+                private final TextField apellido;
+                private final TextField telefono;
+                private final Label clienteNombre = new Label();
+                private final Label clienteDetalle = new Label();
+                private final VBox resumenCliente = new VBox(4);
+                private final Button buscar = new Button("BUSCAR CLIENTE");
+                private final Button quitar = new Button("QUITAR SELECCION");
+                private Cliente cliente;
 
-    private VBox tarjetaJugador(String titulo, TextField nombre,
-            TextField apellido, TextField telefono) {
-        VBox caja = tarjeta(titulo, campo("Nombre", nombre),
-                campo("Apellido", apellido), campo("Telefono", telefono));
-        caja.setMaxWidth(Double.MAX_VALUE);
-        caja.setPrefWidth(360);
-        return caja;
-    }
+                private SeleccionJugador(String titulo, TextField nombre,
+                                TextField apellido, TextField telefono) {
+                        this.titulo = titulo;
+                        this.nombre = nombre;
+                        this.apellido = apellido;
+                        this.telefono = telefono;
+                }
 
-    private VBox campo(String etiqueta, Control control) {
-        Label texto = new Label(etiqueta.toUpperCase());
-        texto.getStyleClass().add("admin-registration-field-label");
-        control.setMaxWidth(Double.MAX_VALUE);
-        VBox caja = new VBox(5, texto, control);
-        return caja;
-    }}
+                private VBox tarjeta() {
+                        buscar.getStyleClass().add("admin-registration-search-button");
+                        quitar.getStyleClass().add("admin-registration-clear-button");
+                        buscar.setMaxWidth(Double.MAX_VALUE);
+                        quitar.setMaxWidth(Double.MAX_VALUE);
+                        buscar.setOnAction(evento -> buscarCliente());
+                        quitar.setOnAction(evento -> seleccionar(null));
+
+                        clienteNombre.getStyleClass().add(
+                                        "admin-registration-selected-name");
+                        clienteDetalle.getStyleClass().add(
+                                        "admin-registration-selected-detail");
+                        clienteDetalle.setWrapText(true);
+                        resumenCliente.getChildren().addAll(
+                                        clienteNombre, clienteDetalle, quitar);
+                        resumenCliente.getStyleClass().add(
+                                        "admin-registration-selected-card");
+                        resumenCliente.setVisible(false);
+                        resumenCliente.setManaged(false);
+
+                        Label alternativa = new Label(
+                                        "O completa los datos manualmente");
+                        alternativa.getStyleClass().add("admin-registration-hint");
+                        VBox caja = AltaAdministrativaInscripcionTorneoDialog.this.tarjeta(
+                                        titulo,
+                                        buscar,
+                                        resumenCliente,
+                                        alternativa,
+                                        campo("Nombre", nombre),
+                                        campo("Apellido", apellido),
+                                        campo("Telefono", telefono));
+                        caja.setMaxWidth(Double.MAX_VALUE);
+                        caja.setPrefWidth(420);
+                        return caja;
+                }
+
+                private void buscarCliente() {
+                        List<Cliente> clientes = clienteDAO.listar().stream()
+                                        .filter(Cliente::isActivo)
+                                        .filter(valor -> otraSeleccion().cliente == null
+                                                        || valor.getId() != otraSeleccion().cliente.getId())
+                                        .toList();
+                        Cliente elegido = new BusquedaClienteTorneoDialog(
+                                        clientes, titulo, "SELECCIONAR").mostrar().orElse(null);
+                        if (elegido != null)
+                                seleccionar(elegido);
+                }
+
+                private SeleccionJugador otraSeleccion() {
+                        return this == seleccionResponsable
+                                        ? seleccionPareja
+                                        : seleccionResponsable;
+                }
+
+                private void seleccionar(Cliente valor) {
+                        cliente = valor;
+                        boolean seleccionado = valor != null;
+                        if (seleccionado) {
+                                nombre.setText(valor.getNombre());
+                                apellido.setText(valor.getApellido());
+                                telefono.setText(valor.getTelefono());
+                                clienteNombre.setText(valor.getNombreCompleto());
+                                clienteDetalle.setText("Cliente #" + valor.getId()
+                                                + " · Documento: " + texto(valor.getDocumento())
+                                                + " · Telefono: " + texto(valor.getTelefono()));
+                                buscar.setText("CAMBIAR CLIENTE");
+                        } else {
+                                nombre.clear();
+                                apellido.clear();
+                                telefono.clear();
+                                clienteNombre.setText("");
+                                clienteDetalle.setText("");
+                                buscar.setText("BUSCAR CLIENTE");
+                        }
+                        nombre.setDisable(seleccionado);
+                        apellido.setDisable(seleccionado);
+                        telefono.setDisable(seleccionado);
+                        resumenCliente.setVisible(seleccionado);
+                        resumenCliente.setManaged(seleccionado);
+                }
+
+                private DatosJugador datos() {
+                        return new DatosJugador(
+                                        cliente == null ? null : cliente.getId(),
+                                        nombre.getText(), apellido.getText(), telefono.getText());
+                }
+
+                private String texto(String valor) {
+                        return valor == null || valor.isBlank() ? "-" : valor;
+                }
+        }
+}

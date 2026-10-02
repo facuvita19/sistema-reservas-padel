@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.TorneoGruposController"
+            styleClass="groups-root">
+    <top>
+        <HBox spacing="14" alignment="CENTER_LEFT" styleClass="groups-header">
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
+            <Button text="VOLVER" onAction="#volver"/>
+            <VBox>
+                <Label text="GESTIÓN DE GRUPOS" styleClass="groups-overline"/>
+                <Label fx:id="titulo" text="Categoría" styleClass="groups-title"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="resumen"/>
+        </HBox>
+    </top>
+    <center>
+        <GridPane hgap="16" styleClass="groups-content">
+            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
+            <columnConstraints>
+                <ColumnConstraints percentWidth="33.333" minWidth="0"/>
+                <ColumnConstraints percentWidth="33.333" minWidth="0"/>
+                <ColumnConstraints percentWidth="33.334" minWidth="0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="ALWAYS" minHeight="0"/>
+            </rowConstraints>
+
+            <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="0" maxWidth="Infinity">
+                <Label text="PAREJAS SIN ASIGNAR" styleClass="groups-section"/>
+                <ListView fx:id="sinAsignar" fixedCellSize="48" VBox.vgrow="ALWAYS" minWidth="0"/>
+                <Button text="AGREGAR AL GRUPO" onAction="#agregar" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="1" maxWidth="Infinity">
+                <Label text="GRUPOS" styleClass="groups-section"/>
+                <ListView fx:id="listaGrupos" fixedCellSize="48" VBox.vgrow="ALWAYS" minWidth="0"/>
+                <ComboBox fx:id="cabeza" promptText="Seleccionar cabeza de serie" maxWidth="Infinity" minWidth="0"/>
+                <Button text="MARCAR CABEZA DE SERIE" onAction="#agregarCabeza" maxWidth="Infinity"/>
+                <Button text="SORTEAR RESTO" onAction="#sortear" maxWidth="Infinity"/>
+            </VBox>
+
+            <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="2" maxWidth="Infinity">
+                <Label text="INTEGRANTES" styleClass="groups-section"/>
+                <ListView fx:id="integrantes" fixedCellSize="48" VBox.vgrow="ALWAYS" minWidth="0"/>
+                <Button text="QUITAR DEL GRUPO" onAction="#quitar" maxWidth="Infinity"/>
+                <ComboBox fx:id="modo" maxWidth="Infinity" minWidth="0"/>
+                <Button fx:id="confirmar" text="CONFIRMAR GRUPOS" onAction="#confirmar" maxWidth="Infinity"/>
+                <Label fx:id="mensaje" wrapText="true"/>
+            </VBox>
+        </GridPane>
+    </center>
+</BorderPane>

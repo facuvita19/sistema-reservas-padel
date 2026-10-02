@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TorneoCategoria {
-
     private long id;
     private long torneoId;
     private String nombre;
@@ -15,10 +14,13 @@ public class TorneoCategoria {
     private BigDecimal premioCampeon;
     private BigDecimal premioSubcampeon;
     private String premioDescripcion;
+    private FormatoCompetenciaTorneo formatoCompetencia =
+            FormatoCompetenciaTorneo.ELIMINACION_DIRECTA;
+    private int cantidadGruposTres;
+    private int cantidadGruposCuatro;
     private boolean activo = true;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
-
     private String nombreTorneo;
     private int parejasConfirmadas;
 
@@ -33,7 +35,9 @@ public class TorneoCategoria {
     public int getCupoParejas() { return cupoParejas; }
     public void setCupoParejas(int valor) { cupoParejas = valor; }
     public BigDecimal getPrecioInscripcion() { return precioInscripcion; }
-    public void setPrecioInscripcion(BigDecimal valor) { precioInscripcion = valor == null ? BigDecimal.ZERO : valor; }
+    public void setPrecioInscripcion(BigDecimal valor) {
+        precioInscripcion = valor == null ? BigDecimal.ZERO : valor;
+    }
     public BigDecimal getPremioCampeon() { return premioCampeon; }
     public void setPremioCampeon(BigDecimal valor) { premioCampeon = valor; }
     public BigDecimal getPremioSubcampeon() { return premioSubcampeon; }
@@ -42,6 +46,21 @@ public class TorneoCategoria {
     public void setPremioDescripcion(String valor) {
         premioDescripcion = valor == null || valor.isBlank()
                 ? null : valor.trim();
+    }
+    public FormatoCompetenciaTorneo getFormatoCompetencia() {
+        return formatoCompetencia;
+    }
+    public void setFormatoCompetencia(FormatoCompetenciaTorneo valor) {
+        formatoCompetencia = valor == null
+                ? FormatoCompetenciaTorneo.ELIMINACION_DIRECTA : valor;
+    }
+    public int getCantidadGruposTres() { return cantidadGruposTres; }
+    public void setCantidadGruposTres(int valor) {
+        cantidadGruposTres = Math.max(0, valor);
+    }
+    public int getCantidadGruposCuatro() { return cantidadGruposCuatro; }
+    public void setCantidadGruposCuatro(int valor) {
+        cantidadGruposCuatro = Math.max(0, valor);
     }
     public boolean isActivo() { return activo; }
     public void setActivo(boolean valor) { activo = valor; }
@@ -53,6 +72,22 @@ public class TorneoCategoria {
     public void setNombreTorneo(String valor) { nombreTorneo = valor; }
     public int getParejasConfirmadas() { return parejasConfirmadas; }
     public void setParejasConfirmadas(int valor) { parejasConfirmadas = Math.max(0, valor); }
+
+    public boolean usaFaseGrupos() {
+        return formatoCompetencia == FormatoCompetenciaTorneo.GRUPOS_ELIMINACION;
+    }
+
+    public int getCantidadGrupos() {
+        return cantidadGruposTres + cantidadGruposCuatro;
+    }
+
+    public int getCapacidadGrupos() {
+        return cantidadGruposTres * 3 + cantidadGruposCuatro * 4;
+    }
+
+    public int getClasificadosProyectados() {
+        return cantidadGruposTres * 2 + cantidadGruposCuatro * 3;
+    }
 
     public int getCuposDisponibles() {
         return Math.max(0, cupoParejas - parejasConfirmadas);

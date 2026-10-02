@@ -645,3 +645,132 @@
     -fx-pref-width: 150;
     -fx-max-width: 150;
 }
+
+/* buscador-clientes-moderno-v1 */
+.dialog-client-search {
+    -fx-background-color: #0b1821;
+    -fx-pref-width: 820;
+}
+
+.dialog-client-search > .content {
+    -fx-background-color: #0b1821;
+    -fx-padding: 14 18 18 18;
+}
+
+.dialog-client-search .table-view {
+    -fx-background-color: #09151d;
+    -fx-control-inner-background: #0d1b24;
+    -fx-border-color: #355161;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0;
+    -fx-table-cell-border-color: #233a46;
+    -fx-selection-bar: #315f79;
+    -fx-selection-bar-non-focused: #294c60;
+}
+
+.dialog-client-search .table-view .column-header-background {
+    -fx-background-color: #142a36;
+    -fx-background-radius: 9 9 0 0;
+    -fx-border-color: transparent transparent #3d5968 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.dialog-client-search .table-view .column-header,
+.dialog-client-search .table-view .filler {
+    -fx-background-color: #142a36;
+    -fx-border-color: transparent #355161 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-pref-height: 42;
+}
+
+.dialog-client-search .table-view .column-header .label {
+    -fx-text-fill: #b9ced8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+    -fx-alignment: center-left;
+    -fx-padding: 0 10;
+}
+
+.dialog-client-search .table-view .table-row-cell {
+    -fx-background-color: #0d1b24;
+    -fx-border-color: transparent transparent #233a46 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-table-cell-border-color: #233a46;
+    -fx-pref-height: 42;
+}
+
+.dialog-client-search .table-view .table-row-cell:odd {
+    -fx-background-color: #10212b;
+}
+
+.dialog-client-search .table-view .table-row-cell:hover {
+    -fx-background-color: #183543;
+}
+
+.dialog-client-search .table-view .table-row-cell:selected,
+.dialog-client-search .table-view .table-row-cell:selected:hover {
+    -fx-background-color: #315f79;
+}
+
+.dialog-client-search .table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dce9ee;
+    -fx-font-size: 13px;
+    -fx-alignment: center-left;
+    -fx-padding: 0 10;
+    -fx-border-color: transparent #233a46 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.dialog-client-search .table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+}
+
+.dialog-client-search .table-view .placeholder .label {
+    -fx-text-fill: #809aa7;
+    -fx-font-size: 13px;
+}
+
+.dialog-client-search .table-view .scroll-bar {
+    -fx-background-color: #0b1821;
+}
+
+.dialog-client-search .table-view .scroll-bar .track {
+    -fx-background-color: #0b1821;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+
+.dialog-client-search .table-view .scroll-bar .thumb {
+    -fx-background-color: #35586a;
+    -fx-background-radius: 8;
+}
+
+.dialog-client-search .table-view .scroll-bar .thumb:hover {
+    -fx-background-color: #527f9c;
+}
+
+.dialog-client-search .table-view .scroll-bar .increment-button,
+.dialog-client-search .table-view .scroll-bar .decrement-button {
+    -fx-background-color: #142a36;
+    -fx-border-color: transparent;
+}
+
+.dialog-client-search .table-view .corner {
+    -fx-background-color: #0b1821;
+}
+
+.dialog-client-search .dialog-field {
+    -fx-pref-height: 42;
+    -fx-font-size: 13px;
+    -fx-padding: 10 12;
+}
+
+.dialog-client-search > .button-bar > .container {
+    -fx-background-color: #0b1821;
+    -fx-border-color: #294351 transparent transparent transparent;
+    -fx-padding: 15 22 18 22;
+}

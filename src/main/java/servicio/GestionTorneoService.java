@@ -340,6 +340,12 @@ public class GestionTorneoService {
             existente.setRama(cambios.getRama());
             existente.setCupoParejas(cambios.getCupoParejas());
             existente.setPrecioInscripcion(cambios.getPrecioInscripcion());
+            existente.setPremioCampeon(cambios.getPremioCampeon());
+            existente.setPremioSubcampeon(cambios.getPremioSubcampeon());
+            existente.setPremioDescripcion(cambios.getPremioDescripcion());
+            existente.setFormatoCompetencia(cambios.getFormatoCompetencia());
+            existente.setCantidadGruposTres(cambios.getCantidadGruposTres());
+            existente.setCantidadGruposCuatro(cambios.getCantidadGruposCuatro());
             categoriaDAO.guardar(conexion, existente);
             return existente;
         }, "No se pudo editar la categoria del torneo.");

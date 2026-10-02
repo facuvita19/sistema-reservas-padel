@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import config.ConexionBD;
+import negocio.FormatoCompetenciaTorneo;
 import negocio.RamaTorneo;
 import negocio.TorneoCategoria;
 
@@ -45,8 +46,10 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
         String sql = "INSERT INTO torneo_categorias "
                 + "(torneo_id, nombre, rama, cupo_parejas, "
                 + "precio_inscripcion, premio_campeon, "
-                + "premio_subcampeon, premio_descripcion, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "premio_subcampeon, premio_descripcion, "
+                + "formato_competencia, cantidad_grupos_3, "
+                + "cantidad_grupos_4, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement sentencia = conexion.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             cargarParametros(sentencia, categoria);
@@ -75,10 +78,11 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
                 + "nombre = ?, rama = ?, cupo_parejas = ?, "
                 + "precio_inscripcion = ?, premio_campeon = ?, "
                 + "premio_subcampeon = ?, premio_descripcion = ?, "
-                + "activo = ? WHERE id = ?";
+                + "formato_competencia = ?, cantidad_grupos_3 = ?, "
+                + "cantidad_grupos_4 = ?, activo = ? WHERE id = ?";
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, categoria);
-            sentencia.setLong(10, categoria.getId());
+            sentencia.setLong(13, categoria.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException(
                         "La categoria del torneo no existe.");
@@ -101,7 +105,10 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
         sentencia.setBigDecimal(6, categoria.getPremioCampeon());
         sentencia.setBigDecimal(7, categoria.getPremioSubcampeon());
         sentencia.setString(8, categoria.getPremioDescripcion());
-        sentencia.setBoolean(9, categoria.isActivo());
+        sentencia.setString(9, categoria.getFormatoCompetencia().name());
+        sentencia.setInt(10, categoria.getCantidadGruposTres());
+        sentencia.setInt(11, categoria.getCantidadGruposCuatro());
+        sentencia.setBoolean(12, categoria.isActivo());
     }
 
     @Override
@@ -232,7 +239,9 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
         return "SELECT tc.id, tc.torneo_id, tc.nombre, tc.rama, "
                 + "tc.cupo_parejas, tc.precio_inscripcion, "
                 + "tc.premio_campeon, tc.premio_subcampeon, "
-                + "tc.premio_descripcion, tc.activo, tc.fecha_creacion, "
+                + "tc.premio_descripcion, tc.formato_competencia, "
+                + "tc.cantidad_grupos_3, tc.cantidad_grupos_4, "
+                + "tc.activo, tc.fecha_creacion, "
                 + "tc.fecha_actualizacion, t.nombre AS nombre_torneo, "
                 + "(SELECT COUNT(*) FROM torneo_inscripciones ti "
                 + "WHERE ti.torneo_categoria_id = tc.id "
@@ -258,6 +267,12 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
                 resultado.getBigDecimal("premio_subcampeon"));
         categoria.setPremioDescripcion(
                 resultado.getString("premio_descripcion"));
+        categoria.setFormatoCompetencia(FormatoCompetenciaTorneo.valueOf(
+                resultado.getString("formato_competencia")));
+        categoria.setCantidadGruposTres(
+                resultado.getInt("cantidad_grupos_3"));
+        categoria.setCantidadGruposCuatro(
+                resultado.getInt("cantidad_grupos_4"));
         categoria.setActivo(resultado.getBoolean("activo"));
         categoria.setFechaCreacion(fecha(
                 resultado, "fecha_creacion"));
@@ -314,6 +329,23 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
                 && categoria.getPremioDescripcion().length() > 500) {
             throw new IllegalArgumentException(
                     "La descripcion de premios no puede superar 500 caracteres.");
+        }
+        if (categoria.getFormatoCompetencia() == null) {
+            throw new IllegalArgumentException(
+                    "El formato de competencia es obligatorio.");
+        }
+        if (categoria.usaFaseGrupos()) {
+            if (categoria.getCantidadGrupos() <= 0) {
+                throw new IllegalArgumentException(
+                        "La categoria debe tener al menos un grupo.");
+            }
+            if (categoria.getCapacidadGrupos() != categoria.getCupoParejas()) {
+                throw new IllegalArgumentException(
+                        "El cupo debe coincidir con la capacidad de los grupos.");
+            }
+        } else {
+            categoria.setCantidadGruposTres(0);
+            categoria.setCantidadGruposCuatro(0);
         }
         categoria.setNombre(nombre);
     }
