@@ -84,7 +84,8 @@ public class PropuestaEtapaEliminatoriaDialog {
 
         Button intercambiar = new Button("INTERCAMBIAR RIVALES DE ACCESO");
         Button rotar = new Button("ROTAR CABEZAS DE SERIE");
-        Button manual = new Button("CONFIGURAR MANUALMENTE");
+        Button manual = new Button("EDITAR ENFRENTAMIENTOS");
+        Button estructura = new Button("CONFIGURAR ESTRUCTURA MANUAL");
         Button restaurar = new Button("RESTAURAR AUTOMATICA");
         intercambiar.setOnAction(e -> {
             service.intercambiarRivalesAcceso(propuesta); validarYActualizar();
@@ -93,12 +94,13 @@ public class PropuestaEtapaEliminatoriaDialog {
             service.rotarPrimeros(propuesta); validarYActualizar();
         });
         manual.setOnAction(e -> abrirEditorManual());
+        estructura.setOnAction(e -> abrirEditorEstructural());
         restaurar.setOnAction(e -> {
             service.restaurarPropuesta(propuesta, automaticaOriginal);
             validarYActualizar();
         });
         FlowPane acciones = new FlowPane(10, 8,
-                intercambiar, rotar, manual, restaurar);
+                intercambiar, rotar, manual, estructura, restaurar);
 
         Label tituloAdvertencias = etiqueta(
                 "⚠  ADVERTENCIAS DEPORTIVAS", "#ffd58a", 13, false);
@@ -142,6 +144,17 @@ public class PropuestaEtapaEliminatoriaDialog {
                 evento -> confirmar(evento));
         dialogo.setResultConverter(tipo ->
                 tipo == continuar && propuesta.isValida() ? propuesta : null);
+        validarYActualizar();
+    }
+
+    private void abrirEditorEstructural() {
+        List<CrucePropuestoTorneo> nuevos =
+                new EstructuraManualTorneoDialog(propuesta,
+                        nombresPorReferencia).mostrar();
+        if (nuevos == null) return;
+        propuesta.setCruces(nuevos);
+        propuesta.setPases(List.of());
+        propuesta.setExplicacion("Estructura configurada manualmente por el administrador.");
         validarYActualizar();
     }
 
