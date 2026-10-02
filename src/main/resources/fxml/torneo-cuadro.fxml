@@ -17,6 +17,7 @@
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
             <Button fx:id="botonGenerar" text="GENERAR CUADRO" onAction="#generarCuadro" styleClass="bracket-primary-button"/>
+            <Button text="IMPRIMIR CUADRO" onAction="#imprimirCuadro" styleClass="bracket-secondary-button"/>
             <Button text="ACTUALIZAR" onAction="#cargar" styleClass="bracket-secondary-button"/>
         </HBox>
     </top>
@@ -27,8 +28,8 @@
 
             <HBox fx:id="tarjetaCampeona" spacing="14" alignment="CENTER_LEFT" styleClass="bracket-champion-card">
                 <VBox spacing="3">
-                    <Label text="CAMPEONA DE LA CATEGORÍA" styleClass="bracket-overline"/>
-                    <Label fx:id="etiquetaCampeona" text="Campeona por definir" wrapText="true" styleClass="bracket-champion-name"/>
+                    <Label text="CAMPEONES DE LA CATEGORÍA" styleClass="bracket-overline"/>
+                    <Label fx:id="etiquetaCampeona" text="Campeones por definir" wrapText="true" styleClass="bracket-champion-name"/>
                     <Label fx:id="etiquetaResultadoFinal" text="La final todavía no tiene resultado." styleClass="bracket-champion-result"/>
                 </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
@@ -77,7 +78,7 @@
                                                         <VBox fx:id="panelResultado" visible="false" managed="false" spacing="7" styleClass="bracket-result-card">
                                                             <Label text="RESULTADO" styleClass="bracket-field-label"/>
                                                             <Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-result-score"/>
-                                                            <Label text="GANADORA" styleClass="bracket-field-label"/>
+                                                            <Label text="GANADORES" styleClass="bracket-field-label"/>
                                                             <Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-result-winner"/>
                                                             <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
                                                             <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>

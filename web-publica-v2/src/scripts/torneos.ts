@@ -31,10 +31,22 @@ function tarjeta(torneo: TorneoDetalle) {
   const estado = disponibilidad(torneo);
   const categorias = torneo.categorias.map(categoria => {
     const habilitada = torneo.inscripcionDisponible && categoria.disponible && categoria.cuposDisponibles > 0;
+    const premios = [
+      categoria.premioCampeon != null
+        ? `<span><b>Campeones:</b> ${moneda(categoria.premioCampeon)}</span>` : '',
+      categoria.premioSubcampeon != null
+        ? `<span><b>Subcampeones:</b> ${moneda(categoria.premioSubcampeon)}</span>` : '',
+      categoria.premioDescripcion?.trim()
+        ? `<span>${escapeHtml(categoria.premioDescripcion)}</span>` : '',
+    ].filter(Boolean).join('');
+    const bloquePremios = premios
+      ? `<div class="mt-4 rounded-xl border border-amber-400/25 bg-amber-400/10 p-3"><small class="font-black uppercase tracking-[.14em] text-amber-200">Premios</small><div class="mt-2 grid gap-1 text-sm text-amber-50">${premios}</div></div>`
+      : '';
     return `<div class="rounded-xl border border-ink-700 bg-ink-900/70 p-4">
       <div class="flex items-start justify-between gap-3"><div><strong class="text-lg">${escapeHtml(categoria.nombre)}</strong><small class="mt-1 block text-slate-400">${escapeHtml(etiqueta(categoria.rama))}</small></div><span class="font-black">${moneda(categoria.precioInscripcion)}</span></div>
       <div class="mt-4 h-2 overflow-hidden rounded-full bg-ink-700"><div class="h-full rounded-full bg-brand-500" style="width:${Math.min(100, categoria.cupoParejas ? categoria.parejasConfirmadas / categoria.cupoParejas * 100 : 0)}%"></div></div>
       <div class="mt-2 flex justify-between text-xs text-slate-400"><span>${categoria.parejasConfirmadas} confirmadas</span><span>${categoria.cuposDisponibles} disponibles</span></div>
+      ${bloquePremios}
       <div class="mt-4 grid gap-2 sm:grid-cols-2">
         <button class="ver-cuadro rounded-lg border border-brand-500/45 bg-brand-500/10 px-4 py-2.5 font-black text-brand-100 transition hover:bg-brand-500/20 active:scale-[.98]" type="button" data-categoria-id="${categoria.id}">Ver cuadro</button>
         <button class="rounded-lg px-4 py-2.5 font-black transition active:scale-[.98] ${habilitada ? 'inscribir-pareja bg-brand-500 text-white hover:bg-brand-600' : 'cursor-not-allowed bg-ink-700 text-slate-500'}" ${habilitada ? '' : 'disabled'} type="button" data-categoria-id="${categoria.id}" data-resumen="${escapeHtml(`${torneo.nombre} · ${categoria.nombre} · ${etiqueta(categoria.rama)} · ${moneda(categoria.precioInscripcion)}`)}">${habilitada ? 'Inscribir pareja' : 'No disponible'}</button>

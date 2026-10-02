@@ -106,6 +106,9 @@ public class TorneoPublicoService {
                 categoria.getParejasConfirmadas(),
                 categoria.getCuposDisponibles(),
                 categoria.getPrecioInscripcion(),
+                categoria.getPremioCampeon(),
+                categoria.getPremioSubcampeon(),
+                categoria.getPremioDescripcion(),
                 disponible);
     }
 

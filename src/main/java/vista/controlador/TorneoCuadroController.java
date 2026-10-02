@@ -1,9 +1,12 @@
 package vista.controlador;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import dao.TorneoCategoriaDAO;
 import dao.TorneoCategoriaDAOMySQL;
@@ -27,6 +30,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.FileChooser;
 import javafx.scene.control.TableRow;
 import javafx.scene.Node;
 import negocio.Cancha;
@@ -40,6 +44,8 @@ import negocio.EstadoTorneo;
 import negocio.CorreccionResultadoTorneo;
 import servicio.CanchaService;
 import servicio.CuadroEliminacionTorneoService;
+import servicio.ConfiguracionComplejoService;
+import servicio.CuadroTorneoPdfService;
 import servicio.ProgramacionPartidoTorneoService;
 import servicio.HistorialCorreccionResultadoTorneoService;
 import vista.Dialogos;
@@ -66,6 +72,10 @@ public class TorneoCuadroController {
             new CuadroEliminacionTorneoService();
     private final ProgramacionPartidoTorneoService programacionService =
             new ProgramacionPartidoTorneoService();
+    private final ConfiguracionComplejoService configuracionService =
+            new ConfiguracionComplejoService();
+    private final CuadroTorneoPdfService pdfService =
+            new CuadroTorneoPdfService();
     private final HistorialCorreccionResultadoTorneoService historialService =
             new HistorialCorreccionResultadoTorneoService();
     private final ObservableList<TorneoPartido> partidos =
@@ -239,6 +249,71 @@ public class TorneoCuadroController {
     }
 
     @FXML
+    private void imprimirCuadro() {
+        if (partidos.isEmpty()) {
+            Dialogos.informacion("Cuadro no disponible",
+                    "Genera el cuadro antes de crear la planilla imprimible.");
+            return;
+        }
+        ExportarCuadroTorneoDialog.Modo modo =
+                new ExportarCuadroTorneoDialog().mostrar().orElse(null);
+        if (modo == null) return;
+
+        FileChooser selector = new FileChooser();
+        selector.setTitle("Guardar cuadro mural");
+        selector.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Documento PDF", "*.pdf"));
+        selector.setInitialFileName(nombreArchivoPdf());
+        File destino = selector.showSaveDialog(
+                tablaPartidos.getScene().getWindow());
+        if (destino == null) return;
+        if (!destino.getName().toLowerCase(Locale.ROOT).endsWith(".pdf")) {
+            destino = new File(destino.getParentFile(),
+                    destino.getName() + ".pdf");
+        }
+
+        try {
+            File archivo = destino;
+            pdfService.generar(
+                    archivo,
+                    torneo,
+                    categoria,
+                    List.copyOf(partidos),
+                    this::nombrePareja,
+                    this::nombreCancha,
+                    configuracionService.obtener(),
+                    modo == ExportarCuadroTorneoDialog.Modo.ACTUALIZADO);
+            etiquetaMensaje.setText("PDF generado: " + archivo.getName());
+            Dialogos.exito("Cuadro listo para imprimir",
+                    "El PDF se guardo correctamente.");
+            if (Desktop.isDesktopSupported()
+                    && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                Desktop.getDesktop().open(archivo);
+            }
+        } catch (Exception exception) {
+            mostrarError(new RuntimeException(
+                    "No se pudo generar o abrir el PDF: "
+                            + exception.getMessage(), exception));
+        }
+    }
+
+    private String nombreCancha(Long canchaId) {
+        if (canchaId == null) return "";
+        return comboCancha.getItems().stream()
+                .filter(cancha -> cancha.getId() == canchaId)
+                .map(Cancha::getNombre)
+                .findFirst().orElse("Cancha #" + canchaId);
+    }
+
+    private String nombreArchivoPdf() {
+        String base = torneo.getNombre() + "-" + categoria.getNombre()
+                + "-" + categoria.getRama();
+        return "cuadro-" + base.toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("(^-|-$)", "") + ".pdf";
+    }
+
+    @FXML
     private void generarCuadro() {
         if (!Dialogos.confirmar("Generar cuadro",
                 "Las parejas confirmadas se sortearan aleatoriamente.\n\n"
@@ -305,7 +380,7 @@ public class TorneoCuadroController {
         }
         if (!Dialogos.confirmarPeligro("Corregir resultado",
                 "La correccion reemplazara el marcador y puede cambiar "
-                        + "la pareja ganadora.\n\nQueres continuar?")) {
+                        + "los ganadores.\n\nQueres continuar?")) {
             return;
         }
         TorneoPartido actualizado =
@@ -314,7 +389,7 @@ public class TorneoCuadroController {
             cargar();
             seleccionarPorId(actualizado.getId());
             Dialogos.exito("Resultado corregido",
-                    "El marcador y la ganadora fueron actualizados.");
+                    "El marcador y los ganadores fueron actualizados.");
         }
     }
 
@@ -418,9 +493,9 @@ public class TorneoCuadroController {
         Label nuevo = new Label(valorO(correccion.getResultadoNuevo(), "Sin resultado"));
         nuevo.setWrapText(true);
         nuevo.getStyleClass().add("bracket-history-new-score");
-        Label ganadora = new Label("Ganadora: "
+        Label ganadora = new Label("Ganadores anteriores: "
                 + nombrePareja(correccion.getGanadoraAnteriorInscripcionId())
-                + "\n→ " + nombrePareja(correccion.getGanadoraNuevaInscripcionId()));
+                + "\nGanadores nuevos: " + nombrePareja(correccion.getGanadoraNuevaInscripcionId()));
         ganadora.setWrapText(true);
         ganadora.getStyleClass().add("bracket-history-winner");
         String motivo = correccion.getMotivo() == null || correccion.getMotivo().isBlank()
@@ -512,7 +587,7 @@ public class TorneoCuadroController {
                     == EstadoPartidoTorneo.FINALIZADO;
         etiquetaCampeona.setText(definida
                 ? nombrePareja(finalPartido.getGanadoraInscripcionId())
-                : "Campeona por definir");
+                : "Campeones por definir");
         etiquetaResultadoFinal.setText(definida
                 ? "Resultado de la final: " + resultado(finalPartido)
                 : "La final todavía no tiene un resultado registrado.");

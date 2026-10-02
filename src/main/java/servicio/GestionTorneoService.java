@@ -255,7 +255,7 @@ public class GestionTorneoService {
         if (resumen.categoriasConCampeona()
                 != resumen.categoriasCompetitivas()) {
             throw new IllegalArgumentException(
-                    "Todas las categorias deben tener una campeona.");
+                    "Todas las categorias deben tener campeones.");
         }
     }
 

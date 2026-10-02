@@ -12,6 +12,9 @@ public class TorneoCategoria {
     private RamaTorneo rama;
     private int cupoParejas;
     private BigDecimal precioInscripcion = BigDecimal.ZERO;
+    private BigDecimal premioCampeon;
+    private BigDecimal premioSubcampeon;
+    private String premioDescripcion;
     private boolean activo = true;
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaActualizacion;
@@ -31,6 +34,15 @@ public class TorneoCategoria {
     public void setCupoParejas(int valor) { cupoParejas = valor; }
     public BigDecimal getPrecioInscripcion() { return precioInscripcion; }
     public void setPrecioInscripcion(BigDecimal valor) { precioInscripcion = valor == null ? BigDecimal.ZERO : valor; }
+    public BigDecimal getPremioCampeon() { return premioCampeon; }
+    public void setPremioCampeon(BigDecimal valor) { premioCampeon = valor; }
+    public BigDecimal getPremioSubcampeon() { return premioSubcampeon; }
+    public void setPremioSubcampeon(BigDecimal valor) { premioSubcampeon = valor; }
+    public String getPremioDescripcion() { return premioDescripcion; }
+    public void setPremioDescripcion(String valor) {
+        premioDescripcion = valor == null || valor.isBlank()
+                ? null : valor.trim();
+    }
     public boolean isActivo() { return activo; }
     public void setActivo(boolean valor) { activo = valor; }
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }

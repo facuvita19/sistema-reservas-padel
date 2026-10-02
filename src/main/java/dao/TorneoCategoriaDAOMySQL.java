@@ -44,8 +44,9 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
             TorneoCategoria categoria) {
         String sql = "INSERT INTO torneo_categorias "
                 + "(torneo_id, nombre, rama, cupo_parejas, "
-                + "precio_inscripcion, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+                + "precio_inscripcion, premio_campeon, "
+                + "premio_subcampeon, premio_descripcion, activo) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement sentencia = conexion.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             cargarParametros(sentencia, categoria);
@@ -72,10 +73,12 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
             TorneoCategoria categoria) {
         String sql = "UPDATE torneo_categorias SET torneo_id = ?, "
                 + "nombre = ?, rama = ?, cupo_parejas = ?, "
-                + "precio_inscripcion = ?, activo = ? WHERE id = ?";
+                + "precio_inscripcion = ?, premio_campeon = ?, "
+                + "premio_subcampeon = ?, premio_descripcion = ?, "
+                + "activo = ? WHERE id = ?";
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, categoria);
-            sentencia.setLong(7, categoria.getId());
+            sentencia.setLong(10, categoria.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException(
                         "La categoria del torneo no existe.");
@@ -95,7 +98,10 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
         sentencia.setString(3, categoria.getRama().name());
         sentencia.setInt(4, categoria.getCupoParejas());
         sentencia.setBigDecimal(5, categoria.getPrecioInscripcion());
-        sentencia.setBoolean(6, categoria.isActivo());
+        sentencia.setBigDecimal(6, categoria.getPremioCampeon());
+        sentencia.setBigDecimal(7, categoria.getPremioSubcampeon());
+        sentencia.setString(8, categoria.getPremioDescripcion());
+        sentencia.setBoolean(9, categoria.isActivo());
     }
 
     @Override
@@ -225,7 +231,8 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
     private String consultaBase() {
         return "SELECT tc.id, tc.torneo_id, tc.nombre, tc.rama, "
                 + "tc.cupo_parejas, tc.precio_inscripcion, "
-                + "tc.activo, tc.fecha_creacion, "
+                + "tc.premio_campeon, tc.premio_subcampeon, "
+                + "tc.premio_descripcion, tc.activo, tc.fecha_creacion, "
                 + "tc.fecha_actualizacion, t.nombre AS nombre_torneo, "
                 + "(SELECT COUNT(*) FROM torneo_inscripciones ti "
                 + "WHERE ti.torneo_categoria_id = tc.id "
@@ -245,6 +252,12 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
         categoria.setCupoParejas(resultado.getInt("cupo_parejas"));
         categoria.setPrecioInscripcion(
                 resultado.getBigDecimal("precio_inscripcion"));
+        categoria.setPremioCampeon(
+                resultado.getBigDecimal("premio_campeon"));
+        categoria.setPremioSubcampeon(
+                resultado.getBigDecimal("premio_subcampeon"));
+        categoria.setPremioDescripcion(
+                resultado.getString("premio_descripcion"));
         categoria.setActivo(resultado.getBoolean("activo"));
         categoria.setFechaCreacion(fecha(
                 resultado, "fecha_creacion"));
@@ -293,7 +306,25 @@ public class TorneoCategoriaDAOMySQL implements TorneoCategoriaDAO {
             throw new IllegalArgumentException(
                     "El precio de inscripcion no puede ser negativo.");
         }
+        validarPremio(categoria.getPremioCampeon(),
+                "El premio para los campeones");
+        validarPremio(categoria.getPremioSubcampeon(),
+                "El premio para los subcampeones");
+        if (categoria.getPremioDescripcion() != null
+                && categoria.getPremioDescripcion().length() > 500) {
+            throw new IllegalArgumentException(
+                    "La descripcion de premios no puede superar 500 caracteres.");
+        }
         categoria.setNombre(nombre);
+    }
+
+    private void validarPremio(
+            java.math.BigDecimal valor,
+            String etiqueta) {
+        if (valor != null && valor.signum() < 0) {
+            throw new IllegalArgumentException(
+                    etiqueta + " no puede ser negativo.");
+        }
     }
 
     private void validarConexion(Connection conexion) {

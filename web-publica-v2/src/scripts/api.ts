@@ -68,6 +68,9 @@ export interface CategoriaTorneo {
   parejasConfirmadas: number;
   cuposDisponibles: number;
   precioInscripcion: number;
+  premioCampeon?: number | null;
+  premioSubcampeon?: number | null;
+  premioDescripcion?: string | null;
   disponible: boolean;
 }
 

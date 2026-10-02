@@ -285,7 +285,7 @@ public class TorneosController {
         try {
             GestionTorneoService.ResumenCiclo resumen =
                     gestionService.resumenCiclo(seleccionado.getId());
-            String mensaje = "Categorias con campeona: "
+            String mensaje = "Categorias con campeones: "
                     + resumen.categoriasConCampeona() + " de "
                     + resumen.categoriasCompetitivas()
                     + "\nPartidos finalizados: "

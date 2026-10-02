@@ -457,7 +457,7 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
                 && !ganadora.equals(partido.getPareja1InscripcionId())
                 && !ganadora.equals(partido.getPareja2InscripcionId())) {
             throw new IllegalArgumentException(
-                    "La ganadora debe ser una pareja del partido.");
+                    "Los ganadores deben pertenecer a uno de los equipos del partido.");
         }
         boolean destinoParcial = (partido.getPartidoSiguienteId() == null)
                 != (partido.getPosicionSiguiente() == null);
@@ -475,7 +475,7 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
                 && (ganadora == null
                     || partido.getFechaFinalizacion() == null)) {
             throw new IllegalArgumentException(
-                    "Un partido finalizado requiere ganadora y fecha.");
+                    "Un partido finalizado requiere ganadores y fecha.");
         }
         if (partido.getEstado() != EstadoPartidoTorneo.FINALIZADO
                 && partido.getFechaFinalizacion() != null) {

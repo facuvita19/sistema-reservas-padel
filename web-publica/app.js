@@ -1529,9 +1529,20 @@ decorateBookingStepsV3();
 
     function categoryHtml(category, tournament) {
         const enabled = Boolean(tournament.inscripcionDisponible && category.disponible && category.cuposDisponibles > 0);
+        const prizeRows = [
+            category.premioCampeon != null
+                ? '<span><b>Campeones:</b> ' + moneyText(category.premioCampeon) + '</span>' : '',
+            category.premioSubcampeon != null
+                ? '<span><b>Subcampeones:</b> ' + moneyText(category.premioSubcampeon) + '</span>' : '',
+            category.premioDescripcion && String(category.premioDescripcion).trim()
+                ? '<span>' + escapeHtml(category.premioDescripcion) + '</span>' : ''
+        ].filter(Boolean).join('');
+        const prizes = prizeRows
+            ? '<div class="tournament-prizes"><small>PREMIOS</small><div>' + prizeRows + '</div></div>'
+            : '';
         return `<article class="tournament-category">
             <div><strong>${escapeHtml(category.nombre)} · ${escapeHtml(category.rama)}</strong>
-            <small>${category.cuposDisponibles} de ${category.cupoParejas} cupos disponibles</small></div>
+            <small>${category.cuposDisponibles} de ${category.cupoParejas} cupos disponibles</small>${prizes}</div>
             <div class="tournament-category-actions"><span>${moneyText(category.precioInscripcion)}</span>
             <button class="button primary tournament-register" type="button"
                 data-tournament-id="${tournament.id}" data-category-id="${category.id}"

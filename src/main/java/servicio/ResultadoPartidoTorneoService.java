@@ -256,7 +256,7 @@ public class ResultadoPartidoTorneoService {
         if (ganados1 == 2 && ganados2 <= 1) return 1;
         if (ganados2 == 2 && ganados1 <= 1) return 2;
         throw new IllegalArgumentException(
-                "El resultado debe definir una pareja ganadora por dos sets.");
+                "El resultado debe definir ganadores por dos sets.");
     }
 
     private static void validarSets(List<TorneoPartidoSet> sets) {

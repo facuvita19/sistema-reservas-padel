@@ -45,6 +45,9 @@ public final class TorneoPublicoDTO {
             int parejasConfirmadas,
             int cuposDisponibles,
             BigDecimal precioInscripcion,
+            BigDecimal premioCampeon,
+            BigDecimal premioSubcampeon,
+            String premioDescripcion,
             boolean disponible) {
     }
 }
