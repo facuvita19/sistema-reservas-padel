@@ -56,7 +56,12 @@ public class CuadroTorneoPdfService {
             throw new IllegalArgumentException(
                     "Faltan datos para generar el cuadro.");
         }
-        int parejas = cantidadParejas(partidos);
+        List<TorneoPartido> eliminatorios = soloEliminatorios(partidos);
+        if (eliminatorios.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La categoria no tiene un cuadro eliminatorio para imprimir.");
+        }
+        int parejas = cantidadParejas(eliminatorios);
         PDRectangle pagina = parejas <= 4
                 ? new PDRectangle(PDRectangle.A4.getHeight(),
                         PDRectangle.A4.getWidth())
@@ -66,7 +71,7 @@ public class CuadroTorneoPdfService {
             documento.addPage(hoja);
             try (PDPageContentStream lienzo =
                     new PDPageContentStream(documento, hoja)) {
-                dibujar(lienzo, pagina, torneo, categoria, partidos,
+                dibujar(lienzo, pagina, torneo, categoria, eliminatorios,
                         nombrePareja, nombreCancha, configuracion,
                         incluirResultados);
             }
@@ -113,7 +118,8 @@ public class CuadroTorneoPdfService {
             List<Box> boxes = calcularBoxes(x, columnW,
                     areaBottom, areaTop, list.size(), orden.size() == 1);
             boxesByColumn.add(boxes);
-            drawPhaseTitle(c, orden.get(col), x, columnW, areaTop + 17);
+            drawPhaseTitle(c, orden.get(col), list, partidos,
+                    x, columnW, areaTop + 17);
             for (int i = 0; i < list.size(); i++) {
                 drawMatch(c, boxes.get(i), list.get(i), pareja,
                         cancha, resultados, orden.size() == 1);
@@ -183,10 +189,11 @@ public class CuadroTorneoPdfService {
     }
 
     private void drawPhaseTitle(PDPageContentStream c,
-            FaseTorneo fase, float x, float width, float y)
+            FaseTorneo fase, List<TorneoPartido> fasePartidos,
+            List<TorneoPartido> todos, float x, float width, float y)
             throws IOException {
         c.setNonStrokingColor(INK);
-        String title = fase.toString().toUpperCase();
+        String title = nombreFasePdf(fase, fasePartidos, todos).toUpperCase();
         float titleWidth = BOLD.getStringWidth(latin(title)) / 1000 * 12;
         text(c, title, x + (width - titleWidth) / 2, y, 12, BOLD);
         c.setStrokingColor(INK);
@@ -334,6 +341,50 @@ public class CuadroTorneoPdfService {
         c.setNonStrokingColor(GOLD);
         fitText(c, "PREMIOS - " + String.join(" | ", data),
                 left, y, 8, BOLD, right - left);
+    }
+
+    private List<TorneoPartido> soloEliminatorios(
+            List<TorneoPartido> partidos) {
+        return partidos.stream()
+                .filter(p -> p.getFase() != FaseTorneo.GRUPOS)
+                .toList();
+    }
+
+    private String nombreFasePdf(FaseTorneo fase,
+            List<TorneoPartido> fasePartidos,
+            List<TorneoPartido> todos) {
+        if (!fase.name().startsWith("ACCESO_")) return fase.toString();
+        int numero = numeroPrevia(fase);
+        boolean posterior = todos.stream()
+                .anyMatch(p -> p.getFase().name().startsWith("ACCESO_")
+                        && numeroPrevia(p.getFase()) > numero);
+        if (posterior) return fase.toString();
+        FaseTorneo destino = fasePartidos.stream()
+                .map(TorneoPartido::getPartidoSiguienteId)
+                .filter(java.util.Objects::nonNull)
+                .map(id -> todos.stream().filter(p -> p.getId() == id)
+                        .map(TorneoPartido::getFase).findFirst().orElse(null))
+                .filter(java.util.Objects::nonNull)
+                .filter(f -> !f.name().startsWith("ACCESO_"))
+                .findFirst().orElse(null);
+        return destino == null ? fase.toString()
+                : "Clasificacion a " + destinoVisible(destino);
+    }
+
+    private String destinoVisible(FaseTorneo fase) {
+        return switch (fase) {
+            case FINAL -> "la final";
+            case SEMIFINAL -> "semifinales";
+            case CUARTOS -> "cuartos de final";
+            case OCTAVOS -> "octavos de final";
+            case DIECISEISAVOS -> "dieciseisavos de final";
+            default -> fase.toString().toLowerCase();
+        };
+    }
+
+    private int numeroPrevia(FaseTorneo fase) {
+        return fase.name().startsWith("ACCESO_")
+                ? Integer.parseInt(fase.name().substring(7)) : 0;
     }
 
     private int cantidadParejas(List<TorneoPartido> partidos) {

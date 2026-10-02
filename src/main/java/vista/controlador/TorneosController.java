@@ -102,6 +102,8 @@ public class TorneosController {
                 }
             }
         });
+        tablaTorneos.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         tablaTorneos.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> seleccionar(n));
 
         colCategoria.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNombre()));

@@ -1,6 +1,12 @@
 package negocio;
 
 public enum FaseTorneo {
+    GRUPOS("Grupos", 0),
+    ACCESO_1("Fase previa · Ronda 1", 0),
+    ACCESO_2("Fase previa · Ronda 2", 0),
+    ACCESO_3("Fase previa · Ronda 3", 0),
+    ACCESO_4("Fase previa · Ronda 4", 0),
+    ACCESO_5("Fase previa · Ronda 5", 0),
     DIECISEISAVOS("Dieciseisavos", 32),
     OCTAVOS("Octavos", 16),
     CUARTOS("Cuartos", 8),
@@ -25,6 +31,8 @@ public enum FaseTorneo {
 
     public FaseTorneo siguiente() {
         return switch (this) {
+            case GRUPOS, ACCESO_1, ACCESO_2, ACCESO_3,
+                    ACCESO_4, ACCESO_5 -> null;
             case DIECISEISAVOS -> OCTAVOS;
             case OCTAVOS -> CUARTOS;
             case CUARTOS -> SEMIFINAL;

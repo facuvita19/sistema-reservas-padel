@@ -19,6 +19,7 @@ import negocio.EstadoPartidoTorneo;
 import negocio.FaseTorneo;
 import negocio.PosicionPartidoSiguiente;
 import negocio.TorneoPartido;
+import negocio.TipoPartidoGrupo;
 
 public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
 
@@ -56,13 +57,13 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
 
     private void insertar(Connection conexion, TorneoPartido partido) {
         String sql = "INSERT INTO torneo_partidos "
-                + "(torneo_categoria_id, fase, orden_fase, "
+                + "(torneo_categoria_id, grupo_id, fase, tipo_partido_grupo, orden_fase, "
                 + "pareja_1_inscripcion_id, pareja_2_inscripcion_id, "
                 + "estado, es_bye, fecha, hora_inicio, hora_fin, cancha_id, "
                 + "ganadora_inscripcion_id, partido_siguiente_id, "
                 + "posicion_siguiente, usuario_resultado_id, "
                 + "fecha_finalizacion, observaciones) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement sentencia = conexion.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             cargarParametros(sentencia, partido);
@@ -83,7 +84,8 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
 
     private void actualizar(Connection conexion, TorneoPartido partido) {
         String sql = "UPDATE torneo_partidos SET torneo_categoria_id = ?, "
-                + "fase = ?, orden_fase = ?, pareja_1_inscripcion_id = ?, "
+                + "grupo_id = ?, fase = ?, tipo_partido_grupo = ?, "
+                + "orden_fase = ?, pareja_1_inscripcion_id = ?, "
                 + "pareja_2_inscripcion_id = ?, estado = ?, es_bye = ?, "
                 + "fecha = ?, hora_inicio = ?, hora_fin = ?, cancha_id = ?, "
                 + "ganadora_inscripcion_id = ?, partido_siguiente_id = ?, "
@@ -91,7 +93,7 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
                 + "fecha_finalizacion = ?, observaciones = ? WHERE id = ?";
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, partido);
-            sentencia.setLong(18, partido.getId());
+            sentencia.setLong(20, partido.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("El partido no existe.");
             }
@@ -104,23 +106,26 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
             PreparedStatement sentencia,
             TorneoPartido partido) throws SQLException {
         sentencia.setLong(1, partido.getTorneoCategoriaId());
-        sentencia.setString(2, partido.getFase().name());
-        sentencia.setInt(3, partido.getOrdenFase());
-        setLong(sentencia, 4, partido.getPareja1InscripcionId());
-        setLong(sentencia, 5, partido.getPareja2InscripcionId());
-        sentencia.setString(6, partido.getEstado().name());
-        sentencia.setBoolean(7, partido.isBye());
-        setDate(sentencia, 8, partido.getFecha());
-        setTime(sentencia, 9, partido.getHoraInicio());
-        setTime(sentencia, 10, partido.getHoraFin());
-        setLong(sentencia, 11, partido.getCanchaId());
-        setLong(sentencia, 12, partido.getGanadoraInscripcionId());
-        setLong(sentencia, 13, partido.getPartidoSiguienteId());
-        sentencia.setString(14, partido.getPosicionSiguiente() == null
+        setLong(sentencia, 2, partido.getGrupoId());
+        sentencia.setString(3, partido.getFase().name());
+        sentencia.setString(4, partido.getTipoPartidoGrupo() == null
+                ? null : partido.getTipoPartidoGrupo().name());
+        sentencia.setInt(5, partido.getOrdenFase());
+        setLong(sentencia, 6, partido.getPareja1InscripcionId());
+        setLong(sentencia, 7, partido.getPareja2InscripcionId());
+        sentencia.setString(8, partido.getEstado().name());
+        sentencia.setBoolean(9, partido.isBye());
+        setDate(sentencia, 10, partido.getFecha());
+        setTime(sentencia, 11, partido.getHoraInicio());
+        setTime(sentencia, 12, partido.getHoraFin());
+        setLong(sentencia, 13, partido.getCanchaId());
+        setLong(sentencia, 14, partido.getGanadoraInscripcionId());
+        setLong(sentencia, 15, partido.getPartidoSiguienteId());
+        sentencia.setString(16, partido.getPosicionSiguiente() == null
                 ? null : partido.getPosicionSiguiente().name());
-        setLong(sentencia, 15, partido.getUsuarioResultadoId());
-        setTimestamp(sentencia, 16, partido.getFechaFinalizacion());
-        sentencia.setString(17, partido.getObservaciones());
+        setLong(sentencia, 17, partido.getUsuarioResultadoId());
+        setTimestamp(sentencia, 18, partido.getFechaFinalizacion());
+        sentencia.setString(19, partido.getObservaciones());
     }
 
     @Override
@@ -173,8 +178,10 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
         validarCategoriaId(categoriaId);
         String sql = consultaBase()
                 + " WHERE tp.torneo_categoria_id = ? "
-                + "ORDER BY FIELD(tp.fase, 'DIECISEISAVOS', 'OCTAVOS', "
-                + "'CUARTOS', 'SEMIFINAL', 'FINAL'), tp.orden_fase";
+                + "ORDER BY FIELD(tp.fase, 'GRUPOS', 'ACCESO_1', "
+                + "'ACCESO_2', 'ACCESO_3', 'ACCESO_4', 'ACCESO_5', "
+                + "'DIECISEISAVOS', 'OCTAVOS', 'CUARTOS', "
+                + "'SEMIFINAL', 'FINAL'), tp.orden_fase";
         return consultar(sql, categoriaId, null);
     }
 
@@ -245,6 +252,29 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
     }
 
     @Override
+    public List<TorneoPartido> listarPorGrupo(long grupoId) {
+        if (grupoId <= 0) throw new IllegalArgumentException("El grupo no es valido.");
+        String sql = consultaBase() + " WHERE tp.grupo_id = ? ORDER BY tp.orden_fase";
+        return consultar(sql, grupoId, null);
+    }
+
+    @Override
+    public boolean existenPartidosDeGrupos(Connection conexion, long categoriaId) {
+        validarConexion(conexion);
+        String sql = "SELECT COUNT(*) FROM torneo_partidos "
+                + "WHERE torneo_categoria_id = ? AND fase = 'GRUPOS'";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, categoriaId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                return resultado.getInt(1) > 0;
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("No se pudieron comprobar los partidos de grupos.", exception);
+        }
+    }
+
+    @Override
     public boolean existeCuadroPorCategoria(long categoriaId) {
         validarCategoriaId(categoriaId);
         String sql = "SELECT COUNT(*) FROM torneo_partidos "
@@ -268,14 +298,22 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
             long categoriaId) {
         validarConexion(conexion);
         validarCategoriaId(categoriaId);
-        String sql = "DELETE FROM torneo_partidos "
-                + "WHERE torneo_categoria_id = ?";
-        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-            sentencia.setLong(1, categoriaId);
-            sentencia.executeUpdate();
+        String desconectar = "UPDATE torneo_partidos SET "
+                + "partido_siguiente_id = NULL, posicion_siguiente = NULL "
+                + "WHERE torneo_categoria_id = ? AND fase <> 'GRUPOS'";
+        String eliminar = "DELETE FROM torneo_partidos "
+                + "WHERE torneo_categoria_id = ? AND fase <> 'GRUPOS'";
+        try (PreparedStatement sentenciaDesconexion =
+                    conexion.prepareStatement(desconectar);
+                PreparedStatement sentenciaEliminacion =
+                    conexion.prepareStatement(eliminar)) {
+            sentenciaDesconexion.setLong(1, categoriaId);
+            sentenciaDesconexion.executeUpdate();
+            sentenciaEliminacion.setLong(1, categoriaId);
+            sentenciaEliminacion.executeUpdate();
         } catch (SQLException exception) {
             throw new RuntimeException(
-                    "No se pudo eliminar el cuadro.", exception);
+                    "No se pudo eliminar el cuadro eliminatorio.", exception);
         }
     }
 
@@ -356,8 +394,8 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
     }
 
     private String consultaBase() {
-        return "SELECT tp.id, tp.torneo_categoria_id, tp.fase, "
-                + "tp.orden_fase, tp.pareja_1_inscripcion_id, "
+        return "SELECT tp.id, tp.torneo_categoria_id, tp.grupo_id, tp.fase, "
+                + "tp.tipo_partido_grupo, tp.orden_fase, tp.pareja_1_inscripcion_id, "
                 + "tp.pareja_2_inscripcion_id, tp.estado, tp.es_bye, "
                 + "tp.fecha, tp.hora_inicio, tp.hora_fin, tp.cancha_id, "
                 + "tp.ganadora_inscripcion_id, tp.partido_siguiente_id, "
@@ -373,7 +411,11 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
         partido.setId(resultado.getLong("id"));
         partido.setTorneoCategoriaId(
                 resultado.getLong("torneo_categoria_id"));
+        partido.setGrupoId(longNullable(resultado, "grupo_id"));
         partido.setFase(FaseTorneo.valueOf(resultado.getString("fase")));
+        String tipoGrupo = resultado.getString("tipo_partido_grupo");
+        partido.setTipoPartidoGrupo(tipoGrupo == null ? null
+                : TipoPartidoGrupo.valueOf(tipoGrupo));
         partido.setOrdenFase(resultado.getInt("orden_fase"));
         partido.setPareja1InscripcionId(
                 longNullable(resultado, "pareja_1_inscripcion_id"));
@@ -413,8 +455,21 @@ public class TorneoPartidoDAOMySQL implements TorneoPartidoDAO {
                     "El partido no puede ser nulo.");
         }
         validarCategoriaId(partido.getTorneoCategoriaId());
+        validarIdNullable(partido.getGrupoId(), "grupo");
         if (partido.getFase() == null) {
             throw new IllegalArgumentException("La fase es obligatoria.");
+        }
+        if (partido.getFase() == FaseTorneo.GRUPOS
+                && (partido.getGrupoId() == null
+                    || partido.getTipoPartidoGrupo() == null)) {
+            throw new IllegalArgumentException(
+                    "Un partido de grupos requiere grupo y tipo.");
+        }
+        if (partido.getFase() != FaseTorneo.GRUPOS
+                && (partido.getGrupoId() != null
+                    || partido.getTipoPartidoGrupo() != null)) {
+            throw new IllegalArgumentException(
+                    "Solo los partidos de grupos pueden indicar grupo y tipo.");
         }
         if (partido.getOrdenFase() <= 0) {
             throw new IllegalArgumentException(

@@ -29,6 +29,7 @@ import negocio.RolUsuario;
 import negocio.Usuario;
 import servicio.UsuarioService;
 import vista.Navegacion;
+import vista.Dialogos;
 
 public class UsuariosController {
     private static final DateTimeFormatter FORMATO_FECHA =
@@ -253,7 +254,16 @@ public class UsuariosController {
         panel.setHgap(10); panel.setVgap(10); panel.setPadding(new Insets(10));
         panel.add(new Label("Contraseña nueva:"), 0, 0); panel.add(nueva, 1, 0);
         panel.add(new Label("Confirmación:"), 0, 1); panel.add(repetir, 1, 1);
-        dialogo.getDialogPane().setContent(panel);
+                nueva.getStyleClass().add("dialog-field");
+        repetir.getStyleClass().add("dialog-field");
+        panel.getChildren().stream().filter(n -> n instanceof Label)
+                .forEach(n -> n.getStyleClass().add("dialog-field-label"));
+dialogo.getDialogPane().setContent(panel);
+        Dialogos.preparar(dialogo, "dialog-custom-action");
+        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
+                Navegacion.getConfiguracionActual());
+        dialogo.getDialogPane().lookupButton(guardar)
+                .getStyleClass().add("dialog-action-primary");
         dialogo.setResultConverter(boton -> boton == guardar ? nueva.getText() : null);
         dialogo.showAndWait().ifPresent(password -> {
             try {
@@ -268,24 +278,29 @@ public class UsuariosController {
     private void cambiarEstado() {
         if (usuarioSeleccionado == null) { mostrarError("Seleccioná un usuario."); return; }
         boolean activar = !usuarioSeleccionado.isActivo();
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle(activar ? "Activar usuario" : "Desactivar usuario");
-        confirmacion.setHeaderText(activar ? "¿Activar la cuenta?" : "¿Desactivar la cuenta?");
-        confirmacion.setContentText(usuarioSeleccionado.getNombreUsuario());
-        confirmacion.showAndWait().ifPresent(respuesta -> {
-            if (respuesta != ButtonType.OK) return;
-            try {
-                long id = usuarioSeleccionado.getId();
-                if (activar) usuarioService.activar(id);
-                else {
-                    Usuario actual = Navegacion.getUsuarioActual();
-                    if (actual == null) throw new IllegalArgumentException("La sesión administrativa finalizó.");
-                    usuarioService.desactivar(id, actual.getId());
-                }
-                cargarUsuarios(); seleccionarUsuario(id);
-                mostrarInfo("La cuenta se " + (activar ? "activó" : "desactivó") + " correctamente.");
-            } catch (RuntimeException exception) { mostrarError(exception.getMessage()); }
-        });
+        String titulo = activar ? "Activar usuario" : "Desactivar usuario";
+        String mensaje = (activar ? "¿Activar la cuenta?" : "¿Desactivar la cuenta?")
+                + "\n\n" + usuarioSeleccionado.getNombreUsuario();
+        boolean confirmado = activar
+                ? Dialogos.confirmar(titulo, mensaje)
+                : Dialogos.confirmarPeligro(titulo, mensaje);
+        if (!confirmado) return;
+        try {
+            long id = usuarioSeleccionado.getId();
+            if (activar) usuarioService.activar(id);
+            else {
+                Usuario actual = Navegacion.getUsuarioActual();
+                if (actual == null) throw new IllegalArgumentException(
+                        "La sesión administrativa finalizó.");
+                usuarioService.desactivar(id, actual.getId());
+            }
+            cargarUsuarios();
+            seleccionarUsuario(id);
+            mostrarInfo("La cuenta se " + (activar ? "activó" : "desactivó")
+                    + " correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
     }
 
     private void seleccionarUsuario(long id) {

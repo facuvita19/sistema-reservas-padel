@@ -22,7 +22,7 @@
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.365" styleClass="tournaments-split">
+        <SplitPane dividerPositions="0.40" styleClass="tournaments-split">
             <items>
                 <VBox spacing="14" styleClass="tournaments-sidebar">
                     <padding><Insets top="20" right="18" bottom="18" left="22"/></padding>

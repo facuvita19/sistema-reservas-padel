@@ -26,6 +26,7 @@ import negocio.Cancha;
 import servicio.BloqueoCanchaService;
 import servicio.CanchaService;
 import vista.Navegacion;
+import vista.Dialogos;
 
 public class BloqueosController {
 
@@ -317,30 +318,19 @@ public class BloqueosController {
             mostrarError("Seleccioná un bloqueo de la tabla.");
             return;
         }
-
-        Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacion.setTitle("Eliminar bloqueo");
-        confirmacion.setHeaderText("¿Eliminar el bloqueo seleccionado?");
-        confirmacion.setContentText(
-                bloqueoSeleccionado.getNombreCancha()
-                        + " - "
-                        + bloqueoSeleccionado.getFecha().format(FORMATO_FECHA)
-                        + " - "
-                        + bloqueoSeleccionado.getMotivo()
-        );
-
-        confirmacion.showAndWait().ifPresent(respuesta -> {
-            if (respuesta == ButtonType.OK) {
-                try {
-                    bloqueoService.eliminar(bloqueoSeleccionado.getId());
-                    cargarBloqueos();
-                    nuevo();
-                    mostrarInfo("El bloqueo fue eliminado.");
-                } catch (RuntimeException exception) {
-                    mostrarError(exception.getMessage());
-                }
-            }
-        });
+        String detalle = bloqueoSeleccionado.getNombreCancha()
+                + " · " + bloqueoSeleccionado.getFecha().format(FORMATO_FECHA)
+                + " · " + bloqueoSeleccionado.getMotivo();
+        if (!Dialogos.confirmarPeligro("Eliminar bloqueo",
+                "Se eliminara el bloqueo seleccionado.\n\n" + detalle)) return;
+        try {
+            bloqueoService.eliminar(bloqueoSeleccionado.getId());
+            cargarBloqueos();
+            nuevo();
+            mostrarInfo("El bloqueo fue eliminado.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
     }
 
     @FXML

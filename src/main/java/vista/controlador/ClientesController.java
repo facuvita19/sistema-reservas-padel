@@ -30,6 +30,7 @@ import servicio.PagoService;
 import servicio.ReservaService;
 import util.FormateadorMoneda;
 import vista.Navegacion;
+import vista.Dialogos;
 
 public class ClientesController {
 
@@ -269,15 +270,18 @@ public class ClientesController {
     @FXML
     private void desactivar() {
         if (clienteSeleccionado == null) return;
-        Alert a = new Alert(Alert.AlertType.CONFIRMATION);
-        a.setTitle("Desactivar cliente");
-        a.setHeaderText("¿Desactivar a " + clienteSeleccionado.getNombreCompleto() + "?");
-        a.setContentText("El historial se conservará, pero el cliente dejará de aparecer en los listados activos.");
-        a.showAndWait().ifPresent(r -> {
-            if (r == javafx.scene.control.ButtonType.OK) try {
-                clienteService.eliminar(clienteSeleccionado.getId()); cargarClientes(); nuevo(); mostrarInfo("El cliente fue desactivado.");
-            } catch (RuntimeException e) { mostrarError(e.getMessage()); }
-        });
+        if (!Dialogos.confirmarPeligro("Desactivar cliente",
+                "¿Desactivar a " + clienteSeleccionado.getNombreCompleto()
+                        + "?\n\nEl historial se conservara, pero el cliente "
+                        + "dejara de aparecer en los listados activos.")) return;
+        try {
+            clienteService.eliminar(clienteSeleccionado.getId());
+            cargarClientes();
+            nuevo();
+            mostrarInfo("El cliente fue desactivado.");
+        } catch (RuntimeException e) {
+            mostrarError(e.getMessage());
+        }
     }
 
     @FXML private void nuevaReservaParaCliente() { Navegacion.mostrarReservas(); }

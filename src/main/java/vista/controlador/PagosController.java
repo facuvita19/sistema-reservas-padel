@@ -40,6 +40,7 @@ import servicio.ReservaService;
 import util.FormateadorMoneda;
 import vista.FiltroPagos;
 import vista.Navegacion;
+import vista.Dialogos;
 import vista.SolicitudFiltroPagos;
 import vista.SolicitudPagoReserva;
 
@@ -238,7 +239,30 @@ public class PagosController {
     private BigDecimal parsearImporte(String v){if(v==null||v.isBlank())throw new IllegalArgumentException("Ingresá el importe.");try{return new BigDecimal(v.trim().replace("ARS","").replace("$","").replace(" ","").replace(",","."));}catch(NumberFormatException e){throw new IllegalArgumentException("El importe debe ser un número válido.");}}
     @FXML private void acreditar(){cambiarEstado("Acreditar pago",()->pagoService.acreditar(pagoSeleccionado.getId()));}
     @FXML private void anular(){cambiarEstado("Anular pago",()->pagoService.anular(pagoSeleccionado.getId()));}
-    private void cambiarEstado(String titulo,Runnable accion){if(pagoSeleccionado==null){mostrarError("Seleccioná un movimiento.");return;}Alert a=new Alert(Alert.AlertType.CONFIRMATION);a.setTitle(titulo);a.setHeaderText(titulo+" seleccionado");a.setContentText("Importe: ARS "+pagoSeleccionado.getImporte());a.showAndWait().ifPresent(r->{if(r==ButtonType.OK){try{long id=pagoSeleccionado.getId();accion.run();cargarPagos();pagos.stream().filter(p->p.getId()==id).findFirst().ifPresent(this::mostrarDetallePago);mostrarInfo("El estado se actualizó correctamente.");}catch(RuntimeException e){mostrarError(e.getMessage());}}});}
+    private void cambiarEstado(String titulo, Runnable accion) {
+        if (pagoSeleccionado == null) {
+            mostrarError("Seleccioná un movimiento.");
+            return;
+        }
+        boolean peligrosa = titulo.toLowerCase().contains("anular")
+                || titulo.toLowerCase().contains("reembols");
+        String mensaje = "Movimiento #" + pagoSeleccionado.getId()
+                + "\nImporte: ARS " + pagoSeleccionado.getImporte();
+        boolean confirmado = peligrosa
+                ? Dialogos.confirmarPeligro(titulo, mensaje)
+                : Dialogos.confirmar(titulo, mensaje);
+        if (!confirmado) return;
+        try {
+            long id = pagoSeleccionado.getId();
+            accion.run();
+            cargarPagos();
+            pagos.stream().filter(p -> p.getId() == id).findFirst()
+                    .ifPresent(this::mostrarDetallePago);
+            mostrarInfo("El estado se actualizó correctamente.");
+        } catch (RuntimeException e) {
+            mostrarError(e.getMessage());
+        }
+    }
 
     private String reservaBreve(Reserva r){return "#"+r.getId()+" · "+r.getNombreCliente();}
     private String reservaExtendida(Reserva r){return "#"+r.getId()+" · "+r.getNombreCliente()+" · "+r.getNombreCancha()+" · "+r.getFecha().format(FECHA)+" "+r.getHoraInicio().format(HORA);}

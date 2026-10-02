@@ -12,7 +12,9 @@ public class TorneoPartido {
 
     private long id;
     private long torneoCategoriaId;
+    private Long grupoId;
     private FaseTorneo fase;
+    private TipoPartidoGrupo tipoPartidoGrupo;
     private int ordenFase;
     private Long pareja1InscripcionId;
     private Long pareja2InscripcionId;
@@ -36,8 +38,14 @@ public class TorneoPartido {
     public void setId(long valor) { id = valor; }
     public long getTorneoCategoriaId() { return torneoCategoriaId; }
     public void setTorneoCategoriaId(long valor) { torneoCategoriaId = valor; }
+    public Long getGrupoId() { return grupoId; }
+    public void setGrupoId(Long valor) { grupoId = valor; }
     public FaseTorneo getFase() { return fase; }
     public void setFase(FaseTorneo valor) { fase = valor; }
+    public TipoPartidoGrupo getTipoPartidoGrupo() { return tipoPartidoGrupo; }
+    public void setTipoPartidoGrupo(TipoPartidoGrupo valor) {
+        tipoPartidoGrupo = valor;
+    }
     public int getOrdenFase() { return ordenFase; }
     public void setOrdenFase(int valor) { ordenFase = valor; }
     public Long getPareja1InscripcionId() { return pareja1InscripcionId; }

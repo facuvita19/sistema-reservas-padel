@@ -63,5 +63,18 @@ class DisponibilidadCanchaServiceTest {
         @Override public boolean horarioOcupado(long canchaId,
                 LocalDate fecha, LocalTime inicio, LocalTime fin,
                 long excluido) { return ocupado; }
-    }
+
+        @Override
+        public boolean existenPartidosDeGrupos(
+                java.sql.Connection conexion,
+                long categoriaId) {
+            return false;
+        }
+
+        @Override
+        public java.util.List<negocio.TorneoPartido> listarPorGrupo(
+                long grupoId) {
+            return java.util.List.of();
+        }
+}
 }

@@ -620,6 +620,9 @@ public class ReservasController {
         dialogo.setContentText(reservaSeleccionada.getNombreCliente() + "\n" + reservaSeleccionada.getNombreCancha()
                 + "\n" + reservaSeleccionada.getHoraInicio().format(FORMATO_HORA) + " - "
                 + reservaSeleccionada.getHoraFin().format(FORMATO_HORA));
+        Dialogos.preparar(dialogo, "dialog-choice");
+        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
+                Navegacion.getConfiguracionActual());
         dialogo.showAndWait().ifPresent(respuesta -> {
             if (respuesta == completada) cambiarEstadoSeleccionado(EstadoReserva.COMPLETADA);
             else if (respuesta == ausente) cambiarEstadoSeleccionado(EstadoReserva.AUSENTE);
@@ -933,15 +936,27 @@ public class ReservasController {
 
     private void cambiarEstadoSeleccionado(EstadoReserva estado) {
         if (reservaSeleccionada == null) { mostrarError("Seleccioná una reserva de la tabla."); return; }
-        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
-        alerta.setTitle("Cambiar estado"); alerta.setHeaderText("¿Cambiar la reserva a " + estado + "?");
-        alerta.setContentText(reservaSeleccionada.getNombreCliente() + " - " + reservaSeleccionada.getNombreCancha());
-        alerta.showAndWait().ifPresent(r -> {
-            if (r == ButtonType.OK) try {
-                LocalDate fecha = reservaSeleccionada.getFecha(); reservaService.cambiarEstado(reservaSeleccionada.getId(), estado);
-                cargarReservas(); nuevaReserva(); filtroFecha.setValue(fecha); aplicarFiltros(); mostrarInfo("El estado se actualizó correctamente.");
-            } catch (RuntimeException exception) { mostrarError(exception.getMessage()); }
-        });
+        String detalle = reservaSeleccionada.getNombreCliente() + " · "
+                + reservaSeleccionada.getNombreCancha();
+        boolean peligrosa = estado == EstadoReserva.CANCELADA
+                || estado == EstadoReserva.AUSENTE;
+        boolean confirmado = peligrosa
+                ? Dialogos.confirmarPeligro("Cambiar estado",
+                        "¿Cambiar la reserva a " + estado + "?\n\n" + detalle)
+                : Dialogos.confirmar("Cambiar estado",
+                        "¿Cambiar la reserva a " + estado + "?\n\n" + detalle);
+        if (!confirmado) return;
+        try {
+            LocalDate fecha = reservaSeleccionada.getFecha();
+            reservaService.cambiarEstado(reservaSeleccionada.getId(), estado);
+            cargarReservas();
+            nuevaReserva();
+            filtroFecha.setValue(fecha);
+            aplicarFiltros();
+            mostrarInfo("El estado se actualizó correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
     }
 
     @FXML private void abrirPagos() {

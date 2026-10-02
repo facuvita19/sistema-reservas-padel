@@ -16,7 +16,13 @@
                 <Label fx:id="etiquetaContexto" text="Categoría seleccionada" styleClass="bracket-page-subtitle"/>
             </VBox>
             <Region HBox.hgrow="ALWAYS"/>
+            <Button fx:id="botonIrAGrupos" text="IR A GRUPOS"
+                    onAction="#irAGrupos"
+                    styleClass="bracket-secondary-button"/>
             <Button fx:id="botonGenerar" text="GENERAR CUADRO" onAction="#generarCuadro" styleClass="bracket-primary-button"/>
+            <Button fx:id="botonInvalidar" text="INVALIDAR CUADRO"
+                    onAction="#invalidarCuadro"
+                    styleClass="bracket-danger-outline-button"/>
             <Button text="IMPRIMIR CUADRO" onAction="#imprimirCuadro" styleClass="bracket-secondary-button"/>
             <Button text="ACTUALIZAR" onAction="#cargar" styleClass="bracket-secondary-button"/>
         </HBox>

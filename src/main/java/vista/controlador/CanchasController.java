@@ -28,6 +28,7 @@ import negocio.TipoCancha;
 import servicio.CanchaService;
 import util.FormateadorMoneda;
 import vista.Navegacion;
+import vista.Dialogos;
 
 public class CanchasController {
 
@@ -255,24 +256,18 @@ public class CanchasController {
 		if (canchaSeleccionada == null) {
 			return;
 		}
-
-		Alert confirmacion = new Alert(Alert.AlertType.CONFIRMATION);
-		confirmacion.setTitle("Desactivar cancha");
-		confirmacion.setHeaderText("¿Desactivar " + canchaSeleccionada.getNombre() + "?");
-		confirmacion.setContentText("La cancha dejará de aparecer como disponible para nuevas reservas.");
-
-		confirmacion.showAndWait().ifPresent(respuesta -> {
-			if (respuesta == javafx.scene.control.ButtonType.OK) {
-				try {
-					canchaService.eliminar(canchaSeleccionada.getId());
-					cargarCanchas();
-					nuevo();
-					mostrarInfo("La cancha fue desactivada.");
-				} catch (RuntimeException exception) {
-					mostrarError(exception.getMessage());
-				}
-			}
-		});
+          if (!Dialogos.confirmarPeligro("Desactivar cancha",
+                  "¿Desactivar " + canchaSeleccionada.getNombre() + "?\n\n"
+                          + "La cancha dejara de aparecer como disponible "
+                          + "para nuevas reservas.")) return;
+          try {
+                  canchaService.eliminar(canchaSeleccionada.getId());
+                  cargarCanchas();
+                  nuevo();
+                  mostrarInfo("La cancha fue desactivada.");
+          } catch (RuntimeException exception) {
+                  mostrarError(exception.getMessage());
+          }
 	}
 
 	@FXML

@@ -1,5 +1,6 @@
 package vista.controlador;
 
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -7,40 +8,116 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import dao.TorneoCategoriaDAO;
+import dao.TorneoCategoriaDAOMySQL;
+import dao.TorneoDAO;
+import dao.TorneoDAOMySQL;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
+import dao.TorneoPartidoDAO;
+import dao.TorneoPartidoDAOMySQL;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
+import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
+import negocio.Cancha;
+import negocio.EstadoPartidoTorneo;
+import negocio.EstadoTorneo;
 import negocio.ModoAsignacionGrupoTorneo;
+import negocio.PosicionGrupoTorneo;
+import negocio.Torneo;
+import negocio.TorneoCategoria;
 import negocio.TorneoGrupo;
 import negocio.TorneoGrupoIntegrante;
 import negocio.TorneoInscripcion;
 import negocio.TorneoInscripcionJugador;
+import negocio.TorneoPartido;
+import servicio.CanchaService;
+import servicio.GeneracionPartidosGrupoService;
 import servicio.GestionGruposTorneoService;
+import servicio.ProgramacionPartidoTorneoService;
+import servicio.BloqueoCorreccionGrupoService;
+import servicio.PosicionesGrupoTorneoService;
 import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneoGruposController {
-
     private final GestionGruposTorneoService service =
             new GestionGruposTorneoService();
+    private final GeneracionPartidosGrupoService partidosService =
+            new GeneracionPartidosGrupoService();
+    private final BloqueoCorreccionGrupoService bloqueoCorreccionService =
+            new BloqueoCorreccionGrupoService();
+    private final ProgramacionPartidoTorneoService programacionService =
+            new ProgramacionPartidoTorneoService();
+    private final TorneoPartidoDAO partidoDAO = new TorneoPartidoDAOMySQL();
+    private final TorneoInscripcionDAO inscripcionDAO =
+            new TorneoInscripcionDAOMySQL();
+    private final TorneoCategoriaDAO categoriaDAO =
+            new TorneoCategoriaDAOMySQL();
+    private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
+    private final CanchaService canchaService = new CanchaService();
+    private final PosicionesGrupoTorneoService posicionesService =
+            new PosicionesGrupoTorneoService();
+
     private long categoriaId;
     private GestionGruposTorneoService.Vista vista;
+    private TorneoCategoria categoria;
+    private Torneo torneo;
     private Long grupoSeleccionadoId;
+    private Long partidoSeleccionadoId;
 
     @FXML private Label titulo;
     @FXML private Label resumen;
     @FXML private Label mensaje;
+    @FXML private Label resumenPartidos;
+    @FXML private ComboBox<TorneoGrupo> selectorGrupoPartidos;
+    @FXML private Label estadoPosiciones;
     @FXML private ListView<TorneoInscripcion> sinAsignar;
     @FXML private ListView<TorneoGrupo> listaGrupos;
     @FXML private ListView<TorneoGrupoIntegrante> integrantes;
     @FXML private ComboBox<TorneoInscripcion> cabeza;
     @FXML private ComboBox<ModoAsignacionGrupoTorneo> modo;
     @FXML private Button confirmar;
+    @FXML private Button generarPartidos;
+    @FXML private TableView<TorneoPartido> tablaPartidos;
+    @FXML private TableColumn<TorneoPartido, String> colTipo;
+    @FXML private TableColumn<TorneoPartido, Integer> colOrden;
+    @FXML private TableColumn<TorneoPartido, String> colPareja1;
+    @FXML private TableColumn<TorneoPartido, String> colPareja2;
+    @FXML private TableColumn<TorneoPartido, String> colResultado;
+    @FXML private TableColumn<TorneoPartido, EstadoPartidoTorneo> colEstado;
+    @FXML private ComboBox<Cancha> comboCancha;
+    @FXML private DatePicker selectorFecha;
+    @FXML private ComboBox<LocalTime> comboInicio;
+    @FXML private ComboBox<LocalTime> comboFin;
+    @FXML private Button botonProgramar;
+    @FXML private Button botonQuitarProgramacion;
+    @FXML private Button botonResultado;
+    @FXML private Button botonCorregir;
+    @FXML private TableView<PosicionGrupoTorneo> tablaPosiciones;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colPosicion;
+    @FXML private TableColumn<PosicionGrupoTorneo, String> colParejaPosicion;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colPJ;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colPG;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colPP;
+    @FXML private TableColumn<PosicionGrupoTorneo, String> colSets;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colDifSets;
+    @FXML private TableColumn<PosicionGrupoTorneo, String> colGames;
+    @FXML private TableColumn<PosicionGrupoTorneo, Integer> colDifGames;
+    @FXML private TableColumn<PosicionGrupoTorneo, String> colClasificacion;
 
     @FXML
     private void initialize() {
@@ -48,7 +125,11 @@ public class TorneoGruposController {
         modo.setItems(FXCollections.observableArrayList(
                 ModoAsignacionGrupoTorneo.values()));
         modo.setValue(ModoAsignacionGrupoTorneo.SORTEO_DIRIGIDO);
-        configurar();
+        configurarListas();
+        configurarSelectorGrupoPartidos();
+        configurarTablaPartidos();
+        configurarTablaPosiciones();
+        cargarCanchasYHorarios();
         configurarDeseleccion(sinAsignar);
         configurarDeseleccion(listaGrupos);
         configurarDeseleccion(integrantes);
@@ -58,8 +139,7 @@ public class TorneoGruposController {
     private <T> void configurarDeseleccion(ListView<T> lista) {
         lista.addEventFilter(javafx.scene.input.MouseEvent.MOUSE_PRESSED,
                 evento -> {
-                    javafx.scene.Node nodo = evento.getPickResult()
-                            .getIntersectedNode();
+                    Node nodo = evento.getPickResult().getIntersectedNode();
                     while (nodo != null && nodo != lista
                             && !(nodo instanceof ListCell<?>)) {
                         nodo = nodo.getParent();
@@ -72,7 +152,7 @@ public class TorneoGruposController {
                 });
     }
 
-    private void configurar() {
+    private void configurarListas() {
         StringConverter<TorneoInscripcion> conversor =
                 new StringConverter<>() {
                     @Override
@@ -96,9 +176,113 @@ public class TorneoGruposController {
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) {
                         grupoSeleccionadoId = actual.getId();
+                        TorneoGrupo selectorActual = selectorGrupoPartidos.getValue();
+                        if (selectorActual == null
+                                || selectorActual.getId() != actual.getId()) {
+                            selectorGrupoPartidos.setValue(actual);
+                        }
                     }
-                    mostrar(actual);
+                    mostrarGrupo(actual);
                 });
+    }
+
+    private void configurarSelectorGrupoPartidos() {
+        selectorGrupoPartidos.setConverter(new StringConverter<>() {
+            @Override
+            public String toString(TorneoGrupo grupo) {
+                return grupo == null ? "" : grupo.getNombre();
+            }
+
+            @Override
+            public TorneoGrupo fromString(String texto) {
+                return null;
+            }
+        });
+        selectorGrupoPartidos.valueProperty().addListener(
+                (obs, anterior, actual) -> {
+                    if (actual == null) return;
+                    TorneoGrupo seleccionado = listaGrupos
+                            .getSelectionModel().getSelectedItem();
+                    if (seleccionado == null
+                            || seleccionado.getId() != actual.getId()) {
+                        grupoSeleccionadoId = actual.getId();
+                        listaGrupos.getSelectionModel().select(actual);
+                        listaGrupos.scrollTo(actual);
+                    }
+                });
+    }
+
+    private void configurarTablaPartidos() {
+        colTipo.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().getTipoPartidoGrupo() == null ? "-"
+                        : d.getValue().getTipoPartidoGrupo().toString()));
+        colOrden.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().getOrdenFase()).asObject());
+        colPareja1.setCellValueFactory(d -> new SimpleStringProperty(
+                nombrePareja(d.getValue().getPareja1InscripcionId())));
+        colPareja2.setCellValueFactory(d -> new SimpleStringProperty(
+                nombrePareja(d.getValue().getPareja2InscripcionId())));
+        colResultado.setCellValueFactory(d -> new SimpleStringProperty(
+                resultado(d.getValue())));
+        colEstado.setCellValueFactory(d -> new SimpleObjectProperty<>(
+                d.getValue().getEstado()));
+        tablaPartidos.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tablaPartidos.getSelectionModel().selectedItemProperty()
+                .addListener((obs, anterior, actual) -> {
+                    if (actual != null) partidoSeleccionadoId = actual.getId();
+                    mostrarPartido(actual);
+                });
+        tablaPartidos.setRowFactory(tabla -> new TableRow<>());
+        tablaPartidos.setOnMousePressed(evento -> {
+            Node nodo = evento.getPickResult().getIntersectedNode();
+            while (nodo != null && nodo != tablaPartidos
+                    && !(nodo instanceof TableRow<?>)) {
+                nodo = nodo.getParent();
+            }
+            if (!(nodo instanceof TableRow<?> fila) || fila.isEmpty()) {
+                tablaPartidos.getSelectionModel().clearSelection();
+                partidoSeleccionadoId = null;
+            }
+        });
+    }
+
+    private void configurarTablaPosiciones() {
+        colPosicion.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().posicion()).asObject());
+        colParejaPosicion.setCellValueFactory(d -> new SimpleStringProperty(
+                nombrePareja(d.getValue().inscripcionId())));
+        colPJ.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().partidosJugados()).asObject());
+        colPG.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().partidosGanados()).asObject());
+        colPP.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().partidosPerdidos()).asObject());
+        colSets.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().setsResumen()));
+        colDifSets.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().diferenciaSets()).asObject());
+        colGames.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().gamesResumen()));
+        colDifGames.setCellValueFactory(d -> new SimpleIntegerProperty(
+                d.getValue().diferenciaGames()).asObject());
+        colClasificacion.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().estado().toString()));
+        tablaPosiciones.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+    }
+
+    private void cargarCanchasYHorarios() {
+        comboCancha.setItems(FXCollections.observableArrayList(
+                canchaService.listar().stream().filter(Cancha::isActivo)
+                        .toList()));
+        var horas = FXCollections.<LocalTime>observableArrayList();
+        for (int hora = 6; hora <= 23; hora++) {
+            horas.add(LocalTime.of(hora, 0));
+            if (hora < 23) horas.add(LocalTime.of(hora, 30));
+        }
+        comboInicio.setItems(horas);
+        comboFin.setItems(FXCollections.observableArrayList(horas));
     }
 
     private String nombre(TorneoInscripcion inscripcion) {
@@ -111,24 +295,31 @@ public class TorneoGruposController {
                 .orElse("Inscripcion #" + inscripcion.getId());
     }
 
+    private String nombrePareja(Long inscripcionId) {
+        if (inscripcionId == null) return "Por definir";
+        TorneoInscripcion inscripcion = inscripcionDAO.buscar(inscripcionId);
+        return inscripcion == null ? "Inscripcion #" + inscripcionId
+                : nombre(inscripcion);
+    }
+
     private void cargar() {
-        TorneoGrupo seleccionAntes =
-                listaGrupos.getSelectionModel().getSelectedItem();
-        if (seleccionAntes != null) {
-            grupoSeleccionadoId = seleccionAntes.getId();
-        }
+        conservarSelecciones();
         try {
             vista = service.cargar(categoriaId);
+            categoria = categoriaDAO.buscar(categoriaId);
+            torneo = categoria == null ? null
+                    : torneoDAO.buscar(categoria.getTorneoId());
             titulo.setText(vista.categoria().getNombre() + " - "
                     + vista.categoria().getRama());
             Set<Long> asignadas = new HashSet<>();
             vista.grupos().forEach(grupo -> grupo.getIntegrantes()
                     .forEach(i -> asignadas.add(i.getInscripcionId())));
             List<TorneoInscripcion> libres = vista.inscripciones().stream()
-                    .filter(i -> !asignadas.contains(i.getId()))
-                    .toList();
+                    .filter(i -> !asignadas.contains(i.getId())).toList();
             sinAsignar.setItems(FXCollections.observableArrayList(libres));
             listaGrupos.setItems(FXCollections.observableArrayList(
+                    vista.grupos()));
+            selectorGrupoPartidos.setItems(FXCollections.observableArrayList(
                     vista.grupos()));
             cabeza.setItems(FXCollections.observableArrayList(
                     vista.inscripciones()));
@@ -138,29 +329,114 @@ public class TorneoGruposController {
             boolean cerrado = vista.grupos().stream()
                     .anyMatch(TorneoGrupo::isConfirmado);
             confirmar.setDisable(cerrado);
+            generarPartidos.setDisable(!cerrado);
+            restaurarGrupo();
             if (cerrado) mensaje.setText("Los grupos estan confirmados.");
-            if (!vista.grupos().isEmpty()) {
-                TorneoGrupo grupoASeleccionar = vista.grupos().stream()
-                        .filter(grupo -> grupoSeleccionadoId != null
-                                && grupo.getId() == grupoSeleccionadoId)
-                        .findFirst()
-                        .orElse(vista.grupos().get(0));
-                listaGrupos.getSelectionModel().select(grupoASeleccionar);
-                grupoSeleccionadoId = grupoASeleccionar.getId();
-            } else {
-                grupoSeleccionadoId = null;
-                integrantes.getItems().clear();
-            }
         } catch (RuntimeException exception) {
-            String texto = mensaje(exception);
-            mensaje.setText(texto);
-            Dialogos.error("No se pudieron cargar los grupos", texto);
+            mostrarError("No se pudieron cargar los grupos", exception);
         }
     }
 
-    private void mostrar(TorneoGrupo grupo) {
+    private void conservarSelecciones() {
+        TorneoGrupo grupo = listaGrupos.getSelectionModel().getSelectedItem();
+        if (grupo != null) grupoSeleccionadoId = grupo.getId();
+        TorneoPartido partido = tablaPartidos.getSelectionModel()
+                .getSelectedItem();
+        if (partido != null) partidoSeleccionadoId = partido.getId();
+    }
+
+    private void restaurarGrupo() {
+        if (vista.grupos().isEmpty()) {
+            grupoSeleccionadoId = null;
+            integrantes.getItems().clear();
+            tablaPartidos.getItems().clear();
+            return;
+        }
+        TorneoGrupo grupo = vista.grupos().stream()
+                .filter(g -> grupoSeleccionadoId != null
+                        && g.getId() == grupoSeleccionadoId)
+                .findFirst().orElse(vista.grupos().get(0));
+        listaGrupos.getSelectionModel().select(grupo);
+        selectorGrupoPartidos.setValue(grupo);
+        grupoSeleccionadoId = grupo.getId();
+    }
+
+    private void mostrarGrupo(TorneoGrupo grupo) {
         integrantes.setItems(FXCollections.observableArrayList(
                 grupo == null ? List.of() : grupo.getIntegrantes()));
+        cargarPartidos(grupo);
+        cargarPosiciones(grupo);
+    }
+
+    private void cargarPosiciones(TorneoGrupo grupo) {
+        if (grupo == null) {
+            tablaPosiciones.getItems().clear();
+            estadoPosiciones.setText("Selecciona un grupo");
+            return;
+        }
+        var resultado = posicionesService.calcular(grupo);
+        tablaPosiciones.setItems(FXCollections.observableArrayList(
+                resultado.posiciones()));
+        estadoPosiciones.setText(resultado.desempatePendiente()
+                ? "Desempate administrativo pendiente"
+                : resultado.definitivo()
+                    ? "Posiciones definitivas"
+                    : "Posiciones provisorias");
+    }
+
+    private void cargarPartidos(TorneoGrupo grupo) {
+        if (grupo == null) {
+            tablaPartidos.getItems().clear();
+            resumenPartidos.setText("Selecciona un grupo");
+            mostrarPartido(null);
+            return;
+        }
+        List<TorneoPartido> valores = partidoDAO.listarPorGrupo(grupo.getId());
+        tablaPartidos.setItems(FXCollections.observableArrayList(valores));
+        resumenPartidos.setText(valores.size() + " partido(s) de "
+                + grupo.getNombre());
+        TorneoPartido seleccionar = valores.stream()
+                .filter(p -> partidoSeleccionadoId != null
+                        && p.getId() == partidoSeleccionadoId)
+                .findFirst().orElse(null);
+        if (seleccionar != null) {
+            tablaPartidos.getSelectionModel().select(seleccionar);
+        } else {
+            partidoSeleccionadoId = null;
+            tablaPartidos.getSelectionModel().clearSelection();
+            mostrarPartido(null);
+        }
+        generarPartidos.setDisable(!grupo.isConfirmado()
+                || !valores.isEmpty());
+    }
+
+    private void mostrarPartido(TorneoPartido partido) {
+        boolean hay = partido != null;
+        boolean completo = hay && partido.tieneDosParejas();
+        botonProgramar.setDisable(!completo
+                || partido.getEstado() != EstadoPartidoTorneo.PENDIENTE);
+        botonQuitarProgramacion.setDisable(!hay
+                || partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO);
+        botonResultado.setDisable(!completo
+                || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
+                    && partido.getEstado()
+                        != EstadoPartidoTorneo.EN_CURSO));
+        boolean permiteCorreccion = torneo != null
+                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        botonCorregir.setDisable(!hay || !permiteCorreccion
+                || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO);
+        if (!hay) {
+            limpiarProgramacion();
+            return;
+        }
+        comboCancha.setValue(partido.getCanchaId() == null ? null
+                : comboCancha.getItems().stream()
+                    .filter(c -> c.getId() == partido.getCanchaId())
+                    .findFirst().orElse(null));
+        selectorFecha.setValue(partido.getFecha());
+        comboInicio.setValue(partido.getHoraInicio());
+        comboFin.setValue(partido.getHoraFin());
     }
 
     @FXML
@@ -210,7 +486,7 @@ public class TorneoGruposController {
         ejecutar("No se pudo quitar la pareja", () -> {
             service.quitar(categoriaId, integrante.getInscripcionId());
             cargar();
-            exito("La pareja volvio a la lista de parejas sin asignar.");
+            exito("La pareja volvio a la lista sin asignar.");
         });
     }
 
@@ -233,15 +509,14 @@ public class TorneoGruposController {
         ejecutar("No se pudo realizar el sorteo", () -> {
             service.sortear(categoriaId, cabezas);
             cargar();
-            exito("Sorteo realizado. Revisa la distribucion antes de confirmar.");
+            exito("Sorteo realizado. Revisa la distribucion.");
         });
     }
 
     @FXML
     private void confirmar() {
         if (modo.getValue() == null) {
-            informar("Modo requerido",
-                    "Selecciona Sorteo con cabezas de serie o Armado manual.");
+            informar("Modo requerido", "Selecciona el modo de asignacion.");
             return;
         }
         if (!Dialogos.confirmar("Confirmar grupos",
@@ -256,19 +531,154 @@ public class TorneoGruposController {
         });
     }
 
+    @FXML
+    private void generarPartidos() {
+        if (!Dialogos.confirmar("Generar partidos de grupos",
+                "Se crearan los cruces de todos los grupos confirmados. "
+                        + "Esta accion no puede repetirse. ¿Queres continuar?")) {
+            return;
+        }
+        ejecutar("No se pudieron generar los partidos", () -> {
+            int cantidad = partidosService.generar(categoriaId);
+            cargar();
+            exito(cantidad + " partidos generados correctamente.");
+            Dialogos.exito("Partidos generados",
+                    cantidad + " partidos quedaron preparados.");
+        });
+    }
+
+    @FXML
+    private void programarPartido() {
+        TorneoPartido partido = partidoSeleccionado();
+        if (partido == null) return;
+        ejecutar("No se pudo programar el partido", () -> {
+            if (comboCancha.getValue() == null
+                    || selectorFecha.getValue() == null
+                    || comboInicio.getValue() == null
+                    || comboFin.getValue() == null) {
+                throw new IllegalArgumentException(
+                        "Selecciona cancha, fecha y horario completo.");
+            }
+            partidoSeleccionadoId = partido.getId();
+            programacionService.programar(partido.getId(),
+                    comboCancha.getValue().getId(),
+                    selectorFecha.getValue(), comboInicio.getValue(),
+                    comboFin.getValue());
+            cargar();
+            Dialogos.exito("Partido programado",
+                    "La programacion se guardo correctamente.");
+        });
+    }
+
+    @FXML
+    private void quitarProgramacion() {
+        TorneoPartido partido = partidoSeleccionado();
+        if (partido == null) return;
+        if (!Dialogos.confirmarPeligro("Quitar programacion",
+                "El partido volvera a estado Pendiente. ¿Queres continuar?")) {
+            return;
+        }
+        ejecutar("No se pudo quitar la programacion", () -> {
+            partidoSeleccionadoId = partido.getId();
+            programacionService.quitarProgramacion(partido.getId());
+            cargar();
+            Dialogos.exito("Programacion eliminada",
+                    "El partido volvio a estado Pendiente.");
+        });
+    }
+
+    @FXML
+    private void registrarResultado() {
+        TorneoPartido partido = partidoSeleccionado();
+        if (partido == null) return;
+        TorneoPartido actualizado =
+                new ResultadoPartidoTorneoDialog(partido).mostrar();
+        if (actualizado != null) {
+            partidoSeleccionadoId = actualizado.getId();
+            cargar();
+            Dialogos.exito("Resultado registrado",
+                    "El resultado y los cruces dependientes se actualizaron.");
+        }
+    }
+
+    @FXML
+    private void corregirResultado() {
+        TorneoPartido partido = partidoSeleccionado();
+        if (partido == null) return;
+        if (torneo == null
+                || (torneo.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA
+                    && torneo.getEstado() != EstadoTorneo.EN_CURSO)) {
+            informar("Correccion no disponible",
+                    "El torneo debe tener las inscripciones cerradas "
+                            + "o estar en curso.");
+            return;
+        }
+        try {
+            bloqueoCorreccionService.validar(partido.getId());
+        } catch (RuntimeException exception) {
+            mostrarError("Correccion bloqueada", exception);
+            return;
+        }
+        if (!Dialogos.confirmarPeligro("Corregir resultado",
+                "La correccion puede modificar cruces dependientes. "
+                        + "¿Queres continuar?")) return;
+        TorneoPartido actualizado =
+                new ResultadoPartidoTorneoDialog(partido, true).mostrar();
+        if (actualizado != null) {
+            partidoSeleccionadoId = actualizado.getId();
+            cargar();
+            Dialogos.exito("Resultado corregido",
+                    "El resultado fue actualizado correctamente.");
+        }
+    }
+
+    private TorneoPartido partidoSeleccionado() {
+        TorneoPartido partido = tablaPartidos.getSelectionModel()
+                .getSelectedItem();
+        if (partido == null) {
+            informar("Seleccion requerida",
+                    "Selecciona un partido del grupo.");
+        }
+        return partido;
+    }
+
+    private String resultado(TorneoPartido partido) {
+        if (partido.getSets().isEmpty()) return "Sin resultado";
+        return partido.getSets().stream()
+                .map(set -> set.getPuntosPareja1() + "-"
+                        + set.getPuntosPareja2())
+                .reduce((a, b) -> a + " / " + b)
+                .orElse("Sin resultado");
+    }
+
+    private void limpiarProgramacion() {
+        comboCancha.getSelectionModel().clearSelection();
+        selectorFecha.setValue(null);
+        comboInicio.getSelectionModel().clearSelection();
+        comboFin.getSelectionModel().clearSelection();
+        botonProgramar.setDisable(true);
+        botonQuitarProgramacion.setDisable(true);
+        botonResultado.setDisable(true);
+        botonCorregir.setDisable(true);
+    }
+
     private void ejecutar(String tituloError, Runnable accion) {
         try {
             accion.run();
         } catch (RuntimeException exception) {
-            String texto = mensaje(exception);
-            mensaje.setText(texto);
-            Dialogos.error(tituloError, texto);
+            mostrarError(tituloError, exception);
         }
     }
 
-    private void informar(String titulo, String texto) {
+    private void mostrarError(String tituloError, RuntimeException exception) {
+        String texto = mensaje(exception);
         mensaje.setText(texto);
-        Dialogos.informacion(titulo, texto);
+        Dialogos.error(tituloError, texto);
+    }
+
+    private void informar(String tituloInfo, String texto) {
+        mensaje.setText(texto);
+        Dialogos.informacion(tituloInfo, texto);
     }
 
     private void exito(String texto) {
@@ -286,6 +696,11 @@ public class TorneoGruposController {
             return causa.getMessage();
         }
         return "No se pudo completar la operacion.";
+    }
+
+    @FXML
+    private void irAlCuadro() {
+        Navegacion.mostrarCuadroTorneo(categoriaId);
     }
 
     @FXML

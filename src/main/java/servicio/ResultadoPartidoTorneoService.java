@@ -12,6 +12,8 @@ import dao.TorneoPartidoDAO;
 import dao.TorneoPartidoDAOMySQL;
 import dao.TorneoPartidoSetDAO;
 import dao.TorneoPartidoSetDAOMySQL;
+import dao.TorneoPartidoEnlaceDAO;
+import dao.TorneoPartidoEnlaceDAOMySQL;
 import dao.CorreccionResultadoTorneoDAO;
 import dao.CorreccionResultadoTorneoDAOMySQL;
 import dao.TorneoCategoriaDAOMySQL;
@@ -23,11 +25,15 @@ import negocio.PosicionPartidoSiguiente;
 import negocio.TipoSetTorneo;
 import negocio.TorneoPartido;
 import negocio.TorneoPartidoSet;
+import negocio.TorneoPartidoEnlace;
+import negocio.ResultadoOrigenPartido;
 
 public class ResultadoPartidoTorneoService {
 
     private final TorneoPartidoDAO partidoDAO;
     private final TorneoPartidoSetDAO setDAO;
+    private final TorneoPartidoEnlaceDAO enlaceDAO =
+            new TorneoPartidoEnlaceDAOMySQL();
     private final CorreccionResultadoTorneoDAO correccionDAO =
             new CorreccionResultadoTorneoDAOMySQL();
 
@@ -79,6 +85,7 @@ public class ResultadoPartidoTorneoService {
                 partidoDAO.guardar(conexion, partido);
 
                 avanzarGanadora(conexion, partido);
+                avanzarEnlaces(conexion, partido);
                 conexion.commit();
             } catch (RuntimeException | SQLException exception) {
                 rollbackSeguro(conexion, exception);
@@ -120,6 +127,8 @@ public class ResultadoPartidoTorneoService {
                         : partido.getPareja2InscripcionId();
                 corregirAvance(conexion, partido,
                         ganadoraAnterior, ganadoraNueva);
+                corregirEnlaces(conexion, partido,
+                        ganadoraAnterior, ganadoraNueva);
                 setDAO.reemplazarPorPartido(conexion, partidoId, sets);
                 partido.setSets(sets);
                 partido.setGanadoraInscripcionId(ganadoraNueva);
@@ -148,9 +157,12 @@ public class ResultadoPartidoTorneoService {
                 partido.getTorneoCategoriaId());
         var torneo = categoria == null ? null
                 : new TorneoDAOMySQL().buscar(categoria.getTorneoId());
-        if (torneo == null || torneo.getEstado() != EstadoTorneo.EN_CURSO) {
+        if (torneo == null
+                || (torneo.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA
+                    && torneo.getEstado() != EstadoTorneo.EN_CURSO)) {
             throw new IllegalArgumentException(
-                    "Solo pueden corregirse resultados de un torneo en curso.");
+                    "Solo pueden corregirse resultados con las inscripciones "
+                            + "cerradas o con el torneo en curso.");
         }
     }
 
@@ -316,6 +328,109 @@ public class ResultadoPartidoTorneoService {
             throw new IllegalArgumentException(
                     "El partido debe estar programado o en curso.");
         }
+    }
+
+    private void avanzarEnlaces(
+            Connection conexion,
+            TorneoPartido partido) {
+        List<TorneoPartidoEnlace> enlaces = enlaceDAO.listarPorOrigen(
+                conexion, partido.getId());
+        if (enlaces.isEmpty()) return;
+        Long ganadora = partido.getGanadoraInscripcionId();
+        Long perdedora = perdedora(partido, ganadora);
+        for (TorneoPartidoEnlace enlace : enlaces) {
+            Long clasificada = enlace.resultadoOrigen()
+                    == ResultadoOrigenPartido.GANADOR
+                            ? ganadora : perdedora;
+            actualizarDestinoEnlace(conexion, enlace, null, clasificada);
+        }
+    }
+
+    private void corregirEnlaces(
+            Connection conexion,
+            TorneoPartido partido,
+            Long ganadoraAnterior,
+            Long ganadoraNueva) {
+        List<TorneoPartidoEnlace> enlaces = enlaceDAO.listarPorOrigen(
+                conexion, partido.getId());
+        if (enlaces.isEmpty()) return;
+        Long perdedoraAnterior = perdedora(partido, ganadoraAnterior);
+        Long perdedoraNueva = perdedora(partido, ganadoraNueva);
+        for (TorneoPartidoEnlace enlace : enlaces) {
+            Long anterior = enlace.resultadoOrigen()
+                    == ResultadoOrigenPartido.GANADOR
+                            ? ganadoraAnterior : perdedoraAnterior;
+            Long nueva = enlace.resultadoOrigen()
+                    == ResultadoOrigenPartido.GANADOR
+                            ? ganadoraNueva : perdedoraNueva;
+            actualizarDestinoEnlace(conexion, enlace, anterior, nueva);
+        }
+    }
+
+    private void actualizarDestinoEnlace(
+            Connection conexion,
+            TorneoPartidoEnlace enlace,
+            Long valorAnterior,
+            Long valorNuevo) {
+        TorneoPartido destino = partidoDAO.buscarParaActualizar(
+                conexion, enlace.partidoDestinoId());
+        if (destino == null) {
+            throw new IllegalStateException(
+                    "No se encontro el partido de destino del grupo.");
+        }
+        if (destino.getEstado() != EstadoPartidoTorneo.PENDIENTE
+                || destino.estaProgramado()
+                || destino.getGanadoraInscripcionId() != null
+                || !destino.getSets().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "No puede modificarse el cruce porque un partido "
+                            + "de definicion ya fue programado o disputado.");
+        }
+        if (enlace.posicionDestino()
+                == PosicionPartidoSiguiente.PAREJA_1) {
+            validarValorAnterior(destino.getPareja1InscripcionId(),
+                    valorAnterior, valorNuevo);
+            destino.setPareja1InscripcionId(valorNuevo);
+        } else if (enlace.posicionDestino()
+                == PosicionPartidoSiguiente.PAREJA_2) {
+            validarValorAnterior(destino.getPareja2InscripcionId(),
+                    valorAnterior, valorNuevo);
+            destino.setPareja2InscripcionId(valorNuevo);
+        } else {
+            throw new IllegalStateException(
+                    "El enlace no tiene una posicion de destino valida.");
+        }
+        partidoDAO.guardar(conexion, destino);
+    }
+
+    private void validarValorAnterior(
+            Long actual,
+            Long anterior,
+            Long nuevo) {
+        if (anterior == null) {
+            validarDestino(actual, nuevo);
+            return;
+        }
+        if (actual != null && !actual.equals(anterior)) {
+            throw new IllegalArgumentException(
+                    "La posicion del partido de definicion fue modificada "
+                            + "por otro proceso.");
+        }
+    }
+
+    private Long perdedora(TorneoPartido partido, Long ganadora) {
+        if (ganadora == null || !partido.tieneDosParejas()) {
+            throw new IllegalArgumentException(
+                    "No se puede determinar la pareja perdedora.");
+        }
+        if (ganadora.equals(partido.getPareja1InscripcionId())) {
+            return partido.getPareja2InscripcionId();
+        }
+        if (ganadora.equals(partido.getPareja2InscripcionId())) {
+            return partido.getPareja1InscripcionId();
+        }
+        throw new IllegalArgumentException(
+                "La pareja ganadora no pertenece al partido.");
     }
 
     private void avanzarGanadora(

@@ -29,6 +29,8 @@ public interface TorneoPartidoDAO {
     List<TorneoPartido> listarPorFecha(LocalDate fecha);
 
     boolean existeCuadroPorCategoria(long categoriaId);
+    boolean existenPartidosDeGrupos(Connection conexion, long categoriaId);
+    List<TorneoPartido> listarPorGrupo(long grupoId);
 
     void eliminarCuadroPorCategoria(
             Connection conexion,
