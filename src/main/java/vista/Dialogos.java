@@ -6,6 +6,8 @@ import java.util.Optional;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Modality;
@@ -132,13 +134,54 @@ public final class Dialogos {
         mostrar(Alert.AlertType.INFORMATION, titulo, mensaje, "dialog-info");
     }
 
-    private static void mostrar(Alert.AlertType tipo, String titulo, String mensaje, String clase) {
-        ButtonType cerrar = new ButtonType("ENTENDIDO", ButtonBar.ButtonData.OK_DONE);
-        Alert alerta = new Alert(tipo, mensaje, cerrar);
+    private static void mostrar(Alert.AlertType tipo, String titulo,
+            String mensaje, String clase) {
+        ButtonType cerrar = new ButtonType("ENTENDIDO",
+                ButtonBar.ButtonData.OK_DONE);
+        Alert alerta = new Alert(tipo, "", cerrar);
         alerta.setTitle(titulo);
         alerta.setHeaderText(titulo);
         alerta.setGraphic(null);
+
+        Label contenido = new Label(mensaje == null ? "" : mensaje);
+        contenido.setWrapText(true);
+        contenido.setMaxWidth(Double.MAX_VALUE);
+        contenido.setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+        contenido.setStyle("-fx-text-fill:#eaf4f8;"
+                + "-fx-font-size:13px;-fx-line-spacing:3px;"
+                + "-fx-padding:4 8 4 4;");
+
+        int cantidadLineas = mensaje == null || mensaje.isBlank()
+                ? 1 : mensaje.split("\\R", -1).length;
+        boolean mensajeLargo = cantidadLineas > 7
+                || (mensaje != null && mensaje.length() > 520);
+
+        if (mensajeLargo) {
+            ScrollPane desplazamiento = new ScrollPane(contenido);
+            desplazamiento.setFitToWidth(true);
+            desplazamiento.setHbarPolicy(
+                    ScrollPane.ScrollBarPolicy.NEVER);
+            desplazamiento.setPrefViewportWidth(620);
+            desplazamiento.setPrefViewportHeight(300);
+            desplazamiento.setMaxHeight(340);
+            desplazamiento.setStyle("-fx-background:#0b1821;"
+                    + "-fx-background-color:#0b1821;"
+                    + "-fx-border-color:#315f79;"
+                    + "-fx-border-radius:8;"
+                    + "-fx-background-radius:8;");
+            alerta.getDialogPane().setContent(desplazamiento);
+            alerta.getDialogPane().setPrefWidth(700);
+        } else {
+            contenido.setPrefWidth(520);
+            alerta.getDialogPane().setContent(contenido);
+            alerta.getDialogPane().setPrefWidth(600);
+        }
+
         preparar(alerta, clase);
+        javafx.scene.Node botonCerrar = alerta.getDialogPane()
+                .lookupButton(cerrar);
+        botonCerrar.getStyleClass().add("dialog-action-primary");
+        alerta.setResizable(true);
         alerta.showAndWait();
     }
 }

@@ -23,6 +23,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import negocio.CrucePropuestoTorneo;
 import negocio.PropuestaEtapaEliminatoria;
+import servicio.ValidadorEstructuraEliminatoriaService;
 import vista.Dialogos;
 import vista.Navegacion;
 
@@ -38,6 +39,8 @@ public class EstructuraManualTorneoDialog {
     private final VBox filas = new VBox(10);
     private final List<Fila> ediciones = new ArrayList<>();
     private final Label estado = etiqueta("", "#d7e4e9", 12, true);
+    private final ValidadorEstructuraEliminatoriaService validador =
+            new ValidadorEstructuraEliminatoriaService();
     private Button aplicar;
 
     public EstructuraManualTorneoDialog(
@@ -159,7 +162,12 @@ public class EstructuraManualTorneoDialog {
         Set<String> ganadores = new LinkedHashSet<>();
         for (Fila fila : ediciones) {
             String clave = fila.clave();
-            if (!claves.add(clave)) errores.add("Partido repetido: " + clave + ".");
+            if (!claves.add(clave)) {
+                errores.add("PARTIDO REPETIDO:\n"
+                        + describirClaveAmigable(clave)
+                        + " aparece mas de una vez dentro de la misma llave.\n"
+                        + "Cambia el orden de una de las tarjetas.");
+            }
             ganadores.add(fila.referenciaGanador());
             if (fila.p1.getValue() == null || fila.p2.getValue() == null) {
                 errores.add(clave + " tiene una plaza sin asignar.");
@@ -186,8 +194,12 @@ public class EstructuraManualTorneoDialog {
             for (String origen : List.of(fila.p1.getValue(), fila.p2.getValue())) {
                 if (origen != null && origen.startsWith("Ganador ")
                         && !ganadores.contains(origen)) {
-                    errores.add(fila.clave() + " usa un ganador inexistente: "
-                            + origen + ".");
+                    errores.add("ORIGEN INEXISTENTE:\n"
+                            + describirClaveAmigable(fila.clave())
+                            + " intenta usar " + describirGanadorAmigable(origen)
+                            + ", pero ese partido ya no existe en la llave.\n"
+                            + "Selecciona otro origen o corrige el orden del "
+                            + "partido de origen.");
                 }
                 if (origen != null && origen.equals(fila.referenciaGanador())) {
                     errores.add(fila.clave() + " se referencia a si mismo.");
@@ -197,6 +209,10 @@ public class EstructuraManualTorneoDialog {
         long finales = ediciones.stream()
                 .filter(f -> "Final".equals(f.instancia.getValue())).count();
         if (finales != 1) errores.add("Debe existir exactamente una final.");
+        if (errores.isEmpty()) {
+            errores.addAll(validador.validar(construirResultado(),
+                    propuesta.getClasificados()));
+        }
         return errores.stream().distinct().toList();
     }
 
@@ -207,6 +223,25 @@ public class EstructuraManualTorneoDialog {
                         .thenComparingInt(CrucePropuestoTorneo::getOrden))
                 .toList();
         return new ArrayList<>(resultado);
+    }
+
+    private String describirGanadorAmigable(String referencia) {
+        if (referencia == null || !referencia.startsWith("Ganador ")) {
+            return referencia == null ? "un ganador sin identificar"
+                    : referencia;
+        }
+        return "el ganador de " + describirClaveAmigable(
+                referencia.substring("Ganador ".length()));
+    }
+
+    private String describirClaveAmigable(String clave) {
+        if (clave == null || clave.isBlank()) {
+            return "un partido sin identificar";
+        }
+        int separador = clave.lastIndexOf(" #");
+        if (separador < 0) return clave;
+        return clave.substring(0, separador) + " (Partido "
+                + clave.substring(separador + 2) + ")";
     }
 
     private String mostrar(String referencia) {

@@ -19,6 +19,8 @@ import negocio.TorneoPartido;
 
 public class ConfirmacionPropuestaEliminatoriaService {
     private final TorneoPartidoDAO partidoDAO = new TorneoPartidoDAOMySQL();
+    private final ValidadorEstructuraEliminatoriaService validador =
+            new ValidadorEstructuraEliminatoriaService();
 
     public List<TorneoPartido> confirmar(long categoriaId,
             PropuestaEtapaEliminatoria propuesta) {
@@ -152,6 +154,13 @@ public class ConfirmacionPropuestaEliminatoriaService {
         if (categoriaId <= 0 || propuesta == null || !propuesta.isValida()) {
             throw new IllegalArgumentException(
                     "La categoria y una propuesta valida son obligatorias.");
+        }
+        List<String> errores = validador.validar(propuesta.getCruces(),
+                propuesta.getClasificados());
+        if (!errores.isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La estructura eliminatoria no es valida: "
+                    + String.join(" ", errores));
         }
     }
 
