@@ -30,27 +30,59 @@ import negocio.ResultadoOrigenPartido;
 
 public class ResultadoPartidoTorneoService {
 
+    @FunctionalInterface
+    interface ProveedorConexionResultado {
+        Connection obtener() throws SQLException;
+    }
+
+    @FunctionalInterface
+    interface ValidadorEstadoTorneo {
+        void validar(TorneoPartido partido);
+    }
+
     private final TorneoPartidoDAO partidoDAO;
     private final TorneoPartidoSetDAO setDAO;
-    private final TorneoPartidoEnlaceDAO enlaceDAO =
-            new TorneoPartidoEnlaceDAOMySQL();
-    private final CorreccionResultadoTorneoDAO correccionDAO =
-            new CorreccionResultadoTorneoDAOMySQL();
+    private final TorneoPartidoEnlaceDAO enlaceDAO;
+    private final CorreccionResultadoTorneoDAO correccionDAO;
+    private final ProveedorConexionResultado proveedorConexion;
+    private final ValidadorEstadoTorneo validadorEstadoTorneo;
 
     public ResultadoPartidoTorneoService() {
         this(new TorneoPartidoDAOMySQL(),
-                new TorneoPartidoSetDAOMySQL());
+                new TorneoPartidoSetDAOMySQL(),
+                new TorneoPartidoEnlaceDAOMySQL(),
+                new CorreccionResultadoTorneoDAOMySQL(),
+                ConexionBD::obtenerConexion, null);
     }
 
     public ResultadoPartidoTorneoService(
             TorneoPartidoDAO partidoDAO,
             TorneoPartidoSetDAO setDAO) {
-        if (partidoDAO == null || setDAO == null) {
+        this(partidoDAO, setDAO,
+                new TorneoPartidoEnlaceDAOMySQL(),
+                new CorreccionResultadoTorneoDAOMySQL(),
+                ConexionBD::obtenerConexion, null);
+    }
+
+    ResultadoPartidoTorneoService(
+            TorneoPartidoDAO partidoDAO,
+            TorneoPartidoSetDAO setDAO,
+            TorneoPartidoEnlaceDAO enlaceDAO,
+            CorreccionResultadoTorneoDAO correccionDAO,
+            ProveedorConexionResultado proveedorConexion,
+            ValidadorEstadoTorneo validadorEstadoTorneo) {
+        if (partidoDAO == null || setDAO == null || enlaceDAO == null
+                || correccionDAO == null || proveedorConexion == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de resultados no pueden ser nulas.");
         }
         this.partidoDAO = partidoDAO;
         this.setDAO = setDAO;
+        this.enlaceDAO = enlaceDAO;
+        this.correccionDAO = correccionDAO;
+        this.proveedorConexion = proveedorConexion;
+        this.validadorEstadoTorneo = validadorEstadoTorneo == null
+                ? this::validarTorneoEnCursoReal : validadorEstadoTorneo;
     }
 
     public TorneoPartido registrarResultado(
@@ -64,7 +96,7 @@ public class ResultadoPartidoTorneoService {
         }
         int ladoGanador = determinarLadoGanador(sets);
 
-        try (Connection conexion = ConexionBD.obtenerConexion()) {
+        try (Connection conexion = proveedorConexion.obtener()) {
             conexion.setAutoCommit(false);
             try {
                 TorneoPartido partido = partidoDAO.buscarParaActualizar(
@@ -113,7 +145,7 @@ public class ResultadoPartidoTorneoService {
         }
         int ladoGanador = determinarLadoGanador(sets);
         String motivoLimpio = validarMotivo(motivo);
-        try (Connection conexion = ConexionBD.obtenerConexion()) {
+        try (Connection conexion = proveedorConexion.obtener()) {
             conexion.setAutoCommit(false);
             try {
                 TorneoPartido partido = partidoDAO.buscarParaActualizar(
@@ -153,6 +185,10 @@ public class ResultadoPartidoTorneoService {
     }
 
     private void validarTorneoEnCurso(TorneoPartido partido) {
+        validadorEstadoTorneo.validar(partido);
+    }
+
+    private void validarTorneoEnCursoReal(TorneoPartido partido) {
         var categoria = new TorneoCategoriaDAOMySQL().buscar(
                 partido.getTorneoCategoriaId());
         var torneo = categoria == null ? null

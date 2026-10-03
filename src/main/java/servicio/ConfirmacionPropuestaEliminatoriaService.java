@@ -18,14 +18,39 @@ import negocio.PropuestaEtapaEliminatoria;
 import negocio.TorneoPartido;
 
 public class ConfirmacionPropuestaEliminatoriaService {
-    private final TorneoPartidoDAO partidoDAO = new TorneoPartidoDAOMySQL();
-    private final ValidadorEstructuraEliminatoriaService validador =
-            new ValidadorEstructuraEliminatoriaService();
+    @FunctionalInterface
+    interface ProveedorConexion {
+        Connection obtener() throws SQLException;
+    }
+
+    private final TorneoPartidoDAO partidoDAO;
+    private final ValidadorEstructuraEliminatoriaService validador;
+    private final ProveedorConexion proveedorConexion;
+
+    public ConfirmacionPropuestaEliminatoriaService() {
+        this(new TorneoPartidoDAOMySQL(),
+                new ValidadorEstructuraEliminatoriaService(),
+                ConexionBD::obtenerConexion);
+    }
+
+    ConfirmacionPropuestaEliminatoriaService(
+            TorneoPartidoDAO partidoDAO,
+            ValidadorEstructuraEliminatoriaService validador,
+            ProveedorConexion proveedorConexion) {
+        if (partidoDAO == null || validador == null
+                || proveedorConexion == null) {
+            throw new IllegalArgumentException(
+                    "Las dependencias de confirmacion son obligatorias.");
+        }
+        this.partidoDAO = partidoDAO;
+        this.validador = validador;
+        this.proveedorConexion = proveedorConexion;
+    }
 
     public List<TorneoPartido> confirmar(long categoriaId,
             PropuestaEtapaEliminatoria propuesta) {
         validarEntrada(categoriaId, propuesta);
-        try (Connection conexion = ConexionBD.obtenerConexion()) {
+        try (Connection conexion = proveedorConexion.obtener()) {
             conexion.setAutoCommit(false);
             try {
                 validarSinCuadro(conexion, categoriaId);
@@ -35,7 +60,7 @@ public class ConfirmacionPropuestaEliminatoriaService {
                 for (int i = cruces.size() - 1; i >= 0; i--) {
                     CrucePropuestoTorneo cruce = cruces.get(i);
                     TorneoPartido partido = crearPartido(categoriaId, cruce,
-                            participantes, creados);
+                            participantes);
                     partidoDAO.guardar(conexion, partido);
                     creados.put(clave(cruce), partido);
                 }
@@ -56,8 +81,8 @@ public class ConfirmacionPropuestaEliminatoriaService {
     }
 
     private TorneoPartido crearPartido(long categoriaId,
-            CrucePropuestoTorneo cruce, Map<String, Long> participantes,
-            Map<String, TorneoPartido> creados) {
+            CrucePropuestoTorneo cruce,
+            Map<String, Long> participantes) {
         TorneoPartido partido = new TorneoPartido();
         partido.setTorneoCategoriaId(categoriaId);
         partido.setFase(fase(cruce.getInstancia()));
