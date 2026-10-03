@@ -283,6 +283,24 @@ public class UsuarioDAOMySQL implements UsuarioDAO {
     }
 
     @Override
+    public List<Usuario> listarPersonal() {
+        String sql = consultaBase()
+                + " WHERE rol IN ('ADMINISTRADOR', 'OPERADOR') "
+                + "ORDER BY activo DESC, nombre_usuario";
+        List<Usuario> usuarios = new ArrayList<>();
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet resultado = sentencia.executeQuery()) {
+            while (resultado.next()) usuarios.add(convertirResultado(resultado));
+            return usuarios;
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron recuperar los usuarios del personal.",
+                    exception);
+        }
+    }
+
+    @Override
     public boolean existeNombreUsuario(
             String nombreUsuario,
             long usuarioExcluidoId) {

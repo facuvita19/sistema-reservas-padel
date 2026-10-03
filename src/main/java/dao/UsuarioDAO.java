@@ -43,6 +43,12 @@ public interface UsuarioDAO {
 
     List<Usuario> listar();
 
+    default List<Usuario> listarPersonal() {
+        return listar().stream()
+                .filter(Usuario::esPersonalDelComplejo)
+                .toList();
+    }
+
     boolean existeNombreUsuario(
             String nombreUsuario,
             long usuarioExcluidoId);

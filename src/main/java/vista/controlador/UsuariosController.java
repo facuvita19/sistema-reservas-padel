@@ -16,15 +16,18 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import negocio.RolUsuario;
 import negocio.Usuario;
 import servicio.UsuarioService;
@@ -49,8 +52,12 @@ public class UsuariosController {
     @FXML private TableColumn<Usuario, Boolean> columnaActivo;
     @FXML private TableColumn<Usuario, LocalDateTime> columnaFecha;
     @FXML private Label tituloFormulario;
+    @FXML private Label subtituloFormulario;
+    @FXML private Label insigniaEstadoUsuario;
+    @FXML private Label etiquetaPasswordEdicion;
     @FXML private TextField campoNombreUsuario;
     @FXML private ComboBox<RolUsuario> comboRol;
+    @FXML private VBox contenedorPasswordAlta;
     @FXML private PasswordField campoPassword;
     @FXML private PasswordField campoConfirmarPassword;
     @FXML private Label etiquetaAyudaPassword;
@@ -78,14 +85,31 @@ public class UsuariosController {
         columnaFecha.setCellValueFactory(new PropertyValueFactory<>("fechaCreacion"));
 
         columnaActivo.setCellFactory(columna -> new TableCell<>() {
-            @Override
-            protected void updateItem(Boolean activo, boolean vacia) {
+            private final Label insignia = new Label();
+            { insignia.getStyleClass().add("user-status-badge"); }
+            @Override protected void updateItem(Boolean activo, boolean vacia) {
                 super.updateItem(activo, vacia);
-                setText(vacia || activo == null ? null : activo ? "Activo" : "Inactivo");
-                getStyleClass().removeAll("user-status-active", "user-status-inactive");
-                if (!vacia && activo != null) {
-                    getStyleClass().add(activo ? "user-status-active" : "user-status-inactive");
-                }
+                if (vacia || activo == null) { setGraphic(null); return; }
+                insignia.setText(activo ? "ACTIVO" : "INACTIVO");
+                insignia.getStyleClass().removeAll(
+                        "user-status-active", "user-status-inactive");
+                insignia.getStyleClass().add(activo
+                        ? "user-status-active" : "user-status-inactive");
+                setGraphic(insignia);
+            }
+        });
+        columnaRol.setCellFactory(columna -> new TableCell<>() {
+            private final Label insignia = new Label();
+            { insignia.getStyleClass().add("user-role-badge"); }
+            @Override protected void updateItem(RolUsuario rol, boolean vacia) {
+                super.updateItem(rol, vacia);
+                if (vacia || rol == null) { setGraphic(null); return; }
+                insignia.setText(rol.toString().toUpperCase(Locale.ROOT));
+                insignia.getStyleClass().removeAll(
+                        "user-role-admin", "user-role-operator");
+                insignia.getStyleClass().add(rol == RolUsuario.ADMINISTRADOR
+                        ? "user-role-admin" : "user-role-operator");
+                setGraphic(insignia);
             }
         });
         columnaFecha.setCellFactory(columna -> new TableCell<>() {
@@ -95,10 +119,45 @@ public class UsuariosController {
                 setText(vacia || fecha == null ? null : fecha.format(FORMATO_FECHA));
             }
         });
+        tablaUsuarios.setRowFactory(tabla -> {
+            TableRow<Usuario> fila = new TableRow<>();
+            fila.itemProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, fila.getItem()));
+            return fila;
+        });
+        tablaUsuarios.setOnMouseClicked(evento -> {
+            if (clicEnFondoTabla(evento.getTarget())) nuevoUsuario();
+        });
+        tablaUsuarios.setOnKeyPressed(evento -> {
+            if (evento.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                nuevoUsuario();
+                evento.consume();
+            }
+        });
         tablaUsuarios.getSelectionModel().selectedItemProperty()
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) mostrarDetalle(actual);
                 });
+    }
+
+    private void actualizarClaseFila(TableRow<Usuario> fila, Usuario usuario) {
+        fila.getStyleClass().removeAll(
+                "user-row-inactive", "user-row-selected");
+        if (usuario == null || fila.isEmpty()) return;
+        if (!usuario.isActivo()) fila.getStyleClass().add("user-row-inactive");
+        if (fila.isSelected()) fila.getStyleClass().add("user-row-selected");
+    }
+
+    private boolean clicEnFondoTabla(Object objetivo) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null && actual != tablaUsuarios) {
+            if (actual instanceof TableRow<?> fila) return fila.isEmpty();
+            actual = actual.getParent();
+        }
+        return actual == tablaUsuarios;
     }
 
     private void configurarFiltros() {
@@ -132,7 +191,7 @@ public class UsuariosController {
     @FXML
     private void cargarUsuarios() {
         try {
-            usuarios.setAll(usuarioService.listar());
+            usuarios.setAll(usuarioService.listarPersonal());
             aplicarFiltros();
             mostrarInfo(usuarios.size() + " usuario(s) cargado(s).");
         } catch (RuntimeException exception) {
@@ -164,12 +223,20 @@ public class UsuariosController {
         usuarioSeleccionado = null;
         tablaUsuarios.getSelectionModel().clearSelection();
         tituloFormulario.setText("Nuevo usuario del personal");
+        subtituloFormulario.setText(
+                "Creá una cuenta individual para el personal.");
+        insigniaEstadoUsuario.setVisible(false);
+        insigniaEstadoUsuario.setManaged(false);
         campoNombreUsuario.clear();
         comboRol.setValue(RolUsuario.OPERADOR);
         campoPassword.clear();
         campoConfirmarPassword.clear();
+        mostrar(contenedorPasswordAlta, true);
+        mostrar(etiquetaPasswordEdicion, false);
         campoPassword.setDisable(false);
         campoConfirmarPassword.setDisable(false);
+        campoNombreUsuario.setDisable(false);
+        comboRol.setDisable(false);
         etiquetaAyudaPassword.setText("La contraseña es obligatoria y debe tener al menos 8 caracteres.");
         botonGuardar.setText("CREAR USUARIO");
         configurarBoton(botonRestablecer, false);
@@ -179,13 +246,37 @@ public class UsuariosController {
 
     private void mostrarDetalle(Usuario usuario) {
         usuarioSeleccionado = usuario;
-        tituloFormulario.setText("Editar usuario");
+        boolean protegida = "admin".equalsIgnoreCase(
+                usuario.getNombreUsuario());
+        tituloFormulario.setText(protegida
+                ? "Cuenta administrativa" : "Editar usuario");
+        subtituloFormulario.setText(protegida
+                ? "admin · Administrador\nCuenta principal del sistema"
+                : usuario.getNombreUsuario() + " · " + usuario.getRol()
+                        + (usuario.getFechaCreacion() == null ? ""
+                                : "\nCreado el " + usuario.getFechaCreacion()
+                                        .format(FORMATO_FECHA)));
+        insigniaEstadoUsuario.setText(protegida
+                ? "PROTEGIDA" : usuario.isActivo() ? "ACTIVO" : "INACTIVO");
+        insigniaEstadoUsuario.getStyleClass().removeAll(
+                "user-detail-protected", "user-detail-active",
+                "user-detail-inactive");
+        insigniaEstadoUsuario.getStyleClass().add(protegida
+                ? "user-detail-protected"
+                : usuario.isActivo() ? "user-detail-active"
+                        : "user-detail-inactive");
+        insigniaEstadoUsuario.setVisible(true);
+        insigniaEstadoUsuario.setManaged(true);
         campoNombreUsuario.setText(usuario.getNombreUsuario());
         comboRol.setValue(usuario.getRol());
         campoPassword.clear();
         campoConfirmarPassword.clear();
+        mostrar(contenedorPasswordAlta, false);
+        mostrar(etiquetaPasswordEdicion, true);
         campoPassword.setDisable(true);
         campoConfirmarPassword.setDisable(true);
+        campoNombreUsuario.setDisable(protegida);
+        comboRol.setDisable(protegida);
         etiquetaAyudaPassword.setText("Para cambiar la contraseña usá Restablecer contraseña.");
         botonGuardar.setText("GUARDAR CAMBIOS");
         configurarBoton(botonRestablecer, true);
@@ -196,9 +287,13 @@ public class UsuariosController {
 
         Usuario actual = Navegacion.getUsuarioActual();
         boolean propiaCuenta = actual != null && actual.getId() == usuario.getId();
-        botonEstado.setDisable(propiaCuenta && usuario.isActivo());
-        botonEstado.setTooltip(propiaCuenta && usuario.isActivo()
-                ? new Tooltip("No podés desactivar tu propia cuenta.") : null);
+        botonEstado.setDisable(protegida
+                || propiaCuenta && usuario.isActivo());
+        botonEstado.setTooltip(protegida
+                ? new Tooltip("La cuenta administrativa principal está protegida.")
+                : propiaCuenta && usuario.isActivo()
+                        ? new Tooltip("No podés desactivar tu propia cuenta.")
+                        : null);
         limpiarMensaje();
     }
 
@@ -307,6 +402,10 @@ dialogo.getDialogPane().setContent(panel);
         usuarios.stream().filter(u -> u.getId() == id).findFirst().ifPresent(u -> {
             tablaUsuarios.getSelectionModel().select(u); tablaUsuarios.scrollTo(u); mostrarDetalle(u);
         });
+    }
+    private void mostrar(Node nodo, boolean visible) {
+        nodo.setVisible(visible);
+        nodo.setManaged(visible);
     }
     private void configurarBoton(Button boton, boolean visible) { boton.setVisible(visible); boton.setManaged(visible); }
     @FXML private void volver() { Navegacion.mostrarDashboard(Navegacion.getUsuarioActual()); }

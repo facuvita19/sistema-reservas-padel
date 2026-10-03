@@ -1,1 +1,17 @@
 .user-filter-check{-fx-text-fill:#9cadaf;-fx-font-size:12px;-fx-cursor:hand}.user-filter-check .box{-fx-background-color:#17222c;-fx-background-radius:5;-fx-border-color:#354653;-fx-border-radius:5}.user-filter-check:selected .box{-fx-background-color:-color-principal;-fx-border-color:-color-principal-hover}.user-status-active{-fx-text-fill:#83bea6;-fx-font-weight:800}.user-status-inactive{-fx-text-fill:#c97f88;-fx-font-weight:800}.user-role-note{-fx-background-color:#17232d;-fx-background-radius:10;-fx-border-color:#30414e;-fx-border-radius:10;-fx-padding:13 15}.user-role-copy{-fx-text-fill:#91a4b1;-fx-font-size:12px;-fx-line-spacing:3px}.user-session-badge{-fx-background-color:#172630;-fx-background-radius:12;-fx-border-color:#304755;-fx-border-radius:12;-fx-text-fill:#9eb2bf;-fx-font-size:11px;-fx-font-weight:700;-fx-padding:7 11}.activate-button{-fx-pref-height:44;-fx-background-color:#234438;-fx-background-radius:10;-fx-border-color:#477664;-fx-border-radius:10;-fx-text-fill:#9ed1bc;-fx-font-weight:800;-fx-cursor:hand}.activate-button:hover{-fx-background-color:#2c5546;-fx-border-color:#67a48d}
+
+/* usuarios-modern-v2 */
+.users-root, .users-root .list-panel, .users-root .form-scroll, .users-root .form-scroll > .viewport, .users-root .form-card { -fx-background-color: #111417; }
+.user-detail-header { -fx-background-color: #181d21; -fx-background-radius: 11; -fx-border-color: #394249; -fx-border-radius: 11; -fx-padding: 12 14; }
+.user-detail-subtitle { -fx-text-fill: #9ca7ac; -fx-font-size: 11px; -fx-line-spacing: 2px; }
+.user-detail-status, .user-status-badge, .user-role-badge { -fx-background-radius: 10; -fx-border-radius: 10; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 4 8; -fx-alignment: CENTER; }
+.user-detail-active, .user-status-active { -fx-background-color: #1e3229; -fx-border-color: #4e8069; -fx-text-fill: #b9ddcc; }
+.user-detail-inactive, .user-status-inactive { -fx-background-color: #382326; -fx-border-color: #8b5058; -fx-text-fill: #efb5bc; }
+.user-detail-protected, .user-role-admin { -fx-background-color: -color-principal-transparente; -fx-border-color: -color-principal; -fx-text-fill: -color-principal-hover; }
+.user-role-operator { -fx-background-color: #292f33; -fx-border-color: #566168; -fx-text-fill: #d8dfe1; }
+.user-role-note { -fx-background-color: #1a1f23; -fx-border-color: #394249; }
+.user-session-badge { -fx-background-color: #1d2227; -fx-border-color: #3b454d; -fx-text-fill: #c7d0d3; }
+.user-password-note { -fx-background-color: #24251f; -fx-border-color: #625632; -fx-background-radius: 9; -fx-border-radius: 9; -fx-text-fill: #d6c07e; -fx-font-size: 11px; -fx-padding: 10 12; }
+.users-root .modern-table .table-row-cell.user-row-inactive { -fx-opacity: .58; }
+.users-root .modern-table .table-row-cell.user-row-selected { -fx-opacity: 1; -fx-background-color: #22292e; -fx-border-color: transparent transparent #343d42 -color-principal; -fx-border-width: 0 0 1 4; }
+.users-root .activate-button { -fx-background-color: #26543f; -fx-border-color: #4b866c; -fx-text-fill: #e9fff5; }

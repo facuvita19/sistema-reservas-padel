@@ -121,6 +121,7 @@ public class UsuarioService {
         validarIdentificadorPorRol(
                 usuario.getNombreUsuario(), usuario.getRol());
         validarVinculacion(usuario.getRol(), usuario.getClienteId());
+        protegerCuentaAdministrativaPrincipal(original, usuario);
         protegerUltimoAdministrador(
                 original, usuario.getRol(), usuario.isActivo());
 
@@ -228,6 +229,10 @@ public class UsuarioService {
         return usuarioDAO.listar();
     }
 
+    public List<Usuario> listarPersonal() {
+        return usuarioDAO.listarPersonal();
+    }
+
     private Usuario crearUsuario(
             String nombreUsuario,
             String password,
@@ -260,6 +265,26 @@ public class UsuarioService {
         if (nombreUsuario == null || nombreUsuario.isBlank()
                 || password == null || password.isBlank()) {
             throw new CredencialesInvalidasException();
+        }
+    }
+
+    private void protegerCuentaAdministrativaPrincipal(
+            Usuario original, Usuario modificado) {
+        if (!USUARIO_ADMIN.equalsIgnoreCase(
+                original.getNombreUsuario())) return;
+        if (!USUARIO_ADMIN.equalsIgnoreCase(
+                modificado.getNombreUsuario())) {
+            throw new IllegalArgumentException(
+                    "La cuenta administrativa principal no puede renombrarse.");
+        }
+        if (modificado.getRol() != RolUsuario.ADMINISTRADOR) {
+            throw new IllegalArgumentException(
+                    "La cuenta administrativa principal debe conservar "
+                            + "el rol Administrador.");
+        }
+        if (!modificado.isActivo()) {
+            throw new IllegalArgumentException(
+                    "La cuenta administrativa principal debe permanecer activa.");
         }
     }
 
