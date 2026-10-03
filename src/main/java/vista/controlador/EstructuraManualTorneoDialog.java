@@ -107,9 +107,7 @@ public class EstructuraManualTorneoDialog {
                 + "-fx-background-color:#08151e;"
                 + "-fx-border-color:transparent;");
 
-        LlaveGraficaTorneoView vistaLlave = new LlaveGraficaTorneoView(
-                propuesta, nombres);
-        javafx.scene.Node grafica = vistaLlave.crear();
+        javafx.scene.Node grafica = crearVistaGrafica();
         contenedorVistas.getChildren().setAll(grafica, scroll);
         grafica.setVisible(true);
         grafica.setManaged(true);
@@ -187,11 +185,417 @@ public class EstructuraManualTorneoDialog {
         actualizarOpciones();
     }
 
-    private void agregarFila(CrucePropuestoTorneo cruce) {
+    private javafx.scene.Node crearVistaGrafica() {
+        PropuestaEtapaEliminatoria temporal = new PropuestaEtapaEliminatoria();
+        temporal.setClasificados(propuesta.getClasificados());
+        temporal.setCruces(construirResultado());
+        return new LlaveGraficaTorneoView(temporal, nombres,
+                this::actualizarDesdeLlave,
+                this::intercambiarDesdeLlave,
+                this::agregarDesdeLlave,
+                this::eliminarDesdeLlave).crear();
+    }
+
+    private void agregarDesdeLlave() {
+        List<String> fasesDisponibles = INSTANCIAS.stream()
+                .filter(this::faseConCapacidad)
+                .toList();
+        if (fasesDisponibles.isEmpty()) {
+            Dialogos.informacion("Llave completa",
+                    "Todas las fases eliminatorias alcanzaron su cantidad "
+                    + "maxima de partidos. Para modificar la estructura, "
+                    + "edita o elimina un partido existente.");
+            return;
+        }
+
+        Dialog<ConfiguracionNuevoPartido> dialogoNuevo = new Dialog<>();
+        dialogoNuevo.setTitle("Agregar partido");
+        dialogoNuevo.setHeaderText("Agregar un partido a la llave");
+        ButtonType agregarTipo = new ButtonType("AGREGAR PARTIDO",
+                ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelarTipo = new ButtonType("CANCELAR",
+                ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialogoNuevo.getDialogPane().getButtonTypes().setAll(
+                agregarTipo, cancelarTipo);
+
+        ComboBox<String> fase = new ComboBox<>(
+                FXCollections.observableArrayList(fasesDisponibles));
+        fase.setValue(fasesDisponibles.contains(faseSugerida())
+                ? faseSugerida() : fasesDisponibles.get(0));
+        fase.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(String valor) {
+                return valor == null ? "" : textoCapacidadFase(valor);
+            }
+            @Override
+            public String fromString(String texto) {
+                return texto;
+            }
+        });
+        estiloCombo(fase, 370);
+        fase.setCellFactory(lista -> new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null
+                        ? null : textoCapacidadFase(valor));
+                setStyle(isSelected()
+                        ? "-fx-background-color:#315f79;"
+                            + "-fx-text-fill:#ffffff;-fx-padding:8 10;"
+                        : "-fx-background-color:#102532;"
+                            + "-fx-text-fill:#f4fbff;-fx-padding:8 10;");
+            }
+        });
+        fase.setButtonCell(new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null
+                        ? null : textoCapacidadFase(valor));
+                setStyle("-fx-background-color:#0a1922;"
+                        + "-fx-text-fill:#f4fbff;-fx-padding:6 9;");
+            }
+        });
+
+        ComboBox<Integer> rondaNueva = new ComboBox<>();
+        rondaNueva.setItems(FXCollections.observableArrayList(
+                java.util.stream.IntStream.rangeClosed(1, 10)
+                        .boxed().toList()));
+        estiloComboNumerico(rondaNueva, 130);
+
+        ComboBox<Integer> ordenNuevo = new ComboBox<>();
+        ordenNuevo.setItems(FXCollections.observableArrayList(
+                java.util.stream.IntStream.rangeClosed(1, 32)
+                        .boxed().toList()));
+        estiloComboNumerico(ordenNuevo, 130);
+
+        Label capacidad = etiqueta("", "#91d7f4", 12, true);
+        Runnable actualizarSugerencias = () -> {
+            String seleccionada = fase.getValue();
+            rondaNueva.setValue(rondaDeFase(seleccionada));
+            ordenNuevo.setValue(siguienteOrden(seleccionada));
+            capacidad.setText(descripcionCapacidad(seleccionada));
+        };
+        fase.valueProperty().addListener((o, anterior, actual) ->
+                actualizarSugerencias.run());
+        actualizarSugerencias.run();
+
+        Label ayuda = etiqueta(
+                "Selecciona una fase con lugares disponibles. La ronda y "
+                + "el numero se sugieren segun la estructura actual.",
+                "#d7e4e9", 13, true);
+        GridPane campos = new GridPane();
+        campos.setHgap(12);
+        campos.setVgap(12);
+        campos.add(etiqueta("FASE", "#91b3c3", 11, false), 0, 0);
+        campos.add(fase, 1, 0);
+        campos.add(etiqueta("RONDA", "#91b3c3", 11, false), 0, 1);
+        campos.add(rondaNueva, 1, 1);
+        campos.add(etiqueta("NUMERO DE PARTIDO", "#91b3c3", 11, false),
+                0, 2);
+        campos.add(ordenNuevo, 1, 2);
+
+        Label aviso = etiqueta(
+                "Las dos plazas se agregaran sin asignar y deberan "
+                + "completarse antes de aplicar la estructura.",
+                "#ffd58a", 12, true);
+        VBox contenidoNuevo = new VBox(13, ayuda, capacidad, campos, aviso);
+        contenidoNuevo.setPadding(new Insets(18));
+        contenidoNuevo.setStyle("-fx-background-color:#0b1821;");
+        dialogoNuevo.getDialogPane().setContent(contenidoNuevo);
+        dialogoNuevo.getDialogPane().setPrefWidth(680);
+        Dialogos.preparar(dialogoNuevo,
+                "dialog-tournament-bracket-manual");
+        vista.TemaDinamico.aplicar(dialogoNuevo.getDialogPane(),
+                Navegacion.getConfiguracionActual());
+        dialogoNuevo.setResultConverter(tipo -> tipo == agregarTipo
+                ? new ConfiguracionNuevoPartido(fase.getValue(),
+                        rondaNueva.getValue(), ordenNuevo.getValue())
+                : null);
+
+        ConfiguracionNuevoPartido configuracion = dialogoNuevo.showAndWait()
+                .orElse(null);
+        if (configuracion == null) return;
+        if (!faseConCapacidad(configuracion.fase())) {
+            Dialogos.error("Fase completa",
+                    mensajeFaseCompleta(configuracion.fase()));
+            return;
+        }
+        boolean repetido = ediciones.stream().anyMatch(f ->
+                configuracion.fase().equals(f.instancia.getValue())
+                && configuracion.orden().equals(f.orden.getValue()));
+        if (repetido) {
+            Dialogos.error("Partido repetido",
+                    configuracion.fase() + " (Partido "
+                    + configuracion.orden()
+                    + ") ya existe dentro de la llave.");
+            return;
+        }
+
+        if (configuracion.fase().startsWith("Acceso ")) {
+            desplazarRondasParaFasePrevia(configuracion.fase(),
+                    configuracion.ronda());
+        }
+        Fila nueva = agregarFila(null);
+        nueva.instancia.setValue(configuracion.fase());
+        nueva.ronda.setValue(configuracion.ronda());
+        nueva.orden.setValue(configuracion.orden());
+        nueva.p1.setValue(null);
+        nueva.p2.setValue(null);
+        actualizarOpciones();
+        refrescarVistaGrafica();
+    }
+
+    private void eliminarDesdeLlave(String clave) {
+        Fila encontrada = ediciones.stream()
+                .filter(f -> f.clave().equals(clave))
+                .findFirst().orElse(null);
+        if (encontrada == null) return;
+        ediciones.remove(encontrada);
+        filas.getChildren().remove(encontrada.raiz);
+        actualizarOpciones();
+        refrescarVistaGrafica();
+    }
+
+    private String faseSugerida() {
+        return INSTANCIAS.stream()
+                .filter(this::faseConCapacidad)
+                .filter(f -> !f.startsWith("Acceso"))
+                .findFirst().orElseGet(() ->
+                        INSTANCIAS.stream()
+                                .filter(this::faseConCapacidad)
+                                .findFirst().orElse("Cuartos"));
+    }
+
+    private boolean faseConCapacidad(String fase) {
+        Integer maximo = maximoPartidosFase(fase);
+        return maximo == null || contarPartidosFase(fase) < maximo;
+    }
+
+    private int contarPartidosFase(String fase) {
+        return (int) ediciones.stream()
+                .filter(f -> fase.equals(f.instancia.getValue())).count();
+    }
+
+    private Integer maximoPartidosFase(String fase) {
+        return switch (fase) {
+            case "Final" -> 1;
+            case "Semifinal" -> 2;
+            case "Cuartos" -> 4;
+            case "Octavos" -> 8;
+            case "Dieciseisavos" -> 16;
+            default -> null;
+        };
+    }
+
+    private String textoCapacidadFase(String fase) {
+        Integer maximo = maximoPartidosFase(fase);
+        if (maximo == null) return nombreVisibleFase(fase)
+                + " · capacidad variable";
+        return nombreVisibleFase(fase) + " · " + contarPartidosFase(fase)
+                + " de " + maximo + " partidos";
+    }
+
+    private String descripcionCapacidad(String fase) {
+        Integer maximo = maximoPartidosFase(fase);
+        if (maximo == null) {
+            return "Esta fase de acceso tiene capacidad variable segun "
+                    + "el tamaño del cuadro.";
+        }
+        int actuales = contarPartidosFase(fase);
+        int disponibles = Math.max(0, maximo - actuales);
+        return "Capacidad de " + fase + ": " + actuales + " de "
+                + maximo + " partidos. Lugares disponibles: "
+                + disponibles + ".";
+    }
+
+    private String mensajeFaseCompleta(String fase) {
+        Integer maximo = maximoPartidosFase(fase);
+        return "La llave ya contiene los " + maximo
+                + " partidos permitidos para " + fase
+                + ". Para modificar esta fase, edita o elimina uno de "
+                + "los partidos existentes.";
+    }
+
+    private int rondaDeFase(String instancia) {
+        return ediciones.stream()
+                .filter(f -> instancia.equals(f.instancia.getValue()))
+                .mapToInt(f -> f.ronda.getValue()).findFirst()
+                .orElseGet(() -> rondaNuevaParaFase(instancia));
+    }
+
+    private int rondaNuevaParaFase(String instancia) {
+        if (instancia.startsWith("Acceso ")) {
+            int numero = numeroFasePrevia(instancia);
+            int rondasPreviasAnteriores = ediciones.stream()
+                    .filter(f -> f.instancia.getValue().startsWith("Acceso "))
+                    .filter(f -> numeroFasePrevia(
+                            f.instancia.getValue()) < numero)
+                    .mapToInt(f -> f.ronda.getValue()).max().orElse(0);
+            return rondasPreviasAnteriores + 1;
+        }
+        java.util.Map<String, Integer> ordenFases = java.util.Map.of(
+                "Dieciseisavos", 6, "Octavos", 7, "Cuartos", 8,
+                "Semifinal", 9, "Final", 10);
+        int objetivo = ordenFases.getOrDefault(instancia, 8);
+        int anterior = ediciones.stream()
+                .filter(f -> ordenFases.getOrDefault(
+                        f.instancia.getValue(), 0) < objetivo)
+                .mapToInt(f -> f.ronda.getValue()).max().orElse(0);
+        return Math.max(1, Math.min(10, anterior + 1));
+    }
+
+    private void desplazarRondasParaFasePrevia(String fase, int ronda) {
+        boolean yaExiste = ediciones.stream()
+                .anyMatch(f -> fase.equals(f.instancia.getValue()));
+        if (yaExiste) return;
+        ediciones.stream()
+                .filter(f -> f.ronda.getValue() >= ronda)
+                .forEach(f -> f.ronda.setValue(f.ronda.getValue() + 1));
+    }
+
+    private int numeroFasePrevia(String fase) {
+        if (fase == null || !fase.startsWith("Acceso R")) return 0;
+        try {
+            return Integer.parseInt(fase.substring("Acceso R".length()));
+        } catch (NumberFormatException ex) {
+            return 0;
+        }
+    }
+
+    private String nombreVisibleFase(String fase) {
+        int numero = numeroFasePrevia(fase);
+        return numero > 0 ? "Fase previa " + numero : fase;
+    }
+
+    private int siguienteOrden(String instancia) {
+        return ediciones.stream()
+                .filter(f -> instancia.equals(f.instancia.getValue()))
+                .mapToInt(f -> f.orden.getValue()).max().orElse(0) + 1;
+    }
+
+    private void intercambiarDesdeLlave(String clave) {
+        Fila encontrada = ediciones.stream()
+                .filter(f -> f.clave().equals(clave))
+                .findFirst().orElse(null);
+        if (encontrada == null) return;
+        String primero = encontrada.p1.getValue();
+        encontrada.p1.setValue(encontrada.p2.getValue());
+        encontrada.p2.setValue(primero);
+    }
+
+    private void refrescarVistaGrafica() {
+        javafx.scene.Node anterior = contenedorVistas.getChildren().isEmpty()
+                ? null : contenedorVistas.getChildren().get(0);
+        ScrollPane scrollAnterior = buscarScrollGrafico(anterior);
+        double horizontal = scrollAnterior == null
+                ? 0.0 : scrollAnterior.getHvalue();
+        double vertical = scrollAnterior == null
+                ? 0.0 : scrollAnterior.getVvalue();
+
+        javafx.stage.Window ventana = dialogo.getDialogPane().getScene()
+                == null ? null
+                : dialogo.getDialogPane().getScene().getWindow();
+        double anchoVentana = ventana == null ? 0 : ventana.getWidth();
+        double altoVentana = ventana == null ? 0 : ventana.getHeight();
+        double posicionX = ventana == null ? 0 : ventana.getX();
+        double posicionY = ventana == null ? 0 : ventana.getY();
+        javafx.stage.Stage escenario = ventana instanceof javafx.stage.Stage
+                ? (javafx.stage.Stage) ventana : null;
+        if (escenario != null && anchoVentana > 0 && altoVentana > 0) {
+            escenario.setMinWidth(anchoVentana);
+            escenario.setMaxWidth(anchoVentana);
+            escenario.setMinHeight(altoVentana);
+            escenario.setMaxHeight(altoVentana);
+        }
+
+        contenedorVistas.setMinSize(
+                contenedorVistas.getWidth(), contenedorVistas.getHeight());
+        javafx.scene.Node nueva = crearVistaGrafica();
+        nueva.setOpacity(0);
+        if (contenedorVistas.getChildren().isEmpty()) {
+            contenedorVistas.getChildren().add(0, nueva);
+        } else {
+            contenedorVistas.getChildren().set(0, nueva);
+        }
+        restaurarVentana(ventana, anchoVentana, altoVentana,
+                posicionX, posicionY);
+
+        javafx.application.Platform.runLater(() -> {
+            restaurarVentana(ventana, anchoVentana, altoVentana,
+                    posicionX, posicionY);
+            ScrollPane nuevoScroll = buscarScrollGrafico(nueva);
+            if (nuevoScroll != null) {
+                nuevoScroll.setHvalue(horizontal);
+                nuevoScroll.setVvalue(vertical);
+            }
+            javafx.application.Platform.runLater(() -> {
+                restaurarVentana(ventana, anchoVentana, altoVentana,
+                        posicionX, posicionY);
+                if (nuevoScroll != null) {
+                    nuevoScroll.setHvalue(horizontal);
+                    nuevoScroll.setVvalue(vertical);
+                }
+                contenedorVistas.setMinSize(
+                        javafx.scene.layout.Region.USE_COMPUTED_SIZE,
+                        javafx.scene.layout.Region.USE_COMPUTED_SIZE);
+                nueva.setOpacity(1);
+                javafx.application.Platform.runLater(() -> {
+                    if (escenario != null) {
+                        escenario.setMinWidth(0);
+                        escenario.setMinHeight(0);
+                        escenario.setMaxWidth(Double.MAX_VALUE);
+                        escenario.setMaxHeight(Double.MAX_VALUE);
+                        restaurarVentana(escenario, anchoVentana,
+                                altoVentana, posicionX, posicionY);
+                    }
+                });
+            });
+        });
+    }
+
+    private void restaurarVentana(javafx.stage.Window ventana,
+            double ancho, double alto, double x, double y) {
+        if (ventana == null || ancho <= 0 || alto <= 0) return;
+        ventana.setWidth(ancho);
+        ventana.setHeight(alto);
+        ventana.setX(x);
+        ventana.setY(y);
+    }
+
+    private ScrollPane buscarScrollGrafico(javafx.scene.Node raiz) {
+        if (raiz == null) return null;
+        if (raiz instanceof ScrollPane scroll && scroll.isPannable()) {
+            return scroll;
+        }
+        if (raiz instanceof javafx.scene.Parent padre) {
+            for (javafx.scene.Node hijo : padre.getChildrenUnmodifiable()) {
+                ScrollPane encontrado = buscarScrollGrafico(hijo);
+                if (encontrado != null) return encontrado;
+            }
+        }
+        return null;
+    }
+
+    private void actualizarDesdeLlave(String clave,
+            LlaveGraficaTorneoView.CambioPlaza cambio) {
+        Fila encontrada = ediciones.stream()
+                .filter(f -> f.clave().equals(clave))
+                .findFirst().orElse(null);
+        if (encontrada == null) return;
+        if (cambio.posicion() == 1) {
+            encontrada.p1.setValue(cambio.referencia());
+        } else {
+            encontrada.p2.setValue(cambio.referencia());
+        }
+    }
+
+    private Fila agregarFila(CrucePropuestoTorneo cruce) {
         Fila fila = new Fila(cruce);
         ediciones.add(fila);
         filas.getChildren().add(fila.raiz);
         actualizarOpciones();
+        return fila;
     }
 
     private void quitar(Fila fila) {
@@ -403,6 +807,10 @@ public class EstructuraManualTorneoDialog {
         label.setStyle("-fx-text-fill:" + color + ";-fx-font-size:"
                 + tamano + "px;");
         return label;
+    }
+
+    private record ConfiguracionNuevoPartido(
+            String fase, Integer ronda, Integer orden) {
     }
 
     private final class Fila {

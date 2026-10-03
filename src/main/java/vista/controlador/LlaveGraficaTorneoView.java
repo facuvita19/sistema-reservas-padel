@@ -1,16 +1,28 @@
 package vista.controlador;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.collections.FXCollections;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -22,6 +34,7 @@ import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
 import javafx.scene.shape.Polygon;
 import javafx.scene.transform.Scale;
+import javafx.scene.input.ScrollEvent;
 import negocio.PropuestaEtapaEliminatoria;
 import negocio.visual.ConexionLlaveVisual;
 import negocio.visual.EstadoConexionLlave;
@@ -29,11 +42,13 @@ import negocio.visual.FaseLlaveVisual;
 import negocio.visual.LlaveTorneoVisual;
 import negocio.visual.PartidoLlaveVisual;
 import servicio.ConstructorLlaveTorneoVisualService;
+import vista.Dialogos;
+import vista.Navegacion;
 
 public class LlaveGraficaTorneoView {
-    private static final double ANCHO_TARJETA = 270;
-    private static final double ALTO_TARJETA = 126;
-    private static final double ANCHO_COLUMNA = 340;
+    private static final double ANCHO_TARJETA = 380;
+    private static final double ALTO_TARJETA = 150;
+    private static final double ANCHO_COLUMNA = 405;
     private static final double MARGEN_X = 28;
     private static final double Y_ENCABEZADO = 18;
     private static final double Y_INICIO = 88;
@@ -42,6 +57,10 @@ public class LlaveGraficaTorneoView {
 
     private final PropuestaEtapaEliminatoria propuesta;
     private final Map<String, String> nombres;
+    private final BiConsumer<String, CambioPlaza> alCambiarPlaza;
+    private final Consumer<String> alIntercambiarPartido;
+    private final Runnable alAgregarPartido;
+    private final Consumer<String> alEliminarPartido;
     private final ConstructorLlaveTorneoVisualService constructor =
             new ConstructorLlaveTorneoVisualService();
     private final Map<String, PosicionTarjeta> posiciones = new HashMap<>();
@@ -54,9 +73,17 @@ public class LlaveGraficaTorneoView {
     private boolean ajusteAutomatico = true;
 
     public LlaveGraficaTorneoView(PropuestaEtapaEliminatoria propuesta,
-            Map<String, String> nombres) {
+            Map<String, String> nombres,
+            BiConsumer<String, CambioPlaza> alCambiarPlaza,
+            Consumer<String> alIntercambiarPartido,
+            Runnable alAgregarPartido,
+            Consumer<String> alEliminarPartido) {
         this.propuesta = propuesta;
         this.nombres = new HashMap<>(nombres);
+        this.alCambiarPlaza = alCambiarPlaza;
+        this.alIntercambiarPartido = alIntercambiarPartido;
+        this.alAgregarPartido = alAgregarPartido;
+        this.alEliminarPartido = alEliminarPartido;
     }
 
     public Node crear() {
@@ -102,6 +129,19 @@ public class LlaveGraficaTorneoView {
                 + "-fx-border-color:#294351;"
                 + "-fx-border-radius:10;"
                 + "-fx-background-radius:10;");
+        scroll.addEventFilter(ScrollEvent.SCROLL, evento -> {
+            double delta = Math.abs(evento.getDeltaY()) > 0.01
+                    ? evento.getDeltaY() : evento.getDeltaX();
+            if (Math.abs(delta) < 0.01) return;
+            if (evento.isShiftDown()) {
+                double paso = delta > 0 ? -0.07 : 0.07;
+                scroll.setHvalue(limitar(scroll.getHvalue() + paso));
+            } else {
+                double paso = delta > 0 ? -0.07 : 0.07;
+                scroll.setVvalue(limitar(scroll.getVvalue() + paso));
+            }
+            evento.consume();
+        });
 
         Label porcentaje = new Label("100%");
         porcentaje.setMinWidth(54);
@@ -122,25 +162,32 @@ public class LlaveGraficaTorneoView {
                     contenidoEscalado, porcentaje);
         });
         ajustar.setOnAction(e -> {
-            ajusteAutomatico = true;
-            ajustar(scroll, contenidoEscalado, porcentaje);
+            ajusteAutomatico = false;
+            ajustar(scroll, contenidoEscalado, porcentaje, true);
         });
-        HBox herramientas = new HBox(8, ajustar, new Separator(),
-                reducir, porcentaje, aumentar);
+        Button agregarPartido = botonZoom("+  AGREGAR PARTIDO");
+        agregarPartido.setStyle("-fx-background-color:#245875;"
+                + "-fx-border-color:#65b9d7;-fx-border-radius:7;"
+                + "-fx-background-radius:7;-fx-text-fill:#ffffff;"
+                + "-fx-font-weight:900;-fx-padding:7 13;"
+                + "-fx-cursor:hand;");
+        agregarPartido.setOnAction(evento -> {
+            if (alAgregarPartido != null) alAgregarPartido.run();
+        });
+        HBox leyenda = crearLeyenda();
+        HBox herramientas = new HBox(12, agregarPartido,
+                new Separator(), ajustar, new Separator(),
+                reducir, porcentaje, aumentar, new Separator(), leyenda);
         herramientas.setAlignment(Pos.CENTER_LEFT);
         herramientas.setPadding(new Insets(8, 10, 8, 10));
         herramientas.setStyle("-fx-background-color:#0e202b;"
                 + "-fx-border-color:#294351;"
                 + "-fx-border-width:0 0 1 0;");
 
-        scroll.viewportBoundsProperty().addListener((o, a, b) -> {
-            if (ajusteAutomatico) {
-                Platform.runLater(() -> ajustar(scroll,
-                        contenidoEscalado, porcentaje));
-            }
+        Platform.runLater(() -> {
+            ajustar(scroll, contenidoEscalado, porcentaje, true);
+            ajusteAutomatico = false;
         });
-        Platform.runLater(() -> ajustar(scroll,
-                contenidoEscalado, porcentaje));
 
         BorderPane contenedor = new BorderPane(scroll);
         contenedor.setTop(herramientas);
@@ -150,6 +197,31 @@ public class LlaveGraficaTorneoView {
                 + "-fx-border-color:#294351;-fx-border-radius:10;"
                 + "-fx-background-radius:10;");
         return contenedor;
+    }
+
+    private HBox crearLeyenda() {
+        HBox leyenda = new HBox(12,
+                itemLeyenda("#65b9d7", "Valido"),
+                itemLeyenda("#e6b85c", "Requiere atencion"),
+                itemLeyenda("#e56d76", "Estructura invalida"));
+        leyenda.setAlignment(Pos.CENTER_LEFT);
+        return leyenda;
+    }
+
+    private HBox itemLeyenda(String color, String texto) {
+        Label punto = new Label("●");
+        punto.setStyle("-fx-text-fill:" + color
+                + ";-fx-font-size:14px;-fx-font-weight:900;");
+        Label descripcion = new Label(texto);
+        descripcion.setStyle("-fx-text-fill:#c7d8df;"
+                + "-fx-font-size:11px;-fx-font-weight:700;");
+        HBox item = new HBox(5, punto, descripcion);
+        item.setAlignment(Pos.CENTER_LEFT);
+        return item;
+    }
+
+    private double limitar(double valor) {
+        return Math.max(0, Math.min(1, valor));
     }
 
     private Button botonZoom(String texto) {
@@ -163,15 +235,17 @@ public class LlaveGraficaTorneoView {
     }
 
     private void ajustar(ScrollPane scroll, StackPane contenedor,
-            Label porcentaje) {
+            Label porcentaje, boolean volverAlInicio) {
         double disponibleX = Math.max(100,
                 scroll.getViewportBounds().getWidth() - 24);
         double nuevo = Math.min(1.0,
                 disponibleX / anchoTablero);
         nuevo = Math.max(0.72, nuevo);
         cambiarZoom(nuevo, contenedor, porcentaje);
-        scroll.setHvalue(0.5);
-        scroll.setVvalue(0.0);
+        if (volverAlInicio) {
+            scroll.setHvalue(0.5);
+            scroll.setVvalue(0.0);
+        }
     }
 
     private void cambiarZoom(double valor, StackPane contenedor,
@@ -220,48 +294,434 @@ public class LlaveGraficaTorneoView {
     }
 
     private StackPane crearTarjeta(PartidoLlaveVisual partido) {
-        Label cabecera = new Label(partido.fase().toUpperCase()
+        Label cabecera = new Label(nombreFase(partido.fase())
                 + "  ·  PARTIDO " + partido.orden());
         cabecera.setMaxWidth(Double.MAX_VALUE);
         cabecera.setPadding(new Insets(7, 10, 7, 10));
         cabecera.setStyle(estiloFase(partido.fase())
                 + "-fx-text-fill:#ffffff;-fx-font-size:11px;"
                 + "-fx-font-weight:900;-fx-background-radius:8 8 0 0;");
+        Button intercambiar = new Button("⇅  INTERCAMBIAR");
+        intercambiar.setFocusTraversable(false);
+        intercambiar.setStyle("-fx-background-color:rgba(7,16,24,0.35);"
+                + "-fx-border-color:rgba(255,255,255,0.25);"
+                + "-fx-border-radius:6;-fx-background-radius:6;"
+                + "-fx-text-fill:#eaf4f8;-fx-font-size:9px;"
+                + "-fx-font-weight:900;-fx-padding:3 7;"
+                + "-fx-cursor:hand;");
+        Button eliminar = new Button("ELIMINAR");
+        eliminar.setFocusTraversable(false);
+        eliminar.setStyle("-fx-background-color:rgba(80,30,36,0.72);"
+                + "-fx-border-color:#a95660;-fx-border-radius:6;"
+                + "-fx-background-radius:6;-fx-text-fill:#ffd7da;"
+                + "-fx-font-size:9px;-fx-font-weight:900;"
+                + "-fx-padding:3 7;-fx-cursor:hand;");
+        eliminar.setOnAction(evento -> confirmarEliminacion(partido));
+        HBox acciones = new HBox(5, intercambiar, eliminar);
+        acciones.setAlignment(Pos.CENTER_RIGHT);
+        StackPane encabezado = new StackPane(cabecera, acciones);
+        StackPane.setAlignment(cabecera, Pos.CENTER_LEFT);
+        StackPane.setAlignment(acciones, Pos.CENTER_RIGHT);
+        encabezado.setPadding(new Insets(0, 6, 0, 0));
 
-        Label uno = plaza(partido.plaza1().referencia(),
+        Label uno = plaza(partido.clave(), 1,
+                partido.plaza1().referencia(),
                 partido.plaza1().textoVisible());
-        Label dos = plaza(partido.plaza2().referencia(),
+        Label dos = plaza(partido.clave(), 2,
+                partido.plaza2().referencia(),
                 partido.plaza2().textoVisible());
+        intercambiar.setOnAction(evento -> {
+            if (alIntercambiarPartido != null) {
+                alIntercambiarPartido.accept(partido.clave());
+            }
+            intercambiarEnModelo(partido.clave());
+            String textoUno = uno.getText();
+            Tooltip tooltipUno = uno.getTooltip();
+            uno.setText(dos.getText());
+            uno.setTooltip(dos.getTooltip());
+            dos.setText(textoUno);
+            dos.setTooltip(tooltipUno);
+            dibujarConexiones(constructor.construir(propuesta));
+        });
         Label vs = new Label("VS");
         vs.setStyle("-fx-text-fill:#79a8bb;-fx-font-size:10px;"
                 + "-fx-font-weight:900;");
-        VBox contenido = new VBox(3, uno, vs, dos);
+        VBox contenido = new VBox(1, uno, vs, dos);
         contenido.setAlignment(Pos.CENTER_LEFT);
         contenido.setPadding(new Insets(9, 11, 10, 11));
 
-        VBox caja = new VBox(0, cabecera, contenido);
+        EstadoTarjeta estado = estadoTarjeta(partido);
+        VBox caja = new VBox(0, encabezado, contenido);
         caja.setPrefSize(ANCHO_TARJETA, ALTO_TARJETA);
         caja.setMaxSize(ANCHO_TARJETA, ALTO_TARJETA);
         caja.setStyle("-fx-background-color:#102532;"
-                + "-fx-border-color:#315f79;-fx-border-radius:9;"
-                + "-fx-background-radius:9;"
+                + "-fx-border-color:" + estado.color()
+                + ";-fx-border-width:" + estado.grosor()
+                + ";-fx-border-radius:9;-fx-background-radius:9;"
                 + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.30),"
                 + "10,0.12,0,3);");
+        if (estado.mensaje() != null) {
+            Tooltip problema = new Tooltip(estado.mensaje());
+            problema.setWrapText(true);
+            problema.setMaxWidth(480);
+            Tooltip.install(caja, problema);
+        }
         StackPane tarjeta = new StackPane(caja);
         tarjeta.setPrefSize(ANCHO_TARJETA, ALTO_TARJETA);
         return tarjeta;
     }
 
-    private Label plaza(String referencia, String texto) {
-        String visible = nombres.getOrDefault(referencia, texto);
+    private Label plaza(String partidoClave, int posicion,
+            String referencia, String texto) {
+        String nombreCompleto = nombres.get(referencia);
+        String visible = nombreCompleto == null ? texto : nombreCompleto;
         Label label = new Label(visible == null ? "Sin asignar" : visible);
         label.setWrapText(true);
+        label.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
         label.setMaxWidth(ANCHO_TARJETA - 24);
-        label.setPrefHeight(36);
-        label.setStyle("-fx-text-fill:"
+        label.setPrefWidth(ANCHO_TARJETA - 24);
+        label.setMinHeight(46);
+        label.setPrefHeight(46);
+        label.setMaxHeight(46);
+        String detalle = visible == null ? "Sin asignar" : visible;
+        if (nombreCompleto != null && referencia != null) {
+            detalle = referencia + " · " + nombreCompleto;
+        }
+        Tooltip tooltip = new Tooltip(detalle);
+        tooltip.setWrapText(true);
+        tooltip.setMaxWidth(520);
+        label.setTooltip(tooltip);
+        String estiloNormal = "-fx-text-fill:"
                 + (referencia == null ? "#ffd58a" : "#f4fbff")
-                + ";-fx-font-size:12px;-fx-font-weight:700;");
+                + ";-fx-font-size:12.5px;-fx-font-weight:700;"
+                + "-fx-background-color:rgba(255,255,255,0.035);"
+                + "-fx-border-color:transparent;-fx-border-radius:6;"
+                + "-fx-background-radius:6;-fx-padding:4 6;"
+                + "-fx-cursor:hand;";
+        String estiloActivo = "-fx-text-fill:#ffffff;"
+                + "-fx-font-size:12.5px;-fx-font-weight:800;"
+                + "-fx-background-color:#214b60;"
+                + "-fx-border-color:#91d7f4;-fx-border-radius:6;"
+                + "-fx-background-radius:6;-fx-padding:4 6;"
+                + "-fx-cursor:hand;";
+        label.setStyle(estiloNormal);
+        label.setOnMouseEntered(evento -> label.setStyle(estiloActivo));
+        label.setOnMouseExited(evento -> label.setStyle(estiloNormal));
+        label.setOnMouseClicked(evento -> {
+            label.setStyle(estiloActivo);
+            seleccionarOrigen(partidoClave, posicion, referencia, label);
+        });
         return label;
+    }
+
+    private void seleccionarOrigen(String partidoClave, int posicion,
+            String actual, Label etiquetaPlaza) {
+        Dialog<String> dialogo = new Dialog<>();
+        dialogo.setTitle("Cambiar participante");
+        dialogo.setHeaderText(tituloCambio(partidoClave, posicion));
+        ButtonType aplicar = new ButtonType("ASIGNAR",
+                ButtonBar.ButtonData.OK_DONE);
+        ButtonType limpiar = new ButtonType("LIMPIAR PLAZA",
+                ButtonBar.ButtonData.OTHER);
+        ButtonType cancelar = new ButtonType("CANCELAR",
+                ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialogo.getDialogPane().getButtonTypes().setAll(
+                aplicar, limpiar, cancelar);
+
+        Set<String> valores = opcionesValidas(partidoClave, actual);
+        ComboBox<String> selector = new ComboBox<>(
+                FXCollections.observableArrayList(valores));
+        selector.setValue(actual);
+        selector.setMaxWidth(Double.MAX_VALUE);
+        selector.setPrefWidth(620);
+        selector.setStyle("-fx-background-color:#0a1922;"
+                + "-fx-border-color:#3d6f88;-fx-border-radius:7;"
+                + "-fx-background-radius:7;-fx-mark-color:#91d7f4;"
+                + "-fx-text-fill:#f4fbff;-fx-padding:3 7;");
+        selector.setCellFactory(lista -> celdaOrigen(false));
+        selector.setButtonCell(celdaOrigen(true));
+
+        Label ayuda = new Label("Selecciona una opcion habilitada para esta "
+                + "fase. Se muestran solamente las parejas que ingresan en "
+                + "esta ronda y los ganadores de la ronda anterior.");
+        ayuda.setWrapText(true);
+        ayuda.setStyle("-fx-text-fill:#d7e4e9;-fx-font-size:13px;");
+        VBox contenido = new VBox(12, ayuda, selector);
+        contenido.setPadding(new Insets(16));
+        contenido.setStyle("-fx-background-color:#0b1821;");
+        dialogo.getDialogPane().setContent(contenido);
+        dialogo.getDialogPane().setPrefWidth(700);
+        Dialogos.preparar(dialogo, "dialog-tournament-bracket-manual");
+        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
+                Navegacion.getConfiguracionActual());
+        final String limpiarMarca = "__LIMPIAR_PLAZA__";
+        dialogo.setResultConverter(tipo -> {
+            if (tipo == aplicar) return selector.getValue();
+            if (tipo == limpiar) return limpiarMarca;
+            return null;
+        });
+        String elegido = dialogo.showAndWait().orElse(null);
+        if (elegido != null && alCambiarPlaza != null) {
+            String referenciaNueva = limpiarMarca.equals(elegido)
+                    ? null : elegido;
+            alCambiarPlaza.accept(partidoClave,
+                    new CambioPlaza(posicion, referenciaNueva));
+            actualizarPlazaEnModelo(partidoClave, posicion,
+                    referenciaNueva);
+            actualizarEtiquetaPlaza(etiquetaPlaza, referenciaNueva);
+            dibujarConexiones(constructor.construir(propuesta));
+        }
+    }
+
+    private void confirmarEliminacion(PartidoLlaveVisual partido) {
+        Dialog<ButtonType> dialogo = new Dialog<>();
+        dialogo.setTitle("Eliminar partido");
+        dialogo.setHeaderText("Eliminar " + partido.fase()
+                + " (Partido " + partido.orden() + ")");
+        ButtonType eliminar = new ButtonType("ELIMINAR PARTIDO",
+                ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType("CANCELAR",
+                ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialogo.getDialogPane().getButtonTypes().setAll(eliminar, cancelar);
+
+        long destinos = propuesta.getCruces().stream()
+                .flatMap(c -> java.util.stream.Stream.of(
+                        c.getParticipante1(), c.getParticipante2()))
+                .filter(java.util.Objects::nonNull)
+                .filter(("Ganador " + partido.clave())::equals)
+                .count();
+        String texto = destinos > 0
+                ? "El ganador de este partido alimenta " + destinos
+                    + " plaza(s). Si lo eliminas, esas plazas quedaran "
+                    + "sin un origen valido."
+                : "Este partido no alimenta ninguna plaza posterior.";
+        Label mensaje = new Label(texto
+                + "\n\nLa estructura debera quedar valida antes de aplicarla.");
+        mensaje.setWrapText(true);
+        mensaje.setStyle("-fx-text-fill:#eaf4f8;-fx-font-size:13px;"
+                + "-fx-line-spacing:3px;");
+        VBox contenido = new VBox(mensaje);
+        contenido.setPadding(new Insets(16));
+        contenido.setStyle("-fx-background-color:#0b1821;");
+        dialogo.getDialogPane().setContent(contenido);
+        dialogo.getDialogPane().setPrefWidth(610);
+        Dialogos.preparar(dialogo, "dialog-error");
+        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
+                Navegacion.getConfiguracionActual());
+        dialogo.setResultConverter(tipo -> tipo);
+        ButtonType resultado = dialogo.showAndWait().orElse(cancelar);
+        if (resultado == eliminar && alEliminarPartido != null) {
+            alEliminarPartido.accept(partido.clave());
+        }
+    }
+
+    private void actualizarPlazaEnModelo(String clavePartido,
+            int posicion, String referencia) {
+        var cruce = propuesta.getCruces().stream()
+                .filter(c -> (c.getInstancia() + " #" + c.getOrden())
+                        .equals(clavePartido))
+                .findFirst().orElse(null);
+        if (cruce == null) return;
+        if (posicion == 1) {
+            cruce.setParticipante1(referencia);
+        } else {
+            cruce.setParticipante2(referencia);
+        }
+    }
+
+    private void actualizarEtiquetaPlaza(Label etiqueta,
+            String referencia) {
+        String visible;
+        if (referencia == null || referencia.isBlank()) {
+            visible = "Sin asignar";
+        } else {
+            visible = nombres.getOrDefault(referencia,
+                    textoOrigen(referencia));
+        }
+        etiqueta.setText(visible);
+        String detalle = visible;
+        if (referencia != null && nombres.containsKey(referencia)) {
+            detalle = referencia + " · " + nombres.get(referencia);
+        }
+        Tooltip tooltip = new Tooltip(detalle);
+        tooltip.setWrapText(true);
+        tooltip.setMaxWidth(520);
+        etiqueta.setTooltip(tooltip);
+    }
+
+    private Set<String> opcionesValidas(String partidoClave,
+            String actual) {
+        Set<String> valores = new LinkedHashSet<>();
+        var destino = propuesta.getCruces().stream()
+                .filter(c -> (c.getInstancia() + " #" + c.getOrden())
+                        .equals(partidoClave))
+                .findFirst().orElse(null);
+        if (destino == null) {
+            if (actual != null) valores.add(actual);
+            return valores;
+        }
+
+        int rondaDestino = destino.getRonda();
+        int rondaAnterior = propuesta.getCruces().stream()
+                .mapToInt(c -> c.getRonda())
+                .filter(r -> r < rondaDestino)
+                .max().orElse(-1);
+
+        Set<String> clasificadosUsadosAntes = new LinkedHashSet<>();
+        propuesta.getCruces().stream()
+                .filter(c -> c.getRonda() < rondaDestino)
+                .flatMap(c -> java.util.stream.Stream.of(
+                        c.getParticipante1(), c.getParticipante2()))
+                .filter(java.util.Objects::nonNull)
+                .filter(r -> !r.startsWith("Ganador "))
+                .forEach(clasificadosUsadosAntes::add);
+
+        propuesta.getClasificados().stream()
+                .map(c -> c.referencia())
+                .filter(r -> !clasificadosUsadosAntes.contains(r))
+                .forEach(valores::add);
+
+        if (rondaAnterior >= 0) {
+            propuesta.getCruces().stream()
+                    .filter(c -> c.getRonda() == rondaAnterior)
+                    .map(c -> "Ganador " + c.getInstancia()
+                            + " #" + c.getOrden())
+                    .forEach(valores::add);
+        }
+        if (actual != null) valores.add(actual);
+        valores.remove("Ganador " + partidoClave);
+        return valores;
+    }
+
+    private String tituloCambio(String partidoClave, int posicion) {
+        String partido = partidoClave;
+        int separador = partidoClave.lastIndexOf(" #");
+        if (separador >= 0) {
+            partido = partidoClave.substring(0, separador)
+                    + " (Partido "
+                    + partidoClave.substring(separador + 2) + ")";
+        }
+        return "Cambiar " + (posicion == 1
+                ? "primer participante" : "segundo participante")
+                + " de " + partido;
+    }
+
+    private javafx.scene.control.ListCell<String> celdaOrigen(
+            boolean boton) {
+        return new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null ? null : textoOrigen(valor));
+                setTextFill(Color.web("#f4fbff"));
+                setStyle((boton
+                        ? "-fx-background-color:#0a1922;"
+                        : isSelected()
+                            ? "-fx-background-color:#315f79;"
+                            : "-fx-background-color:#102532;")
+                        + "-fx-text-fill:#f4fbff;-fx-padding:8 10;");
+            }
+        };
+    }
+
+    private String textoOrigen(String referencia) {
+        String nombre = nombres.get(referencia);
+        if (nombre != null) return referencia + " · " + nombre;
+        if (referencia.startsWith("Ganador ")) {
+            String clave = referencia.substring("Ganador ".length());
+            int separador = clave.lastIndexOf(" #");
+            if (separador >= 0) {
+                return "Ganador de " + clave.substring(0, separador)
+                        + " (Partido " + clave.substring(separador + 2)
+                        + ")";
+            }
+        }
+        return referencia;
+    }
+
+    private EstadoTarjeta estadoTarjeta(PartidoLlaveVisual partido) {
+        java.util.List<String> problemas = new ArrayList<>();
+        boolean invalida = false;
+        boolean atencion = false;
+
+        if (partido.plaza1().referencia() == null
+                || partido.plaza1().referencia().isBlank()) {
+            problemas.add("La primera plaza esta sin asignar.");
+            atencion = true;
+        }
+        if (partido.plaza2().referencia() == null
+                || partido.plaza2().referencia().isBlank()) {
+            problemas.add("La segunda plaza esta sin asignar.");
+            atencion = true;
+        }
+        for (ConexionLlaveVisual conexion : constructor.construir(propuesta)
+                .conexiones()) {
+            if (!partido.clave().equals(conexion.partidoDestinoClave())
+                    && !partido.clave().equals(
+                            conexion.partidoOrigenClave())) {
+                continue;
+            }
+            if (conexion.estado() == EstadoConexionLlave.SIN_DESTINO) {
+                problemas.add("El ganador de este partido no tiene destino.");
+                atencion = true;
+            } else if (conexion.estado()
+                    != EstadoConexionLlave.VALIDA) {
+                problemas.add(mensajeEstado(conexion.estado()));
+                invalida = true;
+            }
+        }
+        long veces1 = contarUso(partido.plaza1().referencia());
+        long veces2 = contarUso(partido.plaza2().referencia());
+        if (partido.plaza1().ganadorPartido() && veces1 > 1) {
+            problemas.add("El primer origen esta asignado " + veces1
+                    + " veces dentro de la llave.");
+            invalida = true;
+        }
+        if (partido.plaza2().ganadorPartido() && veces2 > 1) {
+            problemas.add("El segundo origen esta asignado " + veces2
+                    + " veces dentro de la llave.");
+            invalida = true;
+        }
+        String mensaje = problemas.isEmpty() ? null
+                : String.join("\n", problemas.stream().distinct().toList());
+        if (invalida) return new EstadoTarjeta("#e56d76", 2.4, mensaje);
+        if (atencion) return new EstadoTarjeta("#e6b85c", 2.2, mensaje);
+        return new EstadoTarjeta("#315f79", 1.2, null);
+    }
+
+    private long contarUso(String referencia) {
+        if (referencia == null || !referencia.startsWith("Ganador ")) {
+            return 0;
+        }
+        return propuesta.getCruces().stream()
+                .flatMap(c -> java.util.stream.Stream.of(
+                        c.getParticipante1(), c.getParticipante2()))
+                .filter(referencia::equals).count();
+    }
+
+    private String mensajeEstado(EstadoConexionLlave estado) {
+        return switch (estado) {
+            case ORIGEN_INEXISTENTE ->
+                    "Uno de los origenes apunta a un partido inexistente.";
+            case DUPLICADA ->
+                    "Un ganador esta asignado mas de una vez.";
+            case RONDA_INVALIDA ->
+                    "La conexion no avanza hacia una ronda posterior.";
+            case SIN_DESTINO ->
+                    "El ganador no tiene un partido de destino.";
+            case VALIDA -> "Conexion valida.";
+        };
+    }
+
+    private void intercambiarEnModelo(String clavePartido) {
+        var cruce = propuesta.getCruces().stream()
+                .filter(c -> (c.getInstancia() + " #" + c.getOrden())
+                        .equals(clavePartido))
+                .findFirst().orElse(null);
+        if (cruce == null) return;
+        String primero = cruce.getParticipante1();
+        cruce.setParticipante1(cruce.getParticipante2());
+        cruce.setParticipante2(primero);
     }
 
     private void dibujarConexiones(LlaveTorneoVisual modelo) {
@@ -310,7 +770,12 @@ public class LlaveGraficaTorneoView {
     }
 
     private String nombreFase(String fase) {
-        return fase == null ? "FASE" : fase.toUpperCase();
+        if (fase == null) return "FASE";
+        if (fase.startsWith("Acceso R")) {
+            return ("Fase previa "
+                    + fase.substring("Acceso R".length())).toUpperCase();
+        }
+        return fase.toUpperCase();
     }
 
     private String estiloFase(String fase) {
@@ -322,6 +787,13 @@ public class LlaveGraficaTorneoView {
         if (valor.contains("dieciseisavos")) return "-fx-background-color:#2d6260;";
         if (valor.contains("acceso")) return "-fx-background-color:#7a4f28;";
         return "-fx-background-color:#344f60;";
+    }
+
+    public record CambioPlaza(int posicion, String referencia) {
+    }
+
+    private record EstadoTarjeta(
+            String color, double grosor, String mensaje) {
     }
 
     private record PosicionTarjeta(

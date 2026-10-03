@@ -77,6 +77,7 @@ public class ValidadorEstructuraEliminatoriaService {
             }
         }
 
+        validarCantidadPorFase(cruces, errores);
         detectarCiclos(porClave, errores);
         validarDestinos(cruces, usosGanador, finales, errores);
         validarFases(cruces, errores);
@@ -91,6 +92,31 @@ public class ValidadorEstructuraEliminatoriaService {
             return;
         }
         if (esGanador(origen)) usosGanador.merge(origen, 1, Integer::sum);
+    }
+
+    private void validarCantidadPorFase(
+            List<CrucePropuestoTorneo> cruces, List<String> errores) {
+        Map<String, Integer> maximos = Map.of(
+                "Final", 1,
+                "Semifinal", 2,
+                "Cuartos", 4,
+                "Octavos", 8,
+                "Dieciseisavos", 16);
+        Map<String, Long> cantidades = cruces.stream()
+                .collect(java.util.stream.Collectors.groupingBy(
+                        CrucePropuestoTorneo::getInstancia,
+                        java.util.stream.Collectors.counting()));
+        for (Map.Entry<String, Integer> limite : maximos.entrySet()) {
+            long cantidad = cantidades.getOrDefault(limite.getKey(), 0L);
+            if (cantidad > limite.getValue()) {
+                errores.add("CANTIDAD DE PARTIDOS INVALIDA:\n"
+                        + limite.getKey() + " contiene " + cantidad
+                        + " partidos, pero admite como maximo "
+                        + limite.getValue() + ".\nElimina "
+                        + (cantidad - limite.getValue())
+                        + " partido(s) adicional(es).");
+            }
+        }
     }
 
     private void validarDestinos(List<CrucePropuestoTorneo> cruces,
@@ -152,6 +178,18 @@ public class ValidadorEstructuraEliminatoriaService {
                 Map.entry("Octavos", 7), Map.entry("Cuartos", 8),
                 Map.entry("Semifinal", 9), Map.entry("Final", 10));
         int maximoAnterior = 0;
+        int mayorRondaPrevia = cruces.stream()
+                .filter(c -> c.getInstancia().startsWith("Acceso R"))
+                .mapToInt(CrucePropuestoTorneo::getRonda).max().orElse(0);
+        int menorRondaPrincipal = cruces.stream()
+                .filter(c -> !c.getInstancia().startsWith("Acceso R"))
+                .mapToInt(CrucePropuestoTorneo::getRonda).min()
+                .orElse(Integer.MAX_VALUE);
+        if (mayorRondaPrevia >= menorRondaPrincipal) {
+            errores.add("ORDEN DE FASES INVALIDO:\nLas fases previas "
+                    + "deben ubicarse antes de Dieciseisavos, Octavos, "
+                    + "Cuartos, Semifinal y Final.");
+        }
         for (Integer ronda : fasesPorRonda.keySet().stream().sorted().toList()) {
             for (String fase : fasesPorRonda.get(ronda)) {
                 Integer orden = ordenFase.get(fase);
