@@ -8,31 +8,40 @@ import negocio.ConfiguracionComplejo;
 
 public final class TemaDinamico {
 
-	private static final String COLOR_PREDETERMINADO = "#486B86";
+	private static final String COLOR_PREDETERMINADO = "#2F8F83";
 
 	private TemaDinamico() {
 	}
 
-	public static void aplicar(Parent raiz, ConfiguracionComplejo configuracion) {
+        public static void aplicar(Parent raiz, ConfiguracionComplejo configuracion) {
+                aplicarAcento(raiz, obtenerColor(configuracion));
+        }
 
-		if (raiz == null) {
-			return;
-		}
+        public static void aplicarAcento(Parent raiz, String colorPrincipal) {
+                if (raiz == null) return;
+                String colorSeguro = normalizarColor(colorPrincipal);
+                String colorHover = ajustarBrillo(colorSeguro, 1.18);
+                String colorPresionado = ajustarBrillo(colorSeguro, 0.78);
+                String colorTransparente = convertirRgba(colorSeguro, 0.22);
+                String estilo = """
+                                -color-principal: %s;
+                                -color-principal-hover: %s;
+                                -color-principal-presionado: %s;
+                                -color-principal-transparente: %s;
+                                """.formatted(colorSeguro, colorHover,
+                                                colorPresionado, colorTransparente);
+                raiz.setStyle(estilo);
+        }
 
-		String colorPrincipal = obtenerColor(configuracion);
-		String colorHover = ajustarBrillo(colorPrincipal, 1.18);
-		String colorPresionado = ajustarBrillo(colorPrincipal, 0.78);
-		String colorTransparente = convertirRgba(colorPrincipal, 0.22);
-
-		String estilo = """
-				-color-principal: %s;
-				-color-principal-hover: %s;
-				-color-principal-presionado: %s;
-				-color-principal-transparente: %s;
-				""".formatted(colorPrincipal, colorHover, colorPresionado, colorTransparente);
-
-		raiz.setStyle(estilo);
-	}
+        private static String normalizarColor(String color) {
+                if (color == null || color.isBlank()) return COLOR_PREDETERMINADO;
+                try {
+                        Color.web(color);
+                        return color.trim().toUpperCase(Locale.ROOT);
+                } catch (IllegalArgumentException exception) {
+                        return COLOR_PREDETERMINADO;
+                }
+        }
 
 	private static String obtenerColor(ConfiguracionComplejo configuracion) {
 

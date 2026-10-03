@@ -84,3 +84,106 @@
 }
 
 .config-payment-card { -fx-border-color: #3b5668; }
+
+/* configuracion-apariencia-moderna-v1 */
+.config-root, .config-scroll, .config-scroll > .viewport, .config-content { -fx-background-color: #111417; }
+.config-card { -fx-background-color: #191e22; -fx-border-color: #343b42; -fx-effect: dropshadow(gaussian, rgba(0,0,0,.18), 12, 0, 0, 4); }
+.config-appearance-card { -fx-border-color: #3b444b; }
+.config-accent-option { -fx-background-color: #20262b; -fx-border-color: #394249; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: #d9dfe2; -fx-font-size: 11px; -fx-font-weight: 800; -fx-padding: 9 12; -fx-cursor: hand; }
+.config-accent-option:hover { -fx-background-color: #293036; -fx-border-color: -config-swatch; }
+.config-accent-option-selected { -fx-border-color: -config-swatch; -fx-border-width: 2; -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .12, 0, 0); }
+.config-accent-preview { -fx-background-color: #14191d; -fx-background-radius: 12; -fx-border-color: #343d43; -fx-border-radius: 12; -fx-padding: 13; }
+.config-preview-overline { -fx-text-fill: #8e999f; -fx-font-size: 9px; -fx-font-weight: 900; }
+.config-preview-code { -fx-text-fill: -color-principal-hover; -fx-font-size: 10px; -fx-font-weight: 900; }
+.config-preview-field { -fx-border-color: -color-principal; }
+.config-preview-active { -fx-background-color: -color-principal-transparente; -fx-background-radius: 10; -fx-border-color: -color-principal; -fx-border-radius: 10; -fx-text-fill: -color-principal-hover; -fx-font-size: 10px; -fx-font-weight: 900; -fx-padding: 5 9; }
+
+/* configuracion-paleta-visual-v2 */
+.config-accent-option {
+    -fx-content-display: graphic-only;
+    -fx-alignment: center-left;
+    -fx-padding: 8 10;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+}
+.config-accent-swatch {
+    -fx-background-radius: 50%;
+    -fx-border-color: rgba(255,255,255,.28);
+    -fx-border-radius: 50%;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.30), 4, 0, 0, 1);
+}
+.config-accent-name {
+    -fx-text-fill: #dce2e5;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}
+.config-accent-check {
+    -fx-text-fill: -config-swatch;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+}
+.config-accent-option-selected {
+    -fx-background-color: derive(-config-swatch, -72%);
+    -fx-border-color: -config-swatch;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 10, .18, 0, 0);
+}
+.config-accent-option-selected .config-accent-name {
+    -fx-text-fill: #ffffff;
+}
+.config-appearance-card {
+    -fx-spacing: 9;
+}
+.config-accent-preview {
+    -fx-padding: 11;
+}
+
+/* configuracion-cambio-pendiente-v3 */
+.config-appearance-pending {
+    -fx-background-color: #282517;
+    -fx-background-radius: 9;
+    -fx-border-color: #76652e;
+    -fx-border-radius: 9;
+    -fx-text-fill: #e6d589;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-padding: 8 10;
+}
+.config-save-button-pending {
+    -fx-border-color: #e0bc55;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(224,188,85,.30), 12, .15, 0, 0);
+}
+
+/* configuracion-barra-fija-guardado-v4 */
+.config-save-bar {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343c42 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.32), 14, .12, 0, -3);
+}
+.config-save-overline {
+    -fx-text-fill: #77838a;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.config-save-message {
+    -fx-text-fill: #98a4aa;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.config-save-bar .mensaje-exito {
+    -fx-text-fill: #79c3a6;
+}
+.config-save-bar .mensaje-error {
+    -fx-text-fill: #e69099;
+}
+.config-save-button {
+    -fx-pref-height: 42;
+    -fx-min-height: 42;
+    -fx-max-height: 42;
+}
+.config-content {
+    -fx-padding: 0 0 8 0;
+}

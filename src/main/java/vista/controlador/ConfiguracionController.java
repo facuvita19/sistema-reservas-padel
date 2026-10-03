@@ -2,7 +2,7 @@ package vista.controlador;
 
 import java.io.File;
 import java.math.BigDecimal;
-
+import java.util.List;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -14,17 +14,31 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import negocio.ConfiguracionComplejo;
 import servicio.ConfiguracionComplejoService;
 import vista.Navegacion;
+import vista.TemaDinamico;
 
 public class ConfiguracionController {
 
 	private final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
+	private static final String ACENTO_PREDETERMINADO = "#2F8F83";
+
+	private static final List<Acento> ACENTOS = List.of(
+	                new Acento("Turquesa", "#2F8F83"),
+	                new Acento("Esmeralda", "#3D8B68"),
+	                new Acento("Azul acero", "#527C9B"),
+	                new Acento("Violeta", "#7563A8"),
+	                new Acento("Ambar", "#B78334"),
+	                new Acento("Coral", "#B85F62"));
+
 	private ConfiguracionComplejo configuracionActual;
+	private boolean actualizandoApariencia;
 
 	@FXML
 	private TextField campoNombreComercial;
@@ -53,6 +67,14 @@ public class ConfiguracionController {
 	@FXML
 	private ColorPicker selectorColor;
 	@FXML
+	private FlowPane contenedorPaleta;
+	@FXML
+	private VBox vistaPreviaAcento;
+	@FXML
+	private Label etiquetaColorActual;
+	@FXML
+	private Label etiquetaAparienciaPendiente;
+	@FXML
 	private TextField campoRutaLogo;
 	@FXML
 	private TextField campoPagoAlias;
@@ -76,6 +98,7 @@ public class ConfiguracionController {
 	@FXML
 	private void initialize() {
 		configurarControles();
+		configurarApariencia();
 		Platform.runLater(this::cargarConfiguracion);
 	}
 
@@ -98,8 +121,115 @@ public class ConfiguracionController {
 				.addListener((observador, anterior, actual) -> actualizarTextoVencimiento());
 	}
 
-	@FXML
-	private void cargarConfiguracion() {
+        private void configurarApariencia() {
+                contenedorPaleta.getChildren().clear();
+                for (Acento acento : ACENTOS) {
+                        javafx.scene.layout.Region muestra =
+                                        new javafx.scene.layout.Region();
+                        muestra.setMinSize(14, 14);
+                        muestra.setPrefSize(14, 14);
+                        muestra.setMaxSize(14, 14);
+                        muestra.getStyleClass().add("config-accent-swatch");
+                        muestra.setStyle("-fx-background-color: "
+                                        + acento.color() + ";");
+
+                        Label nombre = new Label(acento.nombre());
+                        nombre.getStyleClass().add("config-accent-name");
+
+                        Label marca = new Label("✓");
+                        marca.setVisible(false);
+                        marca.setManaged(false);
+                        marca.getStyleClass().add("config-accent-check");
+
+                        javafx.scene.layout.Region separador =
+                                        new javafx.scene.layout.Region();
+                        javafx.scene.layout.HBox.setHgrow(separador,
+                                        javafx.scene.layout.Priority.ALWAYS);
+
+                        javafx.scene.layout.HBox contenido =
+                                        new javafx.scene.layout.HBox(
+                                                        7, muestra, nombre,
+                                                        separador, marca);
+                        contenido.setAlignment(
+                                        javafx.geometry.Pos.CENTER_LEFT);
+                        contenido.setMouseTransparent(true);
+
+                        Button boton = new Button();
+                        boton.setGraphic(contenido);
+                        boton.setUserData(acento.color());
+                        boton.setPrefWidth(136);
+                        boton.setMaxWidth(136);
+                        boton.getProperties().put(
+                                        "marcaAcento", marca);
+                        boton.getStyleClass().add("config-accent-option");
+                        boton.setStyle("-config-swatch: "
+                                        + acento.color() + ";");
+                        boton.setOnAction(evento ->
+                                        seleccionarAcento(acento.color()));
+                        contenedorPaleta.getChildren().add(boton);
+                }
+                selectorColor.valueProperty().addListener((obs, anterior, actual) -> {
+                        if (!actualizandoApariencia && actual != null) {
+                                actualizarVistaPrevia(colorHexadecimal(actual));
+                                marcarAparienciaPendiente();
+                        }
+                });
+        }
+
+        private void seleccionarAcento(String color) {
+                actualizandoApariencia = true;
+                selectorColor.setValue(Color.web(color));
+                actualizandoApariencia = false;
+                actualizarVistaPrevia(color);
+                marcarAparienciaPendiente();
+        }
+
+        private void marcarAparienciaPendiente() {
+                if (etiquetaAparienciaPendiente == null) return;
+                etiquetaAparienciaPendiente.setText(
+                                "Vista previa actualizada. Pulsá GUARDAR CONFIGURACIÓN para aplicar el acento en todo el sistema.");
+                etiquetaAparienciaPendiente.setVisible(true);
+                etiquetaAparienciaPendiente.setManaged(true);
+                if (!botonGuardar.getStyleClass().contains(
+                                "config-save-button-pending")) {
+                        botonGuardar.getStyleClass().add(
+                                        "config-save-button-pending");
+                }
+        }
+
+        private void limpiarAparienciaPendiente() {
+                if (etiquetaAparienciaPendiente != null) {
+                        etiquetaAparienciaPendiente.setVisible(false);
+                        etiquetaAparienciaPendiente.setManaged(false);
+                }
+                botonGuardar.getStyleClass().remove(
+                                "config-save-button-pending");
+        }
+
+        private void actualizarVistaPrevia(String color) {
+                String normalizado = color == null
+                                ? ACENTO_PREDETERMINADO : color.toUpperCase();
+                TemaDinamico.aplicarAcento(vistaPreviaAcento, normalizado);
+                etiquetaColorActual.setText(normalizado);
+                for (javafx.scene.Node nodo : contenedorPaleta.getChildren()) {
+                        boolean seleccionado = normalizado.equalsIgnoreCase(
+                                        String.valueOf(nodo.getUserData()));
+                        nodo.getStyleClass().remove(
+                                        "config-accent-option-selected");
+                        if (seleccionado) {
+                                nodo.getStyleClass().add(
+                                                "config-accent-option-selected");
+                        }
+                        Object marca = nodo.getProperties().get("marcaAcento");
+                        if (marca instanceof Label etiquetaMarca) {
+                                etiquetaMarca.setVisible(seleccionado);
+                                etiquetaMarca.setManaged(seleccionado);
+                        }
+                }
+        }
+
+        @FXML
+        private void cargarConfiguracion() {
 		cambiarCarga(true, "Cargando configuración...");
 
 		Task<ConfiguracionComplejo> tarea = new Task<>() {
@@ -154,12 +284,15 @@ public class ConfiguracionController {
 		campoPagoInstrucciones.setText(configuracion.getPagoInstrucciones());
 		try {
 			selectorColor.setValue(Color.web(configuracion.getColorPrincipal()));
+                        actualizarVistaPrevia(configuracion.getColorPrincipal());
 		} catch (IllegalArgumentException exception) {
-			selectorColor.setValue(Color.web("#486B86"));
-		}
+                        selectorColor.setValue(Color.web(ACENTO_PREDETERMINADO));
+                        actualizarVistaPrevia(ACENTO_PREDETERMINADO);
+                }
 
 		actualizarEjemploSenia();
 		actualizarTextoVencimiento();
+                limpiarAparienciaPendiente();
 	}
 
 	@FXML
@@ -207,6 +340,7 @@ public class ConfiguracionController {
 			configuracionActual = configuracion;
 			mostrarConfiguracion(configuracion);
 			Navegacion.recargarConfiguracion();
+                        limpiarAparienciaPendiente();
 			cambiarCarga(false, "La configuración se guardó correctamente.");
 			mostrarExito("La configuración se guardó correctamente.");
 		});
@@ -242,9 +376,9 @@ public class ConfiguracionController {
 	}
 
 	@FXML
-	private void restaurarColor() {
-		selectorColor.setValue(Color.web("#486B86"));
-	}
+        private void restaurarColor() {
+                seleccionarAcento(ACENTO_PREDETERMINADO);
+        }
 
 	private void actualizarEjemploSenia() {
 		String moneda = comboMoneda.getValue() == null ? "ARS" : comboMoneda.getValue();
@@ -314,8 +448,11 @@ public class ConfiguracionController {
 		}
 	}
 
-	@FXML
-	private void volver() {
+        private record Acento(String nombre, String color) {
+        }
+
+        @FXML
+        private void volver() {
 		Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
 	}
 }

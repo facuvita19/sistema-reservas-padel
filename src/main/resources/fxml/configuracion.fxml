@@ -200,26 +200,34 @@
                                 <VBox GridPane.columnIndex="1"
                                       GridPane.rowIndex="1"
                                       spacing="11"
-                                      styleClass="config-card">
+                                      styleClass="config-card, config-appearance-card">
                                     <children>
-                                        <Label text="Apariencia"
-                                               styleClass="section-title" />
-                                        <Label text="Color principal"
-                                               styleClass="field-label" />
-                                        <ColorPicker fx:id="selectorColor"
-                                                     maxWidth="Infinity" />
-                                        <Button text="Restaurar azul petróleo"
-                                                onAction="#restaurarColor"
-                                                styleClass="secondary-button" />
-                                        <VBox spacing="7" styleClass="config-note">
+                                        <Label text="Apariencia" styleClass="section-title" />
+                                        <Label text="Color de acento" styleClass="field-label" />
+                                        <Label text="Elegí un acento para botones, foco y elementos activos. Los estados conservan sus colores semánticos."
+                                               wrapText="true" styleClass="config-note-text" />
+                                        <FlowPane fx:id="contenedorPaleta" hgap="8" vgap="8" prefWrapLength="430" />
+                                        <Label text="Color personalizado" styleClass="field-label" />
+                                        <ColorPicker fx:id="selectorColor" maxWidth="Infinity" />
+                                        <VBox fx:id="vistaPreviaAcento" spacing="9" styleClass="config-accent-preview">
                                             <children>
-                                                <Label text="Aplicación visual"
-                                                       styleClass="config-note-title" />
-                                                <Label text="El color se aplica a botones, menús y acentos principales después de guardar la configuración."
-                                                       wrapText="true"
-                                                       styleClass="config-note-text" />
+                                                <HBox alignment="CENTER_LEFT" spacing="8">
+                                                    <Label text="VISTA PREVIA" styleClass="config-preview-overline" />
+                                                    <Region HBox.hgrow="ALWAYS" />
+                                                    <Label fx:id="etiquetaColorActual" text="#2F8F83" styleClass="config-preview-code" />
+                                                </HBox>
+                                                <TextField text="Campo enfocado" editable="false" styleClass="modern-field, config-preview-field" />
+                                                <HBox alignment="CENTER_LEFT" spacing="9">
+                                                    <Button text="ACCIÓN PRINCIPAL" styleClass="primary-button" />
+                                                    <Label text="Elemento activo" styleClass="config-preview-active" />
+                                                </HBox>
                                             </children>
                                         </VBox>
+                                        <Button text="Restaurar acento predeterminado" onAction="#restaurarColor" styleClass="secondary-button" />
+                                        <Label fx:id="etiquetaAparienciaPendiente"
+                                               text="Vista previa actualizada. Pulsá GUARDAR CONFIGURACIÓN para aplicar el acento en todo el sistema."
+                                               visible="false" managed="false" wrapText="true"
+                                               styleClass="config-appearance-pending" />
                                     </children>
                                 </VBox>
                             </children>
@@ -236,17 +244,33 @@
                             </GridPane>
                             <Label text="Instrucciones adicionales" styleClass="field-label"/>
                             <TextArea fx:id="campoPagoInstrucciones" prefRowCount="3" wrapText="true" promptText="Ejemplo: transferí el importe exacto y enviá el comprobante por WhatsApp." styleClass="modern-area"/>
-                        </VBox>                        <Label fx:id="etiquetaMensaje"
-                               minHeight="22"
-                               wrapText="true" />
-                        <Button fx:id="botonGuardar"
-                                text="GUARDAR CONFIGURACIÓN"
-                                onAction="#guardar"
-                                maxWidth="Infinity"
-                                styleClass="primary-button, config-save-button" />
+                        </VBox>
                     </children>
                 </VBox>
             </content>
         </ScrollPane>
     </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              styleClass="config-save-bar">
+            <padding>
+                <Insets top="11" right="28" bottom="11" left="28" />
+            </padding>
+            <children>
+                <Label text="CONFIGURACIÓN" styleClass="config-save-overline" />
+                <Label fx:id="etiquetaMensaje"
+                       text="Sin cambios pendientes."
+                       maxWidth="Infinity"
+                       wrapText="true"
+                       HBox.hgrow="ALWAYS"
+                       styleClass="config-save-message" />
+                <Button fx:id="botonGuardar"
+                        text="GUARDAR CONFIGURACIÓN"
+                        onAction="#guardar"
+                        minWidth="235"
+                        styleClass="primary-button, config-save-button" />
+            </children>
+        </HBox>
+    </bottom>
 </BorderPane>

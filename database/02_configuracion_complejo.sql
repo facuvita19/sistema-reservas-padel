@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS configuracion_complejo (
     porcentaje_senia DECIMAL(5,2) NOT NULL DEFAULT 25.00,
     anticipacion_minima_horas INT NOT NULL DEFAULT 2,
     cancelacion_minima_horas INT NOT NULL DEFAULT 12,
-    color_principal VARCHAR(7) NOT NULL DEFAULT '#486B86',
+    color_principal VARCHAR(7) NOT NULL DEFAULT '#2F8F83',
     ruta_logo VARCHAR(500) NULL,
     fecha_actualizacion TIMESTAMP NOT NULL
         DEFAULT CURRENT_TIMESTAMP
@@ -56,7 +56,7 @@ VALUES (
     25.00,
     2,
     12,
-    '#486B86'
+    '#2F8F83'
 )
 ON DUPLICATE KEY UPDATE
     porcentaje_senia = 25.00;

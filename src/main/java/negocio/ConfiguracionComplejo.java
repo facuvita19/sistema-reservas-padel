@@ -23,7 +23,7 @@ public class ConfiguracionComplejo {
     private String pagoTitular;
     private String pagoEntidad;
     private String pagoInstrucciones;
-    private String colorPrincipal = "#486B86";
+    private String colorPrincipal = "#2F8F83";
     private String rutaLogo;
     private LocalDateTime fechaActualizacion;
 
