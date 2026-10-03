@@ -89,6 +89,9 @@
                                                         styleClass="secondary-button" />
                                             </children>
                                         </HBox>
+                                        <Label text="La ruta del logo corresponde a este equipo."
+                                               wrapText="true"
+                                               styleClass="config-local-file-note" />
                                     </children>
                                 </VBox>
 
@@ -170,6 +173,9 @@
                                                         <Spinner fx:id="spinnerAnticipacion"
                                                                  editable="false"
                                                                  maxWidth="Infinity" />
+                                                        <Label text="Tiempo mínimo antes del turno para aceptar una reserva."
+                                                               wrapText="true"
+                                                               styleClass="config-policy-help" />
                                                     </children>
                                                 </VBox>
                                                 <VBox spacing="6" GridPane.columnIndex="1">
@@ -180,6 +186,9 @@
                                                         <Spinner fx:id="spinnerCancelacion"
                                                                  editable="false"
                                                                  maxWidth="Infinity" />
+                                                        <Label text="Fuera de este plazo se requiere cancelación administrativa."
+                                                               wrapText="true"
+                                                               styleClass="config-policy-help" />
                                                     </children>
                                                 </VBox>
                                             </children>

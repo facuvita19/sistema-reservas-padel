@@ -286,3 +286,20 @@
     -fx-border-color: -color-principal;
     -fx-text-fill: white;
 }
+
+/* configuracion-segura-v5 */
+.config-policy-help,
+.config-local-file-note {
+    -fx-text-fill: #7f898f;
+    -fx-font-size: 10px;
+    -fx-line-spacing: 1px;
+}
+.config-policy-help {
+    -fx-padding: 2 1 0 1;
+}
+.config-local-file-note {
+    -fx-padding: 0 1 0 1;
+}
+.config-example {
+    -fx-font-weight: 700;
+}

@@ -1,7 +1,6 @@
 package servicio;
 
 import java.time.Clock;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -89,13 +88,11 @@ public class PoliticaReservaService {
                 reserva.getHoraInicio()
         );
 
-        long horasRestantes = Duration.between(
-                ahora,
-                inicioReserva
-        ).toHours();
+        LocalDateTime limiteCancelacion = inicioReserva.minusHours(
+                configuracion.getCancelacionMinimaHoras()
+        );
 
-        if (horasRestantes
-                < configuracion.getCancelacionMinimaHoras()) {
+        if (ahora.isAfter(limiteCancelacion)) {
             throw new IllegalArgumentException(
                     "La cancelación debe realizarse con al menos "
                             + configuracion.getCancelacionMinimaHoras()

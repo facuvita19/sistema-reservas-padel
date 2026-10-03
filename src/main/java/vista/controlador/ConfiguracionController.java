@@ -2,6 +2,8 @@ package vista.controlador;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -298,8 +300,12 @@ public class ConfiguracionController {
 	@FXML
 	private void guardar() {
 		try {
-			ConfiguracionComplejo configuracion = configuracionActual == null ? new ConfiguracionComplejo()
-					: configuracionActual;
+			ConfiguracionComplejo configuracion =
+			        new ConfiguracionComplejo();
+			if (configuracionActual != null) {
+			        configuracion.setId(
+			                configuracionActual.getId());
+			}
 
 			configuracion.setNombreComercial(campoNombreComercial.getText());
 			configuracion.setRazonSocial(campoRazonSocial.getText());
@@ -389,8 +395,15 @@ public class ConfiguracionController {
 			BigDecimal ejemplo = new BigDecimal("40000").multiply(porcentaje).divide(BigDecimal.valueOf(100), 2,
 					java.math.RoundingMode.HALF_UP);
 
-			etiquetaEjemploSenia.setText("Ejemplo: para una reserva de " + moneda + " 40.000, la seña será " + moneda
-					+ " " + ejemplo.toPlainString() + ".");
+			NumberFormat formato = NumberFormat.getNumberInstance(
+			        new Locale("es", "AR"));
+			formato.setMinimumFractionDigits(2);
+			formato.setMaximumFractionDigits(2);
+			etiquetaEjemploSenia.setText(
+			        "Ejemplo: para una reserva de "
+			                + moneda + " 40.000,00, la seña será "
+			                + moneda + " "
+			                + formato.format(ejemplo) + ".");
 		} catch (IllegalArgumentException exception) {
 			etiquetaEjemploSenia.setText("Ingresá un porcentaje válido entre 0 y 100.");
 		}
