@@ -45,7 +45,8 @@
                         <TableView fx:id="tablaCanchas" VBox.vgrow="ALWAYS"
                                    styleClass="modern-table">
                             <columns>
-                                <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="165" />
+                                <TableColumn fx:id="columnaOrden" text="#" prefWidth="48" minWidth="48" maxWidth="48" />
+                                <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="145" />
                                 <TableColumn fx:id="columnaTipo" text="TIPO" prefWidth="110" />
                                 <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="130" />
                                 <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="125" styleClass="court-price-column" />
@@ -156,6 +157,13 @@
                                 <TextArea fx:id="campoDescripcion" prefRowCount="3" wrapText="true"
                                           promptText="Información adicional de la cancha..."
                                           styleClass="modern-area" />
+
+                                <HBox spacing="8" alignment="CENTER_LEFT" styleClass="court-order-panel">
+                                    <Label text="Orden en Agenda y selectores" styleClass="small-caption" />
+                                    <Region HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="botonSubir" text="SUBIR" onAction="#subirOrden" visible="false" managed="false" styleClass="court-order-button" />
+                                    <Button fx:id="botonBajar" text="BAJAR" onAction="#bajarOrden" visible="false" managed="false" styleClass="court-order-button" />
+                                </HBox>
 
                                 <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
 

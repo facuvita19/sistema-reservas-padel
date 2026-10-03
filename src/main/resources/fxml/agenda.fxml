@@ -53,7 +53,7 @@
                 </StackPane>
                 <StackPane VBox.vgrow="ALWAYS">
                     <ScrollPane fx:id="scrollAgenda" fitToHeight="false" fitToWidth="true"
-                                pannable="false" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
+                                pannable="false" hbarPolicy="AS_NEEDED" vbarPolicy="ALWAYS"
                                 styleClass="agenda-scroll">
                         <GridPane fx:id="grillaAgenda" minWidth="0" hgap="2" vgap="1" styleClass="agenda-grid"/>
                     </ScrollPane>

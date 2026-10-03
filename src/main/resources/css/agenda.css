@@ -511,3 +511,22 @@
     -fx-border-color: -color-principal;
     -fx-text-fill: white;
 }
+
+/* agenda-stable-header-v17 */
+/* El cuerpo siempre reserva su barra vertical. El encabezado reserva el
+   mismo ancho de forma fija, evitando listeners y ciclos de layout. */
+.agenda-header-scroll {
+    -fx-padding: 0 14 0 0;
+}
+.agenda-fixed-header {
+    -fx-hgap: 1;
+    -fx-padding: 1;
+}
+
+/* agenda-independent-dividers-v18 */
+/* Separador independiente del estado y del borde de cada tarjeta. */
+.agenda-column-divider {
+    -fx-background-color: #30383d;
+    -fx-opacity: .95;
+    -fx-mouse-transparent: true;
+}

@@ -156,7 +156,10 @@ public class BloqueoCanchaDAOMySQL implements BloqueoCanchaDAO {
     @Override
     public List<BloqueoCancha> listar() {
         String sql = consultaBase()
-                + " ORDER BY b.fecha DESC, b.hora_inicio";
+                + " ORDER BY CASE WHEN b.fecha >= CURRENT_DATE THEN 0 ELSE 1 END, "
+                + "CASE WHEN b.fecha >= CURRENT_DATE THEN b.fecha END ASC, "
+                + "CASE WHEN b.fecha < CURRENT_DATE THEN b.fecha END DESC, "
+                + "b.hora_inicio ASC";
         return listarConConsulta(sql, null);
     }
 

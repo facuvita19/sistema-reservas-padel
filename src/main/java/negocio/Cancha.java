@@ -22,6 +22,7 @@ public class Cancha {
     private int duracionReserva = 90;
     private BigDecimal precio = BigDecimal.ZERO;
     private boolean activo = true;
+    private int ordenVisual;
     private LocalDateTime fechaCreacion;
     private Set<DayOfWeek> diasDisponibles =
             EnumSet.noneOf(DayOfWeek.class);
@@ -112,6 +113,14 @@ public class Cancha {
 
     public void setActivo(boolean activo) {
         this.activo = activo;
+    }
+
+    public int getOrdenVisual() {
+        return ordenVisual;
+    }
+
+    public void setOrdenVisual(int ordenVisual) {
+        this.ordenVisual = ordenVisual;
     }
 
     public LocalDateTime getFechaCreacion() {

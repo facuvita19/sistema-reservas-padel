@@ -61,6 +61,16 @@ public class CanchaService {
         canchaDAO.reactivar(id);
     }
 
+    public void subirOrden(long id) {
+        validarId(id);
+        canchaDAO.subirOrden(id);
+    }
+
+    public void bajarOrden(long id) {
+        validarId(id);
+        canchaDAO.bajarOrden(id);
+    }
+
     public List<Cancha> listarTodas() {
         return canchaDAO.listarTodas();
     }

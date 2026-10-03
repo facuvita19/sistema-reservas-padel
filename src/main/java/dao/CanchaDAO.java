@@ -23,6 +23,16 @@ public interface CanchaDAO {
                 "La reactivación no está disponible.");
     }
 
+    default void subirOrden(long id) {
+        throw new UnsupportedOperationException(
+                "El orden visual no está disponible.");
+    }
+
+    default void bajarOrden(long id) {
+        throw new UnsupportedOperationException(
+                "El orden visual no está disponible.");
+    }
+
     default void eliminarDefinitivamente(long id) {
         throw new UnsupportedOperationException(
                 "La eliminación definitiva no está disponible.");

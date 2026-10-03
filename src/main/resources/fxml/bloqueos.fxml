@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.BloqueosController"
-            styleClass="module-root">
+            styleClass="module-root, blocks-root">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
             <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
@@ -39,6 +39,8 @@
                                            promptText="Buscar por cancha, motivo o fecha..."
                                            HBox.hgrow="ALWAYS"
                                            styleClass="modern-field" />
+                                <Button text="LIMPIAR" onAction="#limpiarSeleccion"
+                                        styleClass="secondary-button, block-clear-button" />
                                 <Button text="Actualizar" onAction="#cargarBloqueos"
                                         styleClass="secondary-button" />
                             </children>
@@ -65,10 +67,19 @@
                         <VBox spacing="15" styleClass="form-card">
                             <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
                             <children>
-                                <Label fx:id="tituloFormulario" text="Nuevo bloqueo"
-                                       styleClass="section-title" />
-                                <Label text="El horario bloqueado dejará de aparecer disponible para reservas."
-                                       wrapText="true" styleClass="small-caption" />
+                                <VBox spacing="6" styleClass="block-detail-header">
+                                    <HBox alignment="CENTER_LEFT" spacing="8">
+                                        <Label fx:id="tituloFormulario" text="Nuevo bloqueo"
+                                               styleClass="section-title" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="insigniaEstadoBloqueo" text="PROGRAMADO"
+                                               visible="false" managed="false"
+                                               styleClass="block-detail-status" />
+                                    </HBox>
+                                    <Label fx:id="subtituloFormulario"
+                                           text="Reservá temporalmente una franja de la cancha."
+                                           wrapText="true" styleClass="block-detail-subtitle" />
+                                </VBox>
 
                                 <Label text="Cancha *" styleClass="field-label" />
                                 <ComboBox fx:id="comboCancha" maxWidth="Infinity"
@@ -115,8 +126,8 @@
 
                                 <VBox spacing="8" styleClass="block-note">
                                     <children>
-                                        <Label text="Importante" styleClass="block-note-title" />
-                                        <Label text="El bloqueo no elimina reservas existentes. Antes de bloquear una franja, verificá que no haya reservas activas."
+                                        <Label text="VALIDACIÓN AUTOMÁTICA" styleClass="block-note-title" />
+                                        <Label text="El sistema comprobará que la franja esté dentro del horario de la cancha y que no tenga reservas activas ni otros bloqueos superpuestos."
                                                wrapText="true"
                                                styleClass="block-note-text" />
                                     </children>

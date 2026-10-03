@@ -47,6 +47,8 @@ public class CanchasController {
 	@FXML
 	private TableView<Cancha> tablaCanchas;
 	@FXML
+	private TableColumn<Cancha, Integer> columnaOrden;
+	@FXML
 	private TableColumn<Cancha, String> columnaNombre;
 	@FXML
 	private TableColumn<Cancha, TipoCancha> columnaTipo;
@@ -105,6 +107,10 @@ public class CanchasController {
 	private Button botonDesactivar;
 	@FXML
 	private Button botonEliminarDefinitivamente;
+	@FXML
+	private Button botonSubir;
+	@FXML
+	private Button botonBajar;
 
 	@FXML
 	private void initialize() {
@@ -136,6 +142,8 @@ public class CanchasController {
 	}
 
 	private void configurarTabla() {
+		columnaOrden.setCellValueFactory(
+		                new PropertyValueFactory<>("ordenVisual"));
 		columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
 		columnaTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
 		columnaHorario.setCellValueFactory(datos -> new javafx.beans.property.SimpleStringProperty(
@@ -239,6 +247,10 @@ public class CanchasController {
 		botonDesactivar.setManaged(false);
                 botonEliminarDefinitivamente.setVisible(false);
                 botonEliminarDefinitivamente.setManaged(false);
+                botonSubir.setVisible(false);
+                botonSubir.setManaged(false);
+                botonBajar.setVisible(false);
+                botonBajar.setManaged(false);
                 botonDesactivar.setText("DESACTIVAR");
                 botonDesactivar.getStyleClass().removeAll(
                                 "danger-button", "reactivate-button");
@@ -283,6 +295,11 @@ public class CanchasController {
                 botonGuardar.setDisable(!cancha.isActivo());
                 botonEliminarDefinitivamente.setVisible(!cancha.isActivo());
                 botonEliminarDefinitivamente.setManaged(!cancha.isActivo());
+                botonSubir.setVisible(true);
+                botonSubir.setManaged(true);
+                botonBajar.setVisible(true);
+                botonBajar.setManaged(true);
+                actualizarBotonesOrden(cancha);
 
 		campoNombre.setText(cancha.getNombre());
 		comboTipo.setValue(cancha.getTipo());
@@ -383,6 +400,50 @@ public class CanchasController {
                         mostrarError(exception.getMessage());
                 }
         }
+
+	@FXML
+	private void subirOrden() {
+	        moverOrden(true);
+	}
+
+	@FXML
+	private void bajarOrden() {
+	        moverOrden(false);
+	}
+
+	private void moverOrden(boolean subir) {
+	        if (canchaSeleccionada == null) {
+	                mostrarError("Seleccioná una cancha.");
+	                return;
+	        }
+
+	        long id = canchaSeleccionada.getId();
+	        try {
+	                if (subir) {
+	                        canchaService.subirOrden(id);
+	                } else {
+	                        canchaService.bajarOrden(id);
+	                }
+
+	                cargarCanchas();
+	                canchas.stream()
+	                        .filter(cancha -> cancha.getId() == id)
+	                        .findFirst()
+	                        .ifPresent(cancha ->
+	                                tablaCanchas.getSelectionModel()
+	                                        .select(cancha));
+	                mostrarInfo("El orden de las canchas fue actualizado.");
+	        } catch (RuntimeException exception) {
+	                mostrarError(exception.getMessage());
+	        }
+	}
+
+	private void actualizarBotonesOrden(Cancha cancha) {
+	        int indice = canchas.indexOf(cancha);
+	        botonSubir.setDisable(indice <= 0);
+	        botonBajar.setDisable(
+	                indice < 0 || indice >= canchas.size() - 1);
+	}
 
 	@FXML
 	private void volver() {

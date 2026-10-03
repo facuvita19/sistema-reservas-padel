@@ -309,3 +309,10 @@
 .courts-root .primary-button:disabled {
     -fx-opacity: .42;
 }
+
+/* canchas-order-v1 */
+.court-order-panel { -fx-background-color: #181d21; -fx-border-color: #394249; -fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 9 11; }
+.court-order-button { -fx-min-width: 82; -fx-pref-height: 34; -fx-background-color: #292f33; -fx-border-color: #566168; -fx-background-radius: 8; -fx-border-radius: 8; -fx-text-fill: #e3e8ea; -fx-font-size: 10px; -fx-font-weight: 900; -fx-cursor: hand; }
+.court-order-button:hover { -fx-background-color: #343c41; -fx-border-color: -color-principal; -fx-text-fill: white; }
+.court-order-button:disabled { -fx-opacity: .38; }
+.courts-root .modern-table .table-column:first-child .label { -fx-alignment: CENTER; }

@@ -364,7 +364,11 @@ public class AgendaController {
                 CeldaAgenda celda = fila.getCeldas().get(columna);
                 int cantidadFilas = calcularCantidadFilas(
                         agenda, filaIndice, columna, celda);
-                Node nodo = crearCelda(celda, cantidadFilas);
+                boolean mostrarSeparadorDerecho =
+                        columna < agenda.getCanchas().size() - 1;
+                Node contenido = crearCelda(celda, cantidadFilas);
+                Node nodo = envolverCeldaConSeparador(
+                        contenido, mostrarSeparadorDerecho);
                 grillaAgenda.add(nodo, columna + 1, filaVisual);
 
                 if (cantidadFilas > 1) {
@@ -547,7 +551,35 @@ public class AgendaController {
                 && minutosDesdeApertura % duracionReferencia == 0;
     }
 
-    private Node crearCelda(CeldaAgenda celda, int cantidadFilas) {
+    private Node envolverCeldaConSeparador(
+            Node contenido,
+            boolean mostrarSeparadorDerecho) {
+        StackPane contenedor = new StackPane(contenido);
+        contenedor.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        StackPane.setAlignment(contenido, Pos.CENTER);
+
+        if (contenido instanceof Region region) {
+            region.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        }
+
+        if (mostrarSeparadorDerecho) {
+            Region separador = new Region();
+            separador.setMouseTransparent(true);
+            separador.setMinWidth(1);
+            separador.setPrefWidth(1);
+            separador.setMaxWidth(1);
+            separador.setMaxHeight(Double.MAX_VALUE);
+            separador.getStyleClass().add("agenda-column-divider");
+            StackPane.setAlignment(separador, Pos.CENTER_RIGHT);
+            contenedor.getChildren().add(separador);
+            separador.toFront();
+        }
+        return contenedor;
+    }
+
+    private Node crearCelda(
+            CeldaAgenda celda,
+            int cantidadFilas) {
         LocalTime horaFinalVisual = celda.getHoraInicio()
                 .plusMinutes(cantidadFilas * 30L);
         if (esSuperficieHoraria(celda.getEstado())) {

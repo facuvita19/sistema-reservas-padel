@@ -65,6 +65,7 @@ CREATE TABLE IF NOT EXISTS canchas (
     duracion_reserva INT NOT NULL DEFAULT 90,
     precio DECIMAL(12, 2) NOT NULL,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
+    orden_visual INT NOT NULL DEFAULT 0,
     fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     PRIMARY KEY (id),

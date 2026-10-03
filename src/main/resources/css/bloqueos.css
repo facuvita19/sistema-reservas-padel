@@ -17,3 +17,18 @@
     -fx-font-size: 12px;
     -fx-line-spacing: 2px;
 }
+
+/* bloqueos-modern-v2 */
+.blocks-root, .blocks-root .list-panel, .blocks-root .form-scroll, .blocks-root .form-scroll > .viewport, .blocks-root .form-card { -fx-background-color: #111417; }
+.block-detail-header { -fx-background-color: #181d21; -fx-background-radius: 11; -fx-border-color: #394249; -fx-border-radius: 11; -fx-padding: 12 14; }
+.block-detail-subtitle { -fx-text-fill: #9ca7ac; -fx-font-size: 11px; -fx-line-spacing: 2px; }
+.block-detail-status { -fx-background-radius: 10; -fx-border-radius: 10; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 4 8; }
+.block-detail-scheduled { -fx-background-color: #1e3229; -fx-border-color: #4e8069; -fx-text-fill: #b9ddcc; }
+.block-detail-finished { -fx-background-color: #292d30; -fx-border-color: #555d62; -fx-text-fill: #aeb6ba; }
+.blocks-root .modern-table .table-row-cell.block-row-past { -fx-opacity: .58; }
+.blocks-root .modern-table .table-row-cell.block-row-selected { -fx-opacity: 1; -fx-background-color: #22292e; -fx-border-color: transparent transparent #343d42 -color-principal; -fx-border-width: 0 0 1 4; }
+.block-note { -fx-background-color: #24251f; -fx-border-color: #625632; }
+.block-note-title { -fx-text-fill: #e2c66f; -fx-font-size: 10px; -fx-font-weight: 900; }
+.block-note-text { -fx-text-fill: #b8b19b; -fx-font-size: 11px; }
+.blocks-root .block-clear-button { -fx-min-width: 86; -fx-pref-width: 86; -fx-font-size: 10px; }
+.blocks-root .modern-field:disabled, .blocks-root .modern-combo:disabled, .blocks-root .modern-date:disabled, .blocks-root .modern-area:disabled { -fx-opacity: .72; }

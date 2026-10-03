@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import dao.BloqueoCanchaDAO;
@@ -87,7 +86,6 @@ public class AgendaService {
 
         List<Cancha> canchas = canchaDAO.listar().stream()
                 .filter(Cancha::isActivo)
-                .sorted(Comparator.comparing(Cancha::getNombre))
                 .toList();
 
         AgendaDiaria agenda = new AgendaDiaria();

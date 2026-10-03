@@ -129,8 +129,9 @@ public class BloqueoCanchaService {
 
 		boolean existeSuperposicion = reservasDelDia.stream()
 				.filter(reserva -> reserva.getCanchaId() == bloqueo.getCanchaId())
-				.filter(reserva -> reserva.getEstado() != EstadoReserva.CANCELADA)
-				.anyMatch(reserva -> seSuperpone(bloqueo.getHoraInicio(), bloqueo.getHoraFin(), reserva.getHoraInicio(),
+				.filter(reserva -> reserva.getEstado() != EstadoReserva.CANCELADA
+                                && reserva.getEstado() != EstadoReserva.EXPIRADA)
+                                .anyMatch(reserva -> seSuperpone(bloqueo.getHoraInicio(), bloqueo.getHoraFin(), reserva.getHoraInicio(),
 						reserva.getHoraFin()));
 
 		if (existeSuperposicion) {

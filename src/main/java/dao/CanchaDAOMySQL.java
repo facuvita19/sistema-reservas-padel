@@ -66,8 +66,10 @@ public class CanchaDAOMySQL implements CanchaDAO {
                 "INSERT INTO canchas "
                 + "(nombre, descripcion, tipo, superficie, "
                 + "tiene_iluminacion, hora_apertura, hora_cierre, "
-                + "duracion_reserva, precio, activo) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE)";
+                + "duracion_reserva, precio, activo, orden_visual) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, TRUE, "
+                + "(SELECT siguiente FROM (SELECT COALESCE(MAX(orden_visual), 0) + 1 "
+                + "AS siguiente FROM canchas) orden))";
 
         try (PreparedStatement sentencia =
                 conexion.prepareStatement(
@@ -232,7 +234,7 @@ public class CanchaDAOMySQL implements CanchaDAO {
     public List<Cancha> listar() {
         String sql = consultaBase()
                 + " WHERE c.activo = TRUE "
-                + "GROUP BY c.id ORDER BY c.nombre";
+                + "GROUP BY c.id ORDER BY c.orden_visual, c.nombre, c.id";
 
         List<Cancha> canchas = new ArrayList<>();
 
@@ -260,7 +262,7 @@ public class CanchaDAOMySQL implements CanchaDAO {
     @Override
     public List<Cancha> listarTodas() {
         String sql = consultaBase()
-                + " GROUP BY c.id ORDER BY c.activo DESC, c.nombre";
+                + " GROUP BY c.id ORDER BY c.orden_visual, c.nombre, c.id";
         List<Cancha> canchas = new ArrayList<>();
         try (Connection conexion = ConexionBD.obtenerConexion();
                 PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -294,6 +296,73 @@ public class CanchaDAOMySQL implements CanchaDAO {
     }
 
     @Override
+    public void subirOrden(long id) {
+        moverOrden(id, true);
+    }
+
+    @Override
+    public void bajarOrden(long id) {
+        moverOrden(id, false);
+    }
+
+    private void moverOrden(long id, boolean subir) {
+        try (Connection conexion = ConexionBD.obtenerConexion()) {
+            conexion.setAutoCommit(false);
+            try {
+                int actual = obtenerOrden(conexion, id);
+                String operador = subir ? "<" : ">";
+                String direccion = subir ? "DESC" : "ASC";
+                String sqlVecina = "SELECT id, orden_visual FROM canchas "
+                        + "WHERE orden_visual " + operador + " ? "
+                        + "ORDER BY orden_visual " + direccion + ", id " + direccion
+                        + " LIMIT 1 FOR UPDATE";
+                try (PreparedStatement buscar = conexion.prepareStatement(sqlVecina)) {
+                    buscar.setInt(1, actual);
+                    try (ResultSet resultado = buscar.executeQuery()) {
+                        if (!resultado.next()) {
+                            conexion.rollback();
+                            return;
+                        }
+                        long idVecina = resultado.getLong("id");
+                        int ordenVecina = resultado.getInt("orden_visual");
+                        actualizarOrden(conexion, id, ordenVecina);
+                        actualizarOrden(conexion, idVecina, actual);
+                    }
+                }
+                conexion.commit();
+            } catch (SQLException | RuntimeException exception) {
+                conexion.rollback();
+                throw exception;
+            } finally {
+                conexion.setAutoCommit(true);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("No se pudo cambiar el orden de la cancha.", exception);
+        }
+    }
+
+    private int obtenerOrden(Connection conexion, long id) throws SQLException {
+        try (PreparedStatement sentencia = conexion.prepareStatement(
+                "SELECT orden_visual FROM canchas WHERE id = ? FOR UPDATE")) {
+            sentencia.setLong(1, id);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (!resultado.next()) throw new IllegalArgumentException("La cancha no existe.");
+                return resultado.getInt(1);
+            }
+        }
+    }
+
+    private void actualizarOrden(Connection conexion, long id, int orden)
+            throws SQLException {
+        try (PreparedStatement sentencia = conexion.prepareStatement(
+                "UPDATE canchas SET orden_visual = ? WHERE id = ?")) {
+            sentencia.setInt(1, orden);
+            sentencia.setLong(2, id);
+            sentencia.executeUpdate();
+        }
+    }
+
+    @Override
     public void eliminarDefinitivamente(long id) {
         String sql = "DELETE FROM canchas "
                 + "WHERE id = ? AND activo = FALSE";
@@ -304,6 +373,7 @@ public class CanchaDAOMySQL implements CanchaDAO {
                 throw new IllegalArgumentException(
                         "La cancha no existe o todavía está activa.");
             }
+            normalizarOrdenes(conexion);
         } catch (SQLException exception) {
             if (exception.getErrorCode() == 1451) {
                 throw new IllegalArgumentException(
@@ -313,6 +383,24 @@ public class CanchaDAOMySQL implements CanchaDAO {
             }
             throw new RuntimeException(
                     "No se pudo eliminar definitivamente la cancha.", exception);
+        }
+    }
+
+    private void normalizarOrdenes(Connection conexion) throws SQLException {
+        List<Long> ids = new ArrayList<>();
+        try (PreparedStatement sentencia = conexion.prepareStatement(
+                "SELECT id FROM canchas ORDER BY orden_visual, nombre, id");
+                ResultSet resultado = sentencia.executeQuery()) {
+            while (resultado.next()) ids.add(resultado.getLong(1));
+        }
+        try (PreparedStatement actualizar = conexion.prepareStatement(
+                "UPDATE canchas SET orden_visual = ? WHERE id = ?")) {
+            for (int indice = 0; indice < ids.size(); indice++) {
+                actualizar.setInt(1, indice + 1);
+                actualizar.setLong(2, ids.get(indice));
+                actualizar.addBatch();
+            }
+            actualizar.executeBatch();
         }
     }
 
@@ -373,7 +461,7 @@ public class CanchaDAOMySQL implements CanchaDAO {
         return "SELECT c.id, c.nombre, c.descripcion, c.tipo, "
                 + "c.superficie, c.tiene_iluminacion, "
                 + "c.hora_apertura, c.hora_cierre, "
-                + "c.duracion_reserva, c.precio, c.activo, "
+                + "c.duracion_reserva, c.precio, c.activo, c.orden_visual, "
                 + "c.fecha_creacion, "
                 + "GROUP_CONCAT(d.dia_semana "
                 + "ORDER BY FIELD(d.dia_semana, "
@@ -410,6 +498,7 @@ public class CanchaDAOMySQL implements CanchaDAO {
         );
         cancha.setPrecio(resultado.getBigDecimal("precio"));
         cancha.setActivo(resultado.getBoolean("activo"));
+        cancha.setOrdenVisual(resultado.getInt("orden_visual"));
 
         Timestamp fecha = resultado.getTimestamp("fecha_creacion");
         if (fecha != null) {

@@ -15,8 +15,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -52,6 +54,8 @@ public class BloqueosController {
     @FXML private TableColumn<BloqueoCancha, String> columnaMotivo;
 
     @FXML private Label tituloFormulario;
+    @FXML private Label subtituloFormulario;
+    @FXML private Label insigniaEstadoBloqueo;
     @FXML private Label etiquetaMensaje;
     @FXML private ComboBox<Cancha> comboCancha;
     @FXML private DatePicker selectorFecha;
@@ -100,12 +104,55 @@ public class BloqueosController {
                 new PropertyValueFactory<>("motivo")
         );
 
+        tablaBloqueos.setRowFactory(tabla -> {
+            TableRow<BloqueoCancha> fila = new TableRow<>();
+            fila.itemProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, fila.getItem()));
+            return fila;
+        });
+        tablaBloqueos.setOnMouseClicked(evento -> {
+            if (clicEnFondoTabla(evento.getTarget())) limpiarSeleccion();
+        });
+        tablaBloqueos.setOnKeyPressed(evento -> {
+            if (evento.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                limpiarSeleccion();
+                evento.consume();
+            }
+        });
         tablaBloqueos.getSelectionModel().selectedItemProperty()
                 .addListener((obs, anterior, actual) -> {
-                    if (actual != null) {
-                        editar(actual);
-                    }
+                    if (actual != null) editar(actual);
                 });
+    }
+
+    private void actualizarClaseFila(
+            TableRow<BloqueoCancha> fila,
+            BloqueoCancha bloqueo) {
+        fila.getStyleClass().removeAll(
+                "block-row-past", "block-row-selected");
+        if (bloqueo == null || fila.isEmpty()) return;
+        if (bloqueo.getFecha().isBefore(LocalDate.now())) {
+            fila.getStyleClass().add("block-row-past");
+        }
+        if (fila.isSelected()) fila.getStyleClass().add("block-row-selected");
+    }
+
+    private boolean clicEnFondoTabla(Object objetivo) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null && actual != tablaBloqueos) {
+            if (actual instanceof TableRow<?> fila) return fila.isEmpty();
+            actual = actual.getParent();
+        }
+        return actual == tablaBloqueos;
+    }
+
+    @FXML
+    private void limpiarSeleccion() {
+        nuevo();
+        campoBuscar.requestFocus();
     }
 
     private void configurarBusqueda() {
@@ -188,7 +235,12 @@ public class BloqueosController {
         bloqueoSeleccionado = null;
         tablaBloqueos.getSelectionModel().clearSelection();
         tituloFormulario.setText("Nuevo bloqueo");
+        subtituloFormulario.setText(
+                "Reservá temporalmente una franja de la cancha.");
+        insigniaEstadoBloqueo.setVisible(false);
+        insigniaEstadoBloqueo.setManaged(false);
         botonGuardar.setText("GUARDAR BLOQUEO");
+        configurarFormularioSoloLectura(false);
         botonEliminar.setVisible(false);
         botonEliminar.setManaged(false);
 
@@ -203,8 +255,23 @@ public class BloqueosController {
 
     private void editar(BloqueoCancha bloqueo) {
         bloqueoSeleccionado = bloqueo;
-        tituloFormulario.setText("Editar bloqueo");
+        boolean finalizado = bloqueo.getFecha().isBefore(LocalDate.now());
+        tituloFormulario.setText(finalizado
+                ? "Bloqueo finalizado" : "Editar bloqueo");
+        subtituloFormulario.setText(
+                bloqueo.getNombreCancha() + " · "
+                        + bloqueo.getFecha().format(FORMATO_FECHA)
+                        + "\n" + bloqueo.getHoraInicio().format(FORMATO_HORA)
+                        + " a " + bloqueo.getHoraFin().format(FORMATO_HORA));
+        insigniaEstadoBloqueo.setText(finalizado ? "FINALIZADO" : "PROGRAMADO");
+        insigniaEstadoBloqueo.getStyleClass().removeAll(
+                "block-detail-finished", "block-detail-scheduled");
+        insigniaEstadoBloqueo.getStyleClass().add(finalizado
+                ? "block-detail-finished" : "block-detail-scheduled");
+        insigniaEstadoBloqueo.setVisible(true);
+        insigniaEstadoBloqueo.setManaged(true);
         botonGuardar.setText("GUARDAR CAMBIOS");
+        configurarFormularioSoloLectura(finalizado);
         botonEliminar.setVisible(true);
         botonEliminar.setManaged(true);
 
@@ -220,6 +287,16 @@ public class BloqueosController {
         );
         campoMotivo.setText(bloqueo.getMotivo());
         etiquetaMensaje.setText("");
+    }
+
+    private void configurarFormularioSoloLectura(boolean soloLectura) {
+        comboCancha.setDisable(soloLectura);
+        selectorFecha.setDisable(soloLectura);
+        comboHoraInicio.setDisable(soloLectura);
+        comboHoraFin.setDisable(soloLectura);
+        comboMotivoRapido.setDisable(soloLectura);
+        campoMotivo.setEditable(!soloLectura);
+        botonGuardar.setDisable(soloLectura);
     }
 
     private Cancha buscarCancha(long id) {
@@ -322,7 +399,7 @@ public class BloqueosController {
                 + " · " + bloqueoSeleccionado.getFecha().format(FORMATO_FECHA)
                 + " · " + bloqueoSeleccionado.getMotivo();
         if (!Dialogos.confirmarPeligro("Eliminar bloqueo",
-                "Se eliminara el bloqueo seleccionado.\n\n" + detalle)) return;
+                "Se eliminará el bloqueo seleccionado.\n\n" + detalle)) return;
         try {
             bloqueoService.eliminar(bloqueoSeleccionado.getId());
             cargarBloqueos();
