@@ -60,6 +60,7 @@ public class LlaveGraficaTorneoView {
     private final BiConsumer<String, CambioPlaza> alCambiarPlaza;
     private final Consumer<String> alIntercambiarPartido;
     private final Runnable alAgregarPartido;
+    private final Runnable alCrearNuevoCuadro;
     private final Consumer<String> alEliminarPartido;
     private final ConstructorLlaveTorneoVisualService constructor =
             new ConstructorLlaveTorneoVisualService();
@@ -77,12 +78,14 @@ public class LlaveGraficaTorneoView {
             BiConsumer<String, CambioPlaza> alCambiarPlaza,
             Consumer<String> alIntercambiarPartido,
             Runnable alAgregarPartido,
+            Runnable alCrearNuevoCuadro,
             Consumer<String> alEliminarPartido) {
         this.propuesta = propuesta;
         this.nombres = new HashMap<>(nombres);
         this.alCambiarPlaza = alCambiarPlaza;
         this.alIntercambiarPartido = alIntercambiarPartido;
         this.alAgregarPartido = alAgregarPartido;
+        this.alCrearNuevoCuadro = alCrearNuevoCuadro;
         this.alEliminarPartido = alEliminarPartido;
     }
 
@@ -165,6 +168,16 @@ public class LlaveGraficaTorneoView {
             ajusteAutomatico = false;
             ajustar(scroll, contenidoEscalado, porcentaje, true);
         });
+        Button nuevoCuadro = botonZoom("NUEVO CUADRO");
+        nuevoCuadro.setStyle("-fx-background-color:#173646;"
+                + "-fx-border-color:#5e879a;-fx-border-radius:7;"
+                + "-fx-background-radius:7;-fx-text-fill:#eaf4f8;"
+                + "-fx-font-weight:900;-fx-padding:7 13;"
+                + "-fx-cursor:hand;");
+        nuevoCuadro.setOnAction(evento -> {
+            if (alCrearNuevoCuadro != null) alCrearNuevoCuadro.run();
+        });
+
         Button agregarPartido = botonZoom("+  AGREGAR PARTIDO");
         agregarPartido.setStyle("-fx-background-color:#245875;"
                 + "-fx-border-color:#65b9d7;-fx-border-radius:7;"
@@ -175,7 +188,7 @@ public class LlaveGraficaTorneoView {
             if (alAgregarPartido != null) alAgregarPartido.run();
         });
         HBox leyenda = crearLeyenda();
-        HBox herramientas = new HBox(12, agregarPartido,
+        HBox herramientas = new HBox(12, nuevoCuadro, agregarPartido,
                 new Separator(), ajustar, new Separator(),
                 reducir, porcentaje, aumentar, new Separator(), leyenda);
         herramientas.setAlignment(Pos.CENTER_LEFT);

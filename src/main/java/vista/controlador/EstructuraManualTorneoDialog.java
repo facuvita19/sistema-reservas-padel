@@ -193,7 +193,32 @@ public class EstructuraManualTorneoDialog {
                 this::actualizarDesdeLlave,
                 this::intercambiarDesdeLlave,
                 this::agregarDesdeLlave,
+                this::nuevoCuadroDesdeLlave,
                 this::eliminarDesdeLlave).crear();
+    }
+
+    private void nuevoCuadroDesdeLlave() {
+        if (ediciones.isEmpty()) {
+            Dialogos.informacion("Cuadro vacio",
+                    "La estructura ya esta vacia. Usa AGREGAR PARTIDO "
+                    + "para comenzar a construirla.");
+            return;
+        }
+        boolean confirmar = Dialogos.confirmar(
+                "Crear un cuadro nuevo",
+                "Se quitaran los " + ediciones.size()
+                + " partidos de esta edicion y comenzaras con una llave "
+                + "vacia. Los clasificados seguiran disponibles.\n\n"
+                + "El cambio no sera definitivo hasta pulsar APLICAR "
+                + "ESTRUCTURA. Si pulsas CANCELAR, se recuperara la "
+                + "propuesta aplicada anteriormente.\n\n"
+                + "¿Queres continuar?");
+        if (!confirmar) return;
+
+        ediciones.clear();
+        filas.getChildren().clear();
+        actualizarOpciones();
+        refrescarVistaGrafica();
     }
 
     private void agregarDesdeLlave() {
@@ -218,10 +243,15 @@ public class EstructuraManualTorneoDialog {
         dialogoNuevo.getDialogPane().getButtonTypes().setAll(
                 agregarTipo, cancelarTipo);
 
+        List<String> fasesPrincipales = fasesDisponibles.stream()
+                .filter(f -> !f.startsWith("Acceso R"))
+                .toList();
+        List<String> fasesIniciales = fasesPrincipales.isEmpty()
+                ? fasesDisponibles : fasesPrincipales;
         ComboBox<String> fase = new ComboBox<>(
-                FXCollections.observableArrayList(fasesDisponibles));
-        fase.setValue(fasesDisponibles.contains(faseSugerida())
-                ? faseSugerida() : fasesDisponibles.get(0));
+                FXCollections.observableArrayList(fasesIniciales));
+        fase.setValue(fasesIniciales.contains(faseSugerida())
+                ? faseSugerida() : fasesIniciales.get(0));
         fase.setConverter(new javafx.util.StringConverter<>() {
             @Override
             public String toString(String valor) {
@@ -233,19 +263,27 @@ public class EstructuraManualTorneoDialog {
             }
         });
         estiloCombo(fase, 370);
-        fase.setCellFactory(lista -> new javafx.scene.control.ListCell<>() {
-            @Override
-            protected void updateItem(String valor, boolean vacia) {
-                super.updateItem(valor, vacia);
-                setText(vacia || valor == null
-                        ? null : textoCapacidadFase(valor));
-                setStyle(isSelected()
-                        ? "-fx-background-color:#315f79;"
-                            + "-fx-text-fill:#ffffff;-fx-padding:8 10;"
-                        : "-fx-background-color:#102532;"
-                            + "-fx-text-fill:#f4fbff;-fx-padding:8 10;");
+        javafx.scene.control.CheckBox incluirPrevias =
+                new javafx.scene.control.CheckBox("INCLUIR FASES PREVIAS");
+        incluirPrevias.setFocusTraversable(false);
+        incluirPrevias.setStyle("-fx-text-fill:#b9ced8;"
+                + "-fx-font-size:11px;-fx-font-weight:800;"
+                + "-fx-cursor:hand;");
+        incluirPrevias.selectedProperty().addListener((o, anterior, incluir) -> {
+            String seleccionActual = fase.getValue();
+            List<String> opciones = incluir
+                    ? fasesDisponibles : fasesPrincipales;
+            if (opciones.isEmpty()) opciones = fasesDisponibles;
+            fase.setItems(FXCollections.observableArrayList(opciones));
+            if (seleccionActual != null
+                    && opciones.contains(seleccionActual)) {
+                fase.setValue(seleccionActual);
+            } else {
+                fase.setValue(opciones.get(0));
             }
         });
+        fase.setCellFactory(lista -> celdaSelectorAnimada(
+                valor -> textoCapacidadFase(valor)));
         fase.setButtonCell(new javafx.scene.control.ListCell<>() {
             @Override
             protected void updateItem(String valor, boolean vacia) {
@@ -262,16 +300,25 @@ public class EstructuraManualTorneoDialog {
                 java.util.stream.IntStream.rangeClosed(1, 10)
                         .boxed().toList()));
         estiloComboNumerico(rondaNueva, 130);
+        rondaNueva.setCellFactory(lista -> celdaSelectorAnimada(
+                valor -> String.valueOf(valor)));
+        rondaNueva.setButtonCell(celdaBotonSelector(
+                valor -> String.valueOf(valor)));
 
         ComboBox<Integer> ordenNuevo = new ComboBox<>();
         ordenNuevo.setItems(FXCollections.observableArrayList(
                 java.util.stream.IntStream.rangeClosed(1, 32)
                         .boxed().toList()));
         estiloComboNumerico(ordenNuevo, 130);
+        ordenNuevo.setCellFactory(lista -> celdaSelectorAnimada(
+                valor -> String.valueOf(valor)));
+        ordenNuevo.setButtonCell(celdaBotonSelector(
+                valor -> String.valueOf(valor)));
 
         Label capacidad = etiqueta("", "#91d7f4", 12, true);
         Runnable actualizarSugerencias = () -> {
             String seleccionada = fase.getValue();
+            if (seleccionada == null || seleccionada.isBlank()) return;
             rondaNueva.setValue(rondaDeFase(seleccionada));
             ordenNuevo.setValue(siguienteOrden(seleccionada));
             capacidad.setText(descripcionCapacidad(seleccionada));
@@ -281,19 +328,21 @@ public class EstructuraManualTorneoDialog {
         actualizarSugerencias.run();
 
         Label ayuda = etiqueta(
-                "Selecciona una fase con lugares disponibles. La ronda y "
-                + "el numero se sugieren segun la estructura actual.",
+                "Selecciona una fase con lugares disponibles. Las fases "
+                + "previas permanecen ocultas salvo que decidas incluirlas. "
+                + "La ronda y el numero se sugieren automaticamente.",
                 "#d7e4e9", 13, true);
         GridPane campos = new GridPane();
         campos.setHgap(12);
         campos.setVgap(12);
         campos.add(etiqueta("FASE", "#91b3c3", 11, false), 0, 0);
         campos.add(fase, 1, 0);
-        campos.add(etiqueta("RONDA", "#91b3c3", 11, false), 0, 1);
-        campos.add(rondaNueva, 1, 1);
+        campos.add(incluirPrevias, 1, 1);
+        campos.add(etiqueta("RONDA", "#91b3c3", 11, false), 0, 2);
+        campos.add(rondaNueva, 1, 2);
         campos.add(etiqueta("NUMERO DE PARTIDO", "#91b3c3", 11, false),
-                0, 2);
-        campos.add(ordenNuevo, 1, 2);
+                0, 3);
+        campos.add(ordenNuevo, 1, 3);
 
         Label aviso = etiqueta(
                 "Las dos plazas se agregaran sin asignar y deberan "
@@ -342,6 +391,7 @@ public class EstructuraManualTorneoDialog {
         nueva.orden.setValue(configuracion.orden());
         nueva.p1.setValue(null);
         nueva.p2.setValue(null);
+        normalizarRondasPorOrdenDeportivo();
         actualizarOpciones();
         refrescarVistaGrafica();
     }
@@ -353,6 +403,7 @@ public class EstructuraManualTorneoDialog {
         if (encontrada == null) return;
         ediciones.remove(encontrada);
         filas.getChildren().remove(encontrada.raiz);
+        normalizarRondasPorOrdenDeportivo();
         actualizarOpciones();
         refrescarVistaGrafica();
     }
@@ -397,6 +448,9 @@ public class EstructuraManualTorneoDialog {
     }
 
     private String descripcionCapacidad(String fase) {
+        if (fase == null || fase.isBlank()) {
+            return "Selecciona una fase para ver su capacidad.";
+        }
         Integer maximo = maximoPartidosFase(fase);
         if (maximo == null) {
             return "Esta fase de acceso tiene capacidad variable segun "
@@ -418,6 +472,7 @@ public class EstructuraManualTorneoDialog {
     }
 
     private int rondaDeFase(String instancia) {
+        if (instancia == null || instancia.isBlank()) return 1;
         return ediciones.stream()
                 .filter(f -> instancia.equals(f.instancia.getValue()))
                 .mapToInt(f -> f.ronda.getValue()).findFirst()
@@ -468,7 +523,43 @@ public class EstructuraManualTorneoDialog {
         return numero > 0 ? "Fase previa " + numero : fase;
     }
 
+    private void normalizarRondasPorOrdenDeportivo() {
+        java.util.List<String> fasesPresentes = ediciones.stream()
+                .map(f -> f.instancia.getValue())
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .sorted(java.util.Comparator
+                        .comparingInt(this::ordenDeportivoFase))
+                .toList();
+
+        java.util.Map<String, Integer> rondaPorFase =
+                new java.util.LinkedHashMap<>();
+        for (int indice = 0; indice < fasesPresentes.size(); indice++) {
+            rondaPorFase.put(fasesPresentes.get(indice), indice + 1);
+        }
+        ediciones.forEach(fila -> {
+            Integer ronda = rondaPorFase.get(fila.instancia.getValue());
+            if (ronda != null) fila.ronda.setValue(ronda);
+        });
+    }
+
+    private int ordenDeportivoFase(String fase) {
+        if (fase == null) return Integer.MAX_VALUE;
+        if (fase.startsWith("Acceso R")) {
+            return numeroFasePrevia(fase);
+        }
+        return switch (fase) {
+            case "Dieciseisavos" -> 100;
+            case "Octavos" -> 200;
+            case "Cuartos" -> 300;
+            case "Semifinal" -> 400;
+            case "Final" -> 500;
+            default -> 900;
+        };
+    }
+
     private int siguienteOrden(String instancia) {
+        if (instancia == null || instancia.isBlank()) return 1;
         return ediciones.stream()
                 .filter(f -> instancia.equals(f.instancia.getValue()))
                 .mapToInt(f -> f.orden.getValue()).max().orElse(0) + 1;
@@ -807,6 +898,61 @@ public class EstructuraManualTorneoDialog {
         label.setStyle("-fx-text-fill:" + color + ";-fx-font-size:"
                 + tamano + "px;");
         return label;
+    }
+
+    private <T> javafx.scene.control.ListCell<T> celdaSelectorAnimada(
+            java.util.function.Function<T, String> textoVisible) {
+        return new javafx.scene.control.ListCell<>() {
+            private final String normal = "-fx-background-color:#102532;"
+                    + "-fx-text-fill:#f4fbff;-fx-padding:9 11;"
+                    + "-fx-cursor:hand;";
+            private final String sobre = "-fx-background-color:#214b60;"
+                    + "-fx-text-fill:#ffffff;-fx-padding:9 11;"
+                    + "-fx-font-weight:800;-fx-cursor:hand;";
+            private final String seleccionado =
+                    "-fx-background-color:#376f8e;"
+                    + "-fx-text-fill:#ffffff;-fx-padding:9 11;"
+                    + "-fx-font-weight:800;-fx-cursor:hand;";
+
+            {
+                setOnMouseEntered(evento -> actualizarEstilo(true));
+                setOnMouseExited(evento -> actualizarEstilo(false));
+            }
+
+            @Override
+            protected void updateItem(T valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null
+                        ? null : textoVisible.apply(valor));
+                setMouseTransparent(vacia);
+                actualizarEstilo(false);
+            }
+
+            private void actualizarEstilo(boolean punteroEncima) {
+                if (isEmpty()) {
+                    setStyle("-fx-background-color:#102532;");
+                } else if (isSelected()) {
+                    setStyle(seleccionado);
+                } else {
+                    setStyle(punteroEncima ? sobre : normal);
+                }
+            }
+        };
+    }
+
+    private <T> javafx.scene.control.ListCell<T> celdaBotonSelector(
+            java.util.function.Function<T, String> textoVisible) {
+        return new javafx.scene.control.ListCell<>() {
+            @Override
+            protected void updateItem(T valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null
+                        ? null : textoVisible.apply(valor));
+                setStyle("-fx-background-color:#0a1922;"
+                        + "-fx-text-fill:#f4fbff;-fx-padding:6 9;"
+                        + "-fx-cursor:hand;");
+            }
+        };
     }
 
     private record ConfiguracionNuevoPartido(
