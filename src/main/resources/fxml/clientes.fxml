@@ -2,23 +2,39 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.ClientesController" styleClass="module-root">
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.ClientesController" styleClass="module-root, clients-root">
  <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header"><padding><Insets top="22" right="28" bottom="22" left="28"/></padding>
   <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/><VBox spacing="3"><Label text="Gestión de clientes" styleClass="page-title"/><Label text="Administrá los datos de contacto y consultá el historial completo." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="NUEVO CLIENTE" onAction="#nuevo" styleClass="primary-button"/>
  </HBox></top>
  <center><SplitPane dividerPositions="0.38" styleClass="module-split">
   <VBox spacing="16" styleClass="list-panel"><padding><Insets top="22" right="18" bottom="22" left="28"/></padding>
-   <HBox spacing="10"><TextField fx:id="campoBuscar" promptText="Buscar cliente..." HBox.hgrow="ALWAYS" styleClass="modern-field"/><Button text="Actualizar" onAction="#cargarClientes" styleClass="secondary-button"/></HBox>
-   <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS" styleClass="modern-table"><columns><TableColumn fx:id="columnaNombre" text="CLIENTE" prefWidth="170"/><TableColumn fx:id="columnaDocumento" text="DOCUMENTO" prefWidth="105"/><TableColumn fx:id="columnaTelefono" text="TELÉFONO" prefWidth="125"/><TableColumn fx:id="columnaEmail" text="EMAIL" prefWidth="170"/><TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="80"/></columns><placeholder><Label text="Todavía no hay clientes registrados." styleClass="empty-state"/></placeholder></TableView>
+   <HBox spacing="8">
+    <TextField fx:id="campoBuscar" promptText="Buscar por nombre, documento o teléfono..." HBox.hgrow="ALWAYS" styleClass="modern-field"/>
+    <Button text="LIMPIAR" onAction="#limpiarSeleccion" styleClass="secondary-button, client-clear-button"/>
+    <Button text="Actualizar" onAction="#cargarClientes" styleClass="secondary-button"/>
+   </HBox>
+   <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS" styleClass="modern-table"><columns><TableColumn fx:id="columnaNombre" text="CLIENTE" prefWidth="195"/>
+    <TableColumn fx:id="columnaDocumento" text="DOCUMENTO" prefWidth="120"/>
+    <TableColumn fx:id="columnaTelefono" text="TELÉFONO" prefWidth="145"/>
+    <TableColumn fx:id="columnaEmail" text="EMAIL" visible="false"/>
+    <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="105"/></columns><placeholder><Label text="Todavía no hay clientes registrados." styleClass="empty-state"/></placeholder></TableView>
   </VBox>
   <ScrollPane fitToWidth="true" styleClass="form-scroll"><VBox spacing="16" styleClass="form-card"><padding><Insets top="24" right="28" bottom="28" left="28"/></padding>
-   <HBox alignment="CENTER_LEFT" spacing="10"><Label fx:id="tituloFormulario" text="Nuevo cliente" styleClass="section-title"/><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonNuevaReserva" text="NUEVA RESERVA" onAction="#nuevaReservaParaCliente" visible="false" managed="false" styleClass="client-reservation-button"/></HBox>
+   <VBox spacing="7" styleClass="client-detail-header">
+    <HBox alignment="CENTER_LEFT" spacing="8">
+     <Label fx:id="tituloFormulario" text="Nuevo cliente" styleClass="section-title"/>
+     <Region HBox.hgrow="ALWAYS"/>
+     <Label fx:id="insigniaEstadoCliente" text="ACTIVO" visible="false" managed="false" styleClass="client-detail-status"/>
+     <Button fx:id="botonNuevaReserva" text="NUEVA RESERVA" onAction="#nuevaReservaParaCliente" visible="false" managed="false" styleClass="client-reservation-button"/>
+    </HBox>
+    <Label fx:id="subtituloFormulario" text="Registrá los datos personales y de contacto." wrapText="true" styleClass="client-detail-subtitle"/>
+   </VBox>
    <GridPane hgap="12" vgap="10"><columnConstraints><ColumnConstraints percentWidth="50" hgrow="ALWAYS"/><ColumnConstraints percentWidth="50" hgrow="ALWAYS"/></columnConstraints>
     <VBox spacing="6"><Label text="Nombre *" styleClass="field-label"/><TextField fx:id="campoNombre" styleClass="modern-field"/></VBox><VBox spacing="6" GridPane.columnIndex="1"><Label text="Apellido *" styleClass="field-label"/><TextField fx:id="campoApellido" styleClass="modern-field"/></VBox>
     <VBox spacing="6" GridPane.rowIndex="1"><Label text="Documento *" styleClass="field-label"/><TextField fx:id="campoDocumento" styleClass="modern-field"/></VBox><VBox spacing="6" GridPane.rowIndex="1" GridPane.columnIndex="1"><Label text="Teléfono *" styleClass="field-label"/><TextField fx:id="campoTelefono" styleClass="modern-field"/></VBox>
     <VBox spacing="6" GridPane.rowIndex="2" GridPane.columnSpan="2"><Label text="Correo electrónico" styleClass="field-label"/><TextField fx:id="campoEmail" styleClass="modern-field"/></VBox>
    </GridPane>
-   <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true"/><HBox spacing="10"><Button fx:id="botonGuardar" text="GUARDAR CLIENTE" onAction="#guardar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button"/><Button fx:id="botonDesactivar" text="DESACTIVAR" onAction="#desactivar" styleClass="danger-button"/></HBox><Separator/>
+   <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true"/><HBox spacing="10"><Button fx:id="botonGuardar" text="GUARDAR CLIENTE" onAction="#guardar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button"/><Button fx:id="botonDesactivar" text="DESACTIVAR" onAction="#desactivar" styleClass="danger-button"/><Button fx:id="botonReactivar" text="REACTIVAR" onAction="#reactivar" visible="false" managed="false" styleClass="reactivate-button"/><Button fx:id="botonEliminarDefinitivamente" text="ELIMINAR" onAction="#eliminarDefinitivamente" visible="false" managed="false" styleClass="delete-client-button"/></HBox><Separator/>
    <Label text="Resumen del historial" styleClass="section-title"/>
    <GridPane hgap="8"><columnConstraints><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/><ColumnConstraints percentWidth="16.66"/></columnConstraints>
     <VBox alignment="CENTER" styleClass="history-metric"><Label text="RESERVAS" styleClass="history-metric-label"/><Label fx:id="etiquetaTotalReservas" text="0" styleClass="history-metric-value"/></VBox><VBox GridPane.columnIndex="1" alignment="CENTER" styleClass="history-metric"><Label text="COMPLETADAS" styleClass="history-metric-label"/><Label fx:id="etiquetaCompletadas" text="0" styleClass="history-metric-value"/></VBox><VBox GridPane.columnIndex="2" alignment="CENTER" styleClass="history-metric"><Label text="CANCELADAS" styleClass="history-metric-label"/><Label fx:id="etiquetaCanceladas" text="0" styleClass="history-metric-value"/></VBox><VBox GridPane.columnIndex="3" alignment="CENTER" styleClass="history-metric"><Label text="AUSENCIAS" styleClass="history-metric-label"/><Label fx:id="etiquetaAusencias" text="0" styleClass="history-metric-value"/></VBox><VBox GridPane.columnIndex="4" alignment="CENTER" styleClass="history-metric"><Label text="ACREDITADO" styleClass="history-metric-label"/><Label fx:id="etiquetaTotalAcreditado" text="ARS 0.00" styleClass="history-money-value"/></VBox><VBox GridPane.columnIndex="5" alignment="CENTER" styleClass="history-metric"><Label text="SALDO" styleClass="history-metric-label"/><Label fx:id="etiquetaSaldoPendiente" text="ARS 0.00" styleClass="history-balance-value"/></VBox>

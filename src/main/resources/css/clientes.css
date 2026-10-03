@@ -8,3 +8,59 @@
 .next-reservation-card { -fx-background-color: #182936; -fx-background-radius: 9; -fx-border-color: #345064; -fx-border-radius: 9; -fx-padding: 11 14; }
 .next-reservation-value { -fx-text-fill: #b8ccda; -fx-font-size: 13px; -fx-font-weight: 700; -fx-padding: 0 0 0 12; }
 .client-history-table { -fx-min-height: 230; }
+
+/* clientes-modern-v2 */
+.clients-root, .clients-root .list-panel, .clients-root .form-scroll, .clients-root .form-scroll > .viewport, .clients-root .form-card { -fx-background-color: #111417; }
+.client-detail-header { -fx-background-color: #181d21; -fx-background-radius: 11; -fx-border-color: #394249; -fx-border-radius: 11; -fx-padding: 12 14; }
+.client-detail-subtitle { -fx-text-fill: #9ca7ac; -fx-font-size: 11px; -fx-line-spacing: 2px; }
+.client-detail-status, .client-status-badge, .client-history-status { -fx-background-radius: 10; -fx-border-radius: 10; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 4 8; -fx-alignment: CENTER; }
+.client-detail-active, .client-status-active, .client-history-status-completada { -fx-background-color: #1e3229; -fx-border-color: #4e8069; -fx-text-fill: #b9ddcc; }
+.client-detail-inactive, .client-status-inactive, .client-history-status-cancelada, .client-history-status-ausente { -fx-background-color: #382326; -fx-border-color: #8b5058; -fx-text-fill: #efb5bc; }
+.client-history-status-pendiente { -fx-background-color: #3a301c; -fx-border-color: #8c7133; -fx-text-fill: #efcf84; }
+.client-history-status-confirmada { -fx-background-color: #25323a; -fx-border-color: #567486; -fx-text-fill: #c8dce6; }
+.client-history-status-expirada { -fx-background-color: #292d30; -fx-border-color: #555d62; -fx-text-fill: #aeb6ba; }
+.clients-root .modern-table .table-row-cell.client-row-inactive { -fx-opacity: .60; }
+.clients-root .modern-table .table-row-cell.client-row-selected { -fx-opacity: 1; -fx-background-color: #22292e; -fx-border-color: transparent transparent #343d42 -color-principal; -fx-border-width: 0 0 1 4; }
+.history-metric { -fx-background-color: #1d2327; -fx-border-color: #3a4349; }
+.next-reservation-card { -fx-background-color: #1d2529; -fx-border-color: #405058; }
+.client-history-table .table-cell { -fx-font-size: 11px; }
+.clients-root .reactivate-button { -fx-pref-height: 46; -fx-min-height: 46; -fx-background-color: #26543f; -fx-border-color: #4b866c; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: #e9fff5; -fx-font-weight: 900; -fx-padding: 0 18; -fx-cursor: hand; }
+.clients-root .reactivate-button:hover { -fx-background-color: #31684e; -fx-border-color: #69aa8b; }
+
+/* clientes-list-delete-v3 */
+.clients-root .client-clear-button {
+    -fx-min-width: 88;
+    -fx-pref-width: 88;
+    -fx-padding: 0 10;
+    -fx-font-size: 10px;
+}
+.clients-root .modern-table .client-status-badge {
+    -fx-min-width: 76;
+    -fx-max-width: 76;
+}
+.clients-root .delete-client-button {
+    -fx-pref-height: 46;
+    -fx-min-height: 46;
+    -fx-max-height: 46;
+    -fx-min-width: 110;
+    -fx-pref-width: 110;
+    -fx-background-color: #292d30;
+    -fx-background-radius: 10;
+    -fx-border-color: #71454c;
+    -fx-border-radius: 10;
+    -fx-text-fill: #e5a4ac;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 16;
+    -fx-cursor: hand;
+}
+.clients-root .delete-client-button:hover {
+    -fx-background-color: #3b2529;
+    -fx-border-color: #a65a65;
+    -fx-text-fill: #ffc1c8;
+}
+.clients-root .delete-client-button:pressed {
+    -fx-background-color: #2e2023;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}

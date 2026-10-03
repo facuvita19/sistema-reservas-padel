@@ -13,12 +13,15 @@ import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,6 +50,7 @@ public class ClientesController {
 
     private FilteredList<Cliente> clientesFiltrados;
     private Cliente clienteSeleccionado;
+    private long solicitudHistorialActual;
 
     @FXML private TextField campoBuscar;
     @FXML private TableView<Cliente> tablaClientes;
@@ -56,6 +60,8 @@ public class ClientesController {
     @FXML private TableColumn<Cliente, String> columnaEmail;
     @FXML private TableColumn<Cliente, String> columnaEstado;
     @FXML private Label tituloFormulario;
+    @FXML private Label subtituloFormulario;
+    @FXML private Label insigniaEstadoCliente;
     @FXML private Label etiquetaMensaje;
     @FXML private TextField campoNombre;
     @FXML private TextField campoApellido;
@@ -64,6 +70,8 @@ public class ClientesController {
     @FXML private TextField campoEmail;
     @FXML private Button botonGuardar;
     @FXML private Button botonDesactivar;
+    @FXML private Button botonReactivar;
+    @FXML private Button botonEliminarDefinitivamente;
     @FXML private Button botonNuevaReserva;
     @FXML private Label etiquetaTotalReservas;
     @FXML private Label etiquetaCompletadas;
@@ -88,6 +96,12 @@ public class ClientesController {
         configurarBusqueda();
         cargarClientes();
         nuevo();
+        tablaClientes.setOnKeyPressed(evento -> {
+            if (evento.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
+                limpiarSeleccion();
+                evento.consume();
+            }
+        });
     }
 
     private void configurarTablaClientes() {
@@ -96,6 +110,28 @@ public class ClientesController {
         columnaTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         columnaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         columnaEstado.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().isActivo() ? "Activo" : "Inactivo"));
+        columnaEstado.setCellFactory(columna -> new TableCell<>() {
+            private final Label insignia = new Label();
+            { insignia.getStyleClass().add("client-status-badge"); setText(null); }
+            @Override protected void updateItem(String estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                if (vacia || estado == null) { setGraphic(null); return; }
+                boolean activo = "Activo".equals(estado);
+                insignia.setText(estado.toUpperCase(Locale.ROOT));
+                insignia.getStyleClass().removeAll("client-status-active", "client-status-inactive");
+                insignia.getStyleClass().add(activo ? "client-status-active" : "client-status-inactive");
+                setGraphic(insignia);
+            }
+        });
+        tablaClientes.setRowFactory(tabla -> {
+            TableRow<Cliente> fila = new TableRow<>();
+            fila.itemProperty().addListener((obs, anterior, actual) -> actualizarClaseFilaCliente(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) -> actualizarClaseFilaCliente(fila, fila.getItem()));
+            return fila;
+        });
+        tablaClientes.setOnMouseClicked(evento -> {
+            if (clicEnFondoTabla(evento.getTarget())) nuevo();
+        });
         tablaClientes.getSelectionModel().selectedItemProperty().addListener((o, a, actual) -> {
             if (actual != null) editar(actual);
         });
@@ -112,6 +148,18 @@ public class ClientesController {
         columnaHistorialHorario.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(formatearHorario(d.getValue())));
         columnaHistorialCancha.setCellValueFactory(new PropertyValueFactory<>("nombreCancha"));
         columnaHistorialEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        columnaHistorialEstado.setCellFactory(columna -> new TableCell<>() {
+            private final Label insignia = new Label();
+            { insignia.getStyleClass().add("client-history-status"); setText(null); }
+            @Override protected void updateItem(EstadoReserva estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                if (vacia || estado == null) { setGraphic(null); return; }
+                insignia.setText(nombreEstado(estado));
+                insignia.getStyleClass().removeIf(clase -> clase.startsWith("client-history-status-") && !clase.equals("client-history-status"));
+                insignia.getStyleClass().add("client-history-status-" + estado.name().toLowerCase(Locale.ROOT));
+                setGraphic(insignia);
+            }
+        });
         columnaHistorialPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
         columnaHistorialAcreditado.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(acreditadoPorReserva.getOrDefault(d.getValue().getId(), BigDecimal.ZERO)));
         columnaHistorialSaldo.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(saldoPorReserva.getOrDefault(d.getValue().getId(), BigDecimal.ZERO)));
@@ -130,15 +178,44 @@ public class ClientesController {
         columna.setCellFactory(c -> new TableCell<>() {
             @Override protected void updateItem(BigDecimal importe, boolean vacia) {
                 super.updateItem(importe, vacia);
+                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
                 setText(vacia || importe == null ? null : formatearMoneda(importe));
             }
         });
+    }
+
+    private String nombreEstado(EstadoReserva estado) {
+        return switch (estado) {
+            case PENDIENTE -> "Esperando seña";
+            case CONFIRMADA -> "Confirmada";
+            case COMPLETADA -> "Completada";
+            case CANCELADA -> "Cancelada";
+            case AUSENTE -> "Ausente";
+            case EXPIRADA -> "Expirada";
+        };
     }
 
     private String formatearHorario(Reserva r) {
         if (r == null || r.getHoraInicio() == null) return "";
         String inicio = r.getHoraInicio().format(FORMATO_HORA);
         return r.getHoraFin() == null ? inicio : inicio + " - " + r.getHoraFin().format(FORMATO_HORA);
+    }
+
+    private void actualizarClaseFilaCliente(TableRow<Cliente> fila, Cliente cliente) {
+        fila.getStyleClass().removeAll("client-row-inactive", "client-row-selected");
+        if (cliente == null || fila.isEmpty()) return;
+        if (!cliente.isActivo()) fila.getStyleClass().add("client-row-inactive");
+        if (fila.isSelected()) fila.getStyleClass().add("client-row-selected");
+    }
+
+    private boolean clicEnFondoTabla(Object objetivo) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null && actual != tablaClientes) {
+            if (actual instanceof TableRow<?> fila) return fila.isEmpty();
+            actual = actual.getParent();
+        }
+        return actual == tablaClientes;
     }
 
     private void configurarBusqueda() {
@@ -156,9 +233,15 @@ public class ClientesController {
     }
 
     @FXML
+    private void limpiarSeleccion() {
+        nuevo();
+        campoBuscar.requestFocus();
+    }
+
+    @FXML
     private void cargarClientes() {
         try {
-            List<Cliente> resultado = clienteService.listar();
+            List<Cliente> resultado = clienteService.listarTodos();
             clientes.setAll(resultado);
             mostrarInfo(resultado.size() + " cliente(s) cargado(s).");
         } catch (RuntimeException e) { mostrarError(e.getMessage()); }
@@ -169,9 +252,15 @@ public class ClientesController {
         clienteSeleccionado = null;
         tablaClientes.getSelectionModel().clearSelection();
         tituloFormulario.setText("Nuevo cliente");
+        subtituloFormulario.setText("Registrá los datos personales y de contacto.");
+        insigniaEstadoCliente.setVisible(false);
+        insigniaEstadoCliente.setManaged(false);
         botonGuardar.setText("GUARDAR CLIENTE");
         mostrarBoton(botonDesactivar, false);
+        mostrarBoton(botonReactivar, false);
+        mostrarBoton(botonEliminarDefinitivamente, false);
         mostrarBoton(botonNuevaReserva, false);
+        botonGuardar.setDisable(false);
         campoNombre.clear(); campoApellido.clear(); campoDocumento.clear(); campoTelefono.clear(); campoEmail.clear();
         etiquetaMensaje.setText("");
         limpiarHistorial();
@@ -181,9 +270,23 @@ public class ClientesController {
     private void editar(Cliente cliente) {
         clienteSeleccionado = cliente;
         tituloFormulario.setText("Editar cliente");
+        subtituloFormulario.setText(
+                cliente.getNombreCompleto()
+                        + "\nDocumento "
+                        + cliente.getDocumento()
+                        + " · "
+                        + cliente.getTelefono());
+        insigniaEstadoCliente.setText(cliente.isActivo() ? "ACTIVO" : "INACTIVO");
+        insigniaEstadoCliente.getStyleClass().removeAll("client-detail-active", "client-detail-inactive");
+        insigniaEstadoCliente.getStyleClass().add(cliente.isActivo() ? "client-detail-active" : "client-detail-inactive");
+        insigniaEstadoCliente.setVisible(true);
+        insigniaEstadoCliente.setManaged(true);
         botonGuardar.setText("GUARDAR CAMBIOS");
-        mostrarBoton(botonDesactivar, true);
-        mostrarBoton(botonNuevaReserva, true);
+        mostrarBoton(botonDesactivar, cliente.isActivo());
+        mostrarBoton(botonReactivar, !cliente.isActivo());
+        mostrarBoton(botonEliminarDefinitivamente, !cliente.isActivo());
+        mostrarBoton(botonNuevaReserva, cliente.isActivo());
+        botonGuardar.setDisable(!cliente.isActivo());
         campoNombre.setText(cliente.getNombre());
         campoApellido.setText(cliente.getApellido());
         campoDocumento.setText(cliente.getDocumento());
@@ -194,26 +297,98 @@ public class ClientesController {
     }
 
     private void cargarHistorial(long clienteId) {
-        try {
-            List<Reserva> lista = reservaService.listarPorCliente(clienteId);
-            acreditadoPorReserva.clear(); saldoPorReserva.clear();
-            BigDecimal totalAcreditado = BigDecimal.ZERO;
-            BigDecimal saldoPendiente = BigDecimal.ZERO;
-            for (Reserva r : lista) {
-                BigDecimal acreditado = pagoService.totalAcreditado(r.getId());
-                BigDecimal saldo = pagoService.calcularSaldo(r.getId());
-                acreditadoPorReserva.put(r.getId(), acreditado);
-                saldoPorReserva.put(r.getId(), saldo);
-                totalAcreditado = totalAcreditado.add(acreditado);
-                if (r.getEstado() != EstadoReserva.CANCELADA && r.getEstado() != EstadoReserva.EXPIRADA)
-                    saldoPendiente = saldoPendiente.add(saldo);
+        long solicitud = ++solicitudHistorialActual;
+        prepararCargaHistorial();
+
+        Task<ResultadoHistorial> tarea = new Task<>() {
+            @Override
+            protected ResultadoHistorial call() {
+                List<Reserva> lista = reservaService.listarPorCliente(clienteId);
+                Map<Long, BigDecimal> acreditados = new HashMap<>();
+                Map<Long, BigDecimal> saldos = new HashMap<>();
+                BigDecimal totalAcreditado = BigDecimal.ZERO;
+                BigDecimal saldoPendiente = BigDecimal.ZERO;
+
+                for (Reserva reserva : lista) {
+                    BigDecimal acreditado = pagoService.totalAcreditado(
+                            reserva.getId());
+                    BigDecimal saldo = pagoService.calcularSaldo(
+                            reserva.getId());
+                    acreditado = acreditado == null
+                            ? BigDecimal.ZERO : acreditado;
+                    saldo = saldo == null ? BigDecimal.ZERO : saldo;
+                    acreditados.put(reserva.getId(), acreditado);
+                    saldos.put(reserva.getId(), saldo);
+                    totalAcreditado = totalAcreditado.add(acreditado);
+                    if (reserva.getEstado() != EstadoReserva.CANCELADA
+                            && reserva.getEstado() != EstadoReserva.EXPIRADA) {
+                        saldoPendiente = saldoPendiente.add(saldo);
+                    }
+                }
+
+                return new ResultadoHistorial(
+                        lista, acreditados, saldos,
+                        totalAcreditado, saldoPendiente);
             }
-            historial.setAll(lista);
-            actualizarResumen(lista, totalAcreditado, saldoPendiente);
-        } catch (RuntimeException e) {
+        };
+
+        tarea.setOnSucceeded(evento -> {
+            if (solicitud != solicitudHistorialActual
+                    || clienteSeleccionado == null
+                    || clienteSeleccionado.getId() != clienteId) return;
+
+            ResultadoHistorial resultado = tarea.getValue();
+            acreditadoPorReserva.clear();
+            acreditadoPorReserva.putAll(resultado.acreditados());
+            saldoPorReserva.clear();
+            saldoPorReserva.putAll(resultado.saldos());
+            historial.setAll(resultado.reservas());
+            actualizarResumen(
+                    resultado.reservas(),
+                    resultado.totalAcreditado(),
+                    resultado.saldoPendiente());
+            tablaHistorial.setDisable(false);
+            mostrarInfo(resultado.reservas().size()
+                    + " reserva(s) cargada(s) para el cliente.");
+        });
+
+        tarea.setOnFailed(evento -> {
+            if (solicitud != solicitudHistorialActual) return;
             limpiarHistorial();
-            mostrarError("No se pudo cargar el historial: " + e.getMessage());
-        }
+            tablaHistorial.setDisable(false);
+            Throwable error = tarea.getException();
+            mostrarError("No se pudo cargar el historial: "
+                    + (error == null ? "Error desconocido."
+                            : error.getMessage()));
+        });
+
+        Thread hilo = new Thread(tarea,
+                "historial-cliente-" + clienteId);
+        hilo.setDaemon(true);
+        hilo.start();
+    }
+
+    private void prepararCargaHistorial() {
+        historial.clear();
+        acreditadoPorReserva.clear();
+        saldoPorReserva.clear();
+        etiquetaTotalReservas.setText("...");
+        etiquetaCompletadas.setText("...");
+        etiquetaCanceladas.setText("...");
+        etiquetaAusencias.setText("...");
+        etiquetaTotalAcreditado.setText("Calculando...");
+        etiquetaSaldoPendiente.setText("Calculando...");
+        etiquetaProximaReserva.setText("Cargando historial...");
+        tablaHistorial.setDisable(true);
+        mostrarInfo("Cargando historial y pagos del cliente...");
+    }
+
+    private record ResultadoHistorial(
+            List<Reserva> reservas,
+            Map<Long, BigDecimal> acreditados,
+            Map<Long, BigDecimal> saldos,
+            BigDecimal totalAcreditado,
+            BigDecimal saldoPendiente) {
     }
 
     private void actualizarResumen(List<Reserva> lista, BigDecimal total, BigDecimal saldo) {
@@ -246,6 +421,8 @@ public class ClientesController {
     }
 
     private void limpiarHistorial() {
+        solicitudHistorialActual++;
+        tablaHistorial.setDisable(false);
         historial.clear(); acreditadoPorReserva.clear(); saldoPorReserva.clear();
         etiquetaTotalReservas.setText("0"); etiquetaCompletadas.setText("0"); etiquetaCanceladas.setText("0"); etiquetaAusencias.setText("0");
         etiquetaTotalAcreditado.setText("ARS 0.00"); etiquetaSaldoPendiente.setText("ARS 0.00"); etiquetaProximaReserva.setText("Seleccioná un cliente");
@@ -258,7 +435,8 @@ public class ClientesController {
         try {
             Cliente c = clienteSeleccionado == null ? new Cliente() : clienteSeleccionado;
             c.setNombre(campoNombre.getText()); c.setApellido(campoApellido.getText()); c.setDocumento(campoDocumento.getText());
-            c.setTelefono(campoTelefono.getText()); c.setEmail(campoEmail.getText()); c.setActivo(true);
+            c.setTelefono(campoTelefono.getText()); c.setEmail(campoEmail.getText());
+            if (clienteSeleccionado == null) c.setActivo(true);
             clienteService.guardar(c);
             cargarClientes();
             clientes.stream().filter(x -> x.getId() == c.getId()).findFirst().ifPresent(x -> tablaClientes.getSelectionModel().select(x));
@@ -268,12 +446,55 @@ public class ClientesController {
     }
 
     @FXML
+    private void eliminarDefinitivamente() {
+        if (clienteSeleccionado == null) return;
+        if (clienteSeleccionado.isActivo()) {
+            mostrarError("Primero desactivá el cliente.");
+            return;
+        }
+        if (!Dialogos.confirmarPeligro(
+                "Eliminar cliente definitivamente",
+                "¿Eliminar definitivamente a "
+                        + clienteSeleccionado.getNombreCompleto()
+                        + "?\n\nEsta acción solo continuará si el cliente no tiene "
+                        + "reservas, pagos, inscripciones u otros datos relacionados. "
+                        + "No se puede deshacer.")) return;
+        try {
+            clienteService.eliminarDefinitivamente(
+                    clienteSeleccionado.getId());
+            cargarClientes();
+            nuevo();
+            mostrarInfo("El cliente fue eliminado definitivamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
+    }
+
+    @FXML
+    private void reactivar() {
+        if (clienteSeleccionado == null) return;
+        if (!Dialogos.confirmarAccion(
+                "Reactivar cliente",
+                "¿Reactivar a " + clienteSeleccionado.getNombreCompleto() + "?",
+                "El cliente volverá a estar disponible para reservas e inscripciones.",
+                "REACTIVAR")) return;
+        try {
+            clienteService.reactivar(clienteSeleccionado.getId());
+            cargarClientes();
+            nuevo();
+            mostrarInfo("El cliente fue reactivado correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
+    }
+
+    @FXML
     private void desactivar() {
         if (clienteSeleccionado == null) return;
         if (!Dialogos.confirmarPeligro("Desactivar cliente",
                 "¿Desactivar a " + clienteSeleccionado.getNombreCompleto()
-                        + "?\n\nEl historial se conservara, pero el cliente "
-                        + "dejara de aparecer en los listados activos.")) return;
+                        + "?\n\nEl historial se conservará, pero el cliente "
+                        + "dejará de aparecer en los listados activos.")) return;
         try {
             clienteService.eliminar(clienteSeleccionado.getId());
             cargarClientes();

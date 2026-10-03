@@ -63,6 +63,28 @@ public class ClienteService {
         clienteDAO.eliminar(id);
     }
 
+    public void reactivar(long id) {
+        validarId(id, "cliente");
+        clienteDAO.reactivar(id);
+    }
+
+    public List<Cliente> listarTodos() {
+        return clienteDAO.listarTodos();
+    }
+
+    public void eliminarDefinitivamente(long id) {
+        validarId(id, "cliente");
+        Cliente cliente = clienteDAO.buscar(id);
+        if (cliente == null) {
+            throw new IllegalArgumentException("El cliente no existe.");
+        }
+        if (cliente.isActivo()) {
+            throw new IllegalArgumentException(
+                    "Primero desactivá el cliente antes de eliminarlo definitivamente.");
+        }
+        clienteDAO.eliminarDefinitivamente(id);
+    }
+
     public Cliente buscar(long id) {
         return id <= 0 ? null : clienteDAO.buscar(id);
     }

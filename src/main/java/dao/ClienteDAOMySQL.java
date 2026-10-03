@@ -301,6 +301,62 @@ public class ClienteDAOMySQL implements ClienteDAO {
     }
 
     @Override
+    public List<Cliente> listarTodos() {
+        String sql = consultaBase()
+                + " ORDER BY activo DESC, apellido, nombre";
+        List<Cliente> clientes = new ArrayList<>();
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql);
+                ResultSet resultado = sentencia.executeQuery()) {
+            while (resultado.next()) clientes.add(convertirResultado(resultado));
+            return clientes;
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron recuperar todos los clientes.", exception);
+        }
+    }
+
+    @Override
+    public void reactivar(long id) {
+        String sql = "UPDATE clientes SET activo = TRUE "
+                + "WHERE id = ? AND activo = FALSE";
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, id);
+            if (sentencia.executeUpdate() == 0) {
+                throw new IllegalArgumentException(
+                        "El cliente no existe o ya está activo.");
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo reactivar el cliente.", exception);
+        }
+    }
+
+    @Override
+    public void eliminarDefinitivamente(long id) {
+        String sql = "DELETE FROM clientes "
+                + "WHERE id = ? AND activo = FALSE";
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, id);
+            if (sentencia.executeUpdate() == 0) {
+                throw new IllegalArgumentException(
+                        "El cliente no existe o todavía está activo.");
+            }
+        } catch (SQLException exception) {
+            if (exception.getErrorCode() == 1451) {
+                throw new IllegalArgumentException(
+                        "El cliente no se puede eliminar definitivamente porque "
+                                + "tiene reservas, pagos, inscripciones u otros datos relacionados. "
+                                + "Podés mantenerlo inactivo.", exception);
+            }
+            throw new RuntimeException(
+                    "No se pudo eliminar definitivamente el cliente.", exception);
+        }
+    }
+
+    @Override
     public boolean existeDocumento(
             String documento,
             long clienteExcluidoId) {
@@ -395,4 +451,3 @@ public class ClienteDAOMySQL implements ClienteDAO {
         return new RuntimeException(mensaje, exception);
     }
 }
-

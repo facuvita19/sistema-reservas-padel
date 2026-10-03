@@ -31,6 +31,20 @@ public interface ClienteDAO {
 
     List<Cliente> listar();
 
+    default List<Cliente> listarTodos() {
+        return listar();
+    }
+
+    default void reactivar(long id) {
+        throw new UnsupportedOperationException(
+                "La reactivación no está disponible.");
+    }
+
+    default void eliminarDefinitivamente(long id) {
+        throw new UnsupportedOperationException(
+                "La eliminación definitiva no está disponible.");
+    }
+
     boolean existeDocumento(
             String documento,
             long clienteExcluidoId);
