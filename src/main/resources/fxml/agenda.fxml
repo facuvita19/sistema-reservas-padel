@@ -7,8 +7,8 @@
             fx:controller="vista.controlador.AgendaController"
             styleClass="agenda-root">
     <top>
-        <VBox spacing="10" styleClass="agenda-header-shell">
-            <padding><Insets top="14" right="20" bottom="12" left="20"/></padding>
+        <VBox spacing="8" styleClass="agenda-header-shell">
+            <padding><Insets top="12" right="20" bottom="10" left="20"/></padding>
             <HBox alignment="CENTER_LEFT" spacing="14">
                 <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/>
                 <VBox spacing="1">
@@ -21,21 +21,21 @@
                     <Button text="HOY" onAction="#irHoy" styleClass="agenda-today-button"/>
                     <Button text="›" onAction="#diaSiguiente" styleClass="agenda-nav-button"/>
                     <DatePicker fx:id="selectorFecha" prefWidth="155" styleClass="agenda-date-picker"/>
-                    <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarAgenda" styleClass="agenda-update-button"/>
+                    <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#actualizarAgenda" styleClass="agenda-update-button"/>
                 </HBox>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="agenda-meta-bar">
                 <ProgressIndicator fx:id="indicadorCarga" visible="false" maxWidth="16" maxHeight="16"/>
                 <Label fx:id="etiquetaEstado" text="Preparando agenda..." styleClass="agenda-status"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <FlowPane hgap="6" vgap="5" alignment="CENTER_RIGHT" prefWrapLength="670">
-                    <Label text="Disponible" styleClass="legend-item, legend-disponible"/>
-                    <Label text="Pendiente" styleClass="legend-item, legend-pendiente"/>
-                    <Label text="Confirmada" styleClass="legend-item, legend-confirmada"/>
-                    <Label text="Completada" styleClass="legend-item, legend-completada"/>
-                    <Label text="Ausente" styleClass="legend-item, legend-ausente"/>
-                    <Label text="Bloqueada" styleClass="legend-item, legend-bloqueada"/>
-                    <Label text="Partido" styleClass="legend-item, legend-partido-torneo"/>
+                <FlowPane hgap="6" vgap="5" alignment="CENTER_RIGHT" prefWrapLength="760">
+                    <Label fx:id="indicadorDisponible" text="Disponible" styleClass="legend-item, legend-disponible, agenda-indicator"/>
+                    <Label fx:id="indicadorPendiente" text="Pendiente" styleClass="legend-item, legend-pendiente, agenda-indicator"/>
+                    <Label fx:id="indicadorConfirmada" text="Confirmada" styleClass="legend-item, legend-confirmada, agenda-indicator"/>
+                    <Label fx:id="indicadorCompletada" text="Completada" styleClass="legend-item, legend-completada, agenda-indicator"/>
+                    <Label fx:id="indicadorAusente" text="Ausente" styleClass="legend-item, legend-ausente, agenda-indicator"/>
+                    <Label fx:id="indicadorBloqueada" text="Bloqueada" styleClass="legend-item, legend-bloqueada, agenda-indicator"/>
+                    <Label fx:id="indicadorPartido" text="Partido" styleClass="legend-item, legend-partido-torneo, agenda-indicator"/>
                 </FlowPane>
             </HBox>
         </VBox>
@@ -64,7 +64,8 @@
                     </VBox>
                 </StackPane>
             </VBox>
-            <VBox fx:id="panelDetalle" prefWidth="335" minWidth="315" maxWidth="370"
+            <VBox fx:id="panelDetalle" prefWidth="350" minWidth="330" maxWidth="390"
+                  visible="false" managed="false"
                   spacing="13" styleClass="agenda-detail-panel">
                 <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
                 <HBox alignment="CENTER_LEFT">

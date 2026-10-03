@@ -174,3 +174,324 @@
     -fx-border-color: transparent;
     -fx-effect: none;
 }
+
+/* agenda-modern-neutral-v4 */
+/* Base neutra y jerarquia moderna. */
+.agenda-root { -fx-background-color: #111417; }
+.agenda-header-shell {
+    -fx-background-color: linear-gradient(to right, #171b1f, #1b2025);
+    -fx-border-color: transparent transparent #30363c transparent;
+}
+.agenda-workspace { -fx-background-color: #111417; }
+.agenda-page-title { -fx-text-fill: #f5f3ef; -fx-font-size: 27px; }
+.agenda-page-subtitle { -fx-text-fill: #a7adb2; }
+.agenda-date-controls, .agenda-meta-bar {
+    -fx-background-color: #1d2227;
+    -fx-border-color: #343b42;
+}
+.agenda-meta-bar { -fx-padding: 7 11; }
+.agenda-board-card, .agenda-detail-panel {
+    -fx-background-color: #191e22;
+    -fx-border-color: #333b42;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 18, 0, 0, 6);
+}
+.agenda-board-card { -fx-padding: 6; }
+.agenda-fixed-header-shell { -fx-background-color: #20262b; }
+.agenda-fixed-header, .agenda-grid { -fx-background-color: #2b3136; }
+.agenda-grid { -fx-hgap: 1; -fx-vgap: 1; -fx-padding: 1; }
+.agenda-header {
+    -fx-background-color: #22282d;
+    -fx-text-fill: #eeeae4;
+    -fx-border-color: transparent transparent #394148 transparent;
+    -fx-padding: 6 10;
+}
+.agenda-court-header:hover { -fx-background-color: #282f34; }
+.agenda-court-name { -fx-text-fill: #f1ede7; -fx-font-size: 12px; -fx-font-weight: 900; }
+.agenda-court-meta { -fx-text-fill: #8f999f; -fx-font-size: 9px; -fx-font-weight: 700; }
+.agenda-time-cell {
+    -fx-background-color: #171c20;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-border-color: transparent transparent #262d32 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 5 8;
+}
+.agenda-time-hour { -fx-text-fill: #c0c5c8; -fx-font-weight: 900; }
+.agenda-time-half { -fx-text-fill: #697279; -fx-font-size: 10px; -fx-font-weight: 700; }
+.agenda-cell {
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+    -fx-background-insets: 3;
+    -fx-border-insets: 3;
+    -fx-padding: 11 13;
+}
+/* Disponible funciona como superficie, no como evento. */
+.agenda-disponible {
+    -fx-background-color: #181e22;
+    -fx-text-fill: #78868b;
+    -fx-border-color: #293237;
+    -fx-border-width: 1;
+    -fx-font-weight: 700;
+    -fx-effect: none;
+}
+.agenda-disponible:hover {
+    -fx-background-color: #17302d;
+    -fx-text-fill: #bce8dc;
+    -fx-border-color: #3d8f7e;
+    -fx-font-weight: 900;
+    -fx-effect: dropshadow(gaussian, rgba(48,139,119,.20), 10, 0, 0, 2);
+}
+/* Los eventos usan neutros con una barra semantica. */
+.agenda-pendiente { -fx-background-color: #2a251b; -fx-border-color: #d6a94f; -fx-text-fill: #f2d69a; }
+.agenda-confirmada { -fx-background-color: #202934; -fx-border-color: #6da7cf; -fx-text-fill: #d9eaf5; }
+.agenda-completada { -fx-background-color: #1d2924; -fx-border-color: #69a989; -fx-text-fill: #b8ddcc; }
+.agenda-ausente { -fx-background-color: #2c2022; -fx-border-color: #ca7379; -fx-text-fill: #efb9bc; }
+.agenda-bloqueada { -fx-background-color: #2b2020; -fx-border-color: #b95e5e; -fx-text-fill: #eab5b5; }
+.agenda-partido-torneo {
+    -fx-background-color: #272334;
+    -fx-border-color: #9275cf;
+    -fx-text-fill: #e8dcff;
+}
+.agenda-pendiente, .agenda-confirmada, .agenda-completada,
+.agenda-ausente, .agenda-bloqueada, .agenda-partido-torneo {
+    -fx-border-width: 1 1 1 4;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 9, 0, 0, 3);
+}
+.agenda-no-disponible { -fx-background-color: #171c20; }
+.agenda-detail-panel { -fx-background-color: #1c2125; }
+.agenda-detail-card, .agenda-finance-card {
+    -fx-background-color: #15191c;
+    -fx-border-color: #343c42;
+}
+.agenda-status-ok { -fx-text-fill: #75bda5; }
+.agenda-nav-button, .agenda-today-button { -fx-background-color: #252b30; -fx-border-color: #3b454d; }
+.agenda-nav-button:hover, .agenda-today-button:hover { -fx-background-color: #30383e; }
+
+/* agenda-filters-v5 */
+.agenda-filter {
+    -fx-cursor: hand;
+    -fx-opacity: .48;
+    -fx-border-width: 1;
+}
+.agenda-filter:selected {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 7, 0, 0, 2);
+}
+.agenda-filter:hover {
+    -fx-opacity: .82;
+    -fx-translate-y: -1;
+}
+.agenda-filter:selected:hover { -fx-opacity: 1; }
+.agenda-filter:disabled { -fx-opacity: .22; -fx-cursor: default; }
+
+/* agenda-filter-placeholder-fix-v6 */
+.agenda-filtered-placeholder {
+    -fx-background-color: #151a1e;
+    -fx-background-radius: 7;
+    -fx-background-insets: 3;
+    -fx-border-color: #252d32;
+    -fx-border-width: 1;
+    -fx-border-radius: 7;
+    -fx-border-insets: 3;
+    -fx-effect: none;
+    -fx-opacity: .72;
+    -fx-padding: 0;
+    -fx-cursor: default;
+}
+.agenda-filtered-placeholder:hover {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #252d32;
+    -fx-effect: none;
+}
+
+/* agenda-filtered-surface-v7 */
+/* Los eventos filtrados conservan su espacio temporal, pero se integran
+   visualmente con la superficie continua de la cancha. */
+.agenda-filtered-placeholder,
+.agenda-filtered-placeholder:hover {
+    -fx-background-color: #171c20;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent #252d32 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+    -fx-effect: none;
+    -fx-opacity: 1;
+    -fx-padding: 0;
+    -fx-cursor: default;
+}
+
+/* agenda-filtered-slot-v8 */
+/* Superficie neutra por cada franja de 30 minutos filtrada. */
+.agenda-filtered-slot,
+.agenda-filtered-slot:hover {
+    -fx-background-color: #171c20;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent #252d32 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+    -fx-effect: none;
+    -fx-opacity: 1;
+    -fx-cursor: default;
+}
+
+/* agenda-indicators-v9 */
+/* Los estados superiores son indicadores informativos, no filtros. */
+.agenda-indicator {
+    -fx-cursor: default;
+    -fx-opacity: 1;
+    -fx-border-width: 1;
+}
+
+/* agenda-now-indicator-v10 */
+.agenda-now-line {
+    -fx-background-color: #e06464;
+    -fx-opacity: .88;
+}
+.agenda-now-label {
+    -fx-background-color: #d65757;
+    -fx-background-radius: 9;
+    -fx-text-fill: white;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 3 7;
+    -fx-translate-x: 5;
+    -fx-translate-y: -8;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.30), 6, 0, 0, 2);
+}
+
+/* agenda-now-compact-v11 */
+/* Indicador actual limitado a la columna de horas. */
+.agenda-now-indicator {
+    -fx-padding: 0 4 0 5;
+}
+.agenda-now-line {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #4fbd8d transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-style: segments(3, 3);
+    -fx-opacity: .85;
+}
+.agenda-now-dot {
+    -fx-background-color: #58c794;
+    -fx-background-radius: 50%;
+    -fx-effect: dropshadow(gaussian, rgba(59,190,132,.38), 5, 0, 0, 0);
+}
+.agenda-now-label {
+    -fx-background-color: #183c30;
+    -fx-background-radius: 7;
+    -fx-text-fill: #bdf2d9;
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+    -fx-padding: 2 4;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-effect: none;
+}
+
+/* agenda-structured-cards-v12 */
+/* Jerarquia interna de las tarjetas de agenda. */
+.agenda-event-time {
+    -fx-text-fill: #89959b;
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+}
+.agenda-event-title {
+    -fx-text-fill: #eeeae4;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+    -fx-line-spacing: 1px;
+}
+.agenda-event-subtitle {
+    -fx-text-fill: #9da7ac;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-line-spacing: 1px;
+}
+.agenda-event-badge {
+    -fx-background-color: #30373c;
+    -fx-background-radius: 9;
+    -fx-text-fill: #cbd1d4;
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+    -fx-padding: 2 6;
+}
+.agenda-event-badge-pendiente { -fx-background-color: #654b20; -fx-text-fill: #ffe0a0; }
+.agenda-event-badge-confirmada { -fx-background-color: #315f7d; -fx-text-fill: #e2f2fb; }
+.agenda-event-badge-completada { -fx-background-color: #28503f; -fx-text-fill: #c4ead8; }
+.agenda-event-badge-ausente { -fx-background-color: #61343a; -fx-text-fill: #f5c7cb; }
+.agenda-event-badge-bloqueada { -fx-background-color: #673333; -fx-text-fill: #f1c0c0; }
+.agenda-event-badge-partido-torneo { -fx-background-color: #59458a; -fx-text-fill: #f0e8ff; }
+.agenda-disponible .agenda-event-title { -fx-text-fill: #879398; -fx-font-size: 12px; }
+.agenda-disponible .agenda-event-subtitle { -fx-text-fill: #67747a; }
+.agenda-disponible:hover .agenda-event-title,
+.agenda-disponible.agenda-cell-active .agenda-event-title { -fx-text-fill: #c9f3e7; }
+.agenda-disponible:hover .agenda-event-subtitle,
+.agenda-disponible.agenda-cell-active .agenda-event-subtitle { -fx-text-fill: #8fd2c0; }
+.agenda-partido-torneo .agenda-event-title { -fx-text-fill: #f0e8ff; }
+.agenda-partido-torneo .agenda-event-subtitle { -fx-text-fill: #bdb0db; }
+.agenda-bloqueada .agenda-event-title { -fx-text-fill: #efc0c0; }
+.agenda-cell { -fx-padding: 9 11; }
+
+/* agenda-timeline-slots-v13 */
+/* Las medias horas no reservables son parte de la linea temporal,
+   no tarjetas ni eventos. */
+.agenda-timeline-slot,
+.agenda-timeline-slot:hover {
+    -fx-background-color: #171c20;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent transparent #252d32 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+    -fx-effect: none;
+    -fx-opacity: 1;
+    -fx-padding: 0;
+    -fx-cursor: default;
+}
+.agenda-timeline-slot.agenda-pasada {
+    -fx-background-color: #151a1e;
+    -fx-opacity: .72;
+}
+
+/* agenda-selection-v14 */
+/* Seleccion persistente mientras el panel de detalle permanece abierto. */
+.agenda-cell-selected {
+    -fx-border-width: 2 2 2 5;
+    -fx-border-insets: 1;
+    -fx-background-insets: 2;
+    -fx-effect: dropshadow(gaussian, rgba(121, 174, 201, .42), 14, .18, 0, 0);
+}
+.agenda-disponible.agenda-cell-selected {
+    -fx-background-color: #17302d;
+    -fx-border-color: #62c6a8;
+    -fx-effect: dropshadow(gaussian, rgba(65, 188, 151, .42), 14, .18, 0, 0);
+}
+.agenda-pendiente.agenda-cell-selected {
+    -fx-border-color: #e7bb61;
+    -fx-effect: dropshadow(gaussian, rgba(214, 169, 79, .45), 14, .18, 0, 0);
+}
+.agenda-confirmada.agenda-cell-selected {
+    -fx-border-color: #8ac8ee;
+    -fx-effect: dropshadow(gaussian, rgba(109, 167, 207, .48), 14, .18, 0, 0);
+}
+.agenda-completada.agenda-cell-selected {
+    -fx-border-color: #82c8a5;
+    -fx-effect: dropshadow(gaussian, rgba(105, 169, 137, .45), 14, .18, 0, 0);
+}
+.agenda-ausente.agenda-cell-selected {
+    -fx-border-color: #e28b91;
+    -fx-effect: dropshadow(gaussian, rgba(202, 115, 121, .45), 14, .18, 0, 0);
+}
+.agenda-bloqueada.agenda-cell-selected {
+    -fx-border-color: #df7777;
+    -fx-effect: dropshadow(gaussian, rgba(185, 94, 94, .48), 14, .18, 0, 0);
+}
+.agenda-partido-torneo.agenda-cell-selected {
+    -fx-border-color: #b99aef;
+    -fx-effect: dropshadow(gaussian, rgba(146, 117, 207, .50), 14, .18, 0, 0);
+}

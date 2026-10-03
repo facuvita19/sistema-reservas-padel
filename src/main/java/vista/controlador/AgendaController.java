@@ -7,9 +7,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Set;
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -25,7 +28,10 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import negocio.AgendaDiaria;
 import negocio.Cancha;
@@ -67,6 +73,13 @@ public class AgendaController {
 
     private Reserva reservaSeleccionada;
     private Cliente clienteSeleccionado;
+    private Node tarjetaSeleccionada;
+    private AgendaDiaria ultimaAgenda;
+    private boolean conservarScrollEnProximaCarga;
+    private double scrollVerticalGuardado;
+    private double scrollHorizontalGuardado;
+    private PauseTransition pausaEstado;
+    private FadeTransition desvanecerEstado;
 
     @FXML private DatePicker selectorFecha;
     @FXML private Label etiquetaFecha;
@@ -94,6 +107,13 @@ public class AgendaController {
     @FXML private Button botonAbrirPagos;
     @FXML private Button botonWhatsApp;
     @FXML private Button botonAccionDetalle;
+    @FXML private Label indicadorDisponible;
+    @FXML private Label indicadorPendiente;
+    @FXML private Label indicadorConfirmada;
+    @FXML private Label indicadorCompletada;
+    @FXML private Label indicadorAusente;
+    @FXML private Label indicadorBloqueada;
+    @FXML private Label indicadorPartido;
 
     @FXML
     private void initialize() {
@@ -101,6 +121,7 @@ public class AgendaController {
         selectorFecha.valueProperty().addListener(
                 (observador, anterior, actual) -> {
                     if (actual != null && !actual.equals(anterior)) {
+                        conservarScrollEnProximaCarga = false;
                         limpiarDetalle();
                         cargarAgenda();
                     }
@@ -108,6 +129,57 @@ public class AgendaController {
         configurarScrollSincronizado();
         limpiarDetalle();
         Platform.runLater(this::cargarAgenda);
+    }
+
+    private void actualizarContadoresIndicadores(AgendaDiaria agenda) {
+        java.util.Map<EstadoCeldaAgenda, Integer> cantidades =
+                new java.util.EnumMap<>(EstadoCeldaAgenda.class);
+        Set<String> eventosContados = new LinkedHashSet<>();
+        for (FilaAgenda fila : agenda.getFilas()) {
+            for (CeldaAgenda celda : fila.getCeldas()) {
+                if (!esEstadoContable(celda.getEstado())) continue;
+                String clave = claveEvento(celda);
+                if (eventosContados.add(clave)) {
+                    cantidades.merge(celda.getEstado(), 1, Integer::sum);
+                }
+            }
+        }
+        textoIndicador(indicadorDisponible, "Disponible",
+                cantidades.getOrDefault(EstadoCeldaAgenda.DISPONIBLE, 0));
+        textoIndicador(indicadorPendiente, "Pendiente",
+                cantidades.getOrDefault(EstadoCeldaAgenda.PENDIENTE, 0));
+        textoIndicador(indicadorConfirmada, "Confirmada",
+                cantidades.getOrDefault(EstadoCeldaAgenda.CONFIRMADA, 0));
+        textoIndicador(indicadorCompletada, "Completada",
+                cantidades.getOrDefault(EstadoCeldaAgenda.COMPLETADA, 0));
+        textoIndicador(indicadorAusente, "Ausente",
+                cantidades.getOrDefault(EstadoCeldaAgenda.AUSENTE, 0));
+        textoIndicador(indicadorBloqueada, "Bloqueada",
+                cantidades.getOrDefault(EstadoCeldaAgenda.BLOQUEADA, 0));
+        textoIndicador(indicadorPartido, "Partido",
+                cantidades.getOrDefault(EstadoCeldaAgenda.PARTIDO_TORNEO, 0));
+    }
+
+    private boolean esEstadoContable(EstadoCeldaAgenda estado) {
+        return switch (estado) {
+            case DISPONIBLE, PENDIENTE, CONFIRMADA, COMPLETADA,
+                    AUSENTE, BLOQUEADA, PARTIDO_TORNEO -> true;
+            default -> false;
+        };
+    }
+
+    private String claveEvento(CeldaAgenda celda) {
+        if (celda.getReservaId() != null) return "R:" + celda.getReservaId();
+        if (celda.getBloqueoId() != null) return "B:" + celda.getBloqueoId();
+        if (celda.getPartidoId() != null) return "P:" + celda.getPartidoId();
+        return celda.getEstado() + ":" + celda.getCanchaId() + ":"
+                + celda.getHoraInicio() + ":" + celda.getHoraFin();
+    }
+
+    private void textoIndicador(Label indicador, String nombre,
+            int cantidad) {
+        indicador.setText(nombre + "  " + cantidad);
+        indicador.setOpacity(cantidad == 0 ? 0.32 : 1.0);
     }
 
     private void configurarScrollSincronizado() {
@@ -142,6 +214,13 @@ public class AgendaController {
     }
 
     @FXML
+    private void actualizarAgenda() {
+        conservarScrollEnProximaCarga = true;
+        scrollVerticalGuardado = scrollAgenda.getVvalue();
+        scrollHorizontalGuardado = scrollAgenda.getHvalue();
+        cargarAgenda();
+    }
+
     private void cargarAgenda() {
         LocalDate fecha = selectorFecha.getValue();
         if (fecha == null) {
@@ -159,11 +238,13 @@ public class AgendaController {
 
         tarea.setOnSucceeded(evento -> {
             AgendaDiaria agenda = tarea.getValue();
+            ultimaAgenda = agenda;
+            actualizarContadoresIndicadores(agenda);
             construirGrilla(agenda);
             etiquetaFecha.setText(capitalizar(
                     agenda.getFecha().format(FORMATO_FECHA_LARGA)));
             cambiarCarga(false, "Agenda actualizada.");
-            volverAlInicioDeLaAgenda();
+            posicionarAgendaDespuesDeCarga();
         });
 
         tarea.setOnFailed(evento -> {
@@ -181,14 +262,21 @@ public class AgendaController {
         hilo.start();
     }
 
-    private void volverAlInicioDeLaAgenda() {
+    private void posicionarAgendaDespuesDeCarga() {
         Platform.runLater(() -> {
-            scrollAgenda.setVvalue(0.0);
-            scrollAgenda.setHvalue(0.0);
+            if (conservarScrollEnProximaCarga) {
+                scrollAgenda.setVvalue(scrollVerticalGuardado);
+                scrollAgenda.setHvalue(scrollHorizontalGuardado);
+            } else {
+                scrollAgenda.setVvalue(0.0);
+                scrollAgenda.setHvalue(0.0);
+            }
+            conservarScrollEnProximaCarga = false;
         });
     }
 
     private void construirGrilla(AgendaDiaria agenda) {
+        limpiarSeleccionVisual();
         grillaAgenda.getChildren().clear();
         grillaAgenda.getColumnConstraints().clear();
         grillaAgenda.getRowConstraints().clear();
@@ -208,6 +296,57 @@ public class AgendaController {
             agregarEncabezadoCancha(agenda.getCanchas().get(indice), indice + 1);
         }
         agregarFilasAgenda(agenda);
+        agregarIndicadorHoraActual(agenda);
+    }
+
+    private void agregarIndicadorHoraActual(AgendaDiaria agenda) {
+        if (!LocalDate.now().equals(agenda.getFecha())
+                || agenda.getFilas().isEmpty()) return;
+        LocalTime ahora = LocalTime.now();
+        for (int indice = 0; indice < agenda.getFilas().size(); indice++) {
+            LocalTime inicio = agenda.getFilas().get(indice).getHoraInicio();
+            LocalTime fin = inicio.plusMinutes(30);
+            if (ahora.isBefore(inicio) || !ahora.isBefore(fin)) continue;
+
+            Label texto = new Label(ahora.format(FORMATO_HORA));
+            texto.setMouseTransparent(true);
+            texto.getStyleClass().add("agenda-now-label");
+
+            Region punto = new Region();
+            punto.setMouseTransparent(true);
+            punto.getStyleClass().add("agenda-now-dot");
+            punto.setMinSize(6, 6);
+            punto.setPrefSize(6, 6);
+            punto.setMaxSize(6, 6);
+
+            Region linea = new Region();
+            linea.setMouseTransparent(true);
+            linea.getStyleClass().add("agenda-now-line");
+            linea.setMinHeight(1);
+            linea.setPrefHeight(1);
+            linea.setMaxHeight(1);
+            HBox.setHgrow(linea, Priority.ALWAYS);
+
+            javafx.scene.layout.HBox indicador =
+                    new javafx.scene.layout.HBox(4, texto, punto, linea);
+            indicador.setAlignment(Pos.CENTER_LEFT);
+            indicador.setMouseTransparent(true);
+            indicador.getStyleClass().add("agenda-now-indicator");
+            indicador.setMaxWidth(Double.MAX_VALUE);
+
+            double proporcion = java.time.Duration.between(inicio, ahora)
+                    .toMinutes() / 30.0;
+            indicador.setTranslateY(Math.max(1,
+                    Math.min(ALTO_FILA - 7,
+                            proporcion * ALTO_FILA)));
+            GridPane.setHalignment(indicador,
+                    javafx.geometry.HPos.LEFT);
+            GridPane.setValignment(indicador,
+                    javafx.geometry.VPos.TOP);
+            grillaAgenda.add(indicador, 0, indice);
+            indicador.toFront();
+            break;
+        }
     }
 
     private void agregarFilasAgenda(AgendaDiaria agenda) {
@@ -215,7 +354,8 @@ public class AgendaController {
         for (int filaIndice = 0; filaIndice < agenda.getFilas().size(); filaIndice++) {
             FilaAgenda fila = agenda.getFilas().get(filaIndice);
             int filaVisual = filaIndice;
-            agregarHora(fila.getHoraInicio(), filaVisual);
+            agregarHora(fila.getHoraInicio(), filaVisual,
+                    esInicioDeTurno(agenda, fila.getHoraInicio()));
 
             for (int columna = 0; columna < fila.getCeldas().size(); columna++) {
                 String posicion = clavePosicion(filaIndice, columna);
@@ -230,7 +370,8 @@ public class AgendaController {
                 if (cantidadFilas > 1) {
                     GridPane.setRowSpan(nodo, cantidadFilas);
                     marcarPosicionesOcupadas(
-                            posicionesOcupadas, filaIndice, columna, cantidadFilas);
+                            posicionesOcupadas, filaIndice, columna,
+                            cantidadFilas);
                 }
             }
         }
@@ -359,64 +500,225 @@ public class AgendaController {
     }
 
     private void agregarEncabezadoCancha(Cancha cancha, int columna) {
-        Label etiqueta = new Label(cancha.getNombre());
-        etiqueta.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        etiqueta.setAlignment(Pos.CENTER);
-        etiqueta.getStyleClass().add("agenda-header");
-        Tooltip.install(etiqueta, new Tooltip(
+        Label nombre = new Label(cancha.getNombre());
+        nombre.getStyleClass().add("agenda-court-name");
+        Label informacion = new Label(
+                cancha.getHoraApertura().format(FORMATO_HORA)
+                + " a " + cancha.getHoraCierre().format(FORMATO_HORA)
+                + "  ·  " + cancha.getDuracionReserva() + " min");
+        informacion.getStyleClass().add("agenda-court-meta");
+        VBox encabezado = new VBox(2, nombre, informacion);
+        encabezado.setAlignment(Pos.CENTER);
+        encabezado.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        encabezado.getStyleClass().addAll("agenda-header",
+                "agenda-court-header");
+        Tooltip.install(encabezado, new Tooltip(
                 cancha.getNombre() + "\n"
                         + cancha.getHoraApertura().format(FORMATO_HORA)
                         + " - " + cancha.getHoraCierre().format(FORMATO_HORA)
                         + "\nReservas de " + cancha.getDuracionReserva()
                         + " minutos"));
-        grillaEncabezado.add(etiqueta, columna, 0);
+        grillaEncabezado.add(encabezado, columna, 0);
     }
 
-    private void agregarHora(LocalTime hora, int fila) {
+    private void agregarHora(LocalTime hora, int fila,
+            boolean inicioDeTurno) {
         Label etiqueta = new Label(hora.format(FORMATO_HORA));
         etiqueta.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         etiqueta.setAlignment(Pos.TOP_CENTER);
         etiqueta.getStyleClass().add("agenda-time-cell");
+        etiqueta.getStyleClass().add(inicioDeTurno
+                ? "agenda-time-hour" : "agenda-time-half");
         grillaAgenda.add(etiqueta, 0, fila);
+    }
+
+    private boolean esInicioDeTurno(AgendaDiaria agenda, LocalTime hora) {
+        if (agenda.getCanchas().isEmpty() || agenda.getFilas().isEmpty()) {
+            return false;
+        }
+        LocalTime aperturaAgenda = agenda.getFilas().get(0).getHoraInicio();
+        int duracionReferencia = agenda.getCanchas().stream()
+                .mapToInt(Cancha::getDuracionReserva)
+                .filter(duracion -> duracion > 0)
+                .min().orElse(90);
+        long minutosDesdeApertura = Duration.between(
+                aperturaAgenda, hora).toMinutes();
+        return minutosDesdeApertura >= 0
+                && minutosDesdeApertura % duracionReferencia == 0;
     }
 
     private Node crearCelda(CeldaAgenda celda, int cantidadFilas) {
         LocalTime horaFinalVisual = celda.getHoraInicio()
                 .plusMinutes(cantidadFilas * 30L);
-        Label etiqueta = new Label(textoCelda(celda, horaFinalVisual));
-        etiqueta.setWrapText(true);
-        etiqueta.setAlignment(Pos.TOP_LEFT);
-        etiqueta.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        etiqueta.setMinHeight(cantidadFilas * ALTO_FILA);
-        etiqueta.getStyleClass().addAll(
+        if (esSuperficieHoraria(celda.getEstado())) {
+            Region superficie = new Region();
+            superficie.setMinHeight(cantidadFilas * ALTO_FILA);
+            superficie.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+            superficie.setMouseTransparent(true);
+            superficie.getStyleClass().addAll("agenda-timeline-slot",
+                    claseEstado(celda.getEstado()));
+            return superficie;
+        }
+        String horario = celda.getHoraInicio().format(FORMATO_HORA)
+                + " a " + horaFinalVisual.format(FORMATO_HORA);
+
+        Label etiquetaHorario = new Label(horario);
+        etiquetaHorario.getStyleClass().add("agenda-event-time");
+
+        Label etiquetaTitulo = new Label(tituloCelda(celda));
+        etiquetaTitulo.setWrapText(true);
+        etiquetaTitulo.setMaxWidth(Double.MAX_VALUE);
+        etiquetaTitulo.setMaxHeight(38);
+        etiquetaTitulo.getStyleClass().add("agenda-event-title");
+        VBox.setVgrow(etiquetaTitulo, Priority.ALWAYS);
+
+        Label etiquetaSecundaria = new Label(subtituloCelda(celda));
+        etiquetaSecundaria.setWrapText(true);
+        etiquetaSecundaria.setMaxWidth(Double.MAX_VALUE);
+        etiquetaSecundaria.setMaxHeight(34);
+        etiquetaSecundaria.getStyleClass().add("agenda-event-subtitle");
+        boolean mostrarSecundaria = etiquetaSecundaria.getText() != null
+                && !etiquetaSecundaria.getText().isBlank()
+                && cantidadFilas > 1;
+        etiquetaSecundaria.setVisible(mostrarSecundaria);
+        etiquetaSecundaria.setManaged(mostrarSecundaria);
+
+        String textoEstado = textoInsignia(celda.getEstado());
+        Label insignia = new Label(textoEstado);
+        insignia.getStyleClass().addAll("agenda-event-badge",
+                "agenda-event-badge-" + celda.getEstado().name()
+                        .toLowerCase(Locale.ROOT).replace('_', '-'));
+        boolean mostrarInsignia = textoEstado != null
+                && !textoEstado.isBlank();
+        insignia.setVisible(mostrarInsignia);
+        insignia.setManaged(mostrarInsignia);
+        HBox cabecera = new HBox(8, etiquetaHorario,
+                new javafx.scene.layout.Region(), insignia);
+        HBox.setHgrow(cabecera.getChildren().get(1), Priority.ALWAYS);
+        cabecera.setAlignment(Pos.CENTER_LEFT);
+
+        VBox tarjeta = new VBox(5, cabecera, etiquetaTitulo,
+                etiquetaSecundaria);
+        tarjeta.setAlignment(Pos.TOP_LEFT);
+        tarjeta.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        tarjeta.setMinHeight(cantidadFilas * ALTO_FILA);
+        tarjeta.getStyleClass().addAll(
                 "agenda-cell", claseEstado(celda.getEstado()));
 
+        if (celda.getEstado() == EstadoCeldaAgenda.DISPONIBLE) {
+            insignia.setVisible(false);
+            insignia.setManaged(false);
+            etiquetaTitulo.setText("Disponible");
+            etiquetaSecundaria.setText("");
+            etiquetaSecundaria.setVisible(false);
+            etiquetaSecundaria.setManaged(false);
+            tarjeta.setOnMouseEntered(evento -> {
+                etiquetaTitulo.setText("+  Nueva reserva");
+                tarjeta.getStyleClass().add("agenda-cell-active");
+            });
+            tarjeta.setOnMouseExited(evento -> {
+                etiquetaTitulo.setText("Disponible");
+                tarjeta.getStyleClass().remove("agenda-cell-active");
+            });
+        }
+
+        String estadoVisible = formatoEstado(celda.getEstado());
+        String detalleTooltip = detalleAdicionalTooltip(
+                celda.getDetalle(), estadoVisible);
         String tooltip = celda.getNombreCancha() + "\n"
                 + celda.getHoraInicio().format(FORMATO_HORA) + " - "
                 + horaFinalVisual.format(FORMATO_HORA) + "\n"
-                + formatoEstado(celda.getEstado())
-                + (celda.getDetalle() == null ? "" : "\n" + celda.getDetalle())
+                + estadoVisible
+                + (detalleTooltip.isBlank()
+                        ? "" : "\n" + detalleTooltip)
                 + "\n\nUn clic: ver detalle"
-                + "\nDoble clic: abrir acción";
-        Tooltip.install(etiqueta, new Tooltip(tooltip));
+                + "\nDoble clic: abrir accion";
+        Tooltip.install(tarjeta, new Tooltip(tooltip));
 
         boolean interactiva = celda.getEstado()
                 != EstadoCeldaAgenda.NO_DISPONIBLE
                 && celda.getEstado() != EstadoCeldaAgenda.PASADA
                 && celda.getEstado() != EstadoCeldaAgenda.CANCELADA;
-        etiqueta.setMouseTransparent(!interactiva);
+        tarjeta.setMouseTransparent(!interactiva);
         if (interactiva) {
-            etiqueta.setOnMouseClicked(
-                    evento -> manejarClic(evento, celda));
+            tarjeta.setOnMouseClicked(
+                    evento -> manejarClic(evento, celda, tarjeta));
         }
-        return etiqueta;
+        return tarjeta;
+    }
+
+    private boolean esSuperficieHoraria(EstadoCeldaAgenda estado) {
+        return estado == EstadoCeldaAgenda.NO_DISPONIBLE
+                || estado == EstadoCeldaAgenda.PASADA
+                || estado == EstadoCeldaAgenda.CANCELADA;
+    }
+
+    private String detalleAdicionalTooltip(String detalle,
+            String estadoVisible) {
+        if (detalle == null || detalle.isBlank()) return "";
+        String limpio = detalle.trim();
+        String estado = estadoVisible == null ? "" : estadoVisible.trim();
+        if (limpio.equalsIgnoreCase(estado)) return "";
+        return limpio;
+    }
+
+    private String tituloCelda(CeldaAgenda celda) {
+        return switch (celda.getEstado()) {
+            case DISPONIBLE -> "Disponible";
+            case PARTIDO_TORNEO -> lineaDetalle(celda.getDetalle(), 1,
+                    "Partido de torneo");
+            case BLOQUEADA -> celda.getDetalle() == null
+                    || celda.getDetalle().isBlank()
+                            ? "Bloqueo operativo" : celda.getDetalle();
+            case NO_DISPONIBLE, PASADA, CANCELADA -> "";
+            default -> celda.getDetalle() == null
+                    || celda.getDetalle().isBlank()
+                            ? formatoEstado(celda.getEstado())
+                            : celda.getDetalle();
+        };
+    }
+
+    private String subtituloCelda(CeldaAgenda celda) {
+        if (celda.getEstado() == EstadoCeldaAgenda.PARTIDO_TORNEO) {
+            return lineaDetalle(celda.getDetalle(), 2, "Encuentro por definir");
+        }
+        if (celda.getEstado() == EstadoCeldaAgenda.BLOQUEADA) {
+            return "Cancha no disponible";
+        }
+        return "";
+    }
+
+    private String lineaDetalle(String detalle, int indice,
+            String alternativa) {
+        if (detalle == null || detalle.isBlank()) return alternativa;
+        String[] lineas = detalle.split("\\n");
+        return indice < lineas.length && !lineas[indice].isBlank()
+                ? lineas[indice] : alternativa;
+    }
+
+    private String textoInsignia(EstadoCeldaAgenda estado) {
+        return switch (estado) {
+            case PENDIENTE -> "PENDIENTE";
+            case CONFIRMADA -> "CONFIRMADA";
+            case COMPLETADA -> "COMPLETADA";
+            case AUSENTE -> "AUSENTE";
+            case BLOQUEADA -> "BLOQUEO";
+            case PARTIDO_TORNEO -> "PARTIDO";
+            default -> "";
+        };
+    }
+
+    private String horarioDisponible(CeldaAgenda celda,
+            LocalTime horaFinalVisual) {
+        return "Disponible\n" + celda.getHoraInicio().format(FORMATO_HORA)
+                + " a " + horaFinalVisual.format(FORMATO_HORA);
     }
 
     private String textoCelda(CeldaAgenda celda, LocalTime horaFinalVisual) {
         String horario = celda.getHoraInicio().format(FORMATO_HORA)
                 + " - " + horaFinalVisual.format(FORMATO_HORA);
         return switch (celda.getEstado()) {
-            case DISPONIBLE -> horario + "\nDISPONIBLE";
+            case DISPONIBLE -> horarioDisponible(celda, horaFinalVisual);
             case PARTIDO_TORNEO -> horario + "\nPARTIDO DE TORNEO\n"
                     + resumenPartido(celda.getDetalle());
             case BLOQUEADA -> horario + "\n"
@@ -436,10 +738,29 @@ public class AgendaController {
         return lineas.length > 1 ? lineas[1] : detalle;
     }
 
-    private void manejarClic(MouseEvent evento, CeldaAgenda celda) {
+    private void manejarClic(MouseEvent evento, CeldaAgenda celda,
+            Node tarjeta) {
+        seleccionarTarjeta(tarjeta);
         mostrarDetalleCelda(celda);
         if (evento.getClickCount() == 2) {
             ejecutarAccionCelda(celda);
+        }
+    }
+
+    private void seleccionarTarjeta(Node tarjeta) {
+        limpiarSeleccionVisual();
+        tarjetaSeleccionada = tarjeta;
+        if (tarjetaSeleccionada != null) {
+            tarjetaSeleccionada.getStyleClass().add(
+                    "agenda-cell-selected");
+        }
+    }
+
+    private void limpiarSeleccionVisual() {
+        if (tarjetaSeleccionada != null) {
+            tarjetaSeleccionada.getStyleClass().remove(
+                    "agenda-cell-selected");
+            tarjetaSeleccionada = null;
         }
     }
 
@@ -526,6 +847,7 @@ public class AgendaController {
         }
 
         if (celda.getEstado() == EstadoCeldaAgenda.BLOQUEADA) {
+            detalleTitulo.setText("Cancha bloqueada");
             detalleCliente.setText(celda.getDetalle() == null
                     ? "Bloqueo operativo" : celda.getDetalle());
             detalleTelefono.setText("Sin cliente asociado");
@@ -675,10 +997,11 @@ public class AgendaController {
     }
 
     private void limpiarDetalle() {
+        limpiarSeleccionVisual();
         reservaSeleccionada = null;
         clienteSeleccionado = null;
-        panelDetalle.setVisible(true);
-        panelDetalle.setManaged(true);
+        panelDetalle.setVisible(false);
+        panelDetalle.setManaged(false);
         detalleTitulo.setText("Sin seleccion");
         detalleEstado.setText("Selecciona una celda");
         detalleCancha.setText("-");
@@ -740,10 +1063,37 @@ public class AgendaController {
         etiquetaEstado.setText(mensaje);
         etiquetaEstado.getStyleClass().removeAll(
                 "agenda-status-ok", "agenda-status-error");
-        if (!cargando) etiquetaEstado.getStyleClass().add("agenda-status-ok");
+        if (!cargando) {
+            etiquetaEstado.getStyleClass().add("agenda-status-ok");
+            mostrarEstadoTemporal();
+        } else {
+            detenerAnimacionEstado();
+            etiquetaEstado.setOpacity(1.0);
+        }
+    }
+
+    private void mostrarEstadoTemporal() {
+        detenerAnimacionEstado();
+        etiquetaEstado.setOpacity(1.0);
+        pausaEstado = new PauseTransition(javafx.util.Duration.seconds(2.5));
+        pausaEstado.setOnFinished(evento -> {
+            desvanecerEstado = new FadeTransition(
+                    javafx.util.Duration.millis(500), etiquetaEstado);
+            desvanecerEstado.setFromValue(1.0);
+            desvanecerEstado.setToValue(0.0);
+            desvanecerEstado.play();
+        });
+        pausaEstado.play();
+    }
+
+    private void detenerAnimacionEstado() {
+        if (pausaEstado != null) pausaEstado.stop();
+        if (desvanecerEstado != null) desvanecerEstado.stop();
     }
 
     private void mostrarError(String mensaje) {
+        detenerAnimacionEstado();
+        etiquetaEstado.setOpacity(1.0);
         etiquetaEstado.setText(mensaje == null
                 ? "No se pudo cargar la agenda." : mensaje);
         etiquetaEstado.getStyleClass().removeAll(
