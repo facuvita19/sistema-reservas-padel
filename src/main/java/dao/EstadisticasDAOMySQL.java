@@ -22,7 +22,7 @@ public class EstadisticasDAOMySQL implements EstadisticasDAO {
     @Override public EstadisticasPadel obtenerEstadisticas(LocalDate desde, LocalDate hasta) {
         validarFechas(desde,hasta); EstadisticasPadel e=new EstadisticasPadel();
         try(Connection c=ConexionBD.obtenerConexion()){
-            cargarResumenReservas(c,desde,hasta,e); cargarResumenPagos(c,desde,hasta,e);
+            cargarResumenReservas(c,desde,hasta,e); cargarResumenPagos(c,desde,hasta,e); cargarMovimientosCaja(c,desde,hasta,e);
             e.setReservasPorEstado(consultarFechas(c,"SELECT estado etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? GROUP BY estado ORDER BY valor DESC",desde,hasta,10));
             e.setReservasPorCancha(consultarFechas(c,"SELECT c.nombre etiqueta,COUNT(*) valor FROM reservas r JOIN canchas c ON c.id=r.cancha_id WHERE r.fecha BETWEEN ? AND ? AND r.estado NOT IN ('CANCELADA','EXPIRADA') GROUP BY c.id,c.nombre ORDER BY valor DESC",desde,hasta,12));
             e.setIngresosPorMes(consultarRango(c,"SELECT DATE_FORMAT(fecha_pago,'%Y-%m') etiqueta,COALESCE(SUM(importe),0) valor FROM pagos WHERE estado='ACREDITADO' AND fecha_pago>=? AND fecha_pago<? GROUP BY DATE_FORMAT(fecha_pago,'%Y-%m') ORDER BY etiqueta",desde,hasta,24));
@@ -35,20 +35,32 @@ public class EstadisticasDAOMySQL implements EstadisticasDAO {
         }catch(SQLException x){throw new RuntimeException("No se pudieron recuperar las estadísticas.",x);}
     }
     private void cargarResumenReservas(Connection c,LocalDate d,LocalDate h,EstadisticasPadel e)throws SQLException{
-        String q="SELECT COUNT(*) total,COALESCE(SUM(estado='COMPLETADA'),0) completadas,COALESCE(SUM(estado='CANCELADA'),0) canceladas,COALESCE(SUM(estado='AUSENTE'),0) ausentes FROM reservas WHERE fecha BETWEEN ? AND ?";
-        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setTotalReservas(r.getInt("total"));e.setReservasCompletadas(r.getInt("completadas"));e.setReservasCanceladas(r.getInt("canceladas"));e.setReservasAusentes(r.getInt("ausentes"));}}
+        String q="SELECT COUNT(*) total,"
+                + "COALESCE(SUM(estado='PENDIENTE'),0) pendientes,"
+                + "COALESCE(SUM(estado='CONFIRMADA'),0) confirmadas,"
+                + "COALESCE(SUM(estado='COMPLETADA'),0) completadas,"
+                + "COALESCE(SUM(estado='CANCELADA'),0) canceladas,"
+                + "COALESCE(SUM(estado='AUSENTE'),0) ausentes,"
+                + "COALESCE(SUM(estado='EXPIRADA'),0) expiradas,"
+                + "COALESCE(SUM(estado IN ('PENDIENTE','CONFIRMADA','COMPLETADA','AUSENTE')),0) efectivas "
+                + "FROM reservas WHERE fecha BETWEEN ? AND ?";
+        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setTotalReservas(r.getInt("total"));e.setReservasPendientes(r.getInt("pendientes"));e.setReservasConfirmadas(r.getInt("confirmadas"));e.setReservasCompletadas(r.getInt("completadas"));e.setReservasCanceladas(r.getInt("canceladas"));e.setReservasAusentes(r.getInt("ausentes"));e.setReservasExpiradas(r.getInt("expiradas"));e.setReservasEfectivas(r.getInt("efectivas"));}}
     }
     private void cargarResumenPagos(Connection c,LocalDate d,LocalDate h,EstadisticasPadel e)throws SQLException{
         try(PreparedStatement s=c.prepareStatement("SELECT COUNT(*) cantidad,COALESCE(SUM(importe),0) ingresos,COALESCE(AVG(importe),0) promedio FROM pagos WHERE estado='ACREDITADO' AND fecha_pago>=? AND fecha_pago<?")){rango(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setCantidadPagosAcreditados(r.getInt("cantidad"));e.setIngresosAcreditados(r.getBigDecimal("ingresos"));e.setTicketPromedio(r.getBigDecimal("promedio"));}}
         try(PreparedStatement s=c.prepareStatement("SELECT COALESCE(SUM(importe),0) total FROM pagos WHERE estado='REEMBOLSADO' AND fecha_reembolso>=? AND fecha_reembolso<?")){rango(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setTotalReembolsado(r.getBigDecimal("total"));}}
     }
-    private BigDecimal calcularOcupacion(Connection c,LocalDate d,LocalDate h)throws SQLException{
+    private void cargarMovimientosCaja(Connection c,LocalDate d,LocalDate h,EstadisticasPadel e)throws SQLException{
+        String q="SELECT COALESCE(SUM(CASE WHEN tipo='INGRESO' THEN importe ELSE 0 END),0) ingresos,COALESCE(SUM(CASE WHEN tipo='EGRESO' THEN importe ELSE 0 END),0) egresos FROM movimientos_caja WHERE fecha BETWEEN ? AND ?";
+        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setIngresosManuales(r.getBigDecimal("ingresos"));e.setEgresosManuales(r.getBigDecimal("egresos"));}}
+    }
+        private BigDecimal calcularOcupacion(Connection c,LocalDate d,LocalDate h)throws SQLException{
         String q="WITH RECURSIVE dias AS (SELECT ? fecha UNION ALL SELECT DATE_ADD(fecha,INTERVAL 1 DAY) FROM dias WHERE fecha<?), capacidad AS (SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE,ca.hora_apertura,ca.hora_cierre)),0) minutos FROM dias d JOIN cancha_dias_disponibles cd ON cd.dia_semana=ELT(WEEKDAY(d.fecha)+1,'MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY','SUNDAY') JOIN canchas ca ON ca.id=cd.cancha_id AND ca.activo=TRUE), uso AS (SELECT COALESCE(SUM(TIMESTAMPDIFF(MINUTE,hora_inicio,hora_fin)),0) minutos FROM reservas WHERE fecha BETWEEN ? AND ? AND estado NOT IN ('CANCELADA','EXPIRADA')) SELECT uso.minutos usados,capacidad.minutos capacidad FROM uso,capacidad";
         try(PreparedStatement s=c.prepareStatement(q)){s.setDate(1,Date.valueOf(d));s.setDate(2,Date.valueOf(h));s.setDate(3,Date.valueOf(d));s.setDate(4,Date.valueOf(h));try(ResultSet r=s.executeQuery()){r.next();long cap=r.getLong("capacidad");if(cap<=0)return BigDecimal.ZERO;return BigDecimal.valueOf(r.getLong("usados")).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(cap),2,RoundingMode.HALF_UP);}}
     }
     private List<CierreCaja> consultarCierres(Connection c,LocalDate d,LocalDate h)throws SQLException{
-        String q="SELECT id,fecha,estado,total_acreditado,total_efectivo_calculado,efectivo_declarado,diferencia_efectivo,total_reembolsado,usuario_cierre_id,fecha_cierre,observaciones FROM cierres_caja WHERE fecha BETWEEN ? AND ? ORDER BY fecha DESC";List<CierreCaja> out=new ArrayList<>();
-        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){while(r.next()){CierreCaja x=new CierreCaja();x.setId(r.getLong("id"));x.setFecha(r.getDate("fecha").toLocalDate());x.setEstado(EstadoCierreCaja.valueOf(r.getString("estado")));x.setTotalAcreditado(r.getBigDecimal("total_acreditado"));x.setTotalEfectivoCalculado(r.getBigDecimal("total_efectivo_calculado"));x.setEfectivoDeclarado(r.getBigDecimal("efectivo_declarado"));x.setDiferenciaEfectivo(r.getBigDecimal("diferencia_efectivo"));x.setTotalReembolsado(r.getBigDecimal("total_reembolsado"));x.setUsuarioCierreId(r.getLong("usuario_cierre_id"));Timestamp t=r.getTimestamp("fecha_cierre");if(t!=null)x.setFechaCierre(t.toLocalDateTime());x.setObservaciones(r.getString("observaciones"));out.add(x);}}}return out;
+        String q="SELECT cc.id,cc.fecha,cc.estado,cc.total_acreditado,cc.total_efectivo_calculado,cc.efectivo_declarado,cc.diferencia_efectivo,cc.total_reembolsado,cc.usuario_cierre_id,cc.fecha_cierre,cc.observaciones,u.nombre_usuario FROM cierres_caja cc LEFT JOIN usuarios u ON u.id=cc.usuario_cierre_id WHERE cc.fecha BETWEEN ? AND ? ORDER BY cc.fecha DESC";List<CierreCaja> out=new ArrayList<>();
+        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){while(r.next()){CierreCaja x=new CierreCaja();x.setId(r.getLong("id"));x.setFecha(r.getDate("fecha").toLocalDate());x.setEstado(EstadoCierreCaja.valueOf(r.getString("estado")));x.setTotalAcreditado(r.getBigDecimal("total_acreditado"));x.setTotalEfectivoCalculado(r.getBigDecimal("total_efectivo_calculado"));x.setEfectivoDeclarado(r.getBigDecimal("efectivo_declarado"));x.setDiferenciaEfectivo(r.getBigDecimal("diferencia_efectivo"));x.setTotalReembolsado(r.getBigDecimal("total_reembolsado"));x.setUsuarioCierreId(r.getLong("usuario_cierre_id"));x.setNombreUsuarioCierre(r.getString("nombre_usuario"));Timestamp t=r.getTimestamp("fecha_cierre");if(t!=null)x.setFechaCierre(t.toLocalDateTime());x.setObservaciones(r.getString("observaciones"));out.add(x);}}}return out;
     }
     private List<DatoGrafico> consultarFechas(Connection c,String q,LocalDate d,LocalDate h,int l)throws SQLException{return consultar(c,q,d,h,l,false);} private List<DatoGrafico> consultarRango(Connection c,String q,LocalDate d,LocalDate h,int l)throws SQLException{return consultar(c,q,d,h,l,true);}
     private List<DatoGrafico> consultar(Connection c,String q,LocalDate d,LocalDate h,int l,boolean rg)throws SQLException{List<DatoGrafico> out=new ArrayList<>();try(PreparedStatement s=c.prepareStatement(q)){if(rg)rango(s,d,h);else fechas(s,d,h);try(ResultSet r=s.executeQuery()){while(r.next()&&out.size()<l)out.add(new DatoGrafico(r.getString("etiqueta"),r.getBigDecimal("valor")));}}return out;}

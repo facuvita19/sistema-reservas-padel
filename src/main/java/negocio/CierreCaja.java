@@ -23,6 +23,7 @@ public class CierreCaja {
     private int reservasCanceladas;
     private String observaciones;
     private long usuarioCierreId;
+    private String nombreUsuarioCierre;
     private LocalDateTime fechaCierre;
     private List<DetalleMedioPago> detalles = new ArrayList<>();
 
@@ -56,6 +57,8 @@ public class CierreCaja {
     public void setObservaciones(String valor) { observaciones = valor; }
     public long getUsuarioCierreId() { return usuarioCierreId; }
     public void setUsuarioCierreId(long valor) { usuarioCierreId = valor; }
+    public String getNombreUsuarioCierre() { return nombreUsuarioCierre; }
+    public void setNombreUsuarioCierre(String valor) { nombreUsuarioCierre = valor; }
     public LocalDateTime getFechaCierre() { return fechaCierre; }
     public void setFechaCierre(LocalDateTime valor) { fechaCierre = valor; }
     public List<DetalleMedioPago> getDetalles() { return detalles; }
