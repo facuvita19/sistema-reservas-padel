@@ -472,3 +472,335 @@
     -fx-opacity: 0.58;
     -fx-cursor: default;
 }
+
+/* controles-globales-grafito-v1 */
+/* Paleta estructural compartida para todos los formularios. */
+.root {
+    -control-bg: #1b2024;
+    -control-bg-hover: #20262a;
+    -control-bg-focus: #1d2327;
+    -control-border: #363e44;
+    -control-border-hover: #465158;
+    -control-text: #e5e8e9;
+    -control-muted: #78848a;
+    -control-arrow-bg: #23292e;
+    -control-arrow: #9aa4a9;
+    -popup-bg: #181d21;
+    -popup-hover: #252c31;
+}
+
+/* Campos de texto y areas. */
+.modern-field,
+.modern-area,
+.text-field,
+.text-area {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border;
+    -fx-text-fill: -control-text;
+    -fx-prompt-text-fill: -control-muted;
+    -fx-highlight-fill: -color-principal-transparente;
+    -fx-highlight-text-fill: white;
+}
+.modern-field:hover,
+.modern-area:hover,
+.text-field:hover,
+.text-area:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+}
+.modern-field:focused,
+.modern-area:focused,
+.text-field:focused,
+.text-area:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .10, 0, 0);
+}
+.text-area .scroll-pane,
+.text-area .scroll-pane .viewport,
+.text-area .content {
+    -fx-background-color: -control-bg;
+    -fx-background-insets: 0;
+}
+.text-area:focused .content {
+    -fx-background-color: -control-bg-focus;
+}
+
+/* ComboBox, DatePicker y Spinner cerrados. */
+.modern-combo,
+.modern-date,
+.combo-box-base,
+.combo-box,
+.date-picker,
+.spinner {
+    -fx-background-color: -control-bg;
+    -fx-background-insets: 0;
+    -fx-border-color: -control-border;
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: -control-text;
+}
+.modern-combo:hover,
+.modern-date:hover,
+.combo-box-base:hover,
+.combo-box:hover,
+.date-picker:hover,
+.spinner:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+    -fx-effect: none;
+}
+.modern-combo:focused,
+.modern-date:focused,
+.combo-box-base:focused,
+.combo-box:focused,
+.combo-box:showing,
+.date-picker:focused,
+.spinner:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .10, 0, 0);
+}
+.combo-box-base .list-cell,
+.combo-box .list-cell,
+.date-picker .text-field,
+.date-picker .date-picker-display-node,
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: -control-text;
+    -fx-prompt-text-fill: -control-muted;
+}
+.combo-box-base .arrow-button,
+.combo-box .arrow-button,
+.date-picker .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-background-insets: 0;
+    -fx-border-color: -control-border;
+    -fx-cursor: hand;
+}
+.combo-box-base .arrow-button:hover,
+.combo-box .arrow-button:hover,
+.date-picker .arrow-button:hover,
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: -control-bg-hover;
+}
+.combo-box-base .arrow-button:pressed,
+.combo-box .arrow-button:pressed,
+.date-picker .arrow-button:pressed,
+.spinner .increment-arrow-button:pressed,
+.spinner .decrement-arrow-button:pressed {
+    -fx-background-color: -color-principal-transparente;
+}
+.combo-box-base .arrow,
+.combo-box .arrow,
+.date-picker .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -control-arrow;
+}
+.combo-box-base:disabled,
+.combo-box:disabled,
+.date-picker:disabled,
+.spinner:disabled,
+.text-input:disabled {
+    -fx-opacity: .58;
+}
+
+/* Popup global de ComboBox. Vive fuera de la raiz del modulo. */
+.combo-box-popup > .list-view {
+    -fx-background-color: -popup-bg;
+    -fx-border-color: -control-border-hover;
+    -fx-border-width: 1;
+    -fx-background-insets: 0;
+    -fx-padding: 3;
+}
+.combo-box-popup .list-cell,
+.combo-box-popup .list-cell:filled {
+    -fx-background-color: -popup-bg;
+    -fx-text-fill: #dde2e4;
+    -fx-padding: 8 11;
+    -fx-cursor: hand;
+}
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: -popup-hover;
+    -fx-text-fill: white;
+}
+.combo-box-popup .list-cell:selected,
+.combo-box-popup .list-cell:filled:selected,
+.combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: -color-principal-transparente;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+
+/* Calendario emergente global. */
+.date-picker-popup,
+.date-picker-popup > .month-year-pane,
+.date-picker-popup > .calendar-grid {
+    -fx-background-color: -popup-bg;
+    -fx-border-color: -control-border-hover;
+}
+.date-picker-popup > .month-year-pane .label {
+    -fx-text-fill: -control-text;
+    -fx-font-weight: 800;
+}
+.date-picker-popup > .month-year-pane .spinner .button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-border-color: -control-border;
+}
+.date-picker-popup > .month-year-pane .spinner .button:hover {
+    -fx-background-color: -popup-hover;
+    -fx-border-color: -color-principal;
+}
+.date-picker-popup .day-name-cell,
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: #98a3a8;
+}
+.date-picker-popup .day-cell {
+    -fx-background-color: -popup-bg;
+    -fx-border-color: #2d3439;
+    -fx-text-fill: #dde2e4;
+    -fx-cursor: hand;
+}
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: -popup-hover;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+}
+.date-picker-popup .day-cell.previous-month,
+.date-picker-popup .day-cell.next-month {
+    -fx-background-color: #15191c;
+    -fx-text-fill: #6f797e;
+}
+.date-picker-popup .day-cell.today {
+    -fx-border-color: -color-principal-hover;
+    -fx-border-width: 2;
+}
+.date-picker-popup .day-cell:selected,
+.date-picker-popup .selected {
+    -fx-background-color: -color-principal;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+}
+
+/* Checks y menus complementarios con la misma base. */
+.modern-check .box,
+.check-box .box {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border-hover;
+}
+.modern-check:selected .box,
+.check-box:selected .box {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+}
+.context-menu {
+    -fx-background-color: -popup-bg;
+    -fx-border-color: -control-border-hover;
+}
+.menu-item:focused {
+    -fx-background-color: -color-principal-transparente;
+}
+
+/* superficies-y-botones-grafito-v2 */
+/* Superficies estructurales comunes sin dominante azul. */
+.module-root,
+.module-content,
+.list-panel,
+.form-scroll,
+.form-scroll > .viewport,
+.form-card {
+    -fx-background-color: #111417;
+}
+.module-header {
+    -fx-background-color: linear-gradient(to right, #171b1f, #1b2024);
+    -fx-border-color: transparent transparent #30373c transparent;
+    -fx-border-width: 0 0 1 0;
+}
+.page-title,
+.section-title {
+    -fx-text-fill: #f2efea;
+}
+.page-subtitle {
+    -fx-text-fill: #9ca5a9;
+}
+
+/* Boton secundario global: grafito amable y acento solo al interactuar. */
+.secondary-button,
+.admin-home-button,
+.reservation-date-button,
+.agenda-nav-button,
+.agenda-today-button {
+    -fx-background-color: #242a2e;
+    -fx-background-radius: 9;
+    -fx-border-color: #3c454b;
+    -fx-border-radius: 9;
+    -fx-text-fill: #dce1e2;
+    -fx-effect: none;
+    -fx-cursor: hand;
+}
+.secondary-button:hover,
+.admin-home-button:hover,
+.reservation-date-button:hover,
+.agenda-nav-button:hover,
+.agenda-today-button:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 1);
+}
+.secondary-button:pressed,
+.admin-home-button:pressed,
+.reservation-date-button:pressed,
+.agenda-nav-button:pressed,
+.agenda-today-button:pressed {
+    -fx-background-color: #1d2226;
+    -fx-border-color: -color-principal-presionado;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+.secondary-button:focused,
+.admin-home-button:focused,
+.reservation-date-button:focused,
+.agenda-nav-button:focused,
+.agenda-today-button:focused {
+    -fx-border-color: -color-principal;
+}
+.secondary-button:disabled,
+.admin-home-button:disabled {
+    -fx-opacity: .48;
+    -fx-cursor: default;
+}
+
+/* Botones neutros comunes que antes heredaban azul. */
+.button.neutral-button,
+.button.outline-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #dce1e2;
+}
+.button.neutral-button:hover,
+.button.outline-button:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+}
+
+/* Paneles y tarjetas estructurales compartidos. */
+.content-card,
+.form-card,
+.filter-card,
+.detail-card {
+    -fx-background-color: #191e22;
+    -fx-border-color: #343c42;
+}
+.tooltip,
+.context-menu {
+    -fx-background-color: #20262a;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #e5e8e9;
+}

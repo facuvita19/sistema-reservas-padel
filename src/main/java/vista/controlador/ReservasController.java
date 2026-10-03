@@ -23,11 +23,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import negocio.AuditoriaReserva;
@@ -76,6 +79,7 @@ public class ReservasController {
     private Reserva reservaSeleccionada;
     private boolean modoReprogramacion;
     private boolean reprogramacionAdministrativa;
+    private boolean actualizandoFormulario;
 
     @FXML private TextField campoBuscar;
     @FXML private ComboBox<EstadoReserva> filtroEstado;
@@ -87,6 +91,10 @@ public class ReservasController {
     @FXML private TableColumn<Reserva, EstadoReserva> columnaEstado;
     @FXML private TableColumn<Reserva, BigDecimal> columnaPrecio;
     @FXML private Label tituloFormulario;
+    @FXML private Label subtituloFormulario;
+    @FXML private Label insigniaEstadoDetalle;
+    @FXML private Label insigniaOrigenDetalle;
+    @FXML private Label etiquetaVencimientoDetalle;
     @FXML private Label etiquetaMensaje;
     @FXML private Label etiquetaPrecio;
     @FXML private Label etiquetaSaldoPendiente;
@@ -105,9 +113,13 @@ public class ReservasController {
     @FXML private Button botonGuardar;
     @FXML private Button botonReprogramar;
     @FXML private Button botonWhatsApp;
+    @FXML private javafx.scene.control.ScrollPane scrollFormulario;
+    @FXML private VBox avisoModoReprogramacion;
+    @FXML private VBox contenedorAccionesReserva;
     @FXML private VBox contenedorCancelacion;
     @FXML private Label etiquetaCancelacion;
     @FXML private VBox contenedorAuditoria;
+    @FXML private Label etiquetaCantidadAuditoria;
     @FXML private javafx.scene.control.ListView<AuditoriaReserva> listaAuditoria;
 
     @FXML
@@ -139,8 +151,39 @@ public class ReservasController {
         columnaCancha.setCellValueFactory(new PropertyValueFactory<>("nombreCancha"));
         columnaCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
         columnaEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        columnaEstado.setCellFactory(columna ->
+                new javafx.scene.control.TableCell<>() {
+                    private final Label insignia = new Label();
+                    {
+                        insignia.getStyleClass().add("reservation-status-badge");
+                        setGraphic(insignia);
+                        setText(null);
+                    }
+                    @Override
+                    protected void updateItem(EstadoReserva estado,
+                            boolean vacia) {
+                        super.updateItem(estado, vacia);
+                        if (vacia || estado == null) {
+                            setGraphic(null);
+                            return;
+                        }
+                        insignia.setText(nombreEstado(estado));
+                        insignia.getStyleClass().removeIf(
+                                clase -> clase.startsWith(
+                                        "reservation-status-")
+                                        && !clase.equals(
+                                                "reservation-status-badge"));
+                        insignia.getStyleClass().add(
+                                claseEstadoReserva(estado));
+                        setGraphic(insignia);
+                    }
+                });
         columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
         columnaPrecio.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
+            {
+                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                getStyleClass().add("reservation-price-cell");
+            }
             @Override
             protected void updateItem(BigDecimal importe, boolean vacia) {
                 super.updateItem(importe, vacia);
@@ -149,9 +192,54 @@ public class ReservasController {
                         : FormateadorMoneda.pesos(importe));
             }
         });
+        tablaReservas.setRowFactory(tabla -> {
+            TableRow<Reserva> fila = new TableRow<>();
+            fila.itemProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFila(fila, fila.getItem()));
+            return fila;
+        });
+        tablaReservas.setOnMouseClicked(evento -> {
+            if (clicEnFondoTabla(evento.getTarget())) {
+                tablaReservas.getSelectionModel().clearSelection();
+                nuevaReserva();
+            }
+        });
         tablaReservas.getSelectionModel().selectedItemProperty().addListener((obs, anterior, actual) -> {
             if (actual != null) mostrarDetalle(actual);
         });
+    }
+
+    private void actualizarClaseFila(TableRow<Reserva> fila,
+            Reserva reserva) {
+        fila.getStyleClass().removeIf(
+                clase -> clase.startsWith("reservation-row-")
+                        || clase.equals("reservation-row-selected"));
+        if (reserva == null || fila.isEmpty()) return;
+        fila.getStyleClass().add(
+                "reservation-row-" + reserva.getEstado().name()
+                        .toLowerCase(Locale.ROOT));
+        if (fila.isSelected()) {
+            fila.getStyleClass().add("reservation-row-selected");
+        }
+    }
+
+    private String claseEstadoReserva(EstadoReserva estado) {
+        return "reservation-status-" + estado.name()
+                .toLowerCase(Locale.ROOT);
+    }
+
+    private boolean clicEnFondoTabla(Object objetivo) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null && actual != tablaReservas) {
+            if (actual instanceof TableRow<?> fila) {
+                return fila.isEmpty();
+            }
+            actual = actual.getParent();
+        }
+        return actual == tablaReservas;
     }
 
     private void configurarTablaAuditoria() {
@@ -276,12 +364,10 @@ public class ReservasController {
         try {
             auditorias.setAll(
                     auditoriaReservaService.listarPorReserva(reservaId));
-            contenedorAuditoria.setVisible(true);
-            contenedorAuditoria.setManaged(true);
+            actualizarPresentacionAuditoria();
         } catch (RuntimeException exception) {
             auditorias.clear();
-            contenedorAuditoria.setVisible(true);
-            contenedorAuditoria.setManaged(true);
+            actualizarPresentacionAuditoria();
             mostrarError("No se pudo cargar la auditoria: "
                     + exception.getMessage());
         }
@@ -289,8 +375,28 @@ public class ReservasController {
 
     private void limpiarAuditoria() {
         auditorias.clear();
-        contenedorAuditoria.setVisible(false);
-        contenedorAuditoria.setManaged(false);
+        actualizarPresentacionAuditoria();
+    }
+
+    private void actualizarPresentacionAuditoria() {
+        int cantidad = auditorias.size();
+        boolean visible = cantidad > 0;
+        contenedorAuditoria.setVisible(visible);
+        contenedorAuditoria.setManaged(visible);
+        if (!visible) {
+            etiquetaCantidadAuditoria.setText("");
+            listaAuditoria.setPrefHeight(0);
+            listaAuditoria.setMinHeight(0);
+            return;
+        }
+
+        etiquetaCantidadAuditoria.setText(cantidad == 1
+                ? "1 movimiento"
+                : cantidad + " movimientos");
+
+        double altura = Math.min(300, Math.max(112, cantidad * 112));
+        listaAuditoria.setMinHeight(Math.min(altura, 112));
+        listaAuditoria.setPrefHeight(altura);
     }
     private void configurarFiltros() {
         filtroFecha.setValue(LocalDate.now());
@@ -314,8 +420,12 @@ public class ReservasController {
                 setDisable(vacia || fecha.isBefore(LocalDate.now()));
             }
         });
-        comboCancha.valueProperty().addListener((obs, anterior, actual) -> actualizarDisponibilidad());
-        selectorFecha.valueProperty().addListener((obs, anterior, actual) -> actualizarDisponibilidad());
+        comboCancha.valueProperty().addListener((obs, anterior, actual) -> {
+            if (!actualizandoFormulario) actualizarDisponibilidad();
+        });
+        selectorFecha.valueProperty().addListener((obs, anterior, actual) -> {
+            if (!actualizandoFormulario) actualizarDisponibilidad();
+        });
         comboHorario.valueProperty().addListener((obs, anterior, actual) -> actualizarResumenPrecio());
     }
 
@@ -448,6 +558,15 @@ public class ReservasController {
         reservaSeleccionada = null;
         tablaReservas.getSelectionModel().clearSelection();
         tituloFormulario.setText("Nueva reserva");
+        subtituloFormulario.setText(
+                "Completá los datos para registrar un nuevo turno.");
+        insigniaEstadoDetalle.setVisible(false);
+        insigniaEstadoDetalle.setManaged(false);
+        insigniaOrigenDetalle.setVisible(false);
+        insigniaOrigenDetalle.setManaged(false);
+        etiquetaVencimientoDetalle.setVisible(false);
+        etiquetaVencimientoDetalle.setManaged(false);
+        etiquetaVencimientoDetalle.setText("");
         comboCliente.getSelectionModel().clearSelection();
         comboCancha.getSelectionModel().clearSelection();
         selectorFecha.setValue(LocalDate.now());
@@ -457,6 +576,10 @@ public class ReservasController {
         campoObservaciones.clear();
         etiquetaPrecio.setText("ARS 0");
         etiquetaSaldoPendiente.setText("ARS 0");
+        avisoModoReprogramacion.setVisible(false);
+        avisoModoReprogramacion.setManaged(false);
+        contenedorAccionesReserva.setVisible(true);
+        contenedorAccionesReserva.setManaged(true);
         contenedorCancelacion.setVisible(false);
         contenedorCancelacion.setManaged(false);
         etiquetaCancelacion.setText("");
@@ -471,9 +594,15 @@ public class ReservasController {
     private void mostrarDetalle(Reserva reserva) {
         reservaSeleccionada = reserva;
         tituloFormulario.setText("Detalle de reserva");
-        comboCliente.setValue(buscarCliente(reserva.getClienteId()));
-        comboCancha.setValue(buscarCancha(reserva.getCanchaId()));
-        selectorFecha.setValue(reserva.getFecha());
+        actualizarEncabezadoDetalle(reserva);
+        actualizandoFormulario = true;
+        try {
+            comboCliente.setValue(buscarCliente(reserva.getClienteId()));
+            comboCancha.setValue(buscarCancha(reserva.getCanchaId()));
+            selectorFecha.setValue(reserva.getFecha());
+        } finally {
+            actualizandoFormulario = false;
+        }
         actualizarDisponibilidad();
         if (!comboHorario.getItems().contains(reserva.getHoraInicio())) comboHorario.getItems().add(reserva.getHoraInicio());
         comboHorario.setValue(reserva.getHoraInicio());
@@ -487,6 +616,63 @@ public class ReservasController {
         actualizarAccionesReserva();
         mostrarDetalleCancelacion(reserva);
         cargarAuditoria(reserva.getId());
+    }
+
+    private void actualizarEncabezadoDetalle(Reserva reserva) {
+        String cliente = reserva.getNombreCliente() == null
+                || reserva.getNombreCliente().isBlank()
+                        ? "Cliente sin nombre" : reserva.getNombreCliente();
+        String cancha = reserva.getNombreCancha() == null
+                || reserva.getNombreCancha().isBlank()
+                        ? "Cancha sin nombre" : reserva.getNombreCancha();
+        String fecha = reserva.getFecha() == null
+                ? "Sin fecha" : reserva.getFecha().format(FORMATO_FECHA);
+        String horario = reserva.getHoraInicio() == null
+                || reserva.getHoraFin() == null
+                        ? "Sin horario"
+                        : reserva.getHoraInicio().format(FORMATO_HORA)
+                                + " a "
+                                + reserva.getHoraFin().format(FORMATO_HORA);
+        subtituloFormulario.setText(cliente + " · " + cancha
+                + "\n" + fecha + " · " + horario);
+
+        insigniaEstadoDetalle.setText(nombreEstado(reserva.getEstado()));
+        insigniaEstadoDetalle.getStyleClass().removeIf(
+                clase -> clase.startsWith("reservation-detail-status-")
+                        && !clase.equals(
+                                "reservation-detail-status-badge"));
+        insigniaEstadoDetalle.getStyleClass().add(
+                "reservation-detail-status-"
+                        + reserva.getEstado().name()
+                                .toLowerCase(Locale.ROOT));
+        insigniaEstadoDetalle.setVisible(true);
+        insigniaEstadoDetalle.setManaged(true);
+
+        insigniaOrigenDetalle.setText(
+                reserva.esSolicitudWeb() ? "WEB" : "PERSONAL");
+        insigniaOrigenDetalle.getStyleClass().removeAll(
+                "reservation-origin-web", "reservation-origin-personal");
+        insigniaOrigenDetalle.getStyleClass().add(
+                reserva.esSolicitudWeb()
+                        ? "reservation-origin-web"
+                        : "reservation-origin-personal");
+        insigniaOrigenDetalle.setVisible(true);
+        insigniaOrigenDetalle.setManaged(true);
+
+        boolean mostrarVencimiento = reserva.esSolicitudWeb()
+                && reserva.getEstado() == EstadoReserva.PENDIENTE
+                && reserva.getFechaVencimiento() != null;
+        etiquetaVencimientoDetalle.setVisible(mostrarVencimiento);
+        etiquetaVencimientoDetalle.setManaged(mostrarVencimiento);
+        if (mostrarVencimiento) {
+            etiquetaVencimientoDetalle.setText(
+                    "La solicitud web vence el "
+                            + reserva.getFechaVencimiento().format(
+                                    DateTimeFormatter.ofPattern(
+                                            "dd/MM/yyyy 'a las' HH:mm")));
+        } else {
+            etiquetaVencimientoDetalle.setText("");
+        }
     }
 
     private void mostrarDetalleCancelacion(Reserva reserva) {
@@ -668,13 +854,29 @@ public class ReservasController {
     private void prepararModoReprogramacion(boolean administrativa) {
         reprogramacionAdministrativa = administrativa;
         modoReprogramacion = true;
-        tituloFormulario.setText(administrativa ? "Reprogramación administrativa" : "Reprogramar reserva");
+        tituloFormulario.setText(administrativa
+                ? "Reprogramación administrativa"
+                : "Reprogramar reserva");
+        subtituloFormulario.setText(administrativa
+                ? "Seleccioná el nuevo turno y registrá el motivo administrativo."
+                : "Seleccioná una nueva cancha, fecha y horario.");
         botonGuardar.setText("GUARDAR REPROGRAMACIÓN");
         comboCliente.setDisable(true); spinnerJugadores.setDisable(true);
         comboCancha.setDisable(false); selectorFecha.setDisable(false); comboHorario.setDisable(false);
-        botonReprogramar.setVisible(false); botonReprogramar.setManaged(false);
-        mostrarInfo(administrativa ? "Seleccioná el nuevo horario. El motivo será obligatorio."
-                : "Seleccioná una nueva cancha, fecha y horario.");
+        botonReprogramar.setVisible(false);
+        botonReprogramar.setManaged(false);
+        avisoModoReprogramacion.setVisible(true);
+        avisoModoReprogramacion.setManaged(true);
+        contenedorAccionesReserva.setVisible(false);
+        contenedorAccionesReserva.setManaged(false);
+        scrollFormulario.setVvalue(0);
+        Platform.runLater(() -> {
+            scrollFormulario.setVvalue(0);
+            comboCancha.requestFocus();
+        });
+        mostrarInfo(administrativa
+                ? "Modo reprogramación administrativa activo. Completá el nuevo turno y guardá los cambios."
+                : "Modo reprogramación activo. Completá el nuevo turno y guardá los cambios.");
     }
 
     private void ofrecerReprogramacionAdministrativa(String restriccion) {
@@ -721,7 +923,14 @@ public class ReservasController {
     private void cancelarModoReprogramacion() {
         modoReprogramacion = false; reprogramacionAdministrativa = false;
         botonGuardar.setText("GUARDAR RESERVA"); comboCliente.setDisable(false); spinnerJugadores.setDisable(false);
-        comboCancha.setDisable(false); selectorFecha.setDisable(false); comboHorario.setDisable(false); actualizarAccionesReserva();
+        comboCancha.setDisable(false);
+        selectorFecha.setDisable(false);
+        comboHorario.setDisable(false);
+        avisoModoReprogramacion.setVisible(false);
+        avisoModoReprogramacion.setManaged(false);
+        contenedorAccionesReserva.setVisible(true);
+        contenedorAccionesReserva.setManaged(true);
+        actualizarAccionesReserva();
     }
 
     private void validarSeleccionFormulario() {
@@ -752,7 +961,7 @@ public class ReservasController {
         boolean tienePagos = tienePagosAcreditados();
         String pagos = tienePagos
                 ? "\nPagos acreditados: " + totalAcreditadoSeleccionado()
-                        + "\n\nLa seÃ±a puede trasladarse a otro horario o reembolsarse."
+                        + "\n\nLa seña puede trasladarse a otro horario o reembolsarse."
                 : "\nLa reserva no tiene pagos acreditados.";
         String detalle = reservaSeleccionada.getNombreCliente() + "\n"
                 + reservaSeleccionada.getNombreCancha() + "\n"
@@ -787,7 +996,7 @@ public class ReservasController {
     private void mostrarOpcionesCancelacionFueraDePlazo(String restriccion) {
         boolean tienePagos = tienePagosAcreditados();
         String pago = tienePagos
-                ? "\n\nLa seÃ±a acreditada de " + totalAcreditadoSeleccionado()
+                ? "\n\nLa seña acreditada de " + totalAcreditadoSeleccionado()
                         + " quedara retenida."
                 : "";
         Dialogos.Opcion opcion = Dialogos.elegir(
@@ -796,7 +1005,7 @@ public class ReservasController {
                 restriccion + pago
                         + "\n\nUna excepcion administrativa solo debe utilizarse "
                         + "cuando la cancelacion sea responsabilidad del complejo.",
-                tienePagos ? "CANCELAR Y RETENER SEÃ‘A" : "CANCELAR RESERVA",
+                tienePagos ? "CANCELAR Y RETENER SEÑA" : "CANCELAR RESERVA",
                 "EXCEPCION ADMINISTRATIVA",
                 true,
                 false);
@@ -836,7 +1045,7 @@ public class ReservasController {
             detalle += "\n\nLa cancelacion se registrara fuera del plazo permitido.";
         }
         String titulo = tienePagos
-                ? "Cancelar y retener la seÃ±a"
+                ? "Cancelar y retener la seña"
                 : "Cancelar reserva";
         if (Dialogos.confirmarPeligro(titulo, detalle)) {
             ejecutarCancelacionNormal();
@@ -983,4 +1192,3 @@ public class ReservasController {
         etiquetaMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
     }
 }
-

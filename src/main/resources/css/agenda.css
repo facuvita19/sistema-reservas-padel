@@ -495,3 +495,19 @@
     -fx-border-color: #b99aef;
     -fx-effect: dropshadow(gaussian, rgba(146, 117, 207, .50), 14, .18, 0, 0);
 }
+
+/* agenda-botones-neutros-v15 */
+.agenda-root .agenda-nav-button,
+.agenda-root .agenda-today-button,
+.agenda-root .secondary-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #dce1e2;
+}
+.agenda-root .agenda-nav-button:hover,
+.agenda-root .agenda-today-button:hover,
+.agenda-root .secondary-button:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+}

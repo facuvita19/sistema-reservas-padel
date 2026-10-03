@@ -190,3 +190,62 @@
     -fx-background-color: #47282f;
     -fx-border-color: #91525f;
 }
+
+/* controles-grafito-unificados-v1 */
+/* Estas reglas finales neutralizan estilos historicos azul petroleo. */
+.modern-field,
+.modern-combo,
+.modern-date,
+.modern-area,
+.spinner,
+.combo-box-base,
+.date-picker,
+.text-area,
+.text-area .content {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border;
+    -fx-text-fill: -control-text;
+}
+.modern-field:hover,
+.modern-combo:hover,
+.modern-date:hover,
+.modern-area:hover,
+.spinner:hover,
+.combo-box-base:hover,
+.date-picker:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+}
+.modern-field:focused,
+.modern-combo:focused,
+.modern-date:focused,
+.modern-area:focused,
+.spinner:focused,
+.combo-box-base:focused,
+.combo-box:showing,
+.date-picker:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+}
+.combo-box-base .list-cell,
+.combo-box .list-cell,
+.date-picker .text-field,
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: -control-text;
+}
+.combo-box-base .arrow-button,
+.combo-box .arrow-button,
+.date-picker .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-border-color: -control-border;
+}
+.combo-box-base .arrow,
+.combo-box .arrow,
+.date-picker .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -control-arrow;
+}

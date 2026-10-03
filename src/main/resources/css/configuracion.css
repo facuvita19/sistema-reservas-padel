@@ -187,3 +187,102 @@
 .config-content {
     -fx-padding: 0 0 8 0;
 }
+
+/* controles-grafito-unificados-v1 */
+/* Estas reglas finales neutralizan estilos historicos azul petroleo. */
+.modern-field,
+.modern-combo,
+.modern-date,
+.modern-area,
+.spinner,
+.combo-box-base,
+.date-picker,
+.text-area,
+.text-area .content {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border;
+    -fx-text-fill: -control-text;
+}
+.modern-field:hover,
+.modern-combo:hover,
+.modern-date:hover,
+.modern-area:hover,
+.spinner:hover,
+.combo-box-base:hover,
+.date-picker:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+}
+.modern-field:focused,
+.modern-combo:focused,
+.modern-date:focused,
+.modern-area:focused,
+.spinner:focused,
+.combo-box-base:focused,
+.combo-box:showing,
+.date-picker:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+}
+.combo-box-base .list-cell,
+.combo-box .list-cell,
+.date-picker .text-field,
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: -control-text;
+}
+.combo-box-base .arrow-button,
+.combo-box .arrow-button,
+.date-picker .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-border-color: -control-border;
+}
+.combo-box-base .arrow,
+.combo-box .arrow,
+.date-picker .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -control-arrow;
+}
+
+/* configuracion-grafito-final-v2 */
+.config-root,
+.config-scroll,
+.config-scroll > .viewport,
+.config-content {
+    -fx-background-color: #111417;
+}
+.config-root .module-header {
+    -fx-background-color: linear-gradient(to right, #171b1f, #1b2024);
+    -fx-border-color: transparent transparent #30373c transparent;
+}
+.config-card,
+.config-payment-card,
+.config-appearance-card {
+    -fx-background-color: #191e22;
+    -fx-border-color: #343c42;
+}
+.config-note,
+.config-example {
+    -fx-background-color: #20262a;
+    -fx-border-color: #3b444a;
+}
+.config-example {
+    -fx-text-fill: #b5c2c7;
+}
+.config-save-bar {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343c42 transparent transparent transparent;
+}
+.config-root .secondary-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #dce1e2;
+}
+.config-root .secondary-button:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+}

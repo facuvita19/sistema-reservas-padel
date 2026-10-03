@@ -103,3 +103,626 @@
     -fx-font-size: 12px;
     -fx-line-spacing: 2px;
 }
+
+/* reservas-modern-table-v1 */
+/* Base grafito para listado y paneles, reservando el acento para interacción. */
+.reservations-root,
+.reservations-root .list-panel,
+.reservations-root .form-scroll,
+.reservations-root .form-scroll > .viewport,
+.reservations-root .form-card {
+    -fx-background-color: #111417;
+}
+.reservations-root .module-header {
+    -fx-background-color: linear-gradient(to right, #171b1f, #1b2025);
+    -fx-border-color: transparent transparent #30363c transparent;
+}
+.reservations-root .module-split,
+.reservations-root .split-pane-divider {
+    -fx-background-color: #30363c;
+    -fx-padding: 0 1 0 1;
+}
+.reservations-root .modern-table {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #343c42;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 2;
+}
+.reservations-root .modern-table .column-header-background,
+.reservations-root .modern-table .column-header,
+.reservations-root .modern-table .filler {
+    -fx-background-color: #1c2226;
+}
+.reservations-root .modern-table .column-header {
+    -fx-border-color: transparent transparent #343c42 transparent;
+    -fx-padding: 9 4;
+}
+.reservations-root .modern-table .column-header .label {
+    -fx-text-fill: #9aa5aa;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.reservations-root .modern-table .table-row-cell {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent transparent #272e33 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-cell-size: 62;
+}
+.reservations-root .modern-table .table-row-cell:odd {
+    -fx-background-color: #171c20;
+}
+.reservations-root .modern-table .table-row-cell:hover {
+    -fx-background-color: #20262b;
+}
+.reservations-root .modern-table .table-cell {
+    -fx-border-color: transparent;
+    -fx-text-fill: #dbe0e2;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 7;
+}
+.reservations-root .modern-table .table-row-cell:selected,
+.reservations-root .modern-table .table-row-cell.reservation-row-selected {
+    -fx-background-color: #22292e;
+    -fx-border-color: transparent transparent #323b41 -color-principal;
+    -fx-border-width: 0 0 1 4;
+}
+.reservations-root .modern-table .table-row-cell:selected .table-cell {
+    -fx-text-fill: #f3f1ed;
+}
+/* Insignias semánticas de estado. */
+.reservation-status-badge {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 8;
+    -fx-max-width: Infinity;
+    -fx-alignment: CENTER;
+}
+.reservation-status-pendiente {
+    -fx-background-color: #3a301c;
+    -fx-border-color: #8c7133;
+    -fx-text-fill: #efcf84;
+}
+.reservation-status-confirmada {
+    -fx-background-color: #202f3a;
+    -fx-border-color: #537f9a;
+    -fx-text-fill: #c7e1ef;
+}
+.reservation-status-completada {
+    -fx-background-color: #1e3229;
+    -fx-border-color: #4e8069;
+    -fx-text-fill: #b9ddcc;
+}
+.reservation-status-cancelada {
+    -fx-background-color: #382326;
+    -fx-border-color: #8b5058;
+    -fx-text-fill: #efb5bc;
+}
+.reservation-status-ausente {
+    -fx-background-color: #3a2421;
+    -fx-border-color: #965b50;
+    -fx-text-fill: #efbbb2;
+}
+.reservation-status-expirada {
+    -fx-background-color: #292d30;
+    -fx-border-color: #555d62;
+    -fx-text-fill: #aeb6ba;
+}
+/* Controles y superficies sin dominante azul. */
+.reservations-root .modern-field,
+.reservations-root .modern-combo,
+.reservations-root .modern-date,
+.reservations-root .spinner,
+.reservations-root .modern-area {
+    -fx-background-color: #1c2227;
+    -fx-border-color: #394249;
+}
+.reservations-root .modern-field:focused,
+.reservations-root .modern-combo:focused,
+.reservations-root .modern-date:focused,
+.reservations-root .modern-area:focused {
+    -fx-border-color: -color-principal;
+}
+.reservations-root .reservation-date-button {
+    -fx-background-color: #20262b;
+    -fx-border-color: #394249;
+}
+.reservations-root .reservation-date-button:hover {
+    -fx-background-color: #293036;
+    -fx-border-color: -color-principal;
+}
+.reservations-root .price-summary,
+.reservations-root .audit-panel {
+    -fx-background-color: #191f23;
+    -fx-border-color: #343e44;
+}
+.reservations-root .audit-card {
+    -fx-background-color: #20262b;
+    -fx-border-color: #39434a;
+}
+.reservations-root .audit-card:hover {
+    -fx-background-color: #262d32;
+    -fx-border-color: #4a565e;
+}
+
+/* reservas-selection-fields-fix-v2 */
+/* Los estados permanecen identificables, pero no compiten con la selección. */
+.reservations-root .modern-table .table-row-cell:not(:selected) .reservation-status-badge {
+    -fx-opacity: .58;
+    -fx-effect: none;
+}
+.reservations-root .modern-table .table-row-cell:hover .reservation-status-badge {
+    -fx-opacity: .82;
+}
+.reservations-root .modern-table .table-row-cell:selected .reservation-status-badge,
+.reservations-root .modern-table .table-row-cell.reservation-row-selected .reservation-status-badge {
+    -fx-opacity: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 6, 0, 0, 1);
+}
+/* Campos, selectores y áreas con base grafito neutra. */
+.reservations-root .modern-field,
+.reservations-root .modern-combo,
+.reservations-root .modern-date,
+.reservations-root .spinner,
+.reservations-root .modern-area,
+.reservations-root .combo-box-base,
+.reservations-root .text-input {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #363e44;
+    -fx-text-fill: #e5e8e9;
+}
+.reservations-root .modern-field:hover,
+.reservations-root .modern-combo:hover,
+.reservations-root .modern-date:hover,
+.reservations-root .spinner:hover,
+.reservations-root .modern-area:hover {
+    -fx-background-color: #20262a;
+    -fx-border-color: #465158;
+}
+.reservations-root .modern-field:focused,
+.reservations-root .modern-combo:focused,
+.reservations-root .modern-date:focused,
+.reservations-root .modern-area:focused,
+.reservations-root .combo-box-base:focused {
+    -fx-background-color: #1d2327;
+    -fx-border-color: -color-principal;
+}
+.reservations-root .modern-combo .list-cell,
+.reservations-root .combo-box .list-cell,
+.reservations-root .date-picker .text-field,
+.reservations-root .spinner .text-field,
+.reservations-root .text-area .content {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e5e8e9;
+}
+.reservations-root .modern-field .prompt-text,
+.reservations-root .modern-area .prompt-text {
+    -fx-fill: #737e84;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #3a4349;
+}
+.combo-box-popup .list-cell {
+    -fx-background-color: #1b2024;
+    -fx-text-fill: #dfe3e5;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #252c31;
+}
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -color-principal-transparente;
+    -fx-text-fill: #ffffff;
+}
+
+/* reservas-dropdowns-price-fix-v3 */
+/* Precio alineado a la derecha y separado visualmente del estado. */
+.reservations-root .modern-table .reservation-price-column .label {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 18 0 0;
+}
+.reservations-root .modern-table .reservation-price-cell {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 18 0 10;
+    -fx-font-weight: 800;
+    -fx-text-fill: #e6e1d8;
+}
+/* Neutralización completa de ComboBox, DatePicker y Spinner. */
+.reservations-root .combo-box-base,
+.reservations-root .combo-box,
+.reservations-root .date-picker,
+.reservations-root .spinner {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+    -fx-border-color: #363e44;
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+}
+.reservations-root .combo-box-base:hover,
+.reservations-root .date-picker:hover,
+.reservations-root .spinner:hover {
+    -fx-background-color: #20262a;
+    -fx-border-color: #465158;
+}
+.reservations-root .combo-box-base:focused,
+.reservations-root .date-picker:focused,
+.reservations-root .spinner:focused {
+    -fx-background-color: #1d2327;
+    -fx-border-color: -color-principal;
+}
+.reservations-root .combo-box-base .list-cell,
+.reservations-root .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e5e8e9;
+    -fx-padding: 0 10;
+}
+.reservations-root .combo-box-base .arrow-button,
+.reservations-root .date-picker .arrow-button,
+.reservations-root .spinner .increment-arrow-button,
+.reservations-root .spinner .decrement-arrow-button {
+    -fx-background-color: #23292e;
+    -fx-background-insets: 0;
+    -fx-border-color: #394249;
+}
+.reservations-root .combo-box-base .arrow,
+.reservations-root .date-picker .arrow,
+.reservations-root .spinner .increment-arrow,
+.reservations-root .spinner .decrement-arrow {
+    -fx-background-color: #9aa4a9;
+}
+.reservations-root .date-picker .text-field,
+.reservations-root .spinner .text-field {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e5e8e9;
+}
+.reservations-root .text-area,
+.reservations-root .text-area .scroll-pane,
+.reservations-root .text-area .scroll-pane .viewport,
+.reservations-root .text-area .content {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+}
+/* El popup vive fuera de reservations-root, por eso se estiliza globalmente. */
+.combo-box-popup > .list-view {
+    -fx-background-color: #181d21;
+    -fx-border-color: #3b444a;
+    -fx-background-insets: 0;
+    -fx-padding: 3;
+}
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell,
+.combo-box-popup .list-cell {
+    -fx-background-color: #181d21;
+    -fx-text-fill: #dde2e4;
+    -fx-padding: 8 11;
+}
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover,
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #252c31;
+    -fx-text-fill: #ffffff;
+}
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:selected,
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -color-principal-transparente;
+    -fx-text-fill: #ffffff;
+}
+.date-picker-popup,
+.date-picker-popup > .month-year-pane,
+.date-picker-popup .calendar-grid {
+    -fx-background-color: #181d21;
+    -fx-border-color: #3b444a;
+}
+.date-picker-popup .day-cell {
+    -fx-background-color: #181d21;
+    -fx-text-fill: #dde2e4;
+}
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #252c31;
+}
+.date-picker-popup .day-cell:selected,
+.date-picker-popup .selected {
+    -fx-background-color: -color-principal;
+    -fx-text-fill: white;
+}
+
+/* controles-grafito-unificados-v1 */
+/* Estas reglas finales neutralizan estilos historicos azul petroleo. */
+.modern-field,
+.modern-combo,
+.modern-date,
+.modern-area,
+.spinner,
+.combo-box-base,
+.date-picker,
+.text-area,
+.text-area .content {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border;
+    -fx-text-fill: -control-text;
+}
+.modern-field:hover,
+.modern-combo:hover,
+.modern-date:hover,
+.modern-area:hover,
+.spinner:hover,
+.combo-box-base:hover,
+.date-picker:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+}
+.modern-field:focused,
+.modern-combo:focused,
+.modern-date:focused,
+.modern-area:focused,
+.spinner:focused,
+.combo-box-base:focused,
+.combo-box:showing,
+.date-picker:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+}
+.combo-box-base .list-cell,
+.combo-box .list-cell,
+.date-picker .text-field,
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: -control-text;
+}
+.combo-box-base .arrow-button,
+.combo-box .arrow-button,
+.date-picker .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-border-color: -control-border;
+}
+.combo-box-base .arrow,
+.combo-box .arrow,
+.date-picker .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: -control-arrow;
+}
+
+/* reservas-botones-neutros-v4 */
+.reservations-root .secondary-button,
+.reservations-root .reservation-date-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #dce1e2;
+}
+.reservations-root .secondary-button:hover,
+.reservations-root .reservation-date-button:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+}
+
+/* reservas-detail-modern-v5 */
+.reservation-detail-header {
+    -fx-background-color: #181d21;
+    -fx-background-radius: 11;
+    -fx-border-color: #394249;
+    -fx-border-radius: 11;
+    -fx-padding: 13 14;
+}
+.reservation-detail-subtitle {
+    -fx-text-fill: #9ca7ac;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
+}
+.reservation-detail-status-badge,
+.reservation-origin-badge,
+.reservation-expiration-badge {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 8;
+}
+.reservation-detail-status-pendiente {
+    -fx-background-color: #3a301c;
+    -fx-border-color: #8c7133;
+    -fx-text-fill: #efcf84;
+}
+.reservation-detail-status-confirmada {
+    -fx-background-color: #202f3a;
+    -fx-border-color: #537f9a;
+    -fx-text-fill: #c7e1ef;
+}
+.reservation-detail-status-completada {
+    -fx-background-color: #1e3229;
+    -fx-border-color: #4e8069;
+    -fx-text-fill: #b9ddcc;
+}
+.reservation-detail-status-cancelada {
+    -fx-background-color: #382326;
+    -fx-border-color: #8b5058;
+    -fx-text-fill: #efb5bc;
+}
+.reservation-detail-status-ausente {
+    -fx-background-color: #3a2421;
+    -fx-border-color: #965b50;
+    -fx-text-fill: #efbbb2;
+}
+.reservation-detail-status-expirada {
+    -fx-background-color: #292d30;
+    -fx-border-color: #555d62;
+    -fx-text-fill: #aeb6ba;
+}
+.reservation-origin-personal {
+    -fx-background-color: #252b2f;
+    -fx-border-color: #4a545a;
+    -fx-text-fill: #bcc4c7;
+}
+.reservation-origin-web {
+    -fx-background-color: -color-principal-transparente;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: -color-principal-hover;
+}
+.reservation-expiration-badge {
+    -fx-background-color: #302919;
+    -fx-border-color: #756130;
+    -fx-text-fill: #e2c66f;
+}
+.reservation-metrics {
+    -fx-padding: 10;
+}
+.reservation-metric-block,
+.reservation-player-block {
+    -fx-background-color: #1e2428;
+    -fx-background-radius: 9;
+    -fx-border-color: #374047;
+    -fx-border-radius: 9;
+    -fx-padding: 10 11;
+    -fx-alignment: CENTER_LEFT;
+}
+.reservation-player-block {
+    -fx-alignment: CENTER_RIGHT;
+}
+.reservation-balance-block {
+    -fx-border-color: #60512c;
+}
+.reservation-price {
+    -fx-text-fill: #e8e3da;
+    -fx-font-size: 18px;
+}
+.reservation-balance {
+    -fx-text-fill: #e0bf69;
+    -fx-font-size: 18px;
+}
+
+/* reservas-actions-reprogram-v6 */
+.reservation-reprogram-banner {
+    -fx-background-color: -color-principal-transparente;
+    -fx-background-radius: 11;
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 11;
+    -fx-padding: 12 14;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 10, .12, 0, 2);
+}
+.reservation-reprogram-title {
+    -fx-text-fill: -color-principal-hover;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+}
+.reservation-reprogram-text {
+    -fx-text-fill: #dce4e1;
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
+}
+.reservations-root .form-card > .primary-button,
+.reservations-root .whatsapp-button {
+    -fx-pref-height: 42;
+    -fx-min-height: 42;
+    -fx-max-height: 42;
+}
+.reservation-secondary-actions .button {
+    -fx-pref-height: 38;
+    -fx-min-height: 38;
+    -fx-max-height: 38;
+    -fx-font-size: 11px;
+    -fx-padding: 0 12;
+}
+.reservations-root .payment-button {
+    -fx-background-color: #2a3034;
+    -fx-border-color: #59636a;
+    -fx-text-fill: #e0e5e6;
+}
+.reservations-root .payment-button:hover {
+    -fx-background-color: #343b40;
+    -fx-border-color: -color-principal;
+}
+.reservations-root .reschedule-button {
+    -fx-background-color: #302d35;
+    -fx-border-color: #645c70;
+    -fx-text-fill: #ddd7e6;
+}
+.reservations-root .reschedule-button:hover {
+    -fx-background-color: #3b3643;
+    -fx-border-color: #9385a6;
+}
+.reservations-root .danger-button {
+    -fx-background-color: #392326;
+    -fx-border-color: #7d474f;
+    -fx-text-fill: #efb0b7;
+}
+.reservations-root .danger-button:hover {
+    -fx-background-color: #472a2f;
+    -fx-border-color: #b6626e;
+}
+.reservations-root .whatsapp-button {
+    -fx-background-color: #24543f;
+    -fx-border-color: #478369;
+}
+.reservations-root .whatsapp-button:hover {
+    -fx-background-color: #2d684e;
+    -fx-border-color: #65a98a;
+}
+
+/* reservas-audit-compact-v7 */
+.audit-panel {
+    -fx-padding: 12;
+    -fx-background-color: #181d21;
+    -fx-border-color: #394249;
+}
+.audit-title {
+    -fx-text-fill: #d8dddf;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+}
+.audit-count-badge {
+    -fx-background-color: #252b2f;
+    -fx-background-radius: 9;
+    -fx-border-color: #465057;
+    -fx-border-radius: 9;
+    -fx-text-fill: #bfc7ca;
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+    -fx-padding: 3 7;
+}
+.audit-list {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.audit-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 3 0;
+}
+.audit-card {
+    -fx-background-color: #20262a;
+    -fx-background-radius: 8;
+    -fx-border-color: #3b444a;
+    -fx-border-radius: 8;
+    -fx-padding: 9 11;
+}
+.audit-card:hover {
+    -fx-background-color: #262d31;
+    -fx-border-color: #515c62;
+}
+.audit-card-action {
+    -fx-text-fill: #e2e6e7;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+}
+.audit-card-meta {
+    -fx-text-fill: #8d989d;
+    -fx-font-size: 9px;
+}
+.audit-card-states {
+    -fx-text-fill: -color-principal-hover;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+.audit-card-detail {
+    -fx-text-fill: #b9c0c3;
+    -fx-font-size: 10px;
+    -fx-line-spacing: 1px;
+}

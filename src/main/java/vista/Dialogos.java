@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public final class Dialogos {
 
     private static final String CSS = "/css/dialogos.css";
+    private static final String CSS_INTERFAZ = "/css/interfaz-unificada.css";
 
     private Dialogos() {
     }
@@ -23,12 +24,11 @@ public final class Dialogos {
     public static void preparar(Dialog<?> dialogo, String clase) {
         if (dialogo == null) return;
         DialogPane panel = dialogo.getDialogPane();
-        URL css = Dialogos.class.getResource(CSS);
-        if (css != null && !panel.getStylesheets().contains(css.toExternalForm())) {
-            panel.getStylesheets().add(css.toExternalForm());
-        }
+        agregarEstilo(panel, CSS);
+        agregarEstilo(panel, CSS_INTERFAZ);
         panel.getStyleClass().add("admin-dialog");
         if (clase != null && !clase.isBlank()) panel.getStyleClass().add(clase);
+        TemaDinamico.aplicar(panel, Navegacion.getConfiguracionActual());
         dialogo.initModality(Modality.APPLICATION_MODAL);
         dialogo.setResizable(true);
         dialogo.setOnShown(evento -> {
@@ -38,6 +38,15 @@ public final class Dialogos {
                 stage.centerOnScreen();
             }
         });
+    }
+
+    private static void agregarEstilo(DialogPane panel, String recurso) {
+        URL css = Dialogos.class.getResource(recurso);
+        if (css == null) return;
+        String externo = css.toExternalForm();
+        if (!panel.getStylesheets().contains(externo)) {
+            panel.getStylesheets().add(externo);
+        }
     }
 
     public static boolean confirmar(String titulo, String mensaje) {
@@ -164,11 +173,8 @@ public final class Dialogos {
             desplazamiento.setPrefViewportWidth(620);
             desplazamiento.setPrefViewportHeight(300);
             desplazamiento.setMaxHeight(340);
-            desplazamiento.setStyle("-fx-background:#0b1821;"
-                    + "-fx-background-color:#0b1821;"
-                    + "-fx-border-color:#315f79;"
-                    + "-fx-border-radius:8;"
-                    + "-fx-background-radius:8;");
+            desplazamiento.getStyleClass().add(
+                    "dialog-message-scroll");
             alerta.getDialogPane().setContent(desplazamiento);
             alerta.getDialogPane().setPrefWidth(700);
         } else {

@@ -37,8 +37,8 @@
     -fx-text-fill: #dfeaf0;
 }
 .admin-dialog .button:hover { -fx-background-color: #284657; -fx-border-color: #5d8499; }
-.admin-dialog .button:default { -fx-background-color: #4f7f9c; -fx-border-color: #78a3ba; -fx-text-fill: white; }
-.admin-dialog .button:default:hover { -fx-background-color: #6493ad; }
+
+
 .dialog-danger .button:default { -fx-background-color: #7a3540; -fx-border-color: #b05261; }
 .dialog-danger .button:default:hover { -fx-background-color: #91424e; }
 .dialog-error > .header-panel { -fx-background-color: linear-gradient(to right, #4a252c, #642e38); }
@@ -848,4 +848,136 @@
 .combo-box-base:disabled {
     -fx-opacity: 0.58;
     -fx-cursor: default;
+}
+
+/* controles-grafito-unificados-v1 */
+.admin-dialog,
+.tournament-editor-dialog,
+.category-editor-dialog {
+    -control-bg: #1b2024;
+    -control-bg-hover: #20262a;
+    -control-bg-focus: #1d2327;
+    -control-border: #363e44;
+    -control-border-hover: #465158;
+    -control-text: #e5e8e9;
+    -control-muted: #78848a;
+    -control-arrow-bg: #23292e;
+    -control-arrow: #9aa4a9;
+}
+.dialog-field,
+.dialog-field .text-field,
+.dialog-field .text-area,
+.dialog-field .content,
+.dialog-field .list-cell,
+.dialog-field .spinner,
+.tournament-editor-dialog .text-area .content,
+.category-editor-dialog .text-area .content,
+.tournament-editor-dialog .date-picker .text-field,
+.category-editor-dialog .date-picker .text-field,
+.tournament-editor-dialog .spinner .text-field,
+.category-editor-dialog .spinner .text-field {
+    -fx-background-color: -control-bg;
+    -fx-border-color: -control-border;
+    -fx-text-fill: -control-text;
+    -fx-prompt-text-fill: -control-muted;
+}
+.dialog-field:hover,
+.admin-dialog .date-picker:hover,
+.admin-dialog .combo-box:hover,
+.admin-dialog .spinner:hover {
+    -fx-background-color: -control-bg-hover;
+    -fx-border-color: -control-border-hover;
+    -fx-effect: none;
+}
+.dialog-field:focused,
+.dialog-field:focus-within,
+.admin-dialog .date-picker:focused,
+.admin-dialog .combo-box:focused,
+.admin-dialog .spinner:focused,
+.admin-dialog .text-input:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .10, 0, 0);
+}
+.dialog-field .arrow-button,
+.dialog-field .increment-arrow-button,
+.dialog-field .decrement-arrow-button,
+.tournament-editor-dialog .date-picker .arrow-button,
+.category-editor-dialog .date-picker .arrow-button,
+.category-editor-dialog .combo-box .arrow-button {
+    -fx-background-color: -control-arrow-bg;
+    -fx-border-color: -control-border;
+}
+.dialog-field .arrow,
+.dialog-field .increment-arrow,
+.dialog-field .decrement-arrow,
+.tournament-editor-dialog .date-picker .arrow,
+.category-editor-dialog .date-picker .arrow,
+.category-editor-dialog .combo-box .arrow {
+    -fx-background-color: -control-arrow;
+}
+.category-editor-dialog .combo-box:hover,
+.category-editor-dialog .combo-box:showing,
+.category-editor-dialog .combo-box:focused {
+    -fx-background-color: -control-bg-focus;
+    -fx-border-color: -color-principal;
+    -fx-effect: none;
+}
+
+
+
+/* dialogos-grafito-neutro-v5 */
+.admin-dialog {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #3a4349;
+}
+.admin-dialog > .header-panel {
+    -fx-background-color: linear-gradient(to right, #1a1f23, #20262a);
+    -fx-border-color: transparent transparent #3a4349 transparent;
+}
+.admin-dialog .button-bar {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #343c42 transparent transparent transparent;
+}
+.admin-dialog .button:not(:default) {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-text-fill: #dce1e2;
+}
+.admin-dialog .button:not(:default):hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+}
+.tournament-editor-dialog,
+.category-editor-dialog,
+.tournament-editor-dialog > .content,
+.category-editor-dialog > .content {
+    -fx-background-color: #171c20;
+}
+
+/* dialogos-paint-fix-v6 */
+/* Colores concretos: evita ClassCastException de looked-up colors en DialogPane. */
+.admin-dialog .button:default {
+    -fx-background-color: #3d8b68;
+    -fx-border-color: #65a98a;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(61,139,104,.24), 8, .10, 0, 2);
+}
+.admin-dialog .button:default:hover {
+    -fx-background-color: #4a9a77;
+    -fx-border-color: #82bea3;
+}
+.admin-dialog .button:default:pressed {
+    -fx-background-color: #327557;
+    -fx-border-color: #579578;
+    -fx-effect: none;
+}
+.dialog-danger .button:default {
+    -fx-background-color: #7a3540;
+    -fx-border-color: #b05261;
+}
+.dialog-danger .button:default:hover {
+    -fx-background-color: #91424e;
+    -fx-border-color: #c46d78;
 }

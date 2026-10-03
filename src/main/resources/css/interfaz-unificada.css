@@ -1,0 +1,627 @@
+/* ============================================================
+   INTERFAZ UNIFICADA - CAPA FINAL
+   Se carga despues de los estilos historicos de cada modulo.
+   ============================================================ */
+
+/* Superficies generales completamente neutras. */
+.root,
+.module-root,
+.module-content,
+.config-root,
+.config-scroll,
+.config-scroll > .viewport,
+.config-content,
+.list-panel,
+.form-scroll,
+.form-scroll > .viewport,
+.form-card {
+    -fx-background-color: #111417;
+}
+
+.module-header,
+.config-root .module-header {
+    -fx-background-color: linear-gradient(to right, #171b1f, #1b2024);
+    -fx-border-color: transparent transparent #333a3f transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.config-card,
+.config-payment-card,
+.config-appearance-card,
+.content-card,
+.form-card,
+.filter-card,
+.detail-card {
+    -fx-background-color: #191e22;
+    -fx-border-color: #3a4247;
+}
+
+/* Botones secundarios con relieve suficiente para reconocerse como acciones. */
+.secondary-button,
+.admin-home-button,
+.reservation-date-button,
+.agenda-nav-button,
+.agenda-today-button {
+    -fx-background-color: linear-gradient(to bottom, #30363a, #282e32);
+    -fx-background-radius: 9;
+    -fx-border-color: #59636a;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-text-fill: #f0f2f2;
+    -fx-font-weight: 800;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.28), 7, .08, 0, 2);
+    -fx-cursor: hand;
+}
+
+.secondary-button:hover,
+.admin-home-button:hover,
+.reservation-date-button:hover,
+.agenda-nav-button:hover,
+.agenda-today-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #3a4247, #30373b);
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .12, 0, 2);
+    -fx-translate-y: -1;
+}
+
+.secondary-button:pressed,
+.admin-home-button:pressed,
+.reservation-date-button:pressed,
+.agenda-nav-button:pressed,
+.agenda-today-button:pressed {
+    -fx-background-color: #22272b;
+    -fx-border-color: -color-principal-presionado;
+    -fx-effect: inset 0 1 2 rgba(0,0,0,.30);
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+.secondary-button:focused,
+.admin-home-button:focused,
+.reservation-date-button:focused,
+.agenda-nav-button:focused,
+.agenda-today-button:focused {
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1.5;
+}
+
+.secondary-button:disabled,
+.admin-home-button:disabled {
+    -fx-opacity: .45;
+    -fx-effect: none;
+    -fx-cursor: default;
+}
+
+/* Entradas y contenedores internos, sin azul residual. */
+.text-field,
+.text-area,
+.modern-field,
+.modern-area,
+.combo-box-base,
+.combo-box,
+.modern-combo,
+.date-picker,
+.modern-date,
+.spinner,
+.color-picker {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+    -fx-border-color: #3b444a;
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: #e7eaea;
+    -fx-prompt-text-fill: #7e888d;
+}
+
+.text-field:hover,
+.text-area:hover,
+.modern-field:hover,
+.modern-area:hover,
+.combo-box-base:hover,
+.combo-box:hover,
+.modern-combo:hover,
+.date-picker:hover,
+.modern-date:hover,
+.spinner:hover,
+.color-picker:hover {
+    -fx-background-color: #20262a;
+    -fx-border-color: #505a60;
+}
+
+.text-field:focused,
+.text-area:focused,
+.modern-field:focused,
+.modern-area:focused,
+.combo-box-base:focused,
+.combo-box:focused,
+.combo-box:showing,
+.modern-combo:focused,
+.date-picker:focused,
+.modern-date:focused,
+.spinner:focused,
+.color-picker:focused,
+.color-picker:showing {
+    -fx-background-color: #1d2327;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 0);
+}
+
+/* Subnodos que antes conservaban #1a2531 o azul petroleo. */
+.text-area .scroll-pane,
+.text-area .scroll-pane .viewport,
+.text-area .content,
+.modern-area .content,
+.combo-box-base .list-cell,
+.combo-box .list-cell,
+.date-picker .text-field,
+.date-picker .date-picker-display-node,
+.spinner .text-field,
+.color-picker .label {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e7eaea;
+    -fx-prompt-text-fill: #7e888d;
+}
+
+.text-area .content,
+.modern-area .content {
+    -fx-background-color: #1b2024;
+}
+
+.text-area:focused .content,
+.modern-area:focused .content {
+    -fx-background-color: #1d2327;
+}
+
+.combo-box-base .arrow-button,
+.combo-box .arrow-button,
+.date-picker .arrow-button,
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button,
+.color-picker .arrow-button {
+    -fx-background-color: #282e32;
+    -fx-background-insets: 0;
+    -fx-border-color: #414a50;
+}
+
+.combo-box-base .arrow-button:hover,
+.combo-box .arrow-button:hover,
+.date-picker .arrow-button:hover,
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover,
+.color-picker .arrow-button:hover {
+    -fx-background-color: #32393e;
+}
+
+.combo-box-base .arrow,
+.combo-box .arrow,
+.date-picker .arrow,
+.spinner .increment-arrow,
+.spinner .decrement-arrow,
+.color-picker .arrow {
+    -fx-background-color: #a7afb3;
+}
+
+/* Tarjetas informativas de Configuracion. */
+.config-note,
+.config-example,
+.config-accent-preview {
+    -fx-background-color: #20262a;
+    -fx-border-color: #3d464c;
+}
+
+/* Popups, al vivir fuera del modulo, necesitan reglas finales globales. */
+.combo-box-popup > .list-view,
+.color-palette,
+.context-menu {
+    -fx-background-color: #181d21;
+    -fx-border-color: #4a545a;
+    -fx-border-width: 1;
+}
+
+.combo-box-popup .list-cell,
+.combo-box-popup .list-cell:filled,
+.context-menu .menu-item {
+    -fx-background-color: #181d21;
+    -fx-text-fill: #e1e5e6;
+}
+
+.combo-box-popup .list-cell:filled:hover,
+.context-menu .menu-item:focused {
+    -fx-background-color: #292f34;
+    -fx-text-fill: white;
+}
+
+.combo-box-popup .list-cell:selected,
+.combo-box-popup .list-cell:filled:selected,
+.combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: -color-principal-transparente;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+
+.date-picker-popup,
+.date-picker-popup > .month-year-pane,
+.date-picker-popup > .calendar-grid {
+    -fx-background-color: #181d21;
+    -fx-border-color: #4a545a;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: #181d21;
+    -fx-border-color: #2e353a;
+    -fx-text-fill: #e1e5e6;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #292f34;
+    -fx-border-color: -color-principal;
+}
+
+.date-picker-popup .day-cell:selected,
+.date-picker-popup .selected {
+    -fx-background-color: -color-principal;
+    -fx-text-fill: white;
+}
+
+/* Diálogos en la misma base neutral. */
+.admin-dialog,
+.tournament-editor-dialog,
+.category-editor-dialog,
+.admin-dialog .button-bar,
+.tournament-editor-dialog > .content,
+.category-editor-dialog > .content {
+    -fx-background-color: #171c20;
+}
+
+.admin-dialog > .header-panel {
+    -fx-background-color: linear-gradient(to right, #1a1f23, #22282c);
+    -fx-border-color: transparent transparent #3b444a transparent;
+}
+
+.admin-dialog .button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #30363a, #282e32);
+    -fx-border-color: #59636a;
+    -fx-text-fill: #f0f2f2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 6, .06, 0, 2);
+}
+
+.admin-dialog .button:not(:default):hover {
+    -fx-background-color: #353d42;
+    -fx-border-color: -color-principal;
+}
+
+/* spinners-y-tablas-globales-v2 */
+/* ============================================================
+   SPINNERS: neutralizacion con especificidad superior
+   ============================================================ */
+.config-root .config-card .spinner,
+.config-root .config-card .spinner:hover,
+.config-root .config-card .spinner:focused,
+.module-root .spinner,
+.module-root .spinner:hover,
+.module-root .spinner:focused,
+.admin-dialog .spinner,
+.admin-dialog .spinner:hover,
+.admin-dialog .spinner:focused {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+    -fx-border-color: #3b444a;
+    -fx-border-width: 1;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-effect: none;
+}
+
+.config-root .config-card .spinner:hover,
+.module-root .spinner:hover,
+.admin-dialog .spinner:hover {
+    -fx-background-color: #20262a;
+    -fx-border-color: #505a60;
+}
+
+.config-root .config-card .spinner:focused,
+.module-root .spinner:focused,
+.admin-dialog .spinner:focused {
+    -fx-background-color: #1d2327;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 0);
+}
+
+.config-root .config-card .spinner .text-field,
+.config-root .config-card .spinner:focused .text-field,
+.module-root .spinner .text-field,
+.admin-dialog .spinner .text-field {
+    -fx-background-color: #1b2024;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-text-fill: #e7eaea;
+    -fx-prompt-text-fill: #7e888d;
+}
+
+.config-root .config-card .spinner:hover .text-field,
+.module-root .spinner:hover .text-field,
+.admin-dialog .spinner:hover .text-field {
+    -fx-background-color: #20262a;
+}
+
+.config-root .config-card .spinner:focused .text-field,
+.module-root .spinner:focused .text-field,
+.admin-dialog .spinner:focused .text-field {
+    -fx-background-color: #1d2327;
+}
+
+.config-root .config-card .spinner .increment-arrow-button,
+.config-root .config-card .spinner .decrement-arrow-button,
+.module-root .spinner .increment-arrow-button,
+.module-root .spinner .decrement-arrow-button,
+.admin-dialog .spinner .increment-arrow-button,
+.admin-dialog .spinner .decrement-arrow-button {
+    -fx-background-color: #282e32;
+    -fx-background-insets: 0;
+    -fx-border-color: #414a50;
+}
+
+.config-root .config-card .spinner .increment-arrow-button:hover,
+.config-root .config-card .spinner .decrement-arrow-button:hover,
+.module-root .spinner .increment-arrow-button:hover,
+.module-root .spinner .decrement-arrow-button:hover,
+.admin-dialog .spinner .increment-arrow-button:hover,
+.admin-dialog .spinner .decrement-arrow-button:hover {
+    -fx-background-color: #343b40;
+    -fx-border-color: -color-principal;
+}
+
+.config-root .config-card .spinner .increment-arrow,
+.config-root .config-card .spinner .decrement-arrow,
+.module-root .spinner .increment-arrow,
+.module-root .spinner .decrement-arrow,
+.admin-dialog .spinner .increment-arrow,
+.admin-dialog .spinner .decrement-arrow {
+    -fx-background-color: #a7afb3;
+}
+
+/* ColorPicker con la misma neutralidad. */
+.config-root .config-card .color-picker,
+.config-root .config-card .color-picker .label,
+.config-root .config-card .color-picker .arrow-button {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #3b444a;
+    -fx-text-fill: #e7eaea;
+}
+.config-root .config-card .color-picker:hover,
+.config-root .config-card .color-picker:hover .label,
+.config-root .config-card .color-picker:hover .arrow-button {
+    -fx-background-color: #20262a;
+}
+.config-root .config-card .color-picker:focused,
+.config-root .config-card .color-picker:showing {
+    -fx-border-color: -color-principal;
+}
+
+/* ============================================================
+   TABLAS: base global grafito
+   No fija altura, anchos ni alineacion de columnas.
+   ============================================================ */
+.table-view,
+.modern-table,
+.dashboard-table,
+.dialog-client-search .table-view {
+    -fx-background-color: #151a1e;
+    -fx-control-inner-background: #151a1e;
+    -fx-control-inner-background-alt: #171c20;
+    -fx-border-color: #3a4349;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-table-cell-border-color: transparent;
+    -fx-selection-bar: #22292e;
+    -fx-selection-bar-non-focused: #20262a;
+}
+
+.table-view .column-header-background,
+.modern-table .column-header-background,
+.dashboard-table .column-header-background,
+.dialog-client-search .table-view .column-header-background {
+    -fx-background-color: #1c2226;
+    -fx-background-radius: 9 9 0 0;
+    -fx-border-color: transparent transparent #3a4349 transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.table-view .column-header,
+.table-view .filler,
+.modern-table .column-header,
+.modern-table .filler,
+.dashboard-table .column-header,
+.dashboard-table .filler,
+.dialog-client-search .table-view .column-header,
+.dialog-client-search .table-view .filler {
+    -fx-background-color: #1c2226;
+    -fx-border-color: transparent transparent #3a4349 transparent;
+}
+
+.table-view .column-header .label,
+.modern-table .column-header .label,
+.dashboard-table .column-header .label,
+.dialog-client-search .table-view .column-header .label {
+    -fx-text-fill: #a0aaae;
+    -fx-font-weight: 900;
+}
+
+.table-view .table-row-cell,
+.modern-table .table-row-cell,
+.dashboard-table .table-row-cell,
+.dialog-client-search .table-view .table-row-cell {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent transparent #2b3237 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-table-cell-border-color: transparent;
+}
+
+.table-view .table-row-cell:odd,
+.modern-table .table-row-cell:odd,
+.dashboard-table .table-row-cell:odd,
+.dialog-client-search .table-view .table-row-cell:odd {
+    -fx-background-color: #171c20;
+}
+
+.table-view .table-row-cell:hover,
+.modern-table .table-row-cell:hover,
+.dashboard-table .table-row-cell:hover,
+.dialog-client-search .table-view .table-row-cell:hover {
+    -fx-background-color: #20262b;
+}
+
+.table-view .table-row-cell:selected,
+.table-view .table-row-cell:selected:hover,
+.modern-table .table-row-cell:selected,
+.modern-table .table-row-cell:selected:hover,
+.dashboard-table .table-row-cell:selected,
+.dialog-client-search .table-view .table-row-cell:selected,
+.dialog-client-search .table-view .table-row-cell:selected:hover {
+    -fx-background-color: #22292e;
+    -fx-border-color: transparent transparent #343d42 -color-principal;
+    -fx-border-width: 0 0 1 4;
+}
+
+.table-view .table-cell,
+.modern-table .table-cell,
+.dashboard-table .table-cell,
+.dialog-client-search .table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #dce1e3;
+}
+
+.table-view .table-row-cell:selected .table-cell,
+.modern-table .table-row-cell:selected .table-cell,
+.dashboard-table .table-row-cell:selected .table-cell,
+.dialog-client-search .table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #f6f4f0;
+}
+
+.table-view .placeholder .label,
+.modern-table .placeholder .label,
+.dashboard-table .placeholder .label,
+.dialog-client-search .table-view .placeholder .label {
+    -fx-text-fill: #7f898e;
+}
+
+/* Scrollbars compartidas por tablas y listas. */
+.table-view .scroll-bar,
+.list-view .scroll-bar,
+.dialog-client-search .table-view .scroll-bar {
+    -fx-background-color: #151a1e;
+}
+.table-view .scroll-bar .track,
+.list-view .scroll-bar .track,
+.dialog-client-search .table-view .scroll-bar .track {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+}
+.table-view .scroll-bar .thumb,
+.list-view .scroll-bar .thumb,
+.dialog-client-search .table-view .scroll-bar .thumb {
+    -fx-background-color: #465057;
+    -fx-background-radius: 8;
+}
+.table-view .scroll-bar .thumb:hover,
+.list-view .scroll-bar .thumb:hover,
+.dialog-client-search .table-view .scroll-bar .thumb:hover {
+    -fx-background-color: -color-principal;
+}
+.table-view .corner,
+.dialog-client-search .table-view .corner {
+    -fx-background-color: #151a1e;
+}
+
+/* dialog-content-neutral-v3 */
+/* Panel central de Dialogos.elegir y confirmaciones personalizadas. */
+.admin-dialog > .content,
+.admin-dialog .content,
+.dialog-custom-action,
+.dialog-custom-action > .content,
+.dialog-choice,
+.dialog-choice > .content,
+.dialog-confirm,
+.dialog-confirm > .content {
+    -fx-background-color: #171c20;
+    -fx-border-color: #3a4349;
+}
+.admin-dialog .content.label,
+.admin-dialog > .content.label {
+    -fx-text-fill: #dce1e3;
+}
+.dialog-custom-action .button,
+.dialog-choice .button {
+    -fx-pref-height: 40;
+    -fx-min-height: 40;
+    -fx-max-height: 40;
+    -fx-effect: none;
+}
+.dialog-custom-action .button:cancel,
+.dialog-choice .button:cancel {
+    -fx-background-color: linear-gradient(to bottom, #30363a, #282e32);
+    -fx-border-color: #59636a;
+    -fx-text-fill: #f0f2f2;
+}
+
+/* dialog-pane-internal-neutral-v4 */
+/* Los fondos visibles del diálogo pertenecen a estos subnodos internos. */
+.dialog-pane.admin-dialog,
+.dialog-pane.admin-dialog > .content,
+.dialog-pane.admin-dialog .content,
+.dialog-pane.admin-dialog > .content.label,
+.dialog-pane.admin-dialog .content.label,
+.dialog-pane.admin-dialog > .button-bar,
+.dialog-pane.admin-dialog .button-bar,
+.dialog-pane.dialog-custom-action,
+.dialog-pane.dialog-custom-action > .content,
+.dialog-pane.dialog-custom-action .content,
+.dialog-pane.dialog-choice,
+.dialog-pane.dialog-choice > .content,
+.dialog-pane.dialog-choice .content,
+.dialog-pane.dialog-confirm,
+.dialog-pane.dialog-confirm > .content,
+.dialog-pane.dialog-confirm .content {
+    -fx-background-color: #171c20;
+    -fx-background-insets: 0;
+    -fx-border-color: #3a4349;
+}
+
+.dialog-pane.admin-dialog > .header-panel,
+.dialog-pane.dialog-custom-action > .header-panel,
+.dialog-pane.dialog-choice > .header-panel,
+.dialog-pane.dialog-confirm > .header-panel {
+    -fx-background-color: linear-gradient(to right, #1a1f23, #22282c);
+    -fx-border-color: transparent transparent #3a4349 transparent;
+}
+
+.dialog-pane.admin-dialog .label,
+.dialog-pane.dialog-custom-action .label,
+.dialog-pane.dialog-choice .label,
+.dialog-pane.dialog-confirm .label {
+    -fx-text-fill: #dce1e3;
+}
+
+.dialog-pane.admin-dialog .button-bar,
+.dialog-pane.dialog-custom-action .button-bar,
+.dialog-pane.dialog-choice .button-bar,
+.dialog-pane.dialog-confirm .button-bar {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #343c42 transparent transparent transparent;
+}
+
+/* Evita una declaración no compatible de efecto inset en JavaFX CSS. */
+.secondary-button:pressed,
+.admin-home-button:pressed,
+.reservation-date-button:pressed,
+.agenda-nav-button:pressed,
+.agenda-today-button:pressed {
+    -fx-effect: none;
+}

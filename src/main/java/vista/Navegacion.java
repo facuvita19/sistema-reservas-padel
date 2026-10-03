@@ -22,7 +22,8 @@ public final class Navegacion {
 			"/css/bloqueos.css", "/css/pagos.css", "/css/dashboard.css", "/css/estadisticas.css",
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
 			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css",
-							"/css/torneo-cuadro.css", "/css/torneo-resultado.css", "/css/torneo-grupos.css" };
+							"/css/torneo-cuadro.css", "/css/torneo-resultado.css", "/css/torneo-grupos.css",
+                                                        "/css/interfaz-unificada.css" };
 
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
