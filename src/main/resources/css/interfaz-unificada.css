@@ -625,3 +625,123 @@
 .agenda-today-button:pressed {
     -fx-effect: none;
 }
+
+/* dialog-buttons-unified-v8 */
+/* Todos los dialogos de dos acciones comparten dimensiones y respuesta visual. */
+.dialog-pane.admin-dialog .button-bar .button,
+.dialog-pane.dialog-choice .button-bar .button,
+.dialog-pane.dialog-confirm .button-bar .button,
+.dialog-pane.dialog-danger .button-bar .button,
+.dialog-pane.dialog-custom-action .button-bar .button {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0 16;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* La accion principal conserva su significado. */
+.dialog-pane.admin-dialog .dialog-action-primary,
+.dialog-pane.dialog-custom-action .dialog-action-primary {
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(63,147,111,.28), 8, .10, 0, 2);
+}
+.dialog-pane.admin-dialog .dialog-action-primary:hover,
+.dialog-pane.dialog-custom-action .dialog-action-primary:hover {
+    -fx-background-color: #4da17e;
+    -fx-border-color: #86c5a8;
+    -fx-effect: dropshadow(gaussian, rgba(77,161,126,.38), 10, .14, 0, 3);
+    -fx-translate-y: -1;
+}
+.dialog-pane.admin-dialog .dialog-action-primary:pressed,
+.dialog-pane.dialog-custom-action .dialog-action-primary:pressed {
+    -fx-background-color: #337b5c;
+    -fx-border-color: #579879;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* Acciones peligrosas permanecen rojas. */
+.dialog-pane.admin-dialog .dialog-action-danger,
+.dialog-pane.dialog-danger .button:default {
+    -fx-background-color: #963f4c;
+    -fx-border-color: #ca6370;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(150,63,76,.28), 8, .10, 0, 2);
+}
+.dialog-pane.admin-dialog .dialog-action-danger:hover,
+.dialog-pane.dialog-danger .button:default:hover {
+    -fx-background-color: #aa4b59;
+    -fx-border-color: #dc7a85;
+    -fx-effect: dropshadow(gaussian, rgba(170,75,89,.36), 10, .14, 0, 3);
+    -fx-translate-y: -1;
+}
+.dialog-pane.admin-dialog .dialog-action-danger:pressed,
+.dialog-pane.dialog-danger .button:default:pressed {
+    -fx-background-color: #7c3440;
+    -fx-border-color: #a9505d;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* VOLVER es siempre una accion secundaria grafito, nunca azul. */
+.dialog-pane.admin-dialog .button:cancel,
+.dialog-pane.dialog-choice .button:cancel,
+.dialog-pane.dialog-confirm .button:cancel,
+.dialog-pane.dialog-danger .button:cancel,
+.dialog-pane.dialog-custom-action .button:cancel {
+    -fx-background-color: linear-gradient(to bottom, #343b40, #292f33);
+    -fx-border-color: #5a656b;
+    -fx-text-fill: #eef1f2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.28), 7, .08, 0, 2);
+}
+.dialog-pane.admin-dialog .button:cancel:hover,
+.dialog-pane.dialog-choice .button:cancel:hover,
+.dialog-pane.dialog-confirm .button:cancel:hover,
+.dialog-pane.dialog-danger .button:cancel:hover,
+.dialog-pane.dialog-custom-action .button:cancel:hover {
+    -fx-background-color: linear-gradient(to bottom, #41494e, #343b40);
+    -fx-border-color: -color-principal;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .10, 0, 3);
+    -fx-translate-y: -1;
+}
+.dialog-pane.admin-dialog .button:cancel:pressed,
+.dialog-pane.dialog-choice .button:cancel:pressed,
+.dialog-pane.dialog-confirm .button:cancel:pressed,
+.dialog-pane.dialog-danger .button:cancel:pressed,
+.dialog-pane.dialog-custom-action .button:cancel:pressed {
+    -fx-background-color: #24292d;
+    -fx-border-color: -color-principal-presionado;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* Contenedores centrados y con la misma separacion. */
+.dialog-pane.admin-dialog .button-bar > .container,
+.dialog-pane.dialog-choice .button-bar > .container,
+.dialog-pane.dialog-confirm .button-bar > .container,
+.dialog-pane.dialog-danger .button-bar > .container,
+.dialog-pane.dialog-custom-action .button-bar > .container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 14;
+}

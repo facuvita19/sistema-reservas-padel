@@ -49,6 +49,18 @@ public final class Dialogos {
         }
     }
 
+    private static void configurarContenido(
+            Alert alerta, String mensaje, double ancho) {
+        Label contenido = new Label(mensaje == null ? "" : mensaje);
+        contenido.setWrapText(true);
+        contenido.setMaxWidth(Double.MAX_VALUE);
+        contenido.setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
+        contenido.setPrefWidth(ancho);
+        contenido.getStyleClass().add("dialog-message-label");
+        alerta.getDialogPane().setContent(contenido);
+        alerta.getDialogPane().setPrefWidth(ancho + 80);
+    }
+
     public static boolean confirmar(String titulo, String mensaje) {
         return confirmar(titulo, mensaje, false);
     }
@@ -66,6 +78,7 @@ public final class Dialogos {
         alerta.setTitle(titulo);
         alerta.setHeaderText(titulo);
         alerta.setGraphic(null);
+        configurarContenido(alerta, mensaje, 520);
         preparar(alerta, peligro ? "dialog-danger" : "dialog-confirm");
         Optional<ButtonType> resultado = alerta.showAndWait();
         return resultado.orElse(cancelar) == aceptar;
@@ -96,6 +109,7 @@ public final class Dialogos {
         alerta.setTitle(titulo);
         alerta.setHeaderText(encabezado);
         alerta.setGraphic(null);
+        configurarContenido(alerta, mensaje, 700);
         preparar(alerta, "dialog-choice");
         javafx.scene.Node botonPrincipal = alerta.getDialogPane()
                 .lookupButton(principal);
@@ -125,6 +139,7 @@ public final class Dialogos {
         alerta.setTitle(titulo);
         alerta.setHeaderText(encabezado);
         alerta.setGraphic(null);
+        configurarContenido(alerta, mensaje, 590);
         preparar(alerta, "dialog-custom-action");
         javafx.scene.Node botonAceptar = alerta.getDialogPane()
                 .lookupButton(aceptar);

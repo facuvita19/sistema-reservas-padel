@@ -18,7 +18,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -57,6 +59,10 @@ public class CanchasController {
 
 	@FXML
 	private Label tituloFormulario;
+	@FXML
+	private Label subtituloFormulario;
+	@FXML
+	private Label insigniaEstadoCancha;
 	@FXML
 	private Label etiquetaMensaje;
 	@FXML
@@ -97,6 +103,8 @@ public class CanchasController {
 	private Button botonGuardar;
 	@FXML
 	private Button botonDesactivar;
+	@FXML
+	private Button botonEliminarDefinitivamente;
 
 	@FXML
 	private void initialize() {
@@ -135,22 +143,60 @@ public class CanchasController {
 						+ datos.getValue().getHoraCierre().format(FORMATO_HORA)));
 		columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
 		columnaPrecio.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
-		        @Override
-		        protected void updateItem(BigDecimal importe, boolean vacia) {
-		                super.updateItem(importe, vacia);
-		                setText(vacia || importe == null
-		                        ? null
-		                        : FormateadorMoneda.pesos(importe));
-		        }
-		});
-		columnaEstado.setCellValueFactory(datos -> new javafx.beans.property.SimpleStringProperty(
-				datos.getValue().isActivo() ? "Activa" : "Inactiva"));
+                        {
+                                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                                getStyleClass().add("court-price-cell");
+                        }
+                        @Override
+                        protected void updateItem(BigDecimal importe, boolean vacia) {
+                                super.updateItem(importe, vacia);
+                                setText(vacia || importe == null ? null : FormateadorMoneda.pesos(importe));
+                        }
+                });
+                columnaEstado.setCellValueFactory(datos -> new javafx.beans.property.SimpleStringProperty(
+                                datos.getValue().isActivo() ? "Activa" : "Inactiva"));
+                columnaEstado.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
+                        private final Label insignia = new Label();
+                        { insignia.getStyleClass().add("court-status-badge"); setText(null); }
+                        @Override
+                        protected void updateItem(String estado, boolean vacia) {
+                                super.updateItem(estado, vacia);
+                                if (vacia || estado == null) { setGraphic(null); return; }
+                                boolean activa = "Activa".equals(estado);
+                                insignia.setText(estado.toUpperCase(Locale.ROOT));
+                                insignia.getStyleClass().removeAll("court-status-active", "court-status-inactive");
+                                insignia.getStyleClass().add(activa ? "court-status-active" : "court-status-inactive");
+                                setGraphic(insignia);
+                        }
+                });
 
-		tablaCanchas.getSelectionModel().selectedItemProperty().addListener((observable, anterior, actual) -> {
-			if (actual != null) {
-				editar(actual);
-			}
-		});
+		tablaCanchas.setRowFactory(tabla -> {
+                        TableRow<Cancha> fila = new TableRow<>();
+                        fila.itemProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, actual));
+                        fila.selectedProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, fila.getItem()));
+                        return fila;
+                });
+                tablaCanchas.setOnMouseClicked(evento -> { if (clicEnFondoTabla(evento.getTarget())) nuevo(); });
+                tablaCanchas.getSelectionModel().selectedItemProperty().addListener((observable, anterior, actual) -> {
+                        if (actual != null) editar(actual);
+                });
+	}
+
+	private void actualizarClaseFila(TableRow<Cancha> fila, Cancha cancha) {
+	        fila.getStyleClass().removeAll("court-row-inactive", "court-row-selected");
+	        if (cancha == null || fila.isEmpty()) return;
+	        if (!cancha.isActivo()) fila.getStyleClass().add("court-row-inactive");
+	        if (fila.isSelected()) fila.getStyleClass().add("court-row-selected");
+	}
+
+	private boolean clicEnFondoTabla(Object objetivo) {
+	        if (!(objetivo instanceof Node nodo)) return false;
+	        Node actual = nodo;
+	        while (actual != null && actual != tablaCanchas) {
+	                if (actual instanceof TableRow<?> fila) return fila.isEmpty();
+	                actual = actual.getParent();
+	        }
+	        return actual == tablaCanchas;
 	}
 
 	private void configurarBusqueda() {
@@ -172,7 +218,7 @@ public class CanchasController {
 	@FXML
 	private void cargarCanchas() {
 		try {
-			List<Cancha> resultado = canchaService.listar();
+			List<Cancha> resultado = canchaService.listarTodas();
 			canchas.setAll(resultado);
 			mostrarInfo(resultado.size() + " cancha(s) cargada(s).");
 		} catch (RuntimeException exception) {
@@ -185,9 +231,19 @@ public class CanchasController {
 		canchaSeleccionada = null;
 		tablaCanchas.getSelectionModel().clearSelection();
 		tituloFormulario.setText("Nueva cancha");
+                subtituloFormulario.setText("Configurá disponibilidad, horarios y tarifa del nuevo espacio.");
+                insigniaEstadoCancha.setVisible(false);
+                insigniaEstadoCancha.setManaged(false);
 		botonGuardar.setText("GUARDAR CANCHA");
 		botonDesactivar.setVisible(false);
 		botonDesactivar.setManaged(false);
+                botonEliminarDefinitivamente.setVisible(false);
+                botonEliminarDefinitivamente.setManaged(false);
+                botonDesactivar.setText("DESACTIVAR");
+                botonDesactivar.getStyleClass().removeAll(
+                                "danger-button", "reactivate-button");
+                botonDesactivar.getStyleClass().add("danger-button");
+                botonGuardar.setDisable(false);
 
 		campoNombre.clear();
 		comboTipo.getSelectionModel().select(TipoCancha.CUBIERTA);
@@ -206,9 +262,27 @@ public class CanchasController {
 	private void editar(Cancha cancha) {
 		canchaSeleccionada = cancha;
 		tituloFormulario.setText("Editar cancha");
+                subtituloFormulario.setText(cancha.getNombre() + " · " + cancha.getTipo() + "\n"
+                                + (cancha.getSuperficie() == null || cancha.getSuperficie().isBlank()
+                                                ? "Sin superficie informada" : cancha.getSuperficie())
+                                + (cancha.isTieneIluminacion() ? " · Con iluminación" : " · Sin iluminación"));
+                insigniaEstadoCancha.setText(cancha.isActivo() ? "ACTIVA" : "INACTIVA");
+                insigniaEstadoCancha.getStyleClass().removeAll("court-detail-active", "court-detail-inactive");
+                insigniaEstadoCancha.getStyleClass().add(cancha.isActivo() ? "court-detail-active" : "court-detail-inactive");
+                insigniaEstadoCancha.setVisible(true);
+                insigniaEstadoCancha.setManaged(true);
 		botonGuardar.setText("GUARDAR CAMBIOS");
 		botonDesactivar.setVisible(true);
 		botonDesactivar.setManaged(true);
+                botonDesactivar.setText(cancha.isActivo()
+                                ? "DESACTIVAR" : "REACTIVAR");
+                botonDesactivar.getStyleClass().removeAll(
+                                "danger-button", "reactivate-button");
+                botonDesactivar.getStyleClass().add(cancha.isActivo()
+                                ? "danger-button" : "reactivate-button");
+                botonGuardar.setDisable(!cancha.isActivo());
+                botonEliminarDefinitivamente.setVisible(!cancha.isActivo());
+                botonEliminarDefinitivamente.setManaged(!cancha.isActivo());
 
 		campoNombre.setText(cancha.getNombre());
 		comboTipo.setValue(cancha.getTipo());
@@ -253,12 +327,14 @@ public class CanchasController {
 
 	@FXML
 	private void desactivar() {
-		if (canchaSeleccionada == null) {
-			return;
-		}
+                if (canchaSeleccionada == null) return;
+                if (!canchaSeleccionada.isActivo()) {
+                        reactivarSeleccionada();
+                        return;
+                }
           if (!Dialogos.confirmarPeligro("Desactivar cancha",
                   "¿Desactivar " + canchaSeleccionada.getNombre() + "?\n\n"
-                          + "La cancha dejara de aparecer como disponible "
+                          + "La cancha dejará de aparecer como disponible "
                           + "para nuevas reservas.")) return;
           try {
                   canchaService.eliminar(canchaSeleccionada.getId());
@@ -269,6 +345,44 @@ public class CanchasController {
                   mostrarError(exception.getMessage());
           }
 	}
+
+	@FXML
+	private void eliminarDefinitivamente() {
+	        if (canchaSeleccionada == null) return;
+	        if (canchaSeleccionada.isActivo()) {
+	                mostrarError("Primero desactivá la cancha.");
+	                return;
+	        }
+	        if (!Dialogos.confirmarPeligro(
+	                "Eliminar cancha definitivamente",
+	                "¿Eliminar definitivamente " + canchaSeleccionada.getNombre() + "?\n\n"
+	                        + "Esta acción solo continuará si la cancha no tiene datos relacionados. "
+	                        + "No se puede deshacer.")) return;
+	        try {
+	                canchaService.eliminarDefinitivamente(canchaSeleccionada.getId());
+	                cargarCanchas();
+	                nuevo();
+	                mostrarInfo("La cancha fue eliminada definitivamente.");
+	        } catch (RuntimeException exception) {
+	                mostrarError(exception.getMessage());
+	        }
+	}
+
+	private void reactivarSeleccionada() {
+                if (!Dialogos.confirmarAccion(
+                        "Reactivar cancha",
+                        "¿Reactivar " + canchaSeleccionada.getNombre() + "?",
+                        "La cancha volverá a estar disponible para nuevas reservas.",
+                        "REACTIVAR")) return;
+                try {
+                        canchaService.reactivar(canchaSeleccionada.getId());
+                        cargarCanchas();
+                        nuevo();
+                        mostrarInfo("La cancha fue reactivada correctamente.");
+                } catch (RuntimeException exception) {
+                        mostrarError(exception.getMessage());
+                }
+        }
 
 	@FXML
 	private void volver() {

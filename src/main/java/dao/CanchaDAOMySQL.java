@@ -258,6 +258,86 @@ public class CanchaDAOMySQL implements CanchaDAO {
     }
 
     @Override
+    public List<Cancha> listarTodas() {
+        String sql = consultaBase()
+                + " GROUP BY c.id ORDER BY c.activo DESC, c.nombre";
+        List<Cancha> canchas = new ArrayList<>();
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql);
+                ResultSet resultado = sentencia.executeQuery()) {
+            while (resultado.next()) {
+                canchas.add(convertirResultado(resultado));
+            }
+            return canchas;
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron recuperar todas las canchas.",
+                    exception);
+        }
+    }
+
+    @Override
+    public void reactivar(long id) {
+        String sql = "UPDATE canchas SET activo = TRUE "
+                + "WHERE id = ? AND activo = FALSE";
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, id);
+            if (sentencia.executeUpdate() == 0) {
+                throw new IllegalArgumentException(
+                        "La cancha no existe o ya está activa.");
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo reactivar la cancha.", exception);
+        }
+    }
+
+    @Override
+    public void eliminarDefinitivamente(long id) {
+        String sql = "DELETE FROM canchas "
+                + "WHERE id = ? AND activo = FALSE";
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, id);
+            if (sentencia.executeUpdate() == 0) {
+                throw new IllegalArgumentException(
+                        "La cancha no existe o todavía está activa.");
+            }
+        } catch (SQLException exception) {
+            if (exception.getErrorCode() == 1451) {
+                throw new IllegalArgumentException(
+                        "La cancha no se puede eliminar definitivamente porque "
+                                + "tiene reservas, bloqueos, torneos u otros datos relacionados. "
+                                + "Podés mantenerla inactiva.", exception);
+            }
+            throw new RuntimeException(
+                    "No se pudo eliminar definitivamente la cancha.", exception);
+        }
+    }
+
+    @Override
+    public boolean existeNombreInactivo(
+            String nombre,
+            long canchaExcluidaId) {
+        String sql = "SELECT COUNT(*) FROM canchas "
+                + "WHERE LOWER(nombre) = LOWER(?) "
+                + "AND id <> ? AND activo = FALSE";
+        try (Connection conexion = ConexionBD.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, nombre);
+            sentencia.setLong(2, canchaExcluidaId);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                resultado.next();
+                return resultado.getInt(1) > 0;
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo comprobar la cancha inactiva.", exception);
+        }
+    }
+
+    @Override
     public boolean existeNombre(
             String nombre,
             long canchaExcluidaId) {

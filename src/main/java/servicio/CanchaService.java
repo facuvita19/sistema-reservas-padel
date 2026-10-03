@@ -38,9 +38,14 @@ public class CanchaService {
         if (canchaDAO.existeNombre(
                 cancha.getNombre(),
                 cancha.getId())) {
+            if (canchaDAO.existeNombreInactivo(
+                    cancha.getNombre(), cancha.getId())) {
+                throw new IllegalArgumentException(
+                        "Ya existe una cancha inactiva con ese nombre. "
+                                + "Seleccionala en la tabla para reactivarla.");
+            }
             throw new IllegalArgumentException(
-                    "Ya existe una cancha con ese nombre."
-            );
+                    "Ya existe una cancha con ese nombre.");
         }
 
         canchaDAO.guardar(cancha);
@@ -49,6 +54,28 @@ public class CanchaService {
     public void eliminar(long id) {
         validarId(id);
         canchaDAO.eliminar(id);
+    }
+
+    public void reactivar(long id) {
+        validarId(id);
+        canchaDAO.reactivar(id);
+    }
+
+    public List<Cancha> listarTodas() {
+        return canchaDAO.listarTodas();
+    }
+
+    public void eliminarDefinitivamente(long id) {
+        validarId(id);
+        Cancha cancha = canchaDAO.buscar(id);
+        if (cancha == null) {
+            throw new IllegalArgumentException("La cancha no existe.");
+        }
+        if (cancha.isActivo()) {
+            throw new IllegalArgumentException(
+                    "Primero desactivá la cancha antes de eliminarla definitivamente.");
+        }
+        canchaDAO.eliminarDefinitivamente(id);
     }
 
     public Cancha buscar(long id) {

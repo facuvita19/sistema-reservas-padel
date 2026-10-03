@@ -981,3 +981,39 @@
     -fx-background-color: #91424e;
     -fx-border-color: #c46d78;
 }
+
+/* dialog-buttons-balanced-v7 */
+.dialog-choice .button-bar .button,
+.dialog-confirm .button-bar .button,
+.dialog-danger .button-bar .button,
+.dialog-custom-action .button-bar .button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 12px;
+    -fx-padding: 0 16;
+}
+.dialog-custom-action {
+    -fx-pref-width: 620;
+    -fx-min-width: 560;
+}
+.dialog-custom-action > .content,
+.dialog-custom-action > .content.label {
+    -fx-min-width: 500;
+    -fx-pref-width: 540;
+}
+.dialog-custom-action .dialog-action-primary {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+}
+.dialog-custom-action .button:cancel {
+    -fx-min-width: 140;
+    -fx-pref-width: 140;
+    -fx-max-width: 140;
+}
+.dialog-confirm .button-bar .button,
+.dialog-danger .button-bar .button {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+}

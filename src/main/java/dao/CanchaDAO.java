@@ -14,6 +14,26 @@ public interface CanchaDAO {
 
     List<Cancha> listar();
 
+    default List<Cancha> listarTodas() {
+        return listar();
+    }
+
+    default void reactivar(long id) {
+        throw new UnsupportedOperationException(
+                "La reactivación no está disponible.");
+    }
+
+    default void eliminarDefinitivamente(long id) {
+        throw new UnsupportedOperationException(
+                "La eliminación definitiva no está disponible.");
+    }
+
+    default boolean existeNombreInactivo(
+            String nombre,
+            long canchaExcluidaId) {
+        return false;
+    }
+
     boolean existeNombre(
             String nombre,
             long canchaExcluidaId);

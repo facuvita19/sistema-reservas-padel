@@ -7,7 +7,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.CanchasController"
-            styleClass="module-root">
+            styleClass="module-root, courts-root">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="module-header">
             <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
@@ -48,7 +48,7 @@
                                 <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="165" />
                                 <TableColumn fx:id="columnaTipo" text="TIPO" prefWidth="110" />
                                 <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="130" />
-                                <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="115" />
+                                <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="125" styleClass="court-price-column" />
                                 <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="90" />
                             </columns>
                             <placeholder>
@@ -64,10 +64,15 @@
                         <VBox spacing="15" styleClass="form-card">
                             <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
                             <children>
-                                <Label fx:id="tituloFormulario" text="Nueva cancha"
-                                       styleClass="section-title" />
-                                <Label text="Los campos con * son obligatorios."
-                                       styleClass="small-caption" />
+                                <VBox spacing="6" styleClass="court-detail-header">
+                                    <HBox alignment="CENTER_LEFT" spacing="8">
+                                        <Label fx:id="tituloFormulario" text="Nueva cancha" styleClass="section-title" />
+                                        <Region HBox.hgrow="ALWAYS" />
+                                        <Label fx:id="insigniaEstadoCancha" text="ACTIVA" visible="false" managed="false" styleClass="court-detail-status" />
+                                    </HBox>
+                                    <Label fx:id="subtituloFormulario" text="Configurá disponibilidad, horarios y tarifa del nuevo espacio." wrapText="true" styleClass="court-detail-subtitle" />
+                                    <Label text="Los campos con * son obligatorios." styleClass="small-caption" />
+                                </VBox>
 
                                 <Label text="Nombre *" styleClass="field-label" />
                                 <TextField fx:id="campoNombre" promptText="Ejemplo: Cancha Central"
@@ -162,6 +167,11 @@
                                         <Button fx:id="botonDesactivar" text="DESACTIVAR"
                                                 onAction="#desactivar"
                                                 styleClass="danger-button" />
+                                        <Button fx:id="botonEliminarDefinitivamente"
+                                                text="ELIMINAR"
+                                                onAction="#eliminarDefinitivamente"
+                                                visible="false" managed="false"
+                                                styleClass="delete-court-button" />
                                     </children>
                                 </HBox>
                             </children>
