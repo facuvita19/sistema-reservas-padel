@@ -5,3 +5,17 @@
 
 /* estadisticas-reservas-v2 */
 .stats-rate-card{-fx-min-height:112;-fx-background-color:#191e22;-fx-background-radius:12;-fx-border-color:#343c42;-fx-border-radius:12;-fx-padding:13 14;-fx-spacing:5}.stats-rate-value{-fx-text-fill:-color-principal-hover;-fx-font-size:21px;-fx-font-weight:900}.stats-rate-help{-fx-text-fill:#7b878d;-fx-font-size:9px;-fx-line-spacing:1px}.stats-chart-subtitle{-fx-text-fill:#7d898f;-fx-font-size:10px}.stats-explanation-card{-fx-background-color:#181d21;-fx-background-radius:13;-fx-border-color:#343d42;-fx-border-radius:13;-fx-padding:15 17;-fx-spacing:7}.stats-explanation-copy{-fx-text-fill:#9ca7ac;-fx-font-size:11px;-fx-line-spacing:2px}
+
+/* estadisticas-finanzas-v3 */
+#panelFinanzas .stats-hero-card {
+    -fx-border-color: #3b454b;
+}
+#panelFinanzas .stats-finance-card {
+    -fx-min-height: 96;
+}
+#panelFinanzas .stats-money-value {
+    -fx-font-size: 17px;
+}
+#panelFinanzas .chart-series-line {
+    -fx-stroke-width: 2.5px;
+}

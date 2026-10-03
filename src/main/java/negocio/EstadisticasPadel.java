@@ -26,6 +26,8 @@ public class EstadisticasPadel {
     private BigDecimal ticketPromedio = BigDecimal.ZERO;
     private BigDecimal ingresosManuales = BigDecimal.ZERO;
     private BigDecimal egresosManuales = BigDecimal.ZERO;
+    private int pagosPendientes;
+    private BigDecimal diferenciaEfectivoAcumulada = BigDecimal.ZERO;
     private BigDecimal porcentajeOcupacion = BigDecimal.ZERO;
     private BigDecimal variacionReservas = BigDecimal.ZERO;
     private BigDecimal variacionIngresos = BigDecimal.ZERO;
@@ -37,6 +39,11 @@ public class EstadisticasPadel {
     private List<DatoGrafico> reservasPorCancha = new ArrayList<>();
     private List<DatoGrafico> ingresosPorMes = new ArrayList<>();
     private List<DatoGrafico> ingresosPorMetodo = new ArrayList<>();
+    private List<DatoGrafico> pagosRecibidosPorDia = new ArrayList<>();
+    private List<DatoGrafico> reembolsosPorDia = new ArrayList<>();
+    private List<DatoGrafico> movimientosCajaPorTipo = new ArrayList<>();
+    private List<DatoGrafico> movimientosCajaPorMedio = new ArrayList<>();
+    private List<DatoGrafico> diferenciasCajaPorDia = new ArrayList<>();
     private List<DatoGrafico> horariosMasSolicitados = new ArrayList<>();
     private List<DatoGrafico> diasMasSolicitados = new ArrayList<>();
     private List<DatoGrafico> clientesFrecuentes = new ArrayList<>();
@@ -61,6 +68,8 @@ public class EstadisticasPadel {
     public BigDecimal getTicketPromedio(){return ticketPromedio;} public void setTicketPromedio(BigDecimal v){ticketPromedio=nz(v);}
     public BigDecimal getIngresosManuales(){return ingresosManuales;} public void setIngresosManuales(BigDecimal v){ingresosManuales=nz(v);}
     public BigDecimal getEgresosManuales(){return egresosManuales;} public void setEgresosManuales(BigDecimal v){egresosManuales=nz(v);}
+    public int getPagosPendientes(){return pagosPendientes;} public void setPagosPendientes(int v){pagosPendientes=v;}
+    public BigDecimal getDiferenciaEfectivoAcumulada(){return diferenciaEfectivoAcumulada;} public void setDiferenciaEfectivoAcumulada(BigDecimal v){diferenciaEfectivoAcumulada=nz(v);}
     public BigDecimal getIngresosNetos(){return ingresosAcreditados.subtract(totalReembolsado);}
     public BigDecimal getResultadoOperativo(){return getIngresosNetos().add(ingresosManuales).subtract(egresosManuales);}
     public BigDecimal getPorcentajeOcupacion(){return porcentajeOcupacion;} public void setPorcentajeOcupacion(BigDecimal v){porcentajeOcupacion=nz(v);}
@@ -74,6 +83,11 @@ public class EstadisticasPadel {
     public List<DatoGrafico> getReservasPorCancha(){return ro(reservasPorCancha);} public void setReservasPorCancha(List<DatoGrafico> v){reservasPorCancha=cp(v);}
     public List<DatoGrafico> getIngresosPorMes(){return ro(ingresosPorMes);} public void setIngresosPorMes(List<DatoGrafico> v){ingresosPorMes=cp(v);}
     public List<DatoGrafico> getIngresosPorMetodo(){return ro(ingresosPorMetodo);} public void setIngresosPorMetodo(List<DatoGrafico> v){ingresosPorMetodo=cp(v);}
+    public List<DatoGrafico> getPagosRecibidosPorDia(){return ro(pagosRecibidosPorDia);} public void setPagosRecibidosPorDia(List<DatoGrafico> v){pagosRecibidosPorDia=cp(v);}
+    public List<DatoGrafico> getReembolsosPorDia(){return ro(reembolsosPorDia);} public void setReembolsosPorDia(List<DatoGrafico> v){reembolsosPorDia=cp(v);}
+    public List<DatoGrafico> getMovimientosCajaPorTipo(){return ro(movimientosCajaPorTipo);} public void setMovimientosCajaPorTipo(List<DatoGrafico> v){movimientosCajaPorTipo=cp(v);}
+    public List<DatoGrafico> getMovimientosCajaPorMedio(){return ro(movimientosCajaPorMedio);} public void setMovimientosCajaPorMedio(List<DatoGrafico> v){movimientosCajaPorMedio=cp(v);}
+    public List<DatoGrafico> getDiferenciasCajaPorDia(){return ro(diferenciasCajaPorDia);} public void setDiferenciasCajaPorDia(List<DatoGrafico> v){diferenciasCajaPorDia=cp(v);}
     public List<DatoGrafico> getHorariosMasSolicitados(){return ro(horariosMasSolicitados);} public void setHorariosMasSolicitados(List<DatoGrafico> v){horariosMasSolicitados=cp(v);}
     public List<DatoGrafico> getDiasMasSolicitados(){return ro(diasMasSolicitados);} public void setDiasMasSolicitados(List<DatoGrafico> v){diasMasSolicitados=cp(v);}
     public List<DatoGrafico> getClientesFrecuentes(){return ro(clientesFrecuentes);} public void setClientesFrecuentes(List<DatoGrafico> v){clientesFrecuentes=cp(v);}
