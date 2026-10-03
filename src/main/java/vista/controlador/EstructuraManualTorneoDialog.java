@@ -17,6 +17,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -37,6 +40,7 @@ public class EstructuraManualTorneoDialog {
     private final Map<String, String> nombres;
     private final Dialog<List<CrucePropuestoTorneo>> dialogo = new Dialog<>();
     private final VBox filas = new VBox(10);
+    private final StackPane contenedorVistas = new StackPane();
     private final List<Fila> ediciones = new ArrayList<>();
     private final Label estado = etiqueta("", "#d7e4e9", 12, true);
     private final ValidadorEstructuraEliminatoriaService validador =
@@ -57,6 +61,7 @@ public class EstructuraManualTorneoDialog {
 
     private void construir() {
         dialogo.setTitle("Configuracion estructural manual");
+        dialogo.initStyle(javafx.stage.StageStyle.DECORATED);
         dialogo.setHeaderText("Crea, elimina y conecta los partidos del cuadro");
         ButtonType aplicarTipo = new ButtonType("APLICAR ESTRUCTURA",
                 ButtonBar.ButtonData.OK_DONE);
@@ -101,15 +106,69 @@ public class EstructuraManualTorneoDialog {
         scroll.setStyle("-fx-background:#08151e;"
                 + "-fx-background-color:#08151e;"
                 + "-fx-border-color:transparent;");
+
+        LlaveGraficaTorneoView vistaLlave = new LlaveGraficaTorneoView(
+                propuesta, nombres);
+        javafx.scene.Node grafica = vistaLlave.crear();
+        contenedorVistas.getChildren().setAll(grafica, scroll);
+        grafica.setVisible(true);
+        grafica.setManaged(true);
+        scroll.setVisible(false);
+        scroll.setManaged(false);
+
         VBox barraAcciones = new VBox(8, agregar);
         barraAcciones.setPadding(new Insets(2, 0, 2, 0));
-        VBox contenido = new VBox(14, introduccion, barraAcciones, scroll,
-                estado);
+
+        ToggleButton botonLlave = new ToggleButton("VISTA DE LLAVE");
+        ToggleButton botonDetalle = new ToggleButton("VISTA DETALLADA");
+        ToggleGroup vistas = new ToggleGroup();
+        botonLlave.setToggleGroup(vistas);
+        botonDetalle.setToggleGroup(vistas);
+        botonLlave.setSelected(true);
+        estiloSelectorVista(botonLlave);
+        estiloSelectorVista(botonDetalle);
+        vistas.selectedToggleProperty().addListener((obs, anterior, actual) -> {
+            if (actual == null) {
+                botonLlave.setSelected(true);
+                return;
+            }
+            boolean llave = actual == botonLlave;
+            grafica.setVisible(llave);
+            grafica.setManaged(llave);
+            scroll.setVisible(!llave);
+            scroll.setManaged(!llave);
+            barraAcciones.setVisible(!llave);
+            barraAcciones.setManaged(!llave);
+            introduccion.setVisible(!llave);
+            introduccion.setManaged(!llave);
+        });
+        HBox selectorVista = new HBox(8, botonLlave, botonDetalle);
+        selectorVista.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+        barraAcciones.setVisible(false);
+        barraAcciones.setManaged(false);
+        introduccion.setVisible(false);
+        introduccion.setManaged(false);
+        VBox contenido = new VBox(10, introduccion, selectorVista,
+                barraAcciones, contenedorVistas, estado);
+        VBox.setVgrow(contenedorVistas, Priority.ALWAYS);
         contenido.setPadding(new Insets(18));
         contenido.setStyle("-fx-background-color:#08151e;");
         contenido.setPrefWidth(1040);
         dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefSize(1120, 760);
+        dialogo.getDialogPane().setPrefSize(1380, 780);
+        dialogo.getDialogPane().setMinSize(900, 620);
+        dialogo.setOnShown(evento -> {
+            javafx.stage.Window ventana = dialogo.getDialogPane().getScene()
+                    .getWindow();
+            javafx.geometry.Rectangle2D area = javafx.stage.Screen
+                    .getPrimary().getVisualBounds();
+            double ancho = Math.min(1680, area.getWidth() * 0.92);
+            double alto = Math.min(920, area.getHeight() * 0.88);
+            ventana.setWidth(ancho);
+            ventana.setHeight(alto);
+            ventana.setX(area.getMinX() + (area.getWidth() - ancho) / 2);
+            ventana.setY(area.getMinY() + (area.getHeight() - alto) / 2);
+        });
         dialogo.setResizable(true);
         Dialogos.preparar(dialogo, "dialog-tournament-bracket-manual");
         vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
@@ -256,6 +315,26 @@ public class EstructuraManualTorneoDialog {
             texto.append("\n\n").append("• ").append(error);
         }
         return texto.toString();
+    }
+
+    private static void estiloSelectorVista(ToggleButton boton) {
+        boton.setStyle("-fx-background-color:#102532;"
+                + "-fx-border-color:#3d6f88;-fx-border-radius:8;"
+                + "-fx-background-radius:8;-fx-text-fill:#eaf4f8;"
+                + "-fx-font-weight:900;-fx-padding:9 16;"
+                + "-fx-cursor:hand;");
+        boton.selectedProperty().addListener((obs, antes, seleccionado) ->
+                boton.setStyle(seleccionado
+                        ? "-fx-background-color:#315f79;"
+                            + "-fx-border-color:#91d7f4;"
+                            + "-fx-border-radius:8;-fx-background-radius:8;"
+                            + "-fx-text-fill:#ffffff;-fx-font-weight:900;"
+                            + "-fx-padding:9 16;-fx-cursor:hand;"
+                        : "-fx-background-color:#102532;"
+                            + "-fx-border-color:#3d6f88;"
+                            + "-fx-border-radius:8;-fx-background-radius:8;"
+                            + "-fx-text-fill:#eaf4f8;-fx-font-weight:900;"
+                            + "-fx-padding:9 16;-fx-cursor:hand;"));
     }
 
     private static void estiloCombo(ComboBox<String> combo, double ancho) {
