@@ -105,6 +105,8 @@ public class ClientesController {
     }
 
     private void configurarTablaClientes() {
+        tablaClientes.setColumnResizePolicy(
+                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         columnaNombre.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getNombreCompleto()));
         columnaDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
         columnaTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));

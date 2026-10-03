@@ -6,18 +6,20 @@
  <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header"><padding><Insets top="22" right="28" bottom="22" left="28"/></padding>
   <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/><VBox spacing="3"><Label text="Gestión de clientes" styleClass="page-title"/><Label text="Administrá los datos de contacto y consultá el historial completo." styleClass="page-subtitle"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="NUEVO CLIENTE" onAction="#nuevo" styleClass="primary-button"/>
  </HBox></top>
- <center><SplitPane dividerPositions="0.38" styleClass="module-split">
+ <center><SplitPane dividerPositions="0.42" styleClass="module-split">
   <VBox spacing="16" styleClass="list-panel"><padding><Insets top="22" right="18" bottom="22" left="28"/></padding>
    <HBox spacing="8">
     <TextField fx:id="campoBuscar" promptText="Buscar por nombre, documento o teléfono..." HBox.hgrow="ALWAYS" styleClass="modern-field"/>
     <Button text="LIMPIAR" onAction="#limpiarSeleccion" styleClass="secondary-button, client-clear-button"/>
     <Button text="Actualizar" onAction="#cargarClientes" styleClass="secondary-button"/>
    </HBox>
-   <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS" styleClass="modern-table"><columns><TableColumn fx:id="columnaNombre" text="CLIENTE" prefWidth="195"/>
-    <TableColumn fx:id="columnaDocumento" text="DOCUMENTO" prefWidth="120"/>
-    <TableColumn fx:id="columnaTelefono" text="TELÉFONO" prefWidth="145"/>
+   <TableView fx:id="tablaClientes"
+              VBox.vgrow="ALWAYS"
+              styleClass="modern-table"><columns><TableColumn fx:id="columnaNombre" text="CLIENTE" prefWidth="190" minWidth="155"/>
+    <TableColumn fx:id="columnaDocumento" text="DOCUMENTO" prefWidth="115" minWidth="100"/>
+    <TableColumn fx:id="columnaTelefono" text="TELÉFONO" prefWidth="145" minWidth="125"/>
     <TableColumn fx:id="columnaEmail" text="EMAIL" visible="false"/>
-    <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="105"/></columns><placeholder><Label text="Todavía no hay clientes registrados." styleClass="empty-state"/></placeholder></TableView>
+    <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="105" minWidth="95" maxWidth="115"/></columns><placeholder><Label text="Todavía no hay clientes registrados." styleClass="empty-state"/></placeholder></TableView>
   </VBox>
   <ScrollPane fitToWidth="true" styleClass="form-scroll"><VBox spacing="16" styleClass="form-card"><padding><Insets top="24" right="28" bottom="28" left="28"/></padding>
    <VBox spacing="7" styleClass="client-detail-header">
