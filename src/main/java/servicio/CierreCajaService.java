@@ -64,6 +64,42 @@ public class CierreCajaService {
         resumen.setMovimientosEfectivo(efectivo);
         return resumen;
     }
+    public ResumenCajaDiaria obtenerResumen(
+            LocalDate fecha,
+            List<negocio.MovimientoCaja> movimientos) {
+        validarFecha(fecha);
+        ResumenCajaDiaria resumen = cierreDAO.calcularResumen(fecha);
+        aplicarMovimientos(resumen, movimientos);
+        return resumen;
+    }
+
+    private void aplicarMovimientos(
+            ResumenCajaDiaria resumen,
+            List<negocio.MovimientoCaja> movimientos) {
+        BigDecimal ingresos = BigDecimal.ZERO;
+        BigDecimal egresos = BigDecimal.ZERO;
+        BigDecimal efectivo = BigDecimal.ZERO;
+        if (movimientos != null) {
+            for (var movimiento : movimientos) {
+                BigDecimal firmado = movimiento.getTipo()
+                        == TipoMovimientoCaja.INGRESO
+                                ? movimiento.getImporte()
+                                : movimiento.getImporte().negate();
+                if (movimiento.getTipo() == TipoMovimientoCaja.INGRESO) {
+                    ingresos = ingresos.add(movimiento.getImporte());
+                } else {
+                    egresos = egresos.add(movimiento.getImporte());
+                }
+                if (movimiento.getMedioPago() == MetodoPago.EFECTIVO) {
+                    efectivo = efectivo.add(firmado);
+                }
+            }
+        }
+        resumen.setIngresosManuales(ingresos);
+        resumen.setEgresosManuales(egresos);
+        resumen.setMovimientosEfectivo(efectivo);
+    }
+
     public CierreCaja buscarPorFecha(LocalDate fecha) { validarFecha(fecha); return cierreDAO.buscarPorFecha(fecha); }
     public List<CierreCaja> listar() { return cierreDAO.listar(); }
     public CierreCaja cerrar(LocalDate fecha, BigDecimal efectivoDeclarado, String observaciones, long usuarioId) {

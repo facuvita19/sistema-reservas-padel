@@ -132,3 +132,24 @@
 .cash-close-dashboard-button:disabled {
 	-fx-opacity: 0.55;
 }
+
+/* cierre-caja-modern-v2 */
+.cash-root, .cash-root .form-scroll, .cash-root .form-scroll > .viewport, .cash-page { -fx-background-color: #111417; }
+.cash-summary-card, .cash-mini-card, .cash-close-card, .cash-closed-card, .content-card { -fx-background-color: #1a1f23; -fx-border-color: #394249; }
+.cash-summary-card { -fx-min-height: 86; }
+.cash-total-card { -fx-border-color: #586268; }
+.cash-highlight-card { -fx-background-color: #1b2723; -fx-border-color: -color-principal; }
+.cash-refund-card { -fx-background-color: #24222e; -fx-border-color: #5c5678; }
+.cash-income-card { -fx-background-color: #1c2923; -fx-border-color: #426d59; }
+.cash-expense-card { -fx-background-color: #2b2023; -fx-border-color: #71454d; }
+.cash-summary-value { -fx-text-fill: #ecefed; -fx-font-size: 19px; }
+.cash-status-open, .cash-status-closed { -fx-font-size: 10px; -fx-padding: 5 11; }
+.cash-warning-banner { -fx-background-color: #302919; -fx-border-color: #756130; -fx-text-fill: #e2c66f; }
+.cash-movement-badge { -fx-background-radius: 9; -fx-border-radius: 9; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 3 8; }
+.cash-movement-income { -fx-background-color: #1e3229; -fx-border-color: #4e8069; -fx-text-fill: #b9ddcc; }
+.cash-movement-expense { -fx-background-color: #382326; -fx-border-color: #8b5058; -fx-text-fill: #efb5bc; }
+.cash-root .modern-table .cash-money-column .label { -fx-alignment: CENTER_RIGHT; -fx-padding: 0 12 0 0; }
+.cash-root .modern-table .cash-money-cell { -fx-alignment: CENTER_RIGHT; -fx-padding: 0 12 0 6; -fx-font-weight: 800; -fx-text-fill: #e7e2d8; }
+.cash-difference-neutral { -fx-min-height: 40; -fx-padding: 8 12; -fx-background-color: #252b2f; -fx-background-radius: 9; -fx-text-fill: #aab3b7; -fx-font-size: 12px; -fx-font-weight: 800; }
+.cash-close-button { -fx-pref-height: 44; -fx-background-color: #7a3540; -fx-border-color: #b05261; }
+.cash-close-button:hover { -fx-background-color: #91424e; -fx-border-color: #c46d78; }

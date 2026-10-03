@@ -158,6 +158,10 @@ public class CierreCajaController {
             @Override
             protected void updateItem(BigDecimal importe, boolean vacia) {
                 super.updateItem(importe, vacia);
+                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                getStyleClass().add("cash-money-cell");
+                setStyle("-fx-alignment: CENTER-RIGHT;"
+                        + "-fx-padding: 0 14 0 4;");
                 setText(vacia || importe == null
                         ? null : formatearMoneda(importe));
             }
@@ -179,6 +183,21 @@ public class CierreCajaController {
                 new PropertyValueFactory<>("fechaCreacion"));
         columnaMovimientoTipo.setCellValueFactory(
                 new PropertyValueFactory<>("tipo"));
+        columnaMovimientoTipo.setCellFactory(columna -> new TableCell<>() {
+            private final Label insignia = new Label();
+            { insignia.getStyleClass().add("cash-movement-badge"); }
+            @Override protected void updateItem(
+                    TipoMovimientoCaja tipo, boolean vacia) {
+                super.updateItem(tipo, vacia);
+                if (vacia || tipo == null) { setGraphic(null); return; }
+                insignia.setText(tipo.toString().toUpperCase());
+                insignia.getStyleClass().removeAll(
+                        "cash-movement-income", "cash-movement-expense");
+                insignia.getStyleClass().add(tipo == TipoMovimientoCaja.INGRESO
+                        ? "cash-movement-income" : "cash-movement-expense");
+                setGraphic(insignia);
+            }
+        });
         columnaMovimientoConcepto.setCellValueFactory(
                 new PropertyValueFactory<>("concepto"));
         columnaMovimientoMedio.setCellValueFactory(
@@ -203,6 +222,12 @@ public class CierreCajaController {
                     getStyleClass().removeAll("cash-income", "cash-expense");
                     return;
                 }
+                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                if (!getStyleClass().contains("cash-money-cell")) {
+                    getStyleClass().add("cash-money-cell");
+                }
+                setStyle("-fx-alignment: CENTER-RIGHT;"
+                        + "-fx-padding: 0 14 0 4;");
                 setText((movimiento.getTipo() == TipoMovimientoCaja.INGRESO
                         ? "+" : "-") + formatearMoneda(importe));
                 getStyleClass().removeAll("cash-income", "cash-expense");
@@ -216,6 +241,10 @@ public class CierreCajaController {
         return new TableCell<>() {
             @Override protected void updateItem(BigDecimal total, boolean vacia) {
                 super.updateItem(total, vacia);
+                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                getStyleClass().add("cash-money-cell");
+                setStyle("-fx-alignment: CENTER-RIGHT;"
+                        + "-fx-padding: 0 14 0 4;");
                 setText(vacia || total == null ? null : formatearMoneda(total));
             }
         };
@@ -251,11 +280,12 @@ public class CierreCajaController {
         if (fecha == null) { mostrarError("Seleccioná una fecha."); return; }
         try {
             cierreExistente = cierreService.buscarPorFecha(fecha);
-            resumenActual = cierreService.obtenerResumen(fecha);
+            var movimientos = movimientoService.listarPorFecha(fecha);
+            resumenActual = cierreService.obtenerResumen(fecha, movimientos);
             tablaPagosAcreditados.setItems(FXCollections.observableArrayList(
                     detallePagoService.listarAcreditadosPorFecha(fecha)));
             tablaMovimientos.setItems(FXCollections.observableArrayList(
-                    movimientoService.listarPorFecha(fecha)));
+                    movimientos));
             mostrarResumen(resumenActual);
             if (cierreExistente == null) mostrarCajaAbierta();
             else mostrarCajaCerrada(cierreExistente);
@@ -360,6 +390,14 @@ public class CierreCajaController {
 
     private void actualizarDiferencia() {
         if (resumenActual == null) return;
+        if (campoEfectivoDeclarado.getText() == null
+                || campoEfectivoDeclarado.getText().isBlank()) {
+            etiquetaDiferencia.setText("Ingresá el efectivo contado");
+            etiquetaDiferencia.getStyleClass().removeAll(
+                    "cash-difference-ok", "cash-difference-warning");
+            etiquetaDiferencia.getStyleClass().add("cash-difference-neutral");
+            return;
+        }
         try {
             BigDecimal diferencia = leerImporte(campoEfectivoDeclarado.getText())
                     .subtract(resumenActual.getEfectivoEsperado());
@@ -373,7 +411,8 @@ public class CierreCajaController {
 
     private void actualizarEstiloDiferencia(BigDecimal diferencia) {
         etiquetaDiferencia.getStyleClass().removeAll(
-                "cash-difference-ok", "cash-difference-warning");
+                "cash-difference-ok", "cash-difference-warning",
+                "cash-difference-neutral");
         etiquetaDiferencia.getStyleClass().add(
                 diferencia != null && diferencia.signum() == 0
                         ? "cash-difference-ok" : "cash-difference-warning");
