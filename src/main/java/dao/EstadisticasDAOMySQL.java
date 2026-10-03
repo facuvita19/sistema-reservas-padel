@@ -24,6 +24,10 @@ public class EstadisticasDAOMySQL implements EstadisticasDAO {
         try(Connection c=ConexionBD.obtenerConexion()){
             cargarResumenReservas(c,desde,hasta,e); cargarResumenPagos(c,desde,hasta,e); cargarMovimientosCaja(c,desde,hasta,e);
             e.setReservasPorEstado(consultarFechas(c,"SELECT estado etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? GROUP BY estado ORDER BY valor DESC",desde,hasta,10));
+            e.setReservasPorOrigen(consultarFechas(c,"SELECT CONCAT(estado,'_',origen) etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? GROUP BY estado,origen ORDER BY origen,estado",desde,hasta,20));
+            e.setReservasPorDia(consultarFechas(c,"SELECT DATE_FORMAT(fecha,'%Y-%m-%d') etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? GROUP BY fecha ORDER BY fecha",desde,hasta,400));
+            e.setCancelacionesPorTipo(consultarFechas(c,"SELECT COALESCE(tipo_cancelacion,'SIN_CLASIFICAR') etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? AND estado='CANCELADA' GROUP BY tipo_cancelacion ORDER BY valor DESC",desde,hasta,5));
+            e.setEvolucionIncidencias(consultarFechas(c,"SELECT CONCAT(DATE_FORMAT(fecha,'%Y-%m-%d'),'|',estado) etiqueta,COUNT(*) valor FROM reservas WHERE fecha BETWEEN ? AND ? AND estado IN ('CANCELADA','EXPIRADA','AUSENTE') GROUP BY fecha,estado ORDER BY fecha,estado",desde,hasta,800));
             e.setReservasPorCancha(consultarFechas(c,"SELECT c.nombre etiqueta,COUNT(*) valor FROM reservas r JOIN canchas c ON c.id=r.cancha_id WHERE r.fecha BETWEEN ? AND ? AND r.estado NOT IN ('CANCELADA','EXPIRADA') GROUP BY c.id,c.nombre ORDER BY valor DESC",desde,hasta,12));
             e.setIngresosPorMes(consultarRango(c,"SELECT DATE_FORMAT(fecha_pago,'%Y-%m') etiqueta,COALESCE(SUM(importe),0) valor FROM pagos WHERE estado='ACREDITADO' AND fecha_pago>=? AND fecha_pago<? GROUP BY DATE_FORMAT(fecha_pago,'%Y-%m') ORDER BY etiqueta",desde,hasta,24));
             e.setIngresosPorMetodo(consultarRango(c,"SELECT metodo_pago etiqueta,COALESCE(SUM(importe),0) valor FROM pagos WHERE estado='ACREDITADO' AND fecha_pago>=? AND fecha_pago<? GROUP BY metodo_pago ORDER BY valor DESC",desde,hasta,10));
@@ -42,9 +46,14 @@ public class EstadisticasDAOMySQL implements EstadisticasDAO {
                 + "COALESCE(SUM(estado='CANCELADA'),0) canceladas,"
                 + "COALESCE(SUM(estado='AUSENTE'),0) ausentes,"
                 + "COALESCE(SUM(estado='EXPIRADA'),0) expiradas,"
-                + "COALESCE(SUM(estado IN ('PENDIENTE','CONFIRMADA','COMPLETADA','AUSENTE')),0) efectivas "
+                + "COALESCE(SUM(estado IN ('PENDIENTE','CONFIRMADA','COMPLETADA','AUSENTE')),0) efectivas,"
+                + "COALESCE(SUM(origen='PERSONAL'),0) personal,"
+                + "COALESCE(SUM(origen='WEB'),0) web,"
+                + "COALESCE(SUM(estado='CANCELADA' AND tipo_cancelacion='CLIENTE'),0) cancel_cliente,"
+                + "COALESCE(SUM(estado='CANCELADA' AND tipo_cancelacion='ADMINISTRATIVA'),0) cancel_admin,"
+                + "COALESCE(SUM(estado='CANCELADA' AND tipo_cancelacion IS NULL),0) cancel_sin_tipo "
                 + "FROM reservas WHERE fecha BETWEEN ? AND ?";
-        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setTotalReservas(r.getInt("total"));e.setReservasPendientes(r.getInt("pendientes"));e.setReservasConfirmadas(r.getInt("confirmadas"));e.setReservasCompletadas(r.getInt("completadas"));e.setReservasCanceladas(r.getInt("canceladas"));e.setReservasAusentes(r.getInt("ausentes"));e.setReservasExpiradas(r.getInt("expiradas"));e.setReservasEfectivas(r.getInt("efectivas"));}}
+        try(PreparedStatement s=c.prepareStatement(q)){fechas(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setTotalReservas(r.getInt("total"));e.setReservasPendientes(r.getInt("pendientes"));e.setReservasConfirmadas(r.getInt("confirmadas"));e.setReservasCompletadas(r.getInt("completadas"));e.setReservasCanceladas(r.getInt("canceladas"));e.setReservasAusentes(r.getInt("ausentes"));e.setReservasExpiradas(r.getInt("expiradas"));e.setReservasEfectivas(r.getInt("efectivas"));e.setReservasPersonal(r.getInt("personal"));e.setReservasWeb(r.getInt("web"));e.setCancelacionesCliente(r.getInt("cancel_cliente"));e.setCancelacionesAdministrativas(r.getInt("cancel_admin"));e.setCancelacionesSinClasificar(r.getInt("cancel_sin_tipo"));}}
     }
     private void cargarResumenPagos(Connection c,LocalDate d,LocalDate h,EstadisticasPadel e)throws SQLException{
         try(PreparedStatement s=c.prepareStatement("SELECT COUNT(*) cantidad,COALESCE(SUM(importe),0) ingresos,COALESCE(AVG(importe),0) promedio FROM pagos WHERE estado='ACREDITADO' AND fecha_pago>=? AND fecha_pago<?")){rango(s,d,h);try(ResultSet r=s.executeQuery()){r.next();e.setCantidadPagosAcreditados(r.getInt("cantidad"));e.setIngresosAcreditados(r.getBigDecimal("ingresos"));e.setTicketPromedio(r.getBigDecimal("promedio"));}}

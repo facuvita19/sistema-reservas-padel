@@ -15,6 +15,11 @@ public class EstadisticasPadel {
     private int reservasConfirmadas;
     private int reservasExpiradas;
     private int reservasEfectivas;
+    private int reservasPersonal;
+    private int reservasWeb;
+    private int cancelacionesCliente;
+    private int cancelacionesAdministrativas;
+    private int cancelacionesSinClasificar;
     private int cantidadPagosAcreditados;
     private BigDecimal ingresosAcreditados = BigDecimal.ZERO;
     private BigDecimal totalReembolsado = BigDecimal.ZERO;
@@ -25,6 +30,10 @@ public class EstadisticasPadel {
     private BigDecimal variacionReservas = BigDecimal.ZERO;
     private BigDecimal variacionIngresos = BigDecimal.ZERO;
     private List<DatoGrafico> reservasPorEstado = new ArrayList<>();
+    private List<DatoGrafico> reservasPorOrigen = new ArrayList<>();
+    private List<DatoGrafico> reservasPorDia = new ArrayList<>();
+    private List<DatoGrafico> cancelacionesPorTipo = new ArrayList<>();
+    private List<DatoGrafico> evolucionIncidencias = new ArrayList<>();
     private List<DatoGrafico> reservasPorCancha = new ArrayList<>();
     private List<DatoGrafico> ingresosPorMes = new ArrayList<>();
     private List<DatoGrafico> ingresosPorMetodo = new ArrayList<>();
@@ -41,6 +50,11 @@ public class EstadisticasPadel {
     public int getReservasConfirmadas(){return reservasConfirmadas;} public void setReservasConfirmadas(int v){reservasConfirmadas=v;}
     public int getReservasExpiradas(){return reservasExpiradas;} public void setReservasExpiradas(int v){reservasExpiradas=v;}
     public int getReservasEfectivas(){return reservasEfectivas;} public void setReservasEfectivas(int v){reservasEfectivas=v;}
+    public int getReservasPersonal(){return reservasPersonal;} public void setReservasPersonal(int v){reservasPersonal=v;}
+    public int getReservasWeb(){return reservasWeb;} public void setReservasWeb(int v){reservasWeb=v;}
+    public int getCancelacionesCliente(){return cancelacionesCliente;} public void setCancelacionesCliente(int v){cancelacionesCliente=v;}
+    public int getCancelacionesAdministrativas(){return cancelacionesAdministrativas;} public void setCancelacionesAdministrativas(int v){cancelacionesAdministrativas=v;}
+    public int getCancelacionesSinClasificar(){return cancelacionesSinClasificar;} public void setCancelacionesSinClasificar(int v){cancelacionesSinClasificar=v;}
     public int getCantidadPagosAcreditados(){return cantidadPagosAcreditados;} public void setCantidadPagosAcreditados(int v){cantidadPagosAcreditados=v;}
     public BigDecimal getIngresosAcreditados(){return ingresosAcreditados;} public void setIngresosAcreditados(BigDecimal v){ingresosAcreditados=nz(v);}
     public BigDecimal getTotalReembolsado(){return totalReembolsado;} public void setTotalReembolsado(BigDecimal v){totalReembolsado=nz(v);}
@@ -53,6 +67,10 @@ public class EstadisticasPadel {
     public BigDecimal getVariacionReservas(){return variacionReservas;} public void setVariacionReservas(BigDecimal v){variacionReservas=nz(v);}
     public BigDecimal getVariacionIngresos(){return variacionIngresos;} public void setVariacionIngresos(BigDecimal v){variacionIngresos=nz(v);}
     public List<DatoGrafico> getReservasPorEstado(){return ro(reservasPorEstado);} public void setReservasPorEstado(List<DatoGrafico> v){reservasPorEstado=cp(v);}
+    public List<DatoGrafico> getReservasPorOrigen(){return ro(reservasPorOrigen);} public void setReservasPorOrigen(List<DatoGrafico> v){reservasPorOrigen=cp(v);}
+    public List<DatoGrafico> getReservasPorDia(){return ro(reservasPorDia);} public void setReservasPorDia(List<DatoGrafico> v){reservasPorDia=cp(v);}
+    public List<DatoGrafico> getCancelacionesPorTipo(){return ro(cancelacionesPorTipo);} public void setCancelacionesPorTipo(List<DatoGrafico> v){cancelacionesPorTipo=cp(v);}
+    public List<DatoGrafico> getEvolucionIncidencias(){return ro(evolucionIncidencias);} public void setEvolucionIncidencias(List<DatoGrafico> v){evolucionIncidencias=cp(v);}
     public List<DatoGrafico> getReservasPorCancha(){return ro(reservasPorCancha);} public void setReservasPorCancha(List<DatoGrafico> v){reservasPorCancha=cp(v);}
     public List<DatoGrafico> getIngresosPorMes(){return ro(ingresosPorMes);} public void setIngresosPorMes(List<DatoGrafico> v){ingresosPorMes=cp(v);}
     public List<DatoGrafico> getIngresosPorMetodo(){return ro(ingresosPorMetodo);} public void setIngresosPorMetodo(List<DatoGrafico> v){ingresosPorMetodo=cp(v);}
@@ -61,6 +79,11 @@ public class EstadisticasPadel {
     public List<DatoGrafico> getClientesFrecuentes(){return ro(clientesFrecuentes);} public void setClientesFrecuentes(List<DatoGrafico> v){clientesFrecuentes=cp(v);}
     public List<CierreCaja> getCierresCaja(){return Collections.unmodifiableList(cierresCaja);} public void setCierresCaja(List<CierreCaja> v){cierresCaja=v==null?new ArrayList<>():new ArrayList<>(v);}
     public BigDecimal getTasaCancelacion(){return porcentaje(reservasCanceladas);} public BigDecimal getTasaAusencia(){return porcentaje(reservasAusentes);}
+    public BigDecimal getTasaConfirmacion(){int confirmadas=reservasConfirmadas+reservasCompletadas+reservasAusentes;return porcentaje(confirmadas);}
+    public BigDecimal getTasaFinalizacion(){return reservasEfectivas==0?BigDecimal.ZERO:BigDecimal.valueOf(reservasCompletadas).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(reservasEfectivas),2,RoundingMode.HALF_UP);}
+    public BigDecimal getTasaExpiracionWeb(){return reservasWeb==0?BigDecimal.ZERO:BigDecimal.valueOf(reservasExpiradas).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(reservasWeb),2,RoundingMode.HALF_UP);}
+    public BigDecimal getConversionWeb(){if(reservasWeb==0)return BigDecimal.ZERO;int convertidas=valorEstadoOrigen("CONFIRMADA_WEB")+valorEstadoOrigen("COMPLETADA_WEB")+valorEstadoOrigen("AUSENTE_WEB");return BigDecimal.valueOf(convertidas).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(reservasWeb),2,RoundingMode.HALF_UP);}
+    private int valorEstadoOrigen(String clave){return reservasPorOrigen.stream().filter(d->clave.equals(d.etiqueta())).map(DatoGrafico::valor).mapToInt(BigDecimal::intValue).sum();}
     private BigDecimal porcentaje(int c){return totalReservas==0?BigDecimal.ZERO:BigDecimal.valueOf(c).multiply(BigDecimal.valueOf(100)).divide(BigDecimal.valueOf(totalReservas),2,RoundingMode.HALF_UP);}
     private BigDecimal nz(BigDecimal v){return v==null?BigDecimal.ZERO:v;} private List<DatoGrafico> cp(List<DatoGrafico> v){return v==null?new ArrayList<>():new ArrayList<>(v);} private List<DatoGrafico> ro(List<DatoGrafico> v){return Collections.unmodifiableList(v);}
     public record DatoGrafico(String etiqueta, BigDecimal valor){public DatoGrafico{if(etiqueta==null||etiqueta.isBlank())throw new IllegalArgumentException("La etiqueta es obligatoria."); valor=valor==null?BigDecimal.ZERO:valor;}}
