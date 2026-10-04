@@ -19,3 +19,6 @@
 #panelFinanzas .chart-series-line {
     -fx-stroke-width: 2.5px;
 }
+
+/* estadisticas-clientes-v4 */
+.stats-client-card{-fx-min-height:104;-fx-background-color:#191e22;-fx-background-radius:12;-fx-border-color:#343c42;-fx-border-radius:12;-fx-padding:13 14;-fx-spacing:5}.stats-ranking-row{-fx-min-height:38;-fx-background-color:#151a1e;-fx-background-radius:9;-fx-padding:8 10}.stats-ranking-number{-fx-min-width:24;-fx-text-fill:-color-principal-hover;-fx-font-size:12px;-fx-font-weight:900}.stats-ranking-name{-fx-text-fill:#e0e5e7;-fx-font-size:12px;-fx-font-weight:700}.stats-ranking-value{-fx-text-fill:#9caaaf;-fx-font-size:11px;-fx-font-weight:800}.stats-ranking-empty{-fx-text-fill:#7d898f;-fx-font-size:11px;-fx-padding:18}
