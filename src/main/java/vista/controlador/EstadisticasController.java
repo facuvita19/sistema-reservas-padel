@@ -39,6 +39,7 @@ import negocio.EstadisticasPadel;
 import negocio.EstadisticasPadel.DatoGrafico;
 import servicio.EstadisticasService;
 import vista.Navegacion;
+import vista.AyudaEstadisticasDialogo;
 
 public class EstadisticasController {
     private static final DateTimeFormatter FECHA=DateTimeFormatter.ofPattern("dd/MM/yyyy"), FECHA_HORA=DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -118,5 +119,9 @@ public class EstadisticasController {
     private String moneda(BigDecimal v){return NumberFormat.getCurrencyInstance(new Locale("es","AR")).format(v==null?BigDecimal.ZERO:v.setScale(2,RoundingMode.HALF_UP));}
     private void carga(boolean c,String m){indicadorCarga.setVisible(c);botonActualizar.setDisable(c);etiquetaEstado.setText(m);etiquetaEstado.getStyleClass().removeAll("stats-status-ok","stats-status-error");if(!c)etiquetaEstado.getStyleClass().add("stats-status-ok");}
     private void error(String m){indicadorCarga.setVisible(false);botonActualizar.setDisable(false);etiquetaEstado.setText(m==null?"No se pudieron cargar las estadísticas.":m);etiquetaEstado.getStyleClass().removeAll("stats-status-ok","stats-status-error");etiquetaEstado.getStyleClass().add("stats-status-error");}
+    @FXML private void mostrarAyuda(){
+        String seccion=botonReservas.isSelected()?"RESERVAS":botonFinanzas.isSelected()?"FINANZAS":botonClientes.isSelected()?"CLIENTES":botonCanchas.isSelected()?"CANCHAS":botonWeb.isSelected()?"WEB":"RESUMEN";
+        AyudaEstadisticasDialogo.mostrar(seccion);
+    }
     @FXML private void volver(){Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());}
 }

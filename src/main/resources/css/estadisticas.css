@@ -37,3 +37,37 @@
 
 /* estadisticas-web-v6 */
 .stats-web-money{-fx-text-fill:#f4f1eb;-fx-font-size:20px;-fx-font-weight:900;-fx-min-height:36}#panelWeb .stats-hero-card{-fx-border-color:#3b454b}#panelWeb .chart-bar{-fx-bar-fill:-color-principal}
+
+/* boton-ayuda-estadisticas-v1 */
+.stats-help-button {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-background-color: #1c2925;
+    -fx-background-radius: 10;
+    -fx-border-color: #3d755f;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-text-fill: #9fd2bb;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 15;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 7;
+}
+.stats-help-button:hover {
+    -fx-background-color: #243a32;
+    -fx-border-color: -color-principal-hover;
+    -fx-text-fill: #dcf2e8;
+    -fx-effect: dropshadow(gaussian, rgba(63,147,111,.22), 9, .10, 0, 2);
+    -fx-translate-y: -1;
+}
+.stats-help-button:pressed {
+    -fx-background-color: #18231f;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: #b9dfce;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+.stats-help-button:focused {
+    -fx-border-color: -color-principal-hover;
+}
