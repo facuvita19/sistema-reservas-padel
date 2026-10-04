@@ -22,3 +22,15 @@
 
 /* estadisticas-clientes-v4 */
 .stats-client-card{-fx-min-height:104;-fx-background-color:#191e22;-fx-background-radius:12;-fx-border-color:#343c42;-fx-border-radius:12;-fx-padding:13 14;-fx-spacing:5}.stats-ranking-row{-fx-min-height:38;-fx-background-color:#151a1e;-fx-background-radius:9;-fx-padding:8 10}.stats-ranking-number{-fx-min-width:24;-fx-text-fill:-color-principal-hover;-fx-font-size:12px;-fx-font-weight:900}.stats-ranking-name{-fx-text-fill:#e0e5e7;-fx-font-size:12px;-fx-font-weight:700}.stats-ranking-value{-fx-text-fill:#9caaaf;-fx-font-size:11px;-fx-font-weight:800}.stats-ranking-empty{-fx-text-fill:#7d898f;-fx-font-size:11px;-fx-padding:18}
+
+/* estadisticas-canchas-v5 */
+#panelCanchas .stats-hero-card{-fx-border-color:#3b454b}#panelCanchas .chart-bar{-fx-bar-fill:-color-principal}
+
+/* estadisticas-canchas-ejecutivas */
+.stats-court-main-value{-fx-text-fill:#f4f1eb;-fx-font-size:18px;-fx-font-weight:900;-fx-min-height:48}
+.stats-detail-pane{-fx-background-color:#191e22;-fx-border-color:#343c42;-fx-border-radius:12;-fx-background-radius:12}
+.stats-detail-pane>.title{-fx-background-color:#1d2327;-fx-background-radius:12;-fx-padding:12 16}
+.stats-detail-pane>.title>.text{-fx-fill:#cfd6d8;-fx-font-size:10px;-fx-font-weight:900}
+.stats-detail-pane>.content{-fx-background-color:#171c20;-fx-border-color:transparent;-fx-background-radius:0 0 12 12}
+.stats-detail-content{-fx-padding:15}
+.stats-detail-metric{-fx-min-height:84;-fx-background-color:#191e22;-fx-background-radius:10;-fx-border-color:#343c42;-fx-border-radius:10;-fx-padding:12;-fx-spacing:5}
