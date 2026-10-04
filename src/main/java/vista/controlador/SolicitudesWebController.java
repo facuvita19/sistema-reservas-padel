@@ -3,23 +3,33 @@ package vista.controlador;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import negocio.Cliente;
 import negocio.EstadoReserva;
 import negocio.OrigenReserva;
@@ -33,18 +43,15 @@ import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class SolicitudesWebController {
-    private static final DateTimeFormatter FECHA_HORA =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-    private final ReservaService reservaService = new ReservaService();
-    private final ClienteService clienteService = new ClienteService();
-    private final PagoService pagoService = new PagoService();
-    private final MensajeReservaService mensajeService =
-            new MensajeReservaService();
-    private final WhatsAppService whatsAppService = new WhatsAppService();
-
-    private final ObservableList<Reserva> solicitudes =
-            FXCollections.observableArrayList();
+    private static final DateTimeFormatter FECHA=DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter FECHA_HORA=DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private static final DateTimeFormatter HORA=DateTimeFormatter.ofPattern("HH:mm");
+    private final ReservaService reservaService=new ReservaService();
+    private final ClienteService clienteService=new ClienteService();
+    private final PagoService pagoService=new PagoService();
+    private final MensajeReservaService mensajeService=new MensajeReservaService();
+    private final WhatsAppService whatsAppService=new WhatsAppService();
+    private final ObservableList<Reserva> solicitudes=FXCollections.observableArrayList();
     private FilteredList<Reserva> solicitudesFiltradas;
     private Reserva seleccionada;
     private Timeline reloj;
@@ -52,308 +59,125 @@ public class SolicitudesWebController {
     @FXML private TextField campoBuscar;
     @FXML private ComboBox<EstadoReserva> filtroEstado;
     @FXML private TableView<Reserva> tablaSolicitudes;
-    @FXML private TableColumn<Reserva, Long> columnaId;
-    @FXML private TableColumn<Reserva, String> columnaCliente;
-    @FXML private TableColumn<Reserva, String> columnaTurno;
-    @FXML private TableColumn<Reserva, String> columnaCancha;
-    @FXML private TableColumn<Reserva, EstadoReserva> columnaEstado;
-    @FXML private TableColumn<Reserva, LocalDateTime> columnaVencimiento;
-    @FXML private TableColumn<Reserva, Reserva> columnaTiempo;
+    @FXML private TableColumn<Reserva,Long> columnaId;
+    @FXML private TableColumn<Reserva,String> columnaCliente,columnaTurno,columnaCancha;
+    @FXML private TableColumn<Reserva,EstadoReserva> columnaEstado;
+    @FXML private TableColumn<Reserva,LocalDateTime> columnaVencimiento;
+    @FXML private TableColumn<Reserva,Reserva> columnaTiempo;
+    @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo;
+    @FXML private Button botonReserva,botonPagos,botonWhatsApp,botonLimpiar,botonActualizar,tarjetaProximas;
+    @FXML private VBox panelDetalle,panelDetalleVacio;
 
-    @FXML private Label etiquetaTotal;
-    @FXML private Label etiquetaVigentes;
-    @FXML private Label etiquetaProximas;
-    @FXML private Label etiquetaExpiradas;
-    @FXML private Label etiquetaMensaje;
-    @FXML private Label detalleTitulo;
-    @FXML private Label detalleCliente;
-    @FXML private Label detalleTelefono;
-    @FXML private Label detalleTurno;
-    @FXML private Label detalleCancha;
-    @FXML private Label detalleEstado;
-    @FXML private Label detalleOrigen;
-    @FXML private Label detalleVencimiento;
-    @FXML private Label detallePrecio;
-    @FXML private Label detalleAcreditado;
-    @FXML private Label detalleSaldo;
-    @FXML private Button botonReserva;
-    @FXML private Button botonPagos;
-    @FXML private Button botonWhatsApp;
+    @FXML private void initialize(){configurarTabla();configurarFiltros();mostrarDetalleVacio();cargarSolicitudes();iniciarReloj();Platform.runLater(this::configurarDeseleccion);}
 
-    @FXML
-    private void initialize() {
-        configurarTabla();
-        configurarFiltros();
-        cargarSolicitudes();
-        iniciarReloj();
-    }
-
-    private void configurarTabla() {
+    private void configurarTabla(){
         columnaId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        columnaCliente.setCellValueFactory(
-                new PropertyValueFactory<>("nombreCliente"));
-        columnaCancha.setCellValueFactory(
-                new PropertyValueFactory<>("nombreCancha"));
-        columnaEstado.setCellValueFactory(
-                new PropertyValueFactory<>("estado"));
-        columnaTurno.setCellValueFactory(datos ->
-                new javafx.beans.property.SimpleStringProperty(
-                        datos.getValue().getFecha().format(
-                                DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                        + " " + datos.getValue().getHoraInicio().format(
-                                DateTimeFormatter.ofPattern("HH:mm"))));
-        columnaVencimiento.setCellValueFactory(
-                new PropertyValueFactory<>("fechaVencimiento"));
-        columnaVencimiento.setCellFactory(columna -> new TableCell<>() {
-            @Override
-            protected void updateItem(LocalDateTime fecha, boolean vacia) {
-                super.updateItem(fecha, vacia);
-                setText(vacia || fecha == null ? "-" : fecha.format(FECHA_HORA));
+        columnaId.setStyle("-fx-alignment: CENTER;");
+        columnaId.setCellFactory(c->new TableCell<>(){
+            @Override protected void updateItem(Long valor,boolean vacia){
+                super.updateItem(valor,vacia);
+                setAlignment(Pos.CENTER);
+                setText(vacia||valor==null?null:String.valueOf(valor));
             }
         });
-        columnaTiempo.setCellValueFactory(datos ->
-                new javafx.beans.property.SimpleObjectProperty<>(datos.getValue()));
-        columnaTiempo.setCellFactory(columna -> new TableCell<>() {
-            @Override
-            protected void updateItem(Reserva reserva, boolean vacia) {
-                super.updateItem(reserva, vacia);
-                setText(vacia || reserva == null ? null : textoTiempo(reserva));
-                getStyleClass().removeAll(
-                        "web-time-ok", "web-time-warning", "web-time-expired");
-                if (!vacia && reserva != null) {
-                    getStyleClass().add(claseTiempo(reserva));
-                }
+        columnaCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
+        columnaCliente.setStyle("-fx-alignment: CENTER;");
+        columnaCliente.setCellFactory(c->celdaTextoCentrada());
+        columnaCancha.setCellValueFactory(new PropertyValueFactory<>("nombreCancha"));
+        columnaCancha.setStyle("-fx-alignment: CENTER;");
+        columnaCancha.setCellFactory(c->celdaTextoCentrada());
+        columnaEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        columnaEstado.setStyle("-fx-alignment: CENTER;");
+        columnaEstado.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(EstadoReserva e,boolean vacia){super.updateItem(e,vacia);setAlignment(Pos.CENTER);getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");setStyle("");setText(vacia||e==null?null:nombreEstado(e));if(!vacia&&e!=null){getStyleClass().add(claseEstado(e));setStyle("-fx-text-fill:"+colorEstado(e)+";-fx-font-weight:900;");}}});
+        columnaTurno.setStyle("-fx-alignment: CENTER;");
+        columnaTurno.setCellValueFactory(d->new javafx.beans.property.SimpleStringProperty(d.getValue().getFecha().format(FECHA)+" "+d.getValue().getHoraInicio().format(HORA)));
+        columnaTurno.setCellFactory(c->celdaTextoCentrada());
+        columnaVencimiento.setStyle("-fx-alignment: CENTER;");
+        columnaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechaVencimiento"));
+        columnaVencimiento.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(LocalDateTime f,boolean vacia){super.updateItem(f,vacia);setAlignment(Pos.CENTER);setText(vacia||f==null?"-":f.format(FECHA_HORA));}});
+        columnaTiempo.setStyle("-fx-alignment: CENTER;");
+        columnaTiempo.setCellValueFactory(d->new javafx.beans.property.SimpleObjectProperty<>(d.getValue()));
+        columnaTiempo.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(Reserva r,boolean vacia){super.updateItem(r,vacia);setAlignment(Pos.CENTER);setText(vacia||r==null?null:textoSituacion(r));getStyleClass().removeAll("web-time-ok","web-time-warning","web-time-expired");setStyle("");if(!vacia&&r!=null){getStyleClass().add(claseTiempo(r));setStyle("-fx-text-fill:"+colorSituacion(r)+";-fx-font-weight:900;");}}});
+        tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener((o,a,n)->{if(n!=null)mostrarDetalle(n);});
+        tablaSolicitudes.setRowFactory(t->{TableRow<Reserva> fila=new TableRow<>();fila.setOnMouseClicked(e->{if(e.getButton()==MouseButton.PRIMARY&&e.getClickCount()==2&&!fila.isEmpty()){detenerReloj();Navegacion.mostrarReservaDesdeAgenda(fila.getItem().getId());}});return fila;});
+    }
+
+    private TableCell<Reserva,String> celdaTextoCentrada(){
+        return new TableCell<>(){
+            @Override protected void updateItem(String valor,boolean vacia){
+                super.updateItem(valor,vacia);
+                setAlignment(Pos.CENTER);
+                setText(vacia||valor==null?null:valor);
             }
-        });
-        tablaSolicitudes.getSelectionModel().selectedItemProperty()
-                .addListener((obs, anterior, actual) -> {
-                    if (actual != null) mostrarDetalle(actual);
-                });
-        tablaSolicitudes.setRowFactory(tabla -> {
-            javafx.scene.control.TableRow<Reserva> fila =
-                    new javafx.scene.control.TableRow<>();
-            fila.setOnMouseClicked(evento -> {
-                if (evento.getClickCount() == 2 && !fila.isEmpty()) {
-                    Navegacion.mostrarReservaDesdeAgenda(fila.getItem().getId());
-                }
-            });
-            return fila;
-        });
-    }
-
-    private void configurarFiltros() {
-        filtroEstado.setItems(FXCollections.observableArrayList(
-                EstadoReserva.PENDIENTE,
-                EstadoReserva.CONFIRMADA,
-                EstadoReserva.EXPIRADA,
-                EstadoReserva.CANCELADA,
-                EstadoReserva.COMPLETADA,
-                EstadoReserva.AUSENTE));
-        solicitudesFiltradas = new FilteredList<>(solicitudes, valor -> true);
-        tablaSolicitudes.setItems(solicitudesFiltradas);
-        campoBuscar.textProperty().addListener((obs, ant, act) -> aplicarFiltros());
-        filtroEstado.valueProperty().addListener((obs, ant, act) -> aplicarFiltros());
-    }
-
-    @FXML
-    private void cargarSolicitudes() {
-        try {
-            solicitudes.setAll(reservaService.listar().stream()
-                    .filter(reserva -> reserva.getOrigen() == OrigenReserva.WEB)
-                    .toList());
-            aplicarFiltros();
-            actualizarResumen();
-            etiquetaMensaje.setText(
-                    solicitudes.size() + " solicitud(es) web cargada(s).");
-        } catch (RuntimeException exception) {
-            etiquetaMensaje.setText(exception.getMessage());
-        }
-    }
-
-    private void aplicarFiltros() {
-        if (solicitudesFiltradas == null) return;
-        String texto = campoBuscar.getText() == null ? ""
-                : campoBuscar.getText().trim().toLowerCase(Locale.ROOT);
-        EstadoReserva estado = filtroEstado.getValue();
-        solicitudesFiltradas.setPredicate(reserva ->
-                (estado == null || reserva.getEstado() == estado)
-                && (texto.isBlank()
-                || contiene(reserva.getNombreCliente(), texto)
-                || contiene(reserva.getNombreCancha(), texto)
-                || contiene(reserva.getEstado().toString(), texto)
-                || String.valueOf(reserva.getId()).contains(texto)));
-    }
-
-    private boolean contiene(String valor, String filtro) {
-        return valor != null && valor.toLowerCase(Locale.ROOT).contains(filtro);
-    }
-
-    @FXML
-    private void limpiarFiltros() {
-        campoBuscar.clear();
-        filtroEstado.getSelectionModel().clearSelection();
-    }
-
-    private void actualizarResumen() {
-        LocalDateTime ahora = LocalDateTime.now();
-        long vigentes = solicitudes.stream()
-                .filter(r -> r.getEstado() == EstadoReserva.PENDIENTE)
-                .filter(r -> r.getFechaVencimiento() != null
-                        && r.getFechaVencimiento().isAfter(ahora))
-                .count();
-        long proximas = solicitudes.stream()
-                .filter(r -> r.getEstado() == EstadoReserva.PENDIENTE)
-                .filter(r -> r.getFechaVencimiento() != null)
-                .filter(r -> r.getFechaVencimiento().isAfter(ahora))
-                .filter(r -> !r.getFechaVencimiento()
-                        .isAfter(ahora.plusMinutes(5)))
-                .count();
-        long expiradas = solicitudes.stream()
-                .filter(r -> r.getEstado() == EstadoReserva.EXPIRADA)
-                .count();
-        etiquetaTotal.setText(String.valueOf(solicitudes.size()));
-        etiquetaVigentes.setText(String.valueOf(vigentes));
-        etiquetaProximas.setText(String.valueOf(proximas));
-        etiquetaExpiradas.setText(String.valueOf(expiradas));
-    }
-
-    private void iniciarReloj() {
-        reloj = new Timeline(new KeyFrame(
-                javafx.util.Duration.seconds(1),
-                evento -> {
-                    tablaSolicitudes.refresh();
-                    actualizarResumen();
-                    if (seleccionada != null) actualizarVencimientoDetalle();
-                }));
-        reloj.setCycleCount(Timeline.INDEFINITE);
-        reloj.play();
-    }
-
-    private String textoTiempo(Reserva reserva) {
-        if (reserva.getEstado() == EstadoReserva.EXPIRADA) return "Expirada";
-        if (reserva.getEstado() != EstadoReserva.PENDIENTE
-                || reserva.getFechaVencimiento() == null) return "Finalizada";
-        Duration restante = Duration.between(
-                LocalDateTime.now(), reserva.getFechaVencimiento());
-        if (restante.isNegative() || restante.isZero()) return "Venciendo...";
-        long minutos = restante.toMinutes();
-        long segundos = restante.minusMinutes(minutos).getSeconds();
-        return String.format("%02d:%02d", minutos, segundos);
-    }
-
-    private String claseTiempo(Reserva reserva) {
-        if (reserva.getEstado() == EstadoReserva.EXPIRADA) {
-            return "web-time-expired";
-        }
-        if (reserva.getEstado() == EstadoReserva.PENDIENTE
-                && reserva.getFechaVencimiento() != null
-                && !reserva.getFechaVencimiento()
-                        .isAfter(LocalDateTime.now().plusMinutes(5))) {
-            return "web-time-warning";
-        }
-        return "web-time-ok";
-    }
-
-    private void mostrarDetalle(Reserva reserva) {
-        seleccionada = reserva;
-        Cliente cliente = clienteService.buscar(reserva.getClienteId());
-        detalleTitulo.setText("Solicitud web #" + reserva.getId());
-        detalleCliente.setText(reserva.getNombreCliente());
-        detalleTelefono.setText(cliente == null
-                || cliente.getTelefono() == null
-                || cliente.getTelefono().isBlank()
-                        ? "Sin teléfono registrado" : cliente.getTelefono());
-        detalleTurno.setText(reserva.getFecha().format(
-                DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-                + " · " + reserva.getHoraInicio().format(
-                        DateTimeFormatter.ofPattern("HH:mm"))
-                + " - " + reserva.getHoraFin().format(
-                        DateTimeFormatter.ofPattern("HH:mm")));
-        detalleCancha.setText(reserva.getNombreCancha());
-        detalleEstado.setText(nombreEstado(reserva.getEstado()));
-        detalleOrigen.setText(reserva.getOrigen().toString());
-        BigDecimal acreditado = pagoService.totalAcreditado(reserva.getId());
-        BigDecimal saldo = pagoService.calcularSaldo(reserva.getId());
-        detallePrecio.setText(moneda(reserva.getPrecioTotal()));
-        detalleAcreditado.setText(moneda(acreditado));
-        detalleSaldo.setText(moneda(saldo));
-        actualizarVencimientoDetalle();
-        configurarBoton(botonReserva, true);
-        configurarBoton(botonPagos,
-                reserva.getEstado() == EstadoReserva.PENDIENTE
-                || reserva.getEstado() == EstadoReserva.CONFIRMADA
-                || reserva.getEstado() == EstadoReserva.COMPLETADA);
-        configurarBoton(botonWhatsApp, cliente != null
-                && cliente.getTelefono() != null
-                && !cliente.getTelefono().isBlank());
-    }
-
-    private void actualizarVencimientoDetalle() {
-        detalleVencimiento.setText(seleccionada == null
-                ? "-" : textoTiempo(seleccionada));
-    }
-
-    private String nombreEstado(EstadoReserva estado) {
-        return switch (estado) {
-            case PENDIENTE -> "Esperando seña";
-            case CONFIRMADA -> "Confirmada";
-            case EXPIRADA -> "Expirada";
-            case CANCELADA -> "Cancelada";
-            case COMPLETADA -> "Completada";
-            case AUSENTE -> "Ausente";
         };
     }
 
-    private String moneda(BigDecimal valor) {
-        return FormateadorMoneda.pesos(valor);
+    private void configurarFiltros(){
+        filtroEstado.setItems(FXCollections.observableArrayList(EstadoReserva.PENDIENTE,EstadoReserva.CONFIRMADA,EstadoReserva.EXPIRADA,EstadoReserva.CANCELADA,EstadoReserva.COMPLETADA,EstadoReserva.AUSENTE));
+        solicitudesFiltradas=new FilteredList<>(solicitudes,v->true);tablaSolicitudes.setItems(solicitudesFiltradas);
+        campoBuscar.textProperty().addListener((o,a,n)->aplicarFiltros());filtroEstado.valueProperty().addListener((o,a,n)->aplicarFiltros());
+        campoBuscar.setOnKeyPressed(e->{if(e.getCode()==KeyCode.ESCAPE)limpiarFiltros();});
     }
 
-    private void configurarBoton(Button boton, boolean visible) {
-        boton.setVisible(visible);
-        boton.setManaged(visible);
+    @FXML public void cargarSolicitudes(){
+        botonActualizar.setDisable(true);etiquetaEstadoCarga.setText("Actualizando...");
+        try{solicitudes.setAll(reservaService.listar().stream().filter(r->r.getOrigen()==OrigenReserva.WEB).toList());aplicarFiltros();actualizarResumen();etiquetaActualizacion.setText("Última actualización: "+LocalTime.now().format(HORA));etiquetaEstadoCarga.setText("");}
+        catch(RuntimeException e){etiquetaEstadoCarga.setText(e.getMessage()==null?"No se pudieron cargar las solicitudes.":e.getMessage());}
+        finally{botonActualizar.setDisable(false);}
     }
 
-    @FXML private void abrirReserva() {
-        if (seleccionada != null) {
-            Navegacion.mostrarReservaDesdeAgenda(seleccionada.getId());
-        }
-    }
+    private void aplicarFiltros(){if(solicitudesFiltradas==null)return;String texto=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);EstadoReserva estado=filtroEstado.getValue();solicitudesFiltradas.setPredicate(r->(estado==null||r.getEstado()==estado)&&(texto.isBlank()||contiene(r.getNombreCliente(),texto)||contiene(r.getNombreCancha(),texto)||contiene(nombreEstado(r.getEstado()),texto)||String.valueOf(r.getId()).contains(texto)));actualizarMensajeResultados();botonLimpiar.setDisable(texto.isBlank()&&estado==null);}
+    private boolean contiene(String v,String f){return v!=null&&v.toLowerCase(Locale.ROOT).contains(f);}
+    private void actualizarMensajeResultados(){int n=solicitudesFiltradas==null?0:solicitudesFiltradas.size();etiquetaMensaje.setText(n+" "+(n==1?"solicitud encontrada":"solicitudes encontradas"));}
+    @FXML private void limpiarFiltros(){campoBuscar.clear();filtroEstado.getSelectionModel().clearSelection();}
+    @FXML private void mostrarTodas(){limpiarFiltros();}
+    @FXML private void mostrarVigentes(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.PENDIENTE);}
+    @FXML private void mostrarExpiradas(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.EXPIRADA);}
+    @FXML private void mostrarProximas(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.PENDIENTE);solicitudesFiltradas.setPredicate(this::proximaAVencer);actualizarMensajeResultados();botonLimpiar.setDisable(false);}
 
-    @FXML private void abrirPagos() {
-        if (seleccionada != null) {
-            Navegacion.mostrarPagosDeReserva(seleccionada.getId());
-        }
-    }
+    private void actualizarResumen(){LocalDateTime a=LocalDateTime.now();long vigentes=solicitudes.stream().filter(r->r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null&&r.getFechaVencimiento().isAfter(a)).count();long proximas=solicitudes.stream().filter(this::proximaAVencer).count();long expiradas=solicitudes.stream().filter(r->r.getEstado()==EstadoReserva.EXPIRADA).count();etiquetaTotal.setText(String.valueOf(solicitudes.size()));etiquetaVigentes.setText(String.valueOf(vigentes));etiquetaProximas.setText(String.valueOf(proximas));etiquetaExpiradas.setText(String.valueOf(expiradas));tarjetaProximas.getStyleClass().remove("web-metric-warning");if(proximas>0)tarjetaProximas.getStyleClass().add("web-metric-warning");}
+    private boolean proximaAVencer(Reserva r){LocalDateTime a=LocalDateTime.now();return r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null&&r.getFechaVencimiento().isAfter(a)&&!r.getFechaVencimiento().isAfter(a.plusMinutes(5));}
 
-    @FXML private void abrirWhatsApp() {
-        if (seleccionada == null) return;
-        try {
-            Cliente cliente = clienteService.buscar(seleccionada.getClienteId());
-            if (cliente == null || cliente.getTelefono() == null
-                    || cliente.getTelefono().isBlank()) {
-                throw new IllegalArgumentException(
-                        "El cliente no tiene un teléfono registrado.");
-            }
-            BigDecimal saldo = pagoService.calcularSaldo(seleccionada.getId());
-            String mensaje = switch (seleccionada.getEstado()) {
-                case PENDIENTE -> mensajeService.crearSolicitudSenia(
-                        cliente, seleccionada, saldo.max(BigDecimal.ZERO));
-                case CONFIRMADA -> saldo.signum() > 0
-                        ? mensajeService.crearAvisoSaldo(cliente, seleccionada, saldo)
-                        : mensajeService.crearRecordatorio(cliente, seleccionada);
-                case CANCELADA, EXPIRADA ->
-                        mensajeService.crearAvisoCancelacion(cliente, seleccionada);
-                case COMPLETADA, AUSENTE ->
-                        mensajeService.crearRecordatorio(cliente, seleccionada);
-            };
-            whatsAppService.abrirConversacion(cliente.getTelefono(), mensaje);
-        } catch (RuntimeException exception) {
-            etiquetaMensaje.setText(exception.getMessage());
-        }
-    }
+    private void iniciarReloj(){reloj=new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),e->{tablaSolicitudes.refresh();actualizarResumen();if(seleccionada!=null)actualizarSituacionDetalle();}));reloj.setCycleCount(Timeline.INDEFINITE);reloj.play();}
+    private void detenerReloj(){if(reloj!=null)reloj.stop();}
+    private String textoSituacion(Reserva r){if(r.getEstado()==EstadoReserva.EXPIRADA)return "Expirada";if(r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null){Duration d=Duration.between(LocalDateTime.now(),r.getFechaVencimiento());if(d.isNegative()||d.isZero())return "Venciendo...";long m=d.toMinutes(),s=d.minusMinutes(m).getSeconds();return String.format("%02d:%02d",m,s);}LocalDateTime i=LocalDateTime.of(r.getFecha(),r.getHoraInicio()),f=LocalDateTime.of(r.getFecha(),r.getHoraFin()),a=LocalDateTime.now();if(a.isBefore(i))return "Próxima";if(a.isBefore(f))return "En curso";return "Finalizada";}
+    private String claseTiempo(Reserva r){if(r.getEstado()==EstadoReserva.EXPIRADA)return "web-time-expired";if(proximaAVencer(r))return "web-time-warning";return "web-time-ok";}
+    private String claseEstado(EstadoReserva e){return switch(e){case PENDIENTE->"web-state-pending";case CONFIRMADA->"web-state-confirmed";case EXPIRADA->"web-state-expired";case CANCELADA->"web-state-cancelled";case COMPLETADA->"web-state-completed";case AUSENTE->"web-state-absent";};}
+    private String colorEstado(EstadoReserva e){return switch(e){case PENDIENTE->"#e0b75e";case CONFIRMADA->"#82c5aa";case EXPIRADA->"#d9828d";case CANCELADA->"#e0777f";case COMPLETADA->"#71b9a0";case AUSENTE->"#de9f69";};}
+    private String colorSituacion(Reserva r){String s=textoSituacion(r);if("Expirada".equals(s))return "#d9828d";if("Venciendo...".equals(s)||s.matches("\\d{2}:\\d{2}"))return proximaAVencer(r)?"#efbc60":"#82c5aa";if("En curso".equals(s))return "#82c5aa";if("Próxima".equals(s))return "#8fbed1";return "#aebbc1";}
 
-    @FXML private void volver() {
-        if (reloj != null) reloj.stop();
-        Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
+    private void mostrarDetalle(Reserva r){seleccionada=r;Cliente c=clienteService.buscar(r.getClienteId());panelDetalleVacio.setVisible(false);panelDetalleVacio.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Solicitud web #"+r.getId());detalleCliente.setText(r.getNombreCliente());detalleTelefono.setText(c==null||c.getTelefono()==null||c.getTelefono().isBlank()?"Sin teléfono registrado":c.getTelefono());detalleTurno.setText(r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA)+" a "+r.getHoraFin().format(HORA));detalleCancha.setText(r.getNombreCancha());detalleEstado.setText(nombreEstado(r.getEstado()));detalleEstado.getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");detalleEstado.getStyleClass().add(claseEstado(r.getEstado()));detalleEstado.setStyle("-fx-text-fill:"+colorEstado(r.getEstado())+";-fx-font-weight:900;");detalleOrigen.setText(r.getOrigen().toString());BigDecimal acreditado=pagoService.totalAcreditado(r.getId()),saldo=pagoService.calcularSaldo(r.getId());detallePrecio.setText(moneda(r.getPrecioTotal()));detalleAcreditado.setText(moneda(acreditado));detalleSaldo.setText(moneda(saldo));actualizarSituacionDetalle();botonReserva.setVisible(true);botonReserva.setManaged(true);configurarBoton(botonPagos,r.getEstado()==EstadoReserva.PENDIENTE||r.getEstado()==EstadoReserva.CONFIRMADA||r.getEstado()==EstadoReserva.COMPLETADA);configurarBoton(botonWhatsApp,c!=null&&c.getTelefono()!=null&&!c.getTelefono().isBlank());}
+    private void actualizarSituacionDetalle(){if(seleccionada==null)return;String situacion=textoSituacion(seleccionada);detalleSituacion.setText(situacion);detalleSituacion.setStyle("-fx-text-fill:"+colorSituacion(seleccionada)+";-fx-font-weight:900;");detalleVencimiento.setText(situacion);detalleVencimiento.setStyle("-fx-text-fill:"+colorSituacion(seleccionada)+";-fx-font-weight:900;");detalleAyudaSituacion.setText(ayudaSituacion(seleccionada,situacion));}
+    private String ayudaSituacion(Reserva r,String s){if(r.getEstado()==EstadoReserva.PENDIENTE)return s.matches("\\d{2}:\\d{2}")?"Tiempo restante para acreditar la seña.":"La solicitud está alcanzando su vencimiento.";if("Finalizada".equals(s)&&r.getEstado()==EstadoReserva.CONFIRMADA)return "El turno terminó y puede requerir cierre como completado o ausente.";if("Próxima".equals(s))return "El turno todavía no comenzó.";if("En curso".equals(s))return "El turno se encuentra dentro de su horario reservado.";return "Situación temporal del turno seleccionado.";}
+    private void mostrarDetalleVacio(){seleccionada=null;panelDetalle.setVisible(false);panelDetalle.setManaged(false);panelDetalleVacio.setVisible(true);panelDetalleVacio.setManaged(true);}
+
+    private void configurarDeseleccion(){
+        if(tablaSolicitudes.getScene()==null)return;
+        tablaSolicitudes.getScene().addEventFilter(
+                MouseEvent.MOUSE_PRESSED,
+                evento->{
+                    boolean dentroTabla=perteneceA(
+                            evento.getTarget(),tablaSolicitudes);
+                    boolean filaConDatos=perteneceAFilaConDatos(
+                            evento.getTarget());
+                    boolean dentroDetalle=perteneceA(
+                            evento.getTarget(),panelDetalle);
+
+                    if(!dentroDetalle
+                            && (!dentroTabla || !filaConDatos)){
+                        Platform.runLater(this::limpiarSeleccion);
+                    }
+                });
     }
+    private boolean perteneceAFilaConDatos(Object o){if(!(o instanceof Node n))return false;Node a=n;while(a!=null&&a!=tablaSolicitudes){if(a instanceof TableRow<?> fila)return !fila.isEmpty();a=a.getParent();}return false;}
+    private boolean perteneceA(Object o,Node contenedor){if(!(o instanceof Node n))return false;Node a=n;while(a!=null){if(a==contenedor)return true;Parent p=a.getParent();a=p;}return false;}
+    private void limpiarSeleccion(){tablaSolicitudes.getSelectionModel().clearSelection();tablaSolicitudes.getFocusModel().focus(-1);tablaSolicitudes.refresh();mostrarDetalleVacio();}
+
+    private String nombreEstado(EstadoReserva e){return switch(e){case PENDIENTE->"Esperando seña";case CONFIRMADA->"Confirmada";case EXPIRADA->"Expirada";case CANCELADA->"Cancelada";case COMPLETADA->"Completada";case AUSENTE->"Ausente";};}
+    private String moneda(BigDecimal v){return FormateadorMoneda.pesos(v);}
+    private void configurarBoton(Button b,boolean visible){b.setVisible(visible);b.setManaged(visible);}
+    @FXML private void abrirReserva(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarReservaDesdeAgenda(seleccionada.getId());}}
+    @FXML private void abrirPagos(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarPagosDeReserva(seleccionada.getId());}}
+    @FXML private void abrirWhatsApp(){if(seleccionada==null)return;try{Cliente c=clienteService.buscar(seleccionada.getClienteId());if(c==null||c.getTelefono()==null||c.getTelefono().isBlank())throw new IllegalArgumentException("El cliente no tiene un teléfono registrado.");BigDecimal saldo=pagoService.calcularSaldo(seleccionada.getId());String m=switch(seleccionada.getEstado()){case PENDIENTE->mensajeService.crearSolicitudSenia(c,seleccionada,saldo.max(BigDecimal.ZERO));case CONFIRMADA->saldo.signum()>0?mensajeService.crearAvisoSaldo(c,seleccionada,saldo):mensajeService.crearRecordatorio(c,seleccionada);case CANCELADA,EXPIRADA->mensajeService.crearAvisoCancelacion(c,seleccionada);case COMPLETADA,AUSENTE->mensajeService.crearRecordatorio(c,seleccionada);};whatsAppService.abrirConversacion(c.getTelefono(),m);}catch(RuntimeException e){etiquetaEstadoCarga.setText(e.getMessage());}}
+    @FXML private void volver(){detenerReloj();Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());}
 }
