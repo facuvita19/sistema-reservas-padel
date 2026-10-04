@@ -16,6 +16,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -65,6 +74,17 @@ public class TorneosController {
     @FXML private Label detalleFechas;
     @FXML private Label detalleInscripcion;
     @FXML private Label etiquetaMensaje;
+    @FXML private Label detalleCantidadCategorias;
+    @FXML private Label detalleParejas;
+    @FXML private Label detalleCupos;
+    @FXML private Label etiquetaAccionTitulo;
+    @FXML private Label etiquetaAccionAyuda;
+    @FXML private Label etiquetaCategoriaSeleccionada;
+    @FXML private Button botonLimpiar;
+    @FXML private VBox panelSinSeleccion;
+    @FXML private VBox panelDetalle;
+    @FXML private HBox panelAccionesCategoria;
+    @FXML private ScrollPane scrollDetalle;
     @FXML private Button botonEditar;
     @FXML private Button botonNuevaCategoria;
     @FXML private Button botonEditarCategoria;
@@ -82,6 +102,8 @@ public class TorneosController {
         configurarTablas();
         configurarFiltros();
         cargarTorneos();
+        mostrarSinSeleccion();
+        javafx.application.Platform.runLater(this::configurarDeseleccion);
     }
 
     private void configurarTablas() {
@@ -91,14 +113,21 @@ public class TorneosController {
         colEstado.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getEstado()));
         configurarCeldaFecha(colInicio);
         configurarCeldaFecha(colFin);
+        colNombre.setStyle("-fx-alignment: CENTER_LEFT;");
+        colInicio.setStyle("-fx-alignment: CENTER;");
+        colFin.setStyle("-fx-alignment: CENTER;");
+        colEstado.setStyle("-fx-alignment: CENTER;");
         colEstado.setCellFactory(columna -> new TableCell<>() {
             @Override protected void updateItem(EstadoTorneo estado, boolean vacia) {
                 super.updateItem(estado, vacia);
+                setAlignment(Pos.CENTER);
+                setStyle("");
                 setText(vacia || estado == null ? null : estado.toString());
                 getStyleClass().removeIf(clase -> clase.startsWith("tournament-status-"));
                 if (!vacia && estado != null) {
                     getStyleClass().add("tournament-status-"
                             + estado.name().toLowerCase(Locale.ROOT).replace('_', '-'));
+                    setStyle("-fx-text-fill: " + colorEstado(estado) + "; -fx-font-weight: 900;");
                 }
             }
         });
@@ -106,13 +135,25 @@ public class TorneosController {
                 TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         tablaTorneos.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> seleccionar(n));
 
+        colCategoria.setStyle("-fx-alignment: CENTER;");
         colCategoria.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNombre()));
+        colCategoria.setCellFactory(c -> celdaTexto(Pos.CENTER));
+        colRama.setStyle("-fx-alignment: CENTER;");
         colRama.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getRama())));
+        colRama.setCellFactory(c -> celdaTexto(Pos.CENTER));
+        colCupo.setStyle("-fx-alignment: CENTER;");
         colCupo.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCupoParejas()).asObject());
+        colCupo.setCellFactory(c -> celdaEnteroCentrada());
+        colConfirmadas.setStyle("-fx-alignment: CENTER;");
         colConfirmadas.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getParejasConfirmadas()).asObject());
+        colConfirmadas.setCellFactory(c -> celdaEnteroCentrada());
+        colDisponibles.setStyle("-fx-alignment: CENTER;");
         colDisponibles.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCuposDisponibles()).asObject());
+        colDisponibles.setCellFactory(c -> celdaEnteroCentrada());
+        colPrecio.setStyle("-fx-alignment: CENTER;");
         colPrecio.setCellValueFactory(d -> new SimpleStringProperty(
                 formatearMoneda(d.getValue().getPrecioInscripcion())));
+        colPrecio.setCellFactory(c -> celdaTexto(Pos.CENTER));
         tablaCategorias.setRowFactory(tabla -> new TableRow<>() {
             @Override protected void updateItem(TorneoCategoria categoria, boolean vacia) {
                 super.updateItem(categoria, vacia);
@@ -128,9 +169,42 @@ public class TorneosController {
         columna.setCellFactory(valor -> new TableCell<>() {
             @Override protected void updateItem(LocalDate fecha, boolean vacia) {
                 super.updateItem(fecha, vacia);
+                setAlignment(Pos.CENTER);
                 setText(vacia || fecha == null ? null : FECHA.format(fecha));
             }
         });
+    }
+
+    private TableCell<TorneoCategoria, String> celdaTexto(Pos alineacion) {
+        return new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(alineacion);
+                setText(vacia || valor == null ? null : valor);
+            }
+        };
+    }
+
+    private TableCell<TorneoCategoria, Integer> celdaEnteroCentrada() {
+        return new TableCell<>() {
+            @Override protected void updateItem(Integer valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setText(vacia || valor == null ? null : String.valueOf(valor));
+            }
+        };
+    }
+
+    private String colorEstado(EstadoTorneo estado) {
+        return switch (estado) {
+            case BORRADOR -> "#a9bac3";
+            case PUBLICADO -> "#86bde0";
+            case INSCRIPCION_ABIERTA -> "#7bd4ae";
+            case INSCRIPCION_CERRADA -> "#e0bf72";
+            case EN_CURSO -> "#77c9dc";
+            case FINALIZADO -> "#aaa4d7";
+            case CANCELADO -> "#e88e99";
+        };
     }
 
     private String formatearMoneda(BigDecimal valor) {
@@ -142,6 +216,7 @@ public class TorneosController {
         tablaTorneos.setItems(filtrados);
         campoBuscar.textProperty().addListener((o, a, n) -> aplicarFiltros());
         filtroEstado.valueProperty().addListener((o, a, n) -> aplicarFiltros());
+        campoBuscar.setOnKeyPressed(e -> { if (e.getCode() == KeyCode.ESCAPE) limpiarFiltros(); });
     }
 
     @FXML private void cargarTorneos() {
@@ -151,7 +226,7 @@ public class TorneosController {
             aplicarFiltros();
             if (id > 0) torneos.stream().filter(t -> t.getId() == id).findFirst()
                     .ifPresent(t -> tablaTorneos.getSelectionModel().select(t));
-            etiquetaMensaje.setText(torneos.size() + " torneo(s) cargado(s).");
+            actualizarMensajeResultados();
         } catch (RuntimeException ex) { mostrarError(ex); }
     }
 
@@ -160,27 +235,77 @@ public class TorneosController {
         EstadoTorneo estado = filtroEstado.getValue();
         filtrados.setPredicate(t -> (estado == null || t.getEstado() == estado)
                 && (texto.isBlank() || t.getNombre().toLowerCase(Locale.ROOT).contains(texto)));
+        actualizarMensajeResultados();
+        botonLimpiar.setDisable(texto.isBlank() && estado == null);
     }
 
     @FXML private void limpiarFiltros() { campoBuscar.clear(); filtroEstado.getSelectionModel().clearSelection(); }
 
+    private void actualizarMensajeResultados() {
+        int cantidad = filtrados == null ? 0 : filtrados.size();
+        etiquetaMensaje.setText(cantidad + (cantidad == 1 ? " torneo encontrado" : " torneos encontrados"));
+    }
+
     private void seleccionar(Torneo torneo) {
         seleccionado = torneo;
-        if (torneo == null) { categorias.clear(); actualizarBotones(); return; }
+        if (torneo == null) { categorias.clear(); mostrarSinSeleccion(); actualizarBotones(); return; }
+        mostrarDetalle();
         detalleNombre.setText(torneo.getNombre());
         detalleEstado.setText(torneo.getEstado().toString());
         detalleEstado.getStyleClass().removeIf(
                 clase -> clase.startsWith("tournament-state-"));
         detalleEstado.getStyleClass().add("tournament-state-"
                 + torneo.getEstado().name().toLowerCase(Locale.ROOT).replace('_', '-'));
+        detalleEstado.setStyle("-fx-text-fill: " + colorEstado(torneo.getEstado()) + "; -fx-font-weight: 900;");
         detalleFechas.setText(FECHA.format(torneo.getFechaInicio()) + " al " + FECHA.format(torneo.getFechaFin()));
         detalleInscripcion.setText(
-                FECHA_HORA.format(torneo.getInscripcionDesde())
-                        + " al "
+                "Desde " + FECHA_HORA.format(torneo.getInscripcionDesde())
+                        + "\nHasta "
                         + FECHA_HORA.format(torneo.getInscripcionHasta()));
         categorias.setAll(categoriaDAO.listarPorTorneo(torneo.getId()));
         tablaCategorias.setItems(categorias);
+        actualizarMetricas();
+        tablaCategorias.getSelectionModel().clearSelection();
+        configurarAccionContextual();
         actualizarBotones();
+    }
+
+    private void mostrarSinSeleccion() {
+        panelSinSeleccion.setVisible(true); panelSinSeleccion.setManaged(true);
+        scrollDetalle.setVisible(false); scrollDetalle.setManaged(false);
+    }
+
+    private void mostrarDetalle() {
+        panelSinSeleccion.setVisible(false); panelSinSeleccion.setManaged(false);
+        scrollDetalle.setVisible(true); scrollDetalle.setManaged(true);
+    }
+
+    private void actualizarMetricas() {
+        int activas = (int) categorias.stream().filter(TorneoCategoria::isActivo).count();
+        int parejas = categorias.stream().filter(TorneoCategoria::isActivo).mapToInt(TorneoCategoria::getParejasConfirmadas).sum();
+        int cupos = categorias.stream().filter(TorneoCategoria::isActivo).mapToInt(TorneoCategoria::getCuposDisponibles).sum();
+        detalleCantidadCategorias.setText(String.valueOf(activas));
+        detalleParejas.setText(String.valueOf(parejas));
+        detalleCupos.setText(String.valueOf(cupos));
+    }
+
+    private void configurarAccionContextual() {
+        EstadoTorneo estado = seleccionado.getEstado();
+        botonPublicar.setVisible(estado == EstadoTorneo.BORRADOR); botonPublicar.setManaged(botonPublicar.isVisible());
+        botonAbrir.setVisible(estado == EstadoTorneo.PUBLICADO); botonAbrir.setManaged(botonAbrir.isVisible());
+        botonCerrar.setVisible(estado == EstadoTorneo.INSCRIPCION_ABIERTA); botonCerrar.setManaged(botonCerrar.isVisible());
+        botonIniciar.setVisible(estado == EstadoTorneo.INSCRIPCION_CERRADA); botonIniciar.setManaged(botonIniciar.isVisible());
+        botonFinalizar.setVisible(estado == EstadoTorneo.EN_CURSO); botonFinalizar.setManaged(botonFinalizar.isVisible());
+        botonCancelar.setVisible(!estado.esFinal()); botonCancelar.setManaged(botonCancelar.isVisible());
+        switch (estado) {
+            case BORRADOR -> { etiquetaAccionTitulo.setText("Publicar torneo"); etiquetaAccionAyuda.setText("Publicalo para dejarlo listo antes de abrir las inscripciones."); }
+            case PUBLICADO -> { etiquetaAccionTitulo.setText("Abrir inscripciones"); etiquetaAccionAyuda.setText("Necesitás al menos una categoría activa para comenzar a recibir parejas."); }
+            case INSCRIPCION_ABIERTA -> { etiquetaAccionTitulo.setText("Inscripciones abiertas"); etiquetaAccionAyuda.setText("Cerralas cuando termine el período de inscripción."); }
+            case INSCRIPCION_CERRADA -> { etiquetaAccionTitulo.setText("Preparar inicio"); etiquetaAccionAyuda.setText("Generá grupos o cuadros de las categorías competitivas antes de iniciar."); }
+            case EN_CURSO -> { etiquetaAccionTitulo.setText("Torneo en curso"); etiquetaAccionAyuda.setText("Finalizalo cuando todos los partidos y campeones estén definidos."); }
+            case FINALIZADO -> { etiquetaAccionTitulo.setText("Torneo finalizado"); etiquetaAccionAyuda.setText("El ciclo competitivo está completo y no requiere más acciones."); }
+            case CANCELADO -> { etiquetaAccionTitulo.setText("Torneo cancelado"); etiquetaAccionAyuda.setText("El torneo quedó cerrado y no admite nuevas modificaciones."); }
+        }
     }
 
     private void actualizarBotones() {
@@ -194,6 +319,7 @@ public class TorneosController {
         botonIniciar.setDisable(e != EstadoTorneo.INSCRIPCION_CERRADA);
         botonFinalizar.setDisable(e != EstadoTorneo.EN_CURSO);
         botonCancelar.setDisable(!hay || e.esFinal());
+        if (hay) configurarAccionContextual();
         actualizarBotonesCategoria();
     }
 
@@ -208,6 +334,11 @@ public class TorneosController {
                 || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
                 || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
                 || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
+        panelAccionesCategoria.setVisible(c != null);
+        panelAccionesCategoria.setManaged(c != null);
+        etiquetaCategoriaSeleccionada.setText(c == null ? "" : c.getNombre());
+        botonGestionarGrupos.setVisible(c != null && c.usaFaseGrupos());
+        botonGestionarGrupos.setManaged(botonGestionarGrupos.isVisible());
         botonGestionarCuadro.setDisable(c == null || seleccionado == null
                 || seleccionado.getEstado() == EstadoTorneo.BORRADOR
                 || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
@@ -335,6 +466,35 @@ public class TorneosController {
         }
         Navegacion.mostrarCuadroTorneo(categoria.getId());
     }
+
+    private void configurarDeseleccion() {
+        if (tablaTorneos.getScene() == null) return;
+        tablaTorneos.getScene().addEventFilter(MouseEvent.MOUSE_PRESSED, evento -> {
+            boolean enTorneo = perteneceAFilaConDatos(evento.getTarget(), tablaTorneos);
+            boolean enCategoria = perteneceAFilaConDatos(evento.getTarget(), tablaCategorias);
+            boolean dentroDetalle = perteneceA(evento.getTarget(), panelDetalle);
+            if (!enTorneo && !enCategoria && !dentroDetalle) javafx.application.Platform.runLater(this::limpiarSelecciones);
+            else if (perteneceA(evento.getTarget(), tablaTorneos) && !enTorneo) javafx.application.Platform.runLater(this::limpiarTorneo);
+            else if (perteneceA(evento.getTarget(), tablaCategorias) && !enCategoria) javafx.application.Platform.runLater(() -> tablaCategorias.getSelectionModel().clearSelection());
+        });
+    }
+    private boolean perteneceAFilaConDatos(Object objetivo, TableView<?> tabla) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null && actual != tabla) {
+            if (actual instanceof TableRow<?> fila) return !fila.isEmpty();
+            actual = actual.getParent();
+        }
+        return false;
+    }
+    private boolean perteneceA(Object objetivo, Node contenedor) {
+        if (!(objetivo instanceof Node nodo)) return false;
+        Node actual = nodo;
+        while (actual != null) { if (actual == contenedor) return true; Parent padre = actual.getParent(); actual = padre; }
+        return false;
+    }
+    private void limpiarTorneo() { tablaTorneos.getSelectionModel().clearSelection(); seleccionar(null); }
+    private void limpiarSelecciones() { tablaCategorias.getSelectionModel().clearSelection(); }
 
     @FXML private void verInscripciones() { Navegacion.mostrarTorneosInscripciones(); }
     @FXML private void volver() { Navegacion.mostrarDashboard(Navegacion.getUsuarioActual()); }

@@ -2,81 +2,74 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.TorneoGruposController"
-            styleClass="groups-root">
-    <top>
-        <HBox spacing="14" alignment="CENTER_LEFT" styleClass="groups-header">
-            <padding><Insets top="18" right="24" bottom="18" left="24"/></padding>
-            <Button text="VOLVER A TORNEOS" onAction="#volver"/>
-            <Button text="IR AL CUADRO" onAction="#irAlCuadro"/>
-            <VBox><Label text="GESTIÓN DE GRUPOS" styleClass="groups-overline"/><Label fx:id="titulo" text="Categoría" styleClass="groups-title"/></VBox>
-            <Region HBox.hgrow="ALWAYS"/><Label fx:id="resumen"/>
-        </HBox>
-    </top>
-    <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="groups-scroll">
-            <content>
-                <VBox spacing="16" styleClass="groups-content">
-                    <padding><Insets top="18" right="24" bottom="22" left="24"/></padding>
-                    <GridPane hgap="16">
-                        <columnConstraints><ColumnConstraints percentWidth="33.333" minWidth="0"/><ColumnConstraints percentWidth="33.333" minWidth="0"/><ColumnConstraints percentWidth="33.334" minWidth="0"/></columnConstraints>
-                        <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="0" maxWidth="Infinity">
-                            <Label text="PAREJAS SIN ASIGNAR" styleClass="groups-section"/><ListView fx:id="sinAsignar" fixedCellSize="48" prefHeight="250" minWidth="0"/><Button text="AGREGAR AL GRUPO" onAction="#agregar" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="1" maxWidth="Infinity">
-                            <Label text="GRUPOS" styleClass="groups-section"/><ListView fx:id="listaGrupos" fixedCellSize="48" prefHeight="250" minWidth="0"/><ComboBox fx:id="cabeza" promptText="Seleccionar cabeza de serie" maxWidth="Infinity" minWidth="0"/><Button text="MARCAR CABEZA DE SERIE" onAction="#agregarCabeza" maxWidth="Infinity"/><Button text="SORTEAR RESTO" onAction="#sortear" maxWidth="Infinity"/>
-                        </VBox>
-                        <VBox spacing="10" styleClass="groups-card" GridPane.columnIndex="2" maxWidth="Infinity">
-                            <Label text="INTEGRANTES" styleClass="groups-section"/><ListView fx:id="integrantes" fixedCellSize="48" prefHeight="250" minWidth="0"/><Button text="QUITAR DEL GRUPO" onAction="#quitar" maxWidth="Infinity"/><ComboBox fx:id="modo" maxWidth="Infinity" minWidth="0"/><Button fx:id="confirmar" text="CONFIRMAR GRUPOS" onAction="#confirmar" maxWidth="Infinity"/><Button fx:id="generarPartidos" text="GENERAR PARTIDOS" onAction="#generarPartidos" maxWidth="Infinity"/><Label fx:id="mensaje" wrapText="true"/>
-                        </VBox>
-                    </GridPane>
-                    <VBox spacing="12" styleClass="groups-card, groups-matches-card">
-                        <HBox alignment="CENTER_LEFT" spacing="12">
-                            <VBox>
-                                <Label text="PARTIDOS DEL GRUPO" styleClass="groups-section"/>
-                                <Label fx:id="resumenPartidos" text="Selecciona un grupo"/>
-                            </VBox>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label text="GRUPO" styleClass="groups-section"/>
-                            <ComboBox fx:id="selectorGrupoPartidos"
-                                      promptText="Seleccionar grupo"
-                                      prefWidth="190"
-                                      styleClass="groups-quick-selector"/>
-                        </HBox>
-                        <TableView fx:id="tablaPartidos" prefHeight="260" fixedCellSize="48">
-                            <columns><TableColumn fx:id="colTipo" text="TIPO" prefWidth="210"/><TableColumn fx:id="colOrden" text="#" prefWidth="55"/><TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="230"/><TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="230"/><TableColumn fx:id="colResultado" text="RESULTADO" prefWidth="150"/><TableColumn fx:id="colEstado" text="ESTADO" prefWidth="130"/></columns>
-                        </TableView>
-                        <GridPane hgap="10" vgap="8">
-                            <columnConstraints><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/><ColumnConstraints percentWidth="25"/></columnConstraints>
-                            <ComboBox fx:id="comboCancha" promptText="Cancha" maxWidth="Infinity" GridPane.columnIndex="0"/><DatePicker fx:id="selectorFecha" promptText="Fecha" maxWidth="Infinity" GridPane.columnIndex="1"/><ComboBox fx:id="comboInicio" promptText="Inicio" maxWidth="Infinity" GridPane.columnIndex="2"/><ComboBox fx:id="comboFin" promptText="Fin" maxWidth="Infinity" GridPane.columnIndex="3"/>
-                        </GridPane>
-                        <FlowPane hgap="9" vgap="9"><Button fx:id="botonProgramar" text="PROGRAMAR" onAction="#programarPartido"/><Button fx:id="botonQuitarProgramacion" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion"/><Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado"/><Button fx:id="botonCorregir" text="CORREGIR RESULTADO" onAction="#corregirResultado"/></FlowPane>
-                    </VBox>
-                    <VBox spacing="10" styleClass="groups-card, groups-positions-card">
-                        <HBox alignment="CENTER_LEFT">
-                            <Label text="POSICIONES DEL GRUPO" styleClass="groups-section"/>
-                            <Region HBox.hgrow="ALWAYS"/>
-                            <Label fx:id="estadoPosiciones" text="Posiciones provisorias" styleClass="groups-positions-state"/>
-                        </HBox>
-                        <TableView fx:id="tablaPosiciones" prefHeight="225" fixedCellSize="44">
-                            <columns>
-                                <TableColumn fx:id="colPosicion" text="POS." prefWidth="55"/>
-                                <TableColumn fx:id="colParejaPosicion" text="PAREJA" prefWidth="260"/>
-                                <TableColumn fx:id="colPJ" text="PJ" prefWidth="48"/>
-                                <TableColumn fx:id="colPG" text="PG" prefWidth="48"/>
-                                <TableColumn fx:id="colPP" text="PP" prefWidth="48"/>
-                                <TableColumn fx:id="colSets" text="SETS" prefWidth="75"/>
-                                <TableColumn fx:id="colDifSets" text="DIF. S" prefWidth="65"/>
-                                <TableColumn fx:id="colGames" text="GAMES" prefWidth="85"/>
-                                <TableColumn fx:id="colDifGames" text="DIF. G" prefWidth="65"/>
-                                <TableColumn fx:id="colClasificacion" text="ESTADO" prefWidth="155"/>
-                            </columns>
-                        </TableView>
-                    </VBox>
-                </VBox>
-            </content>
-        </ScrollPane>
-    </center>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.TorneoGruposController" styleClass="groups-root-v2">
+ <top><HBox spacing="14" alignment="CENTER_LEFT" styleClass="groups-header-v2"><padding><Insets top="15" right="22" bottom="15" left="22"/></padding><Button text="VOLVER" onAction="#volver" styleClass="groups-action-secondary"/><VBox spacing="2"><Label text="Grupos del torneo" styleClass="groups-title-v2"/><Label fx:id="titulo" text="Categoría" styleClass="groups-subtitle-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="resumen" styleClass="groups-summary-v2"/><Button text="CUADRO" onAction="#irAlCuadro" styleClass="groups-action-secondary"/></HBox></top>
+ <center><VBox spacing="12" styleClass="groups-content-v2"><padding><Insets top="15" right="20" bottom="18" left="20"/></padding>
+  <HBox spacing="8" alignment="CENTER_LEFT" styleClass="groups-tabs-v2"><ToggleButton fx:id="pestanaArmado" text="ARMADO" onAction="#mostrarArmado" styleClass="groups-tab-v2"/><ToggleButton fx:id="pestanaPartidos" text="PARTIDOS" onAction="#mostrarPartidos" styleClass="groups-tab-v2"/><ToggleButton fx:id="pestanaPosiciones" text="POSICIONES" onAction="#mostrarPosiciones" styleClass="groups-tab-v2"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="mensaje" wrapText="true" styleClass="groups-message-v2"/></HBox>
+  <StackPane VBox.vgrow="ALWAYS">
+   <VBox fx:id="panelArmado" spacing="12">
+    <HBox spacing="12" VBox.vgrow="ALWAYS">
+     <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="PAREJAS DISPONIBLES" styleClass="groups-section-v2"/><Label text="Doble clic para agregar al grupo seleccionado" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaDisponibles" text="0" styleClass="groups-count-v2"/></HBox><ListView fx:id="sinAsignar" fixedCellSize="46" VBox.vgrow="ALWAYS"/><Button fx:id="botonAgregar" text="AGREGAR AL GRUPO" onAction="#agregar" maxWidth="Infinity" styleClass="groups-action-primary groups-add-action"/></VBox>
+     <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="GRUPOS" styleClass="groups-section-v2"/><Label text="Seleccioná un grupo para administrar sus parejas" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaEstadoGrupos" text="EN EDICIÓN" styleClass="groups-state-v2"/></HBox><ListView fx:id="listaGrupos" fixedCellSize="48" VBox.vgrow="ALWAYS"/></VBox>
+     <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label fx:id="tituloIntegrantes" text="INTEGRANTES" styleClass="groups-section-v2"/><Label text="★ identifica a la cabeza de serie" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaOcupacion" text="0/0" styleClass="groups-count-v2"/></HBox><ListView fx:id="integrantes" fixedCellSize="46" VBox.vgrow="ALWAYS"/><HBox fx:id="accionesIntegrantes" spacing="8"><Button fx:id="botonCabeza" text="MARCAR CABEZA" onAction="#agregarCabezaSeleccionada" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-action-primary"/><Button fx:id="botonQuitar" text="QUITAR" onAction="#quitar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-action-danger-outline"/></HBox></VBox>
+    </HBox>
+    <HBox fx:id="panelEdicionGrupos" spacing="10" alignment="CENTER_LEFT" styleClass="groups-flow-v2"><VBox spacing="3"><Label text="MODO DE ASIGNACIÓN" styleClass="groups-section-v2"/><Label fx:id="ayudaModo" text="Elegí cómo completar la distribución." styleClass="groups-help-v2"/></VBox><ComboBox fx:id="modo" prefWidth="230" styleClass="groups-input-v2"/><Button fx:id="botonSortear" text="SORTEAR PAREJAS RESTANTES" onAction="#sortear" styleClass="groups-action-secondary"/><Region HBox.hgrow="ALWAYS"/><Button fx:id="confirmar" text="CONFIRMAR DISTRIBUCIÓN" onAction="#confirmar" styleClass="groups-action-primary"/></HBox>
+    <HBox fx:id="panelConfirmado" visible="false" managed="false" spacing="10" alignment="CENTER_LEFT" styleClass="groups-confirmed-v2"><VBox spacing="2"><Label text="GRUPOS CONFIRMADOS" styleClass="groups-confirmed-title"/><Label text="La distribución quedó bloqueada. El siguiente paso es generar o gestionar los partidos." styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="generarPartidos" text="GENERAR PARTIDOS" onAction="#generarPartidos" styleClass="groups-action-primary"/><Button text="VER PARTIDOS" onAction="#mostrarPartidos" styleClass="groups-action-secondary"/></HBox>
+   </VBox>
+
+   <HBox fx:id="panelPartidos" visible="false" managed="false" spacing="0" styleClass="groups-stage-v2">
+    <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2 groups-matches-v2">
+     <HBox alignment="CENTER_LEFT" spacing="10" styleClass="groups-matches-header-v2">
+      <VBox spacing="2"><Label text="PARTIDOS DE GRUPOS" styleClass="groups-section-v2"/><Label fx:id="resumenPartidos" text="Sin partidos" styleClass="groups-help-v2"/></VBox>
+      <Region HBox.hgrow="ALWAYS"/>
+      <VBox spacing="3" styleClass="groups-selector-box-v2"><Label text="GRUPO SELECCIONADO" styleClass="groups-filter-label-v2"/><ComboBox fx:id="selectorGrupoPartidos" promptText="Seleccionar grupo" prefWidth="190" styleClass="groups-input-v2 groups-group-selector-v2"/></VBox>
+     </HBox>
+     <TableView fx:id="tablaPartidos" VBox.vgrow="ALWAYS" fixedCellSize="62" focusTraversable="false" styleClass="groups-matches-table-v2">
+      <columns>
+       <TableColumn fx:id="colTipo" text="TIPO" visible="false" prefWidth="1"/>
+       <TableColumn fx:id="colOrden" text="PARTIDO" prefWidth="76"/>
+       <TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="270"/>
+       <TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="270"/>
+       <TableColumn fx:id="colResultado" text="RESULTADO" prefWidth="145"/>
+       <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="120"/>
+      </columns>
+     </TableView>
+    </VBox>
+    <StackPane minWidth="370" prefWidth="390" styleClass="groups-detail-shell-v2">
+     <VBox fx:id="panelPartidoVacio" alignment="CENTER" spacing="8" styleClass="groups-partido-empty-v2"><Label text="SELECCIONÁ UN PARTIDO" styleClass="groups-empty-title-v2"/><Label text="Elegí un encuentro para consultar su programación y las acciones disponibles." maxWidth="275" wrapText="true" styleClass="groups-empty-copy-v2"/></VBox>
+     <VBox fx:id="panelPartido" visible="false" managed="false" spacing="11" styleClass="groups-detail-v2">
+      <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+      <HBox alignment="CENTER_LEFT"><Label fx:id="tituloPartido" text="PARTIDO" styleClass="groups-partido-overline-v2"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="estadoPartidoDetalle" text="PENDIENTE" styleClass="groups-match-state-v2"/></HBox>
+      <VBox spacing="7" styleClass="groups-versus-v2"><Label fx:id="pareja1Detalle" text="Pareja 1" wrapText="true" maxWidth="Infinity" styleClass="groups-team-v2"/><Label text="VS" maxWidth="Infinity" alignment="CENTER" styleClass="groups-vs-v2"/><Label fx:id="pareja2Detalle" text="Pareja 2" wrapText="true" maxWidth="Infinity" styleClass="groups-team-v2"/></VBox>
+      <VBox fx:id="panelProgramacion" spacing="8" styleClass="groups-inner-v2"><Label text="PROGRAMACIÓN" styleClass="groups-section-v2"/><ComboBox fx:id="comboCancha" promptText="Cancha" maxWidth="Infinity" styleClass="groups-input-v2 groups-program-input-v2"/><DatePicker fx:id="selectorFecha" promptText="Fecha" maxWidth="Infinity" styleClass="groups-input-v2 groups-program-input-v2"/><HBox spacing="9"><ComboBox fx:id="comboInicio" promptText="Inicio" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-input-v2 groups-program-input-v2"/><ComboBox fx:id="comboFin" promptText="Fin" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-input-v2 groups-program-input-v2"/></HBox><Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programarPartido" maxWidth="Infinity" styleClass="groups-action-primary"/><Button fx:id="botonQuitarProgramacion" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="groups-action-danger-outline"/></VBox>
+      <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="groups-action-primary"/><Button fx:id="botonCorregir" text="CORREGIR RESULTADO" onAction="#corregirResultado" maxWidth="Infinity" styleClass="groups-action-danger-outline"/><Region VBox.vgrow="ALWAYS"/>
+     </VBox>
+    </StackPane>
+   </HBox>
+
+   <VBox fx:id="panelPosiciones" visible="false" managed="false" spacing="12" styleClass="groups-card-v2 groups-positions-v2">
+    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="groups-positions-header-v2">
+     <VBox spacing="4"><Label text="POSICIONES" styleClass="groups-section-v2"/><Label fx:id="ayudaPosiciones" text="Clasificación del grupo seleccionado" styleClass="groups-help-v2"/></VBox>
+     <Region HBox.hgrow="ALWAYS"/>
+     <VBox spacing="3" styleClass="groups-selector-box-v2"><Label text="GRUPO SELECCIONADO" styleClass="groups-filter-label-v2"/><ComboBox fx:id="selectorGrupoPosiciones" promptText="Seleccionar grupo" prefWidth="190" styleClass="groups-input-v2 groups-group-selector-v2"/></VBox>
+     <VBox spacing="3" alignment="CENTER_LEFT"><Label text="ESTADO DE LA TABLA" styleClass="groups-filter-label-v2"/><Label fx:id="estadoPosiciones" text="Posiciones provisorias" styleClass="groups-positions-state-v2"/></VBox>
+    </HBox>
+    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="groups-positions-info-v2"><Label fx:id="resumenClasificacion" text="Clasifican 2 parejas" styleClass="groups-classification-summary-v2"/><Label text="PJ: jugados · PG: ganados · PP: perdidos · DIF.: diferencia a favor" styleClass="groups-help-v2"/></HBox>
+    <TableView fx:id="tablaPosiciones" VBox.vgrow="ALWAYS" fixedCellSize="56" focusTraversable="true" styleClass="groups-positions-table-v2">
+     <columns>
+      <TableColumn fx:id="colPosicion" text="POS." prefWidth="62"/>
+      <TableColumn fx:id="colParejaPosicion" text="PAREJA" prefWidth="480"/>
+      <TableColumn fx:id="colPJ" text="PJ" prefWidth="62"/>
+      <TableColumn fx:id="colPG" text="PG" prefWidth="62"/>
+      <TableColumn fx:id="colPP" text="PP" prefWidth="62"/>
+      <TableColumn fx:id="colSets" text="SETS" prefWidth="92"/>
+      <TableColumn fx:id="colDifSets" text="DIF. SETS" prefWidth="92"/>
+      <TableColumn fx:id="colGames" text="GAMES" prefWidth="102"/>
+      <TableColumn fx:id="colDifGames" text="DIF. GAMES" prefWidth="102"/>
+      <TableColumn fx:id="colClasificacion" text="ESTADO" prefWidth="180"/>
+     </columns>
+    </TableView>
+   </VBox>
+  </StackPane>
+ </VBox></center>
 </BorderPane>

@@ -2,125 +2,24 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.TorneoCuadroController"
-            styleClass="bracket-admin-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="15" styleClass="bracket-header">
-            <padding><Insets top="17" right="24" bottom="17" left="24"/></padding>
-            <Button text="VOLVER A TORNEOS" onAction="#volver" styleClass="bracket-secondary-button"/>
-            <VBox spacing="3">
-                <Label text="Cuadro de torneo" styleClass="bracket-page-title"/>
-                <Label fx:id="etiquetaContexto" text="Categoría seleccionada" styleClass="bracket-page-subtitle"/>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button fx:id="botonIrAGrupos" text="IR A GRUPOS"
-                    onAction="#irAGrupos"
-                    styleClass="bracket-secondary-button"/>
-            <Button fx:id="botonGenerar" text="GENERAR CUADRO" onAction="#generarCuadro" styleClass="bracket-primary-button"/>
-            <Button fx:id="botonInvalidar" text="INVALIDAR CUADRO"
-                    onAction="#invalidarCuadro"
-                    styleClass="bracket-danger-outline-button"/>
-            <Button text="IMPRIMIR CUADRO" onAction="#imprimirCuadro" styleClass="bracket-secondary-button"/>
-            <Button text="ACTUALIZAR" onAction="#cargar" styleClass="bracket-secondary-button"/>
-        </HBox>
-    </top>
-
-    <center>
-        <VBox spacing="14" styleClass="bracket-content">
-            <padding><Insets top="18" right="22" bottom="20" left="22"/></padding>
-
-            <HBox fx:id="tarjetaCampeona" spacing="14" alignment="CENTER_LEFT" styleClass="bracket-champion-card">
-                <VBox spacing="3">
-                    <Label text="CAMPEONES DE LA CATEGORÍA" styleClass="bracket-overline"/>
-                    <Label fx:id="etiquetaCampeona" text="Campeones por definir" wrapText="true" styleClass="bracket-champion-name"/>
-                    <Label fx:id="etiquetaResultadoFinal" text="La final todavía no tiene resultado." styleClass="bracket-champion-result"/>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="etiquetaTrofeo" text="★" styleClass="bracket-trophy"/>
-            </HBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="bracket-filter-card">
-                <Label text="FASE" styleClass="bracket-overline"/>
-                <ComboBox fx:id="filtroFase" promptText="Todas las fases" prefWidth="190" styleClass="bracket-combo"/>
-                <Label text="ESTADO" styleClass="bracket-overline"/>
-                <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="190" styleClass="bracket-combo"/>
-                <Button text="LIMPIAR" onAction="#limpiarFiltros" styleClass="bracket-ghost-button"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="etiquetaResumen" text="Sin partidos" styleClass="bracket-summary"/>
-            </HBox>
-
-            <SplitPane dividerPositions="0.72" VBox.vgrow="ALWAYS" styleClass="bracket-split">
-                <items>
-                    <VBox spacing="10" styleClass="bracket-card">
-                        <Label text="PARTIDOS DEL CUADRO" styleClass="bracket-overline"/>
-                        <TableView fx:id="tablaPartidos" VBox.vgrow="ALWAYS" fixedCellSize="66" styleClass="bracket-table">
-                            <columns>
-                                <TableColumn fx:id="colFase" text="FASE" prefWidth="95"/>
-                                <TableColumn fx:id="colOrden" text="#" prefWidth="42"/>
-                                <TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="205"/>
-                                <TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="205"/>
-                                <TableColumn fx:id="colResultado" text="RESULTADO" prefWidth="155"/>
-                                <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="105"/>
-                            </columns>
-                            <placeholder>
-                                <VBox alignment="CENTER" spacing="8" styleClass="bracket-empty-state">
-                                    <Label text="Todavía no hay partidos" styleClass="bracket-empty-title"/>
-                                    <Label text="Cerrá las inscripciones y generá el cuadro." styleClass="bracket-empty-text"/>
-                                </VBox>
-                            </placeholder>
-                        </TableView>
-                    </VBox>
-
-                    <VBox minWidth="320" prefWidth="350" styleClass="bracket-card">
-                        <ScrollPane fitToWidth="true" hbarPolicy="NEVER"
-                                    vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS"
-                                    styleClass="bracket-detail-scroll">
-                            <VBox spacing="11">
-                                                        <Label fx:id="etiquetaTituloPanel" text="DETALLE DEL PARTIDO" styleClass="bracket-overline"/>
-                                                        <Label fx:id="etiquetaPartido" text="Seleccioná un partido" wrapText="true" styleClass="bracket-detail-title"/>
-                                                        <VBox fx:id="panelResultado" visible="false" managed="false" spacing="7" styleClass="bracket-result-card">
-                                                            <Label text="RESULTADO" styleClass="bracket-field-label"/>
-                                                            <Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-result-score"/>
-                                                            <Label text="GANADORES" styleClass="bracket-field-label"/>
-                                                            <Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-result-winner"/>
-                                                            <Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-result-meta"/>
-                                                            <Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-result-meta"/>
-                                                        </VBox>
-                                                        <VBox fx:id="panelHistorial" visible="false" managed="false" spacing="8" styleClass="bracket-history-card">
-                                                            <Label text="HISTORIAL DE CORRECCIONES" styleClass="bracket-field-label"/>
-                                                            <VBox fx:id="contenedorHistorial" spacing="8"/>
-                                                        </VBox>
-                                                        <Label fx:id="etiquetaSinHistorial" text="Este partido no tiene correcciones registradas."
-                                                               visible="false" managed="false" wrapText="true" styleClass="bracket-history-empty"/>
-                                                        <Separator/>
-                                                        <Label text="Cancha" styleClass="bracket-field-label"/>
-                                                        <ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-combo"/>
-                                                        <Label text="Fecha" styleClass="bracket-field-label"/>
-                                                        <DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="bracket-date"/>
-                                                        <HBox spacing="9">
-                                                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                                                <Label text="Inicio" styleClass="bracket-field-label"/>
-                                                                <ComboBox fx:id="comboInicio" maxWidth="Infinity" styleClass="bracket-combo"/>
-                                                            </VBox>
-                                                            <VBox spacing="5" HBox.hgrow="ALWAYS">
-                                                                <Label text="Fin" styleClass="bracket-field-label"/>
-                                                                <ComboBox fx:id="comboFin" maxWidth="Infinity" styleClass="bracket-combo"/>
-                                                            </VBox>
-                                                        </HBox>
-                                                        <Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programar" maxWidth="Infinity" styleClass="bracket-primary-button"/>
-                                                        <Button fx:id="botonQuitar" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
-                                                        <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="bracket-primary-button"/>
-                                                        <Button fx:id="botonCorregirResultado" text="CORREGIR RESULTADO" onAction="#corregirResultado" maxWidth="Infinity" styleClass="bracket-danger-outline-button"/>
-                                                        <Region VBox.vgrow="ALWAYS"/>
-                                                        <Label fx:id="etiquetaMensaje" wrapText="true" styleClass="bracket-message"/>
-                            </VBox>
-                        </ScrollPane>
-                    </VBox>
-                </items>
-            </SplitPane>
-        </VBox>
-    </center>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.TorneoCuadroController" styleClass="bracket-root-v2">
+ <top><HBox alignment="CENTER_LEFT" spacing="14" styleClass="bracket-header-v2"><padding><Insets top="15" right="22" bottom="15" left="22"/></padding><Button text="VOLVER" onAction="#volver" styleClass="bracket-action-secondary"/><VBox spacing="2"><Label text="Cuadro de torneo" styleClass="bracket-title-v2"/><Label fx:id="etiquetaContexto" text="Categoría seleccionada" styleClass="bracket-subtitle-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonIrAGrupos" text="GRUPOS" onAction="#irAGrupos" styleClass="bracket-action-secondary"/><Button fx:id="botonGenerar" text="GENERAR CUADRO" onAction="#generarCuadro" styleClass="bracket-action-primary"/><Button fx:id="botonImprimir" text="IMPRIMIR" onAction="#imprimirCuadro" styleClass="bracket-action-secondary"/><Button text="ACTUALIZAR" onAction="#cargar" styleClass="bracket-action-secondary"/><Button fx:id="botonInvalidar" text="INVALIDAR" onAction="#invalidarCuadro" styleClass="bracket-action-danger"/></HBox></top>
+ <center><VBox spacing="12" styleClass="bracket-content-v2"><padding><Insets top="15" right="20" bottom="18" left="20"/></padding>
+  <HBox fx:id="tarjetaCampeona" alignment="CENTER_LEFT" spacing="12" styleClass="bracket-champion-v2 bracket-champion-pending-v2"><VBox spacing="2"><Label text="CAMPEONES" styleClass="bracket-overline-v2"/><Label fx:id="etiquetaCampeona" text="Final por definir" wrapText="true" styleClass="bracket-champion-name-v2"/><Label fx:id="etiquetaResultadoFinal" text="La final todavía no tiene resultado." styleClass="bracket-champion-copy-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaTrofeo" text="★" styleClass="bracket-trophy-v2"/></HBox>
+  <HBox spacing="8" alignment="CENTER_LEFT" styleClass="bracket-filters-v2"><ComboBox fx:id="filtroFase" promptText="Todas las fases" prefWidth="178" styleClass="bracket-filter-v2"/><ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="178" styleClass="bracket-filter-v2"/><Button text="LIMPIAR" onAction="#limpiarFiltros" styleClass="bracket-clear-v2"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaResumen" text="Sin partidos" styleClass="bracket-summary-v2"/></HBox>
+  <SplitPane dividerPositions="0.73" VBox.vgrow="ALWAYS" styleClass="bracket-split-v2"><items>
+   <VBox spacing="8" styleClass="bracket-card-v2"><Label text="PARTIDOS ELIMINATORIOS" styleClass="bracket-overline-v2"/><TableView fx:id="tablaPartidos" VBox.vgrow="ALWAYS" fixedCellSize="58" focusTraversable="false" styleClass="bracket-table-v2"><columns><TableColumn fx:id="colFase" text="FASE" prefWidth="125"/><TableColumn fx:id="colOrden" text="PARTIDO" prefWidth="66"/><TableColumn fx:id="colPareja1" text="PAREJA 1" prefWidth="230"/><TableColumn fx:id="colPareja2" text="PAREJA 2" prefWidth="230"/><TableColumn fx:id="colResultado" text="RESULTADO" prefWidth="145"/><TableColumn fx:id="colEstado" text="ESTADO" prefWidth="112"/></columns><placeholder><VBox alignment="CENTER" spacing="6"><Label text="Todavía no hay cuadro eliminatorio" styleClass="bracket-empty-title-v2"/><Label text="Cerrá las inscripciones y generá el cuadro de la categoría." styleClass="bracket-empty-copy-v2"/></VBox></placeholder></TableView></VBox>
+   <StackPane minWidth="350" prefWidth="390" styleClass="bracket-detail-shell-v2">
+    <VBox fx:id="panelDetalleVacio" alignment="CENTER" spacing="8" styleClass="bracket-detail-empty-v2"><Label text="SELECCIONÁ UN PARTIDO" styleClass="bracket-detail-empty-title"/><Label text="Elegí un cruce para consultar su programación, resultado y acciones disponibles." maxWidth="285" wrapText="true" styleClass="bracket-detail-empty-copy"/></VBox>
+    <VBox fx:id="panelGestionPartido" visible="false" managed="false" spacing="10" styleClass="bracket-detail-v2"><padding><Insets top="16" right="16" bottom="16" left="16"/></padding><Label fx:id="etiquetaTituloPanel" text="DETALLE DEL PARTIDO" styleClass="bracket-overline-v2"/><Label fx:id="etiquetaPartido" wrapText="true" maxWidth="Infinity" minHeight="48" styleClass="bracket-detail-title-v2"/>
+     <VBox fx:id="panelProgramacion" spacing="8" styleClass="bracket-section-v2"><Label text="PROGRAMACIÓN" styleClass="bracket-section-title-v2"/><Label text="Cancha" styleClass="bracket-field-label-v2"/><ComboBox fx:id="comboCancha" maxWidth="Infinity" styleClass="bracket-input-v2"/><Label text="Fecha" styleClass="bracket-field-label-v2"/><DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="bracket-input-v2"/><HBox spacing="8"><VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Inicio" styleClass="bracket-field-label-v2"/><ComboBox fx:id="comboInicio" maxWidth="Infinity" styleClass="bracket-input-v2"/></VBox><VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Fin" styleClass="bracket-field-label-v2"/><ComboBox fx:id="comboFin" maxWidth="Infinity" styleClass="bracket-input-v2"/></VBox></HBox><Button fx:id="botonProgramar" text="GUARDAR PROGRAMACIÓN" onAction="#programar" maxWidth="Infinity" styleClass="bracket-action-primary"/><Button fx:id="botonQuitar" text="QUITAR PROGRAMACIÓN" onAction="#quitarProgramacion" maxWidth="Infinity" styleClass="bracket-action-danger-outline"/></VBox>
+     <VBox fx:id="panelResultado" visible="false" managed="false" spacing="6" styleClass="bracket-section-v2 bracket-result-v2"><Label text="RESULTADO" styleClass="bracket-section-title-v2"/><Label fx:id="etiquetaMarcador" text="-" wrapText="true" styleClass="bracket-score-v2"/><Label text="GANADORES" styleClass="bracket-field-label-v2"/><Label fx:id="etiquetaGanadora" text="-" wrapText="true" styleClass="bracket-winner-v2"/><Label fx:id="etiquetaFinalizacion" text="-" wrapText="true" styleClass="bracket-meta-v2"/><Label fx:id="etiquetaObservaciones" text="" wrapText="true" styleClass="bracket-meta-v2"/></VBox>
+     <Button fx:id="botonResultado" text="REGISTRAR RESULTADO" onAction="#registrarResultado" maxWidth="Infinity" styleClass="bracket-action-primary"/><Button fx:id="botonCorregirResultado" text="CORREGIR RESULTADO" onAction="#corregirResultado" maxWidth="Infinity" styleClass="bracket-action-danger-outline"/>
+     <ScrollPane fx:id="scrollHistorial" visible="false" managed="false" fitToWidth="true" hbarPolicy="NEVER" maxHeight="190" styleClass="bracket-history-scroll-v2"><VBox><VBox fx:id="panelHistorial" visible="false" managed="false" spacing="7" styleClass="bracket-history-v2"><Label text="HISTORIAL DE CORRECCIONES" styleClass="bracket-field-label-v2"/><VBox fx:id="contenedorHistorial" spacing="7"/></VBox><Label fx:id="etiquetaSinHistorial" text="Este partido no tiene correcciones registradas." visible="false" managed="false" wrapText="true" styleClass="bracket-history-empty-v2"/></VBox></ScrollPane>
+     <Region VBox.vgrow="ALWAYS"/><Label fx:id="etiquetaMensaje" wrapText="true" styleClass="bracket-message-v2"/>
+    </VBox>
+   </StackPane>
+  </items>
+  </SplitPane>
+ </VBox></center>
 </BorderPane>

@@ -21,6 +21,11 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -88,7 +93,6 @@ public class TorneoGruposController {
     @FXML private ListView<TorneoInscripcion> sinAsignar;
     @FXML private ListView<TorneoGrupo> listaGrupos;
     @FXML private ListView<TorneoGrupoIntegrante> integrantes;
-    @FXML private ComboBox<TorneoInscripcion> cabeza;
     @FXML private ComboBox<ModoAsignacionGrupoTorneo> modo;
     @FXML private Button confirmar;
     @FXML private Button generarPartidos;
@@ -118,6 +122,34 @@ public class TorneoGruposController {
     @FXML private TableColumn<PosicionGrupoTorneo, String> colGames;
     @FXML private TableColumn<PosicionGrupoTorneo, Integer> colDifGames;
     @FXML private TableColumn<PosicionGrupoTorneo, String> colClasificacion;
+    @FXML private VBox panelArmado;
+    @FXML private HBox panelPartidos;
+    @FXML private VBox panelPosiciones;
+    @FXML private VBox panelPartidoVacio;
+    @FXML private VBox panelPartido;
+    @FXML private VBox panelProgramacion;
+    @FXML private HBox panelEdicionGrupos;
+    @FXML private HBox panelConfirmado;
+    @FXML private HBox accionesIntegrantes;
+    @FXML private ToggleButton pestanaArmado;
+    @FXML private ToggleButton pestanaPartidos;
+    @FXML private ToggleButton pestanaPosiciones;
+    @FXML private ComboBox<TorneoGrupo> selectorGrupoPosiciones;
+    @FXML private Label etiquetaDisponibles;
+    @FXML private Label etiquetaEstadoGrupos;
+    @FXML private Label tituloIntegrantes;
+    @FXML private Label etiquetaOcupacion;
+    @FXML private Label ayudaModo;
+    @FXML private Label ayudaPosiciones;
+    @FXML private Label resumenClasificacion;
+    @FXML private Label tituloPartido;
+    @FXML private Label pareja1Detalle;
+    @FXML private Label pareja2Detalle;
+    @FXML private Label estadoPartidoDetalle;
+    @FXML private Button botonAgregar;
+    @FXML private Button botonQuitar;
+    @FXML private Button botonCabeza;
+    @FXML private Button botonSortear;
 
     @FXML
     private void initialize() {
@@ -133,7 +165,57 @@ public class TorneoGruposController {
         configurarDeseleccion(sinAsignar);
         configurarDeseleccion(listaGrupos);
         configurarDeseleccion(integrantes);
+        configurarInteraccionesModernas();
         cargar();
+    }
+
+    private void configurarInteraccionesModernas() {
+        selectorGrupoPosiciones.setConverter(new StringConverter<>() {
+            @Override public String toString(TorneoGrupo grupo) {
+                return grupo == null ? "" : grupo.getNombre();
+            }
+            @Override public TorneoGrupo fromString(String texto) { return null; }
+        });
+        selectorGrupoPosiciones.valueProperty().addListener((o, a, grupo) -> {
+            if (grupo != null) {
+                listaGrupos.getSelectionModel().select(grupo);
+                mostrarGrupo(grupo);
+                javafx.application.Platform.runLater(() -> {
+                    tablaPosiciones.getSelectionModel().clearSelection();
+                    tablaPosiciones.requestFocus();
+                });
+            }
+        });
+        sinAsignar.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2 && sinAsignar.getSelectionModel().getSelectedItem() != null) agregar();
+        });
+        integrantes.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2 && integrantes.getSelectionModel().getSelectedItem() != null) quitar();
+        });
+        modo.valueProperty().addListener((o, a, actual) -> actualizarModo());
+    }
+
+    @FXML private void mostrarArmado() { mostrarEtapa(panelArmado, pestanaArmado); actualizarMensajeEtapa(true); }
+    @FXML private void mostrarPartidos() { mostrarEtapa(panelPartidos, pestanaPartidos); actualizarMensajeEtapa(false); }
+    @FXML private void mostrarPosiciones() { mostrarEtapa(panelPosiciones, pestanaPosiciones); actualizarMensajeEtapa(false); }
+    private void mostrarEtapa(Node panel, ToggleButton pestana) {
+        for (Node nodo : List.of(panelArmado, panelPartidos, panelPosiciones)) {
+            boolean visible = nodo == panel; nodo.setVisible(visible); nodo.setManaged(visible);
+        }
+        for (ToggleButton boton : List.of(pestanaArmado, pestanaPartidos, pestanaPosiciones)) boton.setSelected(boton == pestana);
+    }
+    private void actualizarMensajeEtapa(boolean armado) {
+        boolean confirmado = vista != null && vista.grupos().stream()
+                .anyMatch(TorneoGrupo::isConfirmado);
+        if (armado && confirmado) mensaje.setText("GRUPOS CONFIRMADOS");
+        else if (!armado && "Los grupos estan confirmados.".equals(mensaje.getText())) mensaje.setText("");
+        else if (!armado && "GRUPOS CONFIRMADOS".equals(mensaje.getText())) mensaje.setText("");
+    }
+
+    private void actualizarModo() {
+        boolean sorteo = modo.getValue() == ModoAsignacionGrupoTorneo.SORTEO_DIRIGIDO;
+        botonSortear.setVisible(sorteo); botonSortear.setManaged(sorteo);
+        ayudaModo.setText(sorteo ? "Definí una cabeza por grupo y sorteá las parejas restantes." : "Asigná manualmente todas las parejas y confirmá la distribución.");
     }
 
     private <T> void configurarDeseleccion(ListView<T> lista) {
@@ -153,18 +235,6 @@ public class TorneoGruposController {
     }
 
     private void configurarListas() {
-        StringConverter<TorneoInscripcion> conversor =
-                new StringConverter<>() {
-                    @Override
-                    public String toString(TorneoInscripcion valor) {
-                        return valor == null ? "" : nombre(valor);
-                    }
-                    @Override
-                    public TorneoInscripcion fromString(String valor) {
-                        return null;
-                    }
-                };
-        cabeza.setConverter(conversor);
         sinAsignar.setCellFactory(lista -> new ListCell<>() {
             @Override
             protected void updateItem(TorneoInscripcion valor, boolean vacia) {
@@ -201,6 +271,7 @@ public class TorneoGruposController {
         selectorGrupoPartidos.valueProperty().addListener(
                 (obs, anterior, actual) -> {
                     if (actual == null) return;
+                    javafx.application.Platform.runLater(tablaPartidos::requestFocus);
                     TorneoGrupo seleccionado = listaGrupos
                             .getSelectionModel().getSelectedItem();
                     if (seleccionado == null
@@ -226,8 +297,43 @@ public class TorneoGruposController {
                 resultado(d.getValue())));
         colEstado.setCellValueFactory(d -> new SimpleObjectProperty<>(
                 d.getValue().getEstado()));
+        colOrden.setStyle("-fx-alignment:CENTER;");
+        colPareja1.setStyle("-fx-alignment:CENTER;");
+        colPareja2.setStyle("-fx-alignment:CENTER;");
+        colResultado.setStyle("-fx-alignment:CENTER;");
+        colEstado.setStyle("-fx-alignment:CENTER;");
+        colEstado.setCellFactory(x -> new TableCell<>() {
+            @Override protected void updateItem(EstadoPartidoTorneo estado, boolean vacia) {
+                super.updateItem(estado, vacia); setAlignment(Pos.CENTER); setStyle("");
+                setText(vacia || estado == null ? null : estado.toString());
+                if (!vacia && estado != null) setStyle("-fx-text-fill:" + colorPartido(estado) + ";-fx-font-weight:900;");
+            }
+        });
+        colOrden.setCellFactory(columna -> new TableCell<>() {
+            @Override protected void updateItem(Integer valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setStyle("-fx-font-weight:800;-fx-text-fill:#cdd6da;");
+                setText(vacia || valor == null ? null : String.valueOf(valor));
+            }
+        });
+        colPareja1.setCellFactory(columna -> celdaPareja());
+        colPareja2.setCellFactory(columna -> celdaPareja());
+        colResultado.setCellFactory(columna -> new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setWrapText(true);
+                setText(vacia ? null : valor);
+            }
+        });
         tablaPartidos.setColumnResizePolicy(
-                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+                TableView.UNCONSTRAINED_RESIZE_POLICY);
+        vincularAnchoPartido(colOrden, 0.07);
+        vincularAnchoPartido(colPareja1, 0.305);
+        vincularAnchoPartido(colPareja2, 0.305);
+        vincularAnchoPartido(colResultado, 0.14);
+        vincularAnchoPartido(colEstado, 0.14);
         tablaPartidos.getSelectionModel().selectedItemProperty()
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) partidoSeleccionadoId = actual.getId();
@@ -268,8 +374,60 @@ public class TorneoGruposController {
                 d.getValue().diferenciaGames()).asObject());
         colClasificacion.setCellValueFactory(d -> new SimpleStringProperty(
                 d.getValue().estado().toString()));
+        colClasificacion.setCellFactory(x -> new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setStyle("");
+                setText(vacia ? null : valor);
+                if (!vacia && valor != null) {
+                    setStyle("-fx-text-fill:" + colorClasificacion(valor)
+                            + ";-fx-font-weight:900;");
+                }
+            }
+        });
+        colParejaPosicion.setCellFactory(x -> new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setWrapText(true);
+                setText(vacia ? null : valor);
+                setStyle(vacia ? ""
+                        : "-fx-font-size:12px;-fx-font-weight:700;"
+                        + "-fx-text-fill:#e5eaec;");
+                setPadding(new javafx.geometry.Insets(6, 12, 6, 12));
+            }
+        });
+        configurarCeldaEntera(colPosicion, true);
+        configurarCeldaEntera(colPJ, false);
+        configurarCeldaEntera(colPG, false);
+        configurarCeldaEntera(colPP, false);
+        configurarCeldaEntera(colDifSets, false);
+        configurarCeldaEntera(colDifGames, false);
+        configurarCeldaTextoCentrada(colSets);
+        configurarCeldaTextoCentrada(colGames);
+        colParejaPosicion.setStyle("-fx-alignment:CENTER;");
+        for (TableColumn<PosicionGrupoTorneo, ?> columna : List.of(
+                colPosicion, colPJ, colPG, colPP, colSets,
+                colDifSets, colGames, colDifGames, colClasificacion)) {
+            columna.setStyle("-fx-alignment:CENTER;");
+        }
         tablaPosiciones.setColumnResizePolicy(
-                TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+                TableView.UNCONSTRAINED_RESIZE_POLICY);
+        tablaPosiciones.getSelectionModel().setSelectionMode(
+                javafx.scene.control.SelectionMode.SINGLE);
+        tablaPosiciones.setOnMousePressed(evento ->
+                tablaPosiciones.getSelectionModel().clearSelection());
+        vincularAncho(colPosicion, 0.04);
+        vincularAncho(colParejaPosicion, 0.30);
+        vincularAncho(colPJ, 0.06);
+        vincularAncho(colPG, 0.06);
+        vincularAncho(colPP, 0.06);
+        vincularAncho(colSets, 0.08);
+        vincularAncho(colDifSets, 0.09);
+        vincularAncho(colGames, 0.09);
+        vincularAncho(colDifGames, 0.10);
+        vincularAncho(colClasificacion, 0.085);
     }
 
     private void cargarCanchasYHorarios() {
@@ -321,8 +479,7 @@ public class TorneoGruposController {
                     vista.grupos()));
             selectorGrupoPartidos.setItems(FXCollections.observableArrayList(
                     vista.grupos()));
-            cabeza.setItems(FXCollections.observableArrayList(
-                    vista.inscripciones()));
+            selectorGrupoPosiciones.setItems(FXCollections.observableArrayList(vista.grupos()));
             resumen.setText(vista.inscripciones().size()
                     + " confirmadas · " + vista.grupos().size()
                     + " grupos · " + libres.size() + " sin asignar");
@@ -330,8 +487,20 @@ public class TorneoGruposController {
                     .anyMatch(TorneoGrupo::isConfirmado);
             confirmar.setDisable(cerrado);
             generarPartidos.setDisable(!cerrado);
+            panelEdicionGrupos.setVisible(!cerrado); panelEdicionGrupos.setManaged(!cerrado);
+            panelConfirmado.setVisible(cerrado); panelConfirmado.setManaged(cerrado);
+            accionesIntegrantes.setVisible(!cerrado); accionesIntegrantes.setManaged(!cerrado);
+            botonAgregar.setVisible(!cerrado); botonAgregar.setManaged(!cerrado);
+            etiquetaEstadoGrupos.setText(cerrado ? "CONFIRMADOS" : "EN EDICIÓN");
+            etiquetaDisponibles.setText(String.valueOf(libres.size()));
+            actualizarModo();
             restaurarGrupo();
+            boolean hayPartidos = vista.grupos().stream().anyMatch(g -> !partidoDAO.listarPorGrupo(g.getId()).isEmpty());
+            generarPartidos.setVisible(cerrado && !hayPartidos); generarPartidos.setManaged(cerrado && !hayPartidos);
+            pestanaPartidos.setDisable(!cerrado || !hayPartidos);
+            pestanaPosiciones.setDisable(!cerrado || !hayPartidos);
             if (cerrado) mensaje.setText("Los grupos estan confirmados.");
+            if (hayPartidos) mostrarPartidos(); else mostrarArmado();
         } catch (RuntimeException exception) {
             mostrarError("No se pudieron cargar los grupos", exception);
         }
@@ -364,6 +533,9 @@ public class TorneoGruposController {
     private void mostrarGrupo(TorneoGrupo grupo) {
         integrantes.setItems(FXCollections.observableArrayList(
                 grupo == null ? List.of() : grupo.getIntegrantes()));
+        tituloIntegrantes.setText(grupo == null ? "INTEGRANTES" : grupo.getNombre().toUpperCase());
+        etiquetaOcupacion.setText(grupo == null ? "0/0" : grupo.getIntegrantes().size() + "/" + grupo.getCapacidad());
+        if (grupo != null) selectorGrupoPosiciones.setValue(grupo);
         cargarPartidos(grupo);
         cargarPosiciones(grupo);
     }
@@ -372,16 +544,36 @@ public class TorneoGruposController {
         if (grupo == null) {
             tablaPosiciones.getItems().clear();
             estadoPosiciones.setText("Selecciona un grupo");
+            resumenClasificacion.setText("Sin clasificación");
+            ayudaPosiciones.setText("Seleccioná un grupo para consultar la tabla");
             return;
         }
         var resultado = posicionesService.calcular(grupo);
         tablaPosiciones.setItems(FXCollections.observableArrayList(
                 resultado.posiciones()));
-        estadoPosiciones.setText(resultado.desempatePendiente()
-                ? "Desempate administrativo pendiente"
+        String estadoTabla = resultado.desempatePendiente()
+                ? "Desempate pendiente"
                 : resultado.definitivo()
                     ? "Posiciones definitivas"
-                    : "Posiciones provisorias");
+                    : "Posiciones provisorias";
+        estadoPosiciones.setText(estadoTabla.toUpperCase());
+        estadoPosiciones.setStyle("-fx-text-fill:"
+                + (resultado.desempatePendiente() ? "#deb86a"
+                    : resultado.definitivo() ? "#7bd4ae" : "#86bde0")
+                + ";-fx-font-weight:900;");
+        int clasifican = grupo.getCapacidad() == 3 ? 2 : 3;
+        resumenClasificacion.setText("Clasifican " + clasifican
+                + (clasifican == 1 ? " pareja" : " parejas"));
+        long pendientes = partidoDAO.listarPorGrupo(grupo.getId()).stream()
+                .filter(p -> p.getEstado() != EstadoPartidoTorneo.FINALIZADO
+                        && p.getEstado() != EstadoPartidoTorneo.CANCELADO)
+                .count();
+        String progreso = resultado.definitivo()
+                ? "Fase completada"
+                : pendientes + (pendientes == 1
+                    ? " partido pendiente" : " partidos pendientes");
+        ayudaPosiciones.setText(grupo.getNombre() + " · "
+                + grupo.getIntegrantes().size() + " parejas · " + progreso);
     }
 
     private void cargarPartidos(TorneoGrupo grupo) {
@@ -393,8 +585,7 @@ public class TorneoGruposController {
         }
         List<TorneoPartido> valores = partidoDAO.listarPorGrupo(grupo.getId());
         tablaPartidos.setItems(FXCollections.observableArrayList(valores));
-        resumenPartidos.setText(valores.size() + " partido(s) de "
-                + grupo.getNombre());
+        resumenPartidos.setText(valores.size() + (valores.size() == 1 ? " partido" : " partidos"));
         TorneoPartido seleccionar = valores.stream()
                 .filter(p -> partidoSeleccionadoId != null
                         && p.getId() == partidoSeleccionadoId)
@@ -426,10 +617,26 @@ public class TorneoGruposController {
                     || torneo.getEstado() == EstadoTorneo.EN_CURSO);
         botonCorregir.setDisable(!hay || !permiteCorreccion
                 || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO);
+        panelPartidoVacio.setVisible(!hay); panelPartidoVacio.setManaged(!hay);
+        panelPartido.setVisible(hay); panelPartido.setManaged(hay);
         if (!hay) {
             limpiarProgramacion();
             return;
         }
+        boolean finalizado = partido.getEstado() == EstadoPartidoTorneo.FINALIZADO;
+        boolean puedeResultado = partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO || partido.getEstado() == EstadoPartidoTorneo.EN_CURSO;
+        panelProgramacion.setVisible(!finalizado); panelProgramacion.setManaged(!finalizado);
+        botonQuitarProgramacion.setVisible(partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO); botonQuitarProgramacion.setManaged(botonQuitarProgramacion.isVisible());
+        botonResultado.setVisible(puedeResultado); botonResultado.setManaged(puedeResultado);
+        botonCorregir.setVisible(finalizado); botonCorregir.setManaged(finalizado);
+        TorneoGrupo grupoActual = listaGrupos.getSelectionModel().getSelectedItem();
+        tituloPartido.setText("PARTIDO " + partido.getOrdenFase()
+                + (grupoActual == null ? "" : " · " + grupoActual.getNombre().toUpperCase()));
+        pareja1Detalle.setText(nombrePareja(partido.getPareja1InscripcionId()));
+        pareja2Detalle.setText(nombrePareja(partido.getPareja2InscripcionId()));
+        estadoPartidoDetalle.setText(partido.getEstado().toString().toUpperCase());
+        estadoPartidoDetalle.setStyle("-fx-text-fill:" + colorPartido(partido.getEstado())
+                + ";-fx-font-weight:900;");
         comboCancha.setValue(partido.getCanchaId() == null ? null
                 : comboCancha.getItems().stream()
                     .filter(c -> c.getId() == partido.getCanchaId())
@@ -458,19 +665,22 @@ public class TorneoGruposController {
     }
 
     @FXML
-    private void agregarCabeza() {
+    private void agregarCabezaSeleccionada() {
         TorneoGrupo grupo = listaGrupos.getSelectionModel().getSelectedItem();
-        TorneoInscripcion inscripcion = cabeza.getValue();
-        if (grupo == null || inscripcion == null) {
-            informar("Seleccion requerida",
-                    "Selecciona un grupo y una pareja como cabeza de serie.");
+        TorneoGrupoIntegrante integrante = integrantes.getSelectionModel().getSelectedItem();
+        if (grupo == null || integrante == null) {
+            informar("Seleccion requerida", "Selecciona una pareja del grupo.");
             return;
         }
-        ejecutar("No se pudo marcar el cabeza de serie", () -> {
-            service.asignar(categoriaId, grupo.getId(),
-                    inscripcion.getId(), true);
+        if (grupo.getIntegrantes().stream().anyMatch(TorneoGrupoIntegrante::isCabezaSerie)) {
+            informar("Cabeza ya definida", "El grupo ya tiene una cabeza de serie. Quitala y volve a asignar la pareja si queres cambiarla.");
+            return;
+        }
+        ejecutar("No se pudo marcar la cabeza de serie", () -> {
+            service.quitar(categoriaId, integrante.getInscripcionId());
+            service.asignar(categoriaId, grupo.getId(), integrante.getInscripcionId(), true);
             cargar();
-            exito("Cabeza de serie definido para " + grupo.getNombre() + ".");
+            exito("Cabeza de serie definida para " + grupo.getNombre() + ".");
         });
     }
 
@@ -660,6 +870,90 @@ public class TorneoGruposController {
         botonQuitarProgramacion.setDisable(true);
         botonResultado.setDisable(true);
         botonCorregir.setDisable(true);
+    }
+
+    private void vincularAnchoPartido(
+            TableColumn<TorneoPartido, ?> columna,
+            double porcentaje) {
+        columna.prefWidthProperty().bind(
+                tablaPartidos.widthProperty().multiply(porcentaje));
+        columna.setResizable(false);
+        columna.setReorderable(false);
+    }
+
+    private TableCell<TorneoPartido, String> celdaPareja() {
+        return new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setWrapText(true);
+                setText(vacia ? null : valor);
+                setStyle(vacia ? ""
+                        : "-fx-font-size:11.5px;-fx-font-weight:700;"
+                        + "-fx-text-fill:#e5eaec;");
+                setPadding(new javafx.geometry.Insets(5, 10, 5, 10));
+            }
+        };
+    }
+
+    private void vincularAncho(
+            TableColumn<PosicionGrupoTorneo, ?> columna,
+            double porcentaje) {
+        columna.prefWidthProperty().bind(
+                tablaPosiciones.widthProperty().multiply(porcentaje));
+        columna.setResizable(false);
+        columna.setReorderable(false);
+    }
+
+    private int cantidadClasificadosGrupoActual() {
+        TorneoGrupo grupo = selectorGrupoPosiciones == null
+                ? null : selectorGrupoPosiciones.getValue();
+        if (grupo == null) {
+            grupo = listaGrupos.getSelectionModel().getSelectedItem();
+        }
+        return grupo != null && grupo.getCapacidad() == 4 ? 3 : 2;
+    }
+
+    private void configurarCeldaEntera(
+            TableColumn<PosicionGrupoTorneo, Integer> columna,
+            boolean destacarPosicion) {
+        columna.setCellFactory(x -> new TableCell<>() {
+            @Override protected void updateItem(Integer valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setStyle("");
+                setText(vacia || valor == null ? null : String.valueOf(valor));
+                if (!vacia && destacarPosicion && valor != null) {
+                    int clasifican = cantidadClasificadosGrupoActual();
+                    String color = valor <= clasifican
+                            ? "#78c9a3"
+                            : "#d9858f";
+                    setStyle("-fx-text-fill:" + color
+                            + ";-fx-font-weight:900;");
+                }
+            }
+        });
+    }
+
+    private void configurarCeldaTextoCentrada(
+            TableColumn<PosicionGrupoTorneo, String> columna) {
+        columna.setCellFactory(x -> new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                setText(vacia ? null : valor);
+            }
+        });
+    }
+
+    private String colorPartido(EstadoPartidoTorneo estado) {
+        return switch (estado) { case PENDIENTE -> "#deb86a"; case PROGRAMADO -> "#73b9df"; case EN_CURSO -> "#7bd4ae"; case FINALIZADO -> "#b6a9ec"; case CANCELADO -> "#e88e99"; };
+    }
+    private String colorClasificacion(String estado) {
+        if (estado.contains("Clasificado")) return "#7bd4ae";
+        if (estado.contains("Desempate")) return "#deb86a";
+        if (estado.contains("Eliminado")) return "#d9828d";
+        return "#86bde0";
     }
 
     private void ejecutar(String tituloError, Runnable accion) {

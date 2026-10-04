@@ -2,141 +2,27 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.TorneosController"
-            styleClass="tournaments-admin-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="tournaments-header">
-            <padding><Insets top="18" right="26" bottom="18" left="26"/></padding>
-            <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/>
-            <VBox spacing="3">
-                <Label text="Administración de torneos" styleClass="tournaments-page-title"/>
-                <Label text="Gestioná torneos, categorías, cupos y ciclo de vida." styleClass="tournaments-page-subtitle"/>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS"/>
-            <Button text="VER INSCRIPCIONES" onAction="#verInscripciones" styleClass="tournaments-secondary-button"/>
-            <Button text="NUEVO TORNEO" onAction="#nuevoTorneo" styleClass="tournaments-primary-button"/>
-        </HBox>
-    </top>
-
-    <center>
-        <SplitPane dividerPositions="0.40" styleClass="tournaments-split">
-            <items>
-                <VBox spacing="14" styleClass="tournaments-sidebar">
-                    <padding><Insets top="20" right="18" bottom="18" left="22"/></padding>
-                    <VBox spacing="4">
-                        <Label text="TORNEOS" styleClass="tournaments-overline"/>
-                        <Label text="Listado general" styleClass="tournaments-section-title"/>
-                    </VBox>
-                    <HBox spacing="9" alignment="CENTER_LEFT" styleClass="tournaments-filter-bar">
-                        <TextField fx:id="campoBuscar" promptText="Buscar por nombre..." HBox.hgrow="ALWAYS" styleClass="tournaments-search"/>
-                        <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="180" styleClass="tournaments-combo"/>
-                        <Button text="LIMPIAR" onAction="#limpiarFiltros" styleClass="tournaments-ghost-button"/>
-                    </HBox>
-                    <TableView fx:id="tablaTorneos" VBox.vgrow="ALWAYS" fixedCellSize="58" styleClass="tournaments-table, tournaments-list-table">
-                        <columns>
-                            <TableColumn fx:id="colNombre" text="TORNEO" prefWidth="245"/>
-                            <TableColumn fx:id="colInicio" text="INICIO" prefWidth="105"/>
-                            <TableColumn fx:id="colFin" text="FIN" prefWidth="105"/>
-                            <TableColumn fx:id="colEstado" text="ESTADO" prefWidth="150"/>
-                        </columns>
-                        <placeholder>
-                            <VBox alignment="CENTER" spacing="8" styleClass="tournaments-empty-state">
-                                <Label text="No hay torneos para mostrar" styleClass="tournaments-empty-title"/>
-                                <Label text="Creá un torneo nuevo o modificá los filtros." styleClass="tournaments-empty-text"/>
-                            </VBox>
-                        </placeholder>
-                    </TableView>
-                    <HBox alignment="CENTER_LEFT" styleClass="tournaments-status-bar">
-                        <Label fx:id="etiquetaMensaje" wrapText="true" styleClass="tournaments-status-text"/>
-                    </HBox>
-                </VBox>
-
-                <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="tournaments-detail-scroll">
-                    <content>
-                        <VBox spacing="18" styleClass="tournaments-detail">
-                            <padding><Insets top="22" right="26" bottom="28" left="26"/></padding>
-
-                            <VBox spacing="14" styleClass="tournaments-hero-card">
-                                <HBox alignment="CENTER_LEFT" spacing="14">
-                                    <VBox spacing="5">
-                                        <Label text="TORNEO SELECCIONADO" styleClass="tournaments-overline"/>
-                                        <Label fx:id="detalleNombre" text="Seleccioná un torneo" styleClass="tournaments-detail-title"/>
-                                        <Label fx:id="detalleEstado" text="Sin selección" styleClass="tournament-state"/>
-                                    </VBox>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Button fx:id="botonEditar" text="EDITAR DATOS" onAction="#editarTorneo" disable="true" styleClass="tournaments-secondary-button"/>
-                                </HBox>
-
-                                <HBox spacing="12">
-                                    <VBox spacing="5" HBox.hgrow="ALWAYS" styleClass="tournaments-info-card">
-                                        <Label text="FECHAS DEL TORNEO" styleClass="tournaments-info-label"/>
-                                        <Label fx:id="detalleFechas" text="-" wrapText="true" styleClass="tournaments-info-value"/>
-                                    </VBox>
-                                    <VBox spacing="5" HBox.hgrow="ALWAYS" styleClass="tournaments-info-card">
-                                        <Label text="PERÍODO DE INSCRIPCIÓN" styleClass="tournaments-info-label"/>
-                                        <Label fx:id="detalleInscripcion" text="-" wrapText="true" styleClass="tournaments-info-value"/>
-                                    </VBox>
-                                </HBox>
-                            </VBox>
-
-                            <VBox spacing="11" styleClass="tournaments-actions-card">
-                                <HBox alignment="CENTER_LEFT">
-                                    <VBox spacing="3">
-                                        <Label text="CICLO DE VIDA" styleClass="tournaments-overline"/>
-                                        <Label text="Acciones disponibles para el estado actual" styleClass="tournaments-card-caption"/>
-                                    </VBox>
-                                </HBox>
-                                <FlowPane hgap="9" vgap="9">
-                                    <Button fx:id="botonPublicar" text="PUBLICAR" onAction="#publicar" styleClass="tournaments-state-button"/>
-                                    <Button fx:id="botonAbrir" text="ABRIR INSCRIPCIONES" onAction="#abrirInscripciones" styleClass="tournaments-state-button"/>
-                                    <Button fx:id="botonCerrar" text="CERRAR INSCRIPCIONES" onAction="#cerrarInscripciones" styleClass="tournaments-state-button"/>
-                                    <Button fx:id="botonIniciar" text="INICIAR TORNEO" onAction="#iniciarTorneo" styleClass="tournaments-state-button"/>
-                                    <Button fx:id="botonFinalizar" text="FINALIZAR" onAction="#finalizarTorneo" styleClass="tournaments-state-button"/>
-                                    <Button fx:id="botonCancelar" text="CANCELAR TORNEO" onAction="#cancelarTorneo" styleClass="tournaments-danger-button"/>
-                                </FlowPane>
-                            </VBox>
-
-                            <VBox spacing="13" VBox.vgrow="ALWAYS" styleClass="tournaments-categories-card">
-                                <HBox alignment="CENTER_LEFT">
-                                    <VBox spacing="3">
-                                        <Label text="CATEGORÍAS" styleClass="tournaments-overline"/>
-                                        <Label text="Cupos, ocupación y precios" styleClass="tournaments-section-title"/>
-                                    </VBox>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Button fx:id="botonNuevaCategoria" text="NUEVA CATEGORÍA" onAction="#nuevaCategoria" styleClass="tournaments-primary-button"/>
-                                </HBox>
-
-                                <TableView fx:id="tablaCategorias" prefHeight="330" VBox.vgrow="ALWAYS" fixedCellSize="54" styleClass="tournaments-table, tournaments-categories-table">
-                                    <columns>
-                                        <TableColumn fx:id="colCategoria" text="CATEGORÍA" prefWidth="150"/>
-                                        <TableColumn fx:id="colRama" text="RAMA" prefWidth="130"/>
-                                        <TableColumn fx:id="colCupo" text="CUPO" prefWidth="78"/>
-                                        <TableColumn fx:id="colConfirmadas" text="CONFIRMADAS" prefWidth="115"/>
-                                        <TableColumn fx:id="colDisponibles" text="DISPONIBLES" prefWidth="110"/>
-                                        <TableColumn fx:id="colPrecio" text="PRECIO" prefWidth="145"/>
-                                    </columns>
-                                    <placeholder>
-                                        <VBox alignment="CENTER" spacing="8" styleClass="tournaments-empty-state">
-                                            <Label text="Todavía no hay categorías" styleClass="tournaments-empty-title"/>
-                                            <Label text="Agregá la primera categoría para poder abrir inscripciones." styleClass="tournaments-empty-text"/>
-                                        </VBox>
-                                    </placeholder>
-                                </TableView>
-
-                                <HBox spacing="9" alignment="CENTER_LEFT">
-                                    <Button fx:id="botonEditarCategoria" text="EDITAR CATEGORÍA" onAction="#editarCategoria" disable="true" styleClass="tournaments-secondary-button"/>
-                                    <Button fx:id="botonDesactivarCategoria" text="DESACTIVAR" onAction="#desactivarCategoria" disable="true" styleClass="tournaments-danger-outline-button"/>
-                                    <Button fx:id="botonGestionarGrupos" text="GESTIONAR GRUPOS" onAction="#gestionarGrupos" disable="true" styleClass="tournaments-secondary-button"/>
-                                    <Button fx:id="botonGestionarCuadro" text="GESTIONAR CUADRO" onAction="#gestionarCuadro" disable="true" styleClass="tournaments-primary-button"/>
-                                </HBox>
-                            </VBox>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </items>
-        </SplitPane>
-    </center>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.TorneosController" styleClass="tournaments-root-v2">
+ <top><HBox alignment="CENTER_LEFT" spacing="14" styleClass="tournaments-header-v2"><padding><Insets top="16" right="22" bottom="16" left="22"/></padding><Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/><VBox spacing="2"><Label text="Torneos" styleClass="tournaments-title-v2"/><Label text="Gestioná el calendario, las categorías y el ciclo competitivo." styleClass="tournaments-subtitle-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="INSCRIPCIONES" onAction="#verInscripciones" styleClass="tournaments-action-secondary"/><Button text="NUEVO TORNEO" onAction="#nuevoTorneo" styleClass="tournaments-action-primary"/></HBox></top>
+ <center><SplitPane dividerPositions="0.36" styleClass="tournaments-split-v2"><items>
+  <VBox spacing="12" styleClass="tournaments-list-pane"><padding><Insets top="17" right="16" bottom="17" left="20"/></padding>
+   <VBox spacing="2"><Label text="LISTADO GENERAL" styleClass="tournaments-overline-v2"/><Label text="Torneos registrados" styleClass="tournaments-section-title-v2"/></VBox>
+   <HBox spacing="8"><TextField fx:id="campoBuscar" promptText="Buscar torneo" HBox.hgrow="ALWAYS" styleClass="tournaments-search-v2"/><ComboBox fx:id="filtroEstado" promptText="Estado" prefWidth="154" styleClass="tournaments-filter-v2"/><Button fx:id="botonLimpiar" text="LIMPIAR" onAction="#limpiarFiltros" styleClass="tournaments-clear-v2"/></HBox>
+   <TableView fx:id="tablaTorneos" VBox.vgrow="ALWAYS" fixedCellSize="50" focusTraversable="false" styleClass="tournaments-table-v2 tournaments-list-v2"><columns><TableColumn fx:id="colNombre" text="TORNEO" prefWidth="240"/><TableColumn fx:id="colInicio" text="INICIO" prefWidth="96"/><TableColumn fx:id="colFin" text="FIN" prefWidth="96"/><TableColumn fx:id="colEstado" text="ESTADO" prefWidth="145"/></columns><placeholder><VBox alignment="CENTER" spacing="6"><Label text="Sin torneos para mostrar" styleClass="tournaments-empty-title-v2"/><Label text="Creá un torneo o modificá los filtros." styleClass="tournaments-empty-copy-v2"/></VBox></placeholder></TableView>
+   <HBox alignment="CENTER_LEFT"><Label fx:id="etiquetaMensaje" styleClass="tournaments-result-v2"/></HBox>
+  </VBox>
+  <StackPane styleClass="tournaments-detail-shell-v2">
+   <VBox fx:id="panelSinSeleccion" alignment="CENTER" spacing="10" styleClass="tournaments-empty-detail-v2"><Label text="SELECCIONÁ UN TORNEO" styleClass="tournaments-empty-detail-title"/><Label text="Elegí un torneo del listado para consultar sus fechas, categorías, cupos y acciones disponibles." maxWidth="440" wrapText="true" styleClass="tournaments-empty-detail-copy"/><Button text="NUEVO TORNEO" onAction="#nuevoTorneo" styleClass="tournaments-action-primary"/></VBox>
+   <ScrollPane fx:id="scrollDetalle" visible="false" managed="false" fitToWidth="true" hbarPolicy="NEVER" styleClass="tournaments-detail-scroll-v2"><VBox fx:id="panelDetalle" spacing="14" styleClass="tournaments-detail-v2"><padding><Insets top="18" right="22" bottom="22" left="22"/></padding>
+    <VBox spacing="12" styleClass="tournaments-summary-v2"><HBox alignment="CENTER_LEFT" spacing="12"><VBox spacing="4"><Label text="TORNEO SELECCIONADO" styleClass="tournaments-overline-v2"/><Label fx:id="detalleNombre" styleClass="tournaments-detail-title-v2"/><Label fx:id="detalleEstado" styleClass="tournament-state-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonEditar" text="EDITAR DATOS" onAction="#editarTorneo" styleClass="tournaments-action-secondary"/></HBox>
+     <HBox spacing="10"><VBox HBox.hgrow="ALWAYS" styleClass="tournaments-mini-v2"><Label text="FECHAS" styleClass="tournaments-mini-label"/><Label fx:id="detalleFechas" wrapText="true" styleClass="tournaments-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="tournaments-mini-v2"><Label text="INSCRIPCIONES" styleClass="tournaments-mini-label"/><Label fx:id="detalleInscripcion" wrapText="true" styleClass="tournaments-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="tournaments-mini-v2"><Label text="CATEGORÍAS" styleClass="tournaments-mini-label"/><Label fx:id="detalleCantidadCategorias" text="0" styleClass="tournaments-mini-number"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="tournaments-mini-v2"><Label text="PAREJAS" styleClass="tournaments-mini-label"/><Label fx:id="detalleParejas" text="0" styleClass="tournaments-mini-number"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="tournaments-mini-v2"><Label text="CUPOS LIBRES" styleClass="tournaments-mini-label"/><Label fx:id="detalleCupos" text="0" styleClass="tournaments-mini-number"/></VBox></HBox>
+    </VBox>
+    <VBox spacing="10" styleClass="tournaments-next-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="SIGUIENTE PASO" styleClass="tournaments-overline-v2"/><Label fx:id="etiquetaAccionTitulo" text="Acción disponible" styleClass="tournaments-next-title"/><Label fx:id="etiquetaAccionAyuda" wrapText="true" styleClass="tournaments-next-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonPublicar" text="PUBLICAR" onAction="#publicar" styleClass="tournaments-action-primary"/><Button fx:id="botonAbrir" text="ABRIR INSCRIPCIONES" onAction="#abrirInscripciones" styleClass="tournaments-action-primary"/><Button fx:id="botonCerrar" text="CERRAR INSCRIPCIONES" onAction="#cerrarInscripciones" styleClass="tournaments-action-primary"/><Button fx:id="botonIniciar" text="INICIAR TORNEO" onAction="#iniciarTorneo" styleClass="tournaments-action-primary"/><Button fx:id="botonFinalizar" text="FINALIZAR TORNEO" onAction="#finalizarTorneo" styleClass="tournaments-action-primary"/><Button fx:id="botonCancelar" text="CANCELAR" onAction="#cancelarTorneo" styleClass="tournaments-action-danger"/></HBox></VBox>
+    <VBox spacing="11" styleClass="tournaments-categories-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="CATEGORÍAS" styleClass="tournaments-overline-v2"/><Label text="Cupos, ocupación y precios" styleClass="tournaments-section-title-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonNuevaCategoria" text="NUEVA CATEGORÍA" onAction="#nuevaCategoria" styleClass="tournaments-action-primary"/></HBox>
+     <TableView fx:id="tablaCategorias" prefHeight="205" minHeight="170" maxHeight="205" fixedCellSize="44" focusTraversable="false" styleClass="tournaments-table-v2 tournaments-categories-table-v2"><columns><TableColumn fx:id="colCategoria" text="CATEGORÍA" prefWidth="150"/><TableColumn fx:id="colRama" text="RAMA" prefWidth="115"/><TableColumn fx:id="colCupo" text="CUPO" prefWidth="72"/><TableColumn fx:id="colConfirmadas" text="CONFIRMADAS" prefWidth="110"/><TableColumn fx:id="colDisponibles" text="DISPONIBLES" prefWidth="105"/><TableColumn fx:id="colPrecio" text="PRECIO" prefWidth="130"/></columns><placeholder><VBox alignment="CENTER" spacing="6"><Label text="Todavía no hay categorías" styleClass="tournaments-empty-title-v2"/><Label text="Agregá la primera categoría para abrir inscripciones." styleClass="tournaments-empty-copy-v2"/></VBox></placeholder></TableView>
+     <HBox fx:id="panelAccionesCategoria" visible="false" managed="false" spacing="8" alignment="CENTER_LEFT" styleClass="tournaments-category-actions-v2"><Label fx:id="etiquetaCategoriaSeleccionada" text="Categoría seleccionada" styleClass="tournaments-category-selected"/><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonEditarCategoria" text="EDITAR" onAction="#editarCategoria" styleClass="tournaments-action-secondary"/><Button fx:id="botonGestionarGrupos" text="GRUPOS" onAction="#gestionarGrupos" styleClass="tournaments-action-secondary"/><Button fx:id="botonGestionarCuadro" text="CUADRO" onAction="#gestionarCuadro" styleClass="tournaments-action-primary"/><Button fx:id="botonDesactivarCategoria" text="DESACTIVAR" onAction="#desactivarCategoria" styleClass="tournaments-action-danger-outline"/></HBox>
+    </VBox>
+   </VBox></ScrollPane>
+  </StackPane>
+ </items></SplitPane></center>
 </BorderPane>
