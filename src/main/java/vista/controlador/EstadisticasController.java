@@ -1,5 +1,7 @@
 package vista.controlador;
 
+import java.awt.Desktop;
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
@@ -34,16 +36,22 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import negocio.CierreCaja;
 import negocio.EstadisticasPadel;
 import negocio.EstadisticasPadel.DatoGrafico;
 import servicio.EstadisticasService;
+import servicio.ConfiguracionComplejoService;
+import servicio.GuiaEstadisticasPdfService;
+import vista.Dialogos;
 import vista.Navegacion;
 import vista.AyudaEstadisticasDialogo;
 
 public class EstadisticasController {
     private static final DateTimeFormatter FECHA=DateTimeFormatter.ofPattern("dd/MM/yyyy"), FECHA_HORA=DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private final EstadisticasService service=new EstadisticasService();
+    private final ConfiguracionComplejoService configuracionService=new ConfiguracionComplejoService();
+    private final GuiaEstadisticasPdfService guiaPdfService=new GuiaEstadisticasPdfService();
     @FXML private DatePicker fechaDesde,fechaHasta; @FXML private Button botonActualizar; @FXML private ProgressIndicator indicadorCarga; @FXML private Label etiquetaEstado,etiquetaPeriodoComparado;
     @FXML private Label etiquetaTotalReservas,etiquetaEfectivas,etiquetaPendientes,etiquetaConfirmadas,etiquetaCompletadas,etiquetaCanceladas,etiquetaAusencias,etiquetaExpiradas,etiquetaIngresos,etiquetaReembolsado,etiquetaIngresosNetos,etiquetaIngresosManuales,etiquetaEgresosManuales,etiquetaResultadoOperativo,etiquetaTicketPromedio,etiquetaPagosAcreditados,etiquetaOcupacion,etiquetaVariacionReservas,etiquetaVariacionIngresos;
     @FXML private Label hallazgoCancha,hallazgoHorario,hallazgoDia,hallazgoCliente,hallazgoMetodo;
@@ -119,6 +127,24 @@ public class EstadisticasController {
     private String moneda(BigDecimal v){return NumberFormat.getCurrencyInstance(new Locale("es","AR")).format(v==null?BigDecimal.ZERO:v.setScale(2,RoundingMode.HALF_UP));}
     private void carga(boolean c,String m){indicadorCarga.setVisible(c);botonActualizar.setDisable(c);etiquetaEstado.setText(m);etiquetaEstado.getStyleClass().removeAll("stats-status-ok","stats-status-error");if(!c)etiquetaEstado.getStyleClass().add("stats-status-ok");}
     private void error(String m){indicadorCarga.setVisible(false);botonActualizar.setDisable(false);etiquetaEstado.setText(m==null?"No se pudieron cargar las estadísticas.":m);etiquetaEstado.getStyleClass().removeAll("stats-status-ok","stats-status-error");etiquetaEstado.getStyleClass().add("stats-status-error");}
+    @FXML private void descargarGuiaPdf(){
+        var configuracion=configuracionService.obtener();
+        FileChooser selector=new FileChooser();
+        selector.setTitle("Guardar guía de estadísticas");
+        selector.getExtensionFilters().add(new FileChooser.ExtensionFilter("Documento PDF","*.pdf"));
+        selector.setInitialFileName(nombreGuiaPdf(configuracion.getNombreComercial()));
+        File destino=selector.showSaveDialog(scrollEstadisticas.getScene().getWindow());
+        if(destino==null)return;
+        if(!destino.getName().toLowerCase(Locale.ROOT).endsWith(".pdf"))destino=new File(destino.getParentFile(),destino.getName()+".pdf");
+        try{
+            File archivo=destino;
+            guiaPdfService.generar(archivo,configuracion);
+            Dialogos.exito("Guía de estadísticas generada","El PDF se guardó correctamente.");
+            if(Desktop.isDesktopSupported()&&Desktop.getDesktop().isSupported(Desktop.Action.OPEN))Desktop.getDesktop().open(archivo);
+        }catch(Exception exception){Dialogos.error("No se pudo generar la guía",exception.getMessage()==null?"No se pudo crear o abrir el archivo PDF.":exception.getMessage());}
+    }
+    private String nombreGuiaPdf(String nombre){String base=nombre==null||nombre.isBlank()?"padel-reservas":nombre.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+","-").replaceAll("(^-|-$)","");return "guia-estadisticas-"+base+".pdf";}
+
     @FXML private void mostrarAyuda(){
         String seccion=botonReservas.isSelected()?"RESERVAS":botonFinanzas.isSelected()?"FINANZAS":botonClientes.isSelected()?"CLIENTES":botonCanchas.isSelected()?"CANCHAS":botonWeb.isSelected()?"WEB":"RESUMEN";
         AyudaEstadisticasDialogo.mostrar(seccion);

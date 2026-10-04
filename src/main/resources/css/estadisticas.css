@@ -71,3 +71,6 @@
 .stats-help-button:focused {
     -fx-border-color: -color-principal-hover;
 }
+
+/* guia-pdf-estadisticas-v1 */
+.stats-guide-button{-fx-min-height:38;-fx-pref-height:38;-fx-background-color:#20272c;-fx-background-radius:10;-fx-border-color:#4a5961;-fx-border-radius:10;-fx-text-fill:#c4d1d6;-fx-font-size:10px;-fx-font-weight:900;-fx-padding:0 14;-fx-cursor:hand}.stats-guide-button:hover{-fx-background-color:#293238;-fx-border-color:#78909c;-fx-text-fill:white;-fx-translate-y:-1}.stats-guide-button:pressed{-fx-background-color:#1a2024;-fx-translate-y:0}
