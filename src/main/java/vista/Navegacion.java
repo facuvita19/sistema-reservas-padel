@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import negocio.ConfiguracionComplejo;
 import negocio.Usuario;
 import servicio.ConfiguracionComplejoService;
@@ -35,6 +36,7 @@ public final class Navegacion {
 	private static SolicitudFiltroPagos solicitudFiltroPagos;
 
 	private static Stage escenario;
+        private static Stage escenarioLogin;
 	private static Usuario usuarioActual;
 	private static Object controladorActual;
 	private static long categoriaCuadroTorneoId;
@@ -72,12 +74,41 @@ public final class Navegacion {
 		return configuracionActual;
 	}
 
-	public static void mostrarLogin() {
-		usuarioActual = null;
-		limpiarSolicitudes();
-		mostrarVista("/fxml/login.fxml", 1100, 720, true);
-		escenario.setTitle("Padel Reservas - Iniciar sesión");
-	}
+	        public static void mostrarLogin() {
+                usuarioActual = null;
+                limpiarSolicitudes();
+                recargarConfiguracion();
+                if (escenario != null) {
+                        escenario.setMaximized(false);
+                        escenario.hide();
+                }
+                if (escenarioLogin == null) {
+                        escenarioLogin = new Stage(StageStyle.UNDECORATED);
+                        escenarioLogin.setResizable(false);
+                }
+                cargarLogin();
+                escenarioLogin.setWidth(1120);
+                escenarioLogin.setHeight(730);
+                escenarioLogin.centerOnScreen();
+                escenarioLogin.show();
+        }
+
+        private static void cargarLogin() {
+                try {
+                        URL ubicacion = Navegacion.class.getResource("/fxml/login.fxml");
+                        if (ubicacion == null) throw new IllegalStateException("No se encontró /fxml/login.fxml");
+                        FXMLLoader cargador = new FXMLLoader(ubicacion);
+                        Parent raiz = cargador.load();
+                        TemaDinamico.aplicar(raiz, configuracionActual);
+                        Scene escena = new Scene(raiz, 1120, 730);
+                        agregarCssObligatorio(escena, CSS_GLOBAL);
+                        for (String css : CSS_OPCIONALES) agregarCssOpcional(escena, css);
+                        escenarioLogin.setScene(escena);
+                        controladorActual = cargador.getController();
+                } catch (IOException exception) {
+                        throw new IllegalStateException("No se pudo cargar el login.", exception);
+                }
+        }
 
 	public static void mostrarDashboard(Usuario usuario) {
 		if (usuario == null) {
@@ -85,8 +116,10 @@ public final class Navegacion {
 		}
 
 		usuarioActual = usuario;
-		mostrarVista("/fxml/dashboard-admin.fxml", 1280, 780, true);
-		escenario.setTitle("Padel Reservas - Administración");
+                mostrarVista("/fxml/dashboard-admin.fxml", 1280, 780, true);
+                escenario.setTitle(configuracionActual.getNombreComercial() + " - Administración");
+                escenario.setMaximized(true);
+                if (escenarioLogin != null) escenarioLogin.hide();
 	}
 
 	public static void actualizarDashboardSiEstaVisible() {

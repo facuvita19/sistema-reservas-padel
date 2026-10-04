@@ -1,100 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Line?>
+<?import javafx.scene.shape.SVGPath?>
 
-<StackPane xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           fx:controller="vista.controlador.LoginController"
-           styleClass="login-root">
-    <children>
-        <HBox maxWidth="980.0" maxHeight="610.0" styleClass="login-shell">
-            <children>
-                <VBox prefWidth="490.0" spacing="24.0" styleClass="login-hero">
-                    <padding>
-                        <Insets top="54.0" right="50.0" bottom="54.0" left="50.0" />
-                    </padding>
-                    <children>
-                        <Label text="PADEL RESERVAS" styleClass="brand-title" />
-                        <Region VBox.vgrow="ALWAYS" />
-                        <Label text="Administrá tu complejo desde un solo lugar."
-                               wrapText="true"
-                               styleClass="hero-title" />
-                        <Label text="Canchas, agenda, clientes, pagos y estadísticas con una experiencia simple y moderna."
-                               wrapText="true"
-                               styleClass="hero-copy" />
-                        <HBox spacing="10.0">
-                            <children>
-                                <Label text="AGENDA" styleClass="feature-pill" />
-                                <Label text="PAGOS" styleClass="feature-pill" />
-                                <Label text="REPORTES" styleClass="feature-pill" />
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-
-                <VBox prefWidth="490.0" spacing="14.0" styleClass="login-form-panel">
-                    <padding>
-                        <Insets top="52.0" right="58.0" bottom="52.0" left="58.0" />
-                    </padding>
-                    <children>
-                        <Label text="Bienvenido" styleClass="page-title" />
-                        <Label text="Ingresá con la cuenta administrativa del complejo."
-                               wrapText="true"
-                               styleClass="page-subtitle" />
-                        <Region prefHeight="18.0" />
-
-                        <Label text="Usuario" styleClass="field-label" />
-                        <TextField fx:id="campoUsuario"
-                                   promptText="Ejemplo: admin"
-                                   onAction="#iniciarSesion"
-                                   styleClass="modern-field" />
-
-                        <Label text="Contraseña" styleClass="field-label" />
-                        <StackPane fx:id="contenedorPassword">
-                            <children>
-                                <PasswordField fx:id="campoPassword"
-                                               promptText="Ingresá tu contraseña"
-                                               onAction="#iniciarSesion"
-                                               styleClass="modern-field" />
-                                <TextField fx:id="campoPasswordVisible"
-                                           promptText="Ingresá tu contraseña"
-                                           onAction="#iniciarSesion"
-                                           styleClass="modern-field" />
-                            </children>
-                        </StackPane>
-
-                        <CheckBox fx:id="checkMostrarPassword"
-                                  text="Mostrar contraseña"
-                                  onAction="#alternarPassword"
-                                  styleClass="modern-check" />
-
-                        <Label fx:id="etiquetaMensaje"
-                               wrapText="true"
-                               minHeight="22.0" />
-
-                        <StackPane>
-                            <children>
-                                <Button fx:id="botonIngresar"
-                                        text="INICIAR SESIÓN"
-                                        maxWidth="Infinity"
-                                        onAction="#iniciarSesion"
-                                        styleClass="primary-button" />
-                                <ProgressIndicator fx:id="indicadorCarga"
-                                                   maxWidth="22.0"
-                                                   maxHeight="22.0"
-                                                   mouseTransparent="true"
-                                                   styleClass="login-progress" />
-                            </children>
-                        </StackPane>
-
-                        <Region VBox.vgrow="ALWAYS" />
-                        <Label text="Sistema administrativo para complejos de pádel"
-                               styleClass="form-footer" />
-                    </children>
-                </VBox>
-            </children>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="vista.controlador.LoginController"
+            styleClass="login-window">
+    <top>
+        <HBox fx:id="barraVentana" alignment="CENTER_LEFT" spacing="10" styleClass="login-titlebar"
+              onMousePressed="#iniciarArrastre" onMouseDragged="#arrastrarVentana">
+            <padding><Insets top="0" right="0" bottom="0" left="16"/></padding>
+            <StackPane prefWidth="30" prefHeight="30" minWidth="30" minHeight="30" styleClass="login-titlebar-logo-frame">
+                <ImageView fx:id="logoCabecera" fitWidth="24" fitHeight="24" preserveRatio="true" smooth="true"/>
+                <Label fx:id="logoCabeceraFallback" text="A" styleClass="login-titlebar-logo-fallback"/>
+            </StackPane>
+            <VBox spacing="0">
+                <Label fx:id="nombreCabecera" text="Padel Reservas" styleClass="login-titlebar-name"/>
+                <Label text="Acceso administrativo" styleClass="login-titlebar-caption"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button onAction="#minimizar" styleClass="login-window-button">
+                <graphic><SVGPath content="M 2 8 L 12 8" styleClass="login-window-icon"/></graphic>
+            </Button>
+            <Button onAction="#cerrar" styleClass="login-window-button, login-close-button">
+                <graphic><SVGPath content="M 3 3 L 11 11 M 11 3 L 3 11" styleClass="login-window-icon"/></graphic>
+            </Button>
         </HBox>
-    </children>
-</StackPane>
+    </top>
+    <center>
+        <StackPane styleClass="login-root">
+            <HBox maxWidth="1020" maxHeight="610" styleClass="login-shell">
+                <VBox prefWidth="450" spacing="20" styleClass="login-hero-modern">
+                    <padding><Insets top="46" right="44" bottom="44" left="44"/></padding>
+                    <HBox alignment="CENTER_LEFT" spacing="13">
+                        <StackPane prefWidth="58" prefHeight="58" minWidth="58" minHeight="58" styleClass="login-logo-frame">
+                            <ImageView fx:id="logoPrincipal" fitWidth="46" fitHeight="46" preserveRatio="true" smooth="true"/>
+                            <Label fx:id="logoFallback" text="P" styleClass="login-logo-fallback"/>
+                        </StackPane>
+                        <VBox spacing="2">
+                            <Label fx:id="nombreComercial" text="Padel Reservas" wrapText="true" styleClass="login-brand-name"/>
+                            <Label text="GESTIÓN DEL COMPLEJO" styleClass="login-brand-caption"/>
+                        </VBox>
+                    </HBox>
+                    <Region prefHeight="64" minHeight="64"/>
+                    <Label text="Todo tu complejo, en una sola plataforma." wrapText="true" styleClass="login-hero-title-modern"/>
+                    <Label text="Organizá la operación diaria con una experiencia clara, ágil y centralizada." wrapText="true" styleClass="login-hero-copy-modern"/>
+                    <VBox spacing="10" styleClass="login-feature-list">
+                        <HBox alignment="CENTER_LEFT" spacing="11"><Label text="✓" styleClass="login-feature-icon"/><Label text="Agenda y reservas" styleClass="login-feature-text"/></HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="11"><Label text="✓" styleClass="login-feature-icon"/><Label text="Pagos y caja" styleClass="login-feature-text"/></HBox>
+                        <HBox alignment="CENTER_LEFT" spacing="11"><Label text="✓" styleClass="login-feature-icon"/><Label text="Torneos y estadísticas" styleClass="login-feature-text"/></HBox>
+                    </VBox>
+                </VBox>
+
+                <VBox prefWidth="570" spacing="12" styleClass="login-form-modern">
+                    <padding><Insets top="52" right="62" bottom="46" left="62"/></padding>
+                    <Label text="INICIAR SESIÓN" styleClass="login-form-overline"/>
+                    <Label text="Acceso administrativo" styleClass="login-form-title"/>
+                    <Label text="Ingresá con la cuenta del personal del complejo." wrapText="true" styleClass="login-form-subtitle"/>
+                    <Region prefHeight="16"/>
+                    <Label text="Usuario" styleClass="login-field-label"/>
+                    <TextField fx:id="campoUsuario" promptText="Ingresá tu usuario" onAction="#enfocarPassword" styleClass="login-field"/>
+                    <Region prefHeight="3"/>
+                    <Label text="Contraseña" styleClass="login-field-label"/>
+                    <StackPane fx:id="contenedorPassword">
+                        <PasswordField fx:id="campoPassword" promptText="Ingresá tu contraseña" onAction="#iniciarSesion" styleClass="login-field, login-password-field"/>
+                        <TextField fx:id="campoPasswordVisible" promptText="Ingresá tu contraseña" onAction="#iniciarSesion" styleClass="login-field, login-password-field"/>
+                        <Button fx:id="botonMostrarPassword" onAction="#alternarPassword" StackPane.alignment="CENTER_RIGHT" styleClass="login-password-toggle" accessibleText="Mostrar contraseña">
+                            <graphic>
+                                <StackPane prefWidth="20" prefHeight="20">
+                                    <SVGPath content="M 1 10 C 4 4, 12 4, 19 10 C 12 16, 4 16, 1 10 Z M 7 10 A 3 3 0 1 0 13 10 A 3 3 0 1 0 7 10 Z" styleClass="login-eye-icon"/>
+                                    <Line fx:id="lineaOcultarPassword" startX="3" startY="3" endX="17" endY="17" visible="false" styleClass="login-eye-slash"/>
+                                </StackPane>
+                            </graphic>
+                        </Button>
+                    </StackPane>
+                    <Label fx:id="etiquetaMensaje" wrapText="true" minHeight="34" styleClass="login-message"/>
+                    <StackPane>
+                        <Button fx:id="botonIngresar" text="INGRESAR AL SISTEMA" maxWidth="Infinity" onAction="#iniciarSesion" styleClass="login-submit"/>
+                        <ProgressIndicator fx:id="indicadorCarga" maxWidth="21" maxHeight="21" mouseTransparent="true" styleClass="login-progress"/>
+                    </StackPane>
+                    <Region VBox.vgrow="ALWAYS"/>
+                    <HBox alignment="CENTER_LEFT" spacing="8" styleClass="login-access-note">
+                        <Label text="i" styleClass="login-note-icon"/>
+                        <Label text="Acceso exclusivo para personal autorizado." wrapText="true" styleClass="login-note-text"/>
+                    </HBox>
+                </VBox>
+            </HBox>
+        </StackPane>
+    </center>
+</BorderPane>
