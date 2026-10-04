@@ -34,3 +34,6 @@
 .stats-detail-pane>.content{-fx-background-color:#171c20;-fx-border-color:transparent;-fx-background-radius:0 0 12 12}
 .stats-detail-content{-fx-padding:15}
 .stats-detail-metric{-fx-min-height:84;-fx-background-color:#191e22;-fx-background-radius:10;-fx-border-color:#343c42;-fx-border-radius:10;-fx-padding:12;-fx-spacing:5}
+
+/* estadisticas-web-v6 */
+.stats-web-money{-fx-text-fill:#f4f1eb;-fx-font-size:20px;-fx-font-weight:900;-fx-min-height:36}#panelWeb .stats-hero-card{-fx-border-color:#3b454b}#panelWeb .chart-bar{-fx-bar-fill:-color-principal}
