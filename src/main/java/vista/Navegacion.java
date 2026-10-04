@@ -132,7 +132,6 @@ public final class Navegacion {
 
 	public static void mostrarCanchas() {
 		verificarSesion();
-		verificarAdministrador();
 		mostrarVista("/fxml/canchas.fxml", 1360, 820, true);
 		escenario.setTitle("Padel Reservas - Canchas");
 	}
