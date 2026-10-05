@@ -2,6 +2,11 @@ package vista.controlador;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +35,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Tooltip;
 import javafx.stage.FileChooser;
 import javafx.scene.control.TableRow;
 import javafx.scene.Node;
@@ -55,6 +61,16 @@ import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneoCuadroController {
+
+    // guardar-pdf-cuadro-seguro-v5
+
+    // filtros-opciones-disponibles-cuadro-v1
+
+    // reorganizar-filtros-campeon-cuadro-v1
+
+    // separar-enfrentamiento-cuadro-paso2-v1
+
+    // mejoras-seguras-cuadro-paso1-v1
 
     private static final DateTimeFormatter HORA =
             DateTimeFormatter.ofPattern("HH:mm");
@@ -94,6 +110,7 @@ public class TorneoCuadroController {
     @FXML private Label etiquetaContexto;
     @FXML private Label etiquetaResumen;
     @FXML private Label etiquetaPartido;
+    @FXML private Label etiquetaEnfrentamiento;
     @FXML private Label etiquetaMensaje;
     @FXML private Label etiquetaCampeona;
     @FXML private Label etiquetaResultadoFinal;
@@ -243,14 +260,47 @@ public class TorneoCuadroController {
     }
 
     private void configurarFiltros() {
-        filtroFase.setItems(FXCollections.observableArrayList(
-                java.util.Arrays.stream(FaseTorneo.values())
-                        .filter(fase -> fase != FaseTorneo.GRUPOS)
-                        .toList()));
-        filtroEstado.setItems(FXCollections.observableArrayList(
-                EstadoPartidoTorneo.values()));
+        filtroFase.setItems(FXCollections.observableArrayList());
+        filtroEstado.setItems(FXCollections.observableArrayList());
         filtroFase.valueProperty().addListener((o, a, n) -> filtrar());
         filtroEstado.valueProperty().addListener((o, a, n) -> filtrar());
+    }
+
+    private void actualizarOpcionesFiltros() {
+        FaseTorneo faseSeleccionada = filtroFase.getValue();
+        EstadoPartidoTorneo estadoSeleccionado = filtroEstado.getValue();
+
+        List<FaseTorneo> fasesDisponibles = partidos.stream()
+                .map(TorneoPartido::getFase)
+                .filter(fase -> fase != null && fase != FaseTorneo.GRUPOS)
+                .distinct()
+                .sorted(java.util.Comparator.comparingInt(Enum::ordinal))
+                .toList();
+        List<EstadoPartidoTorneo> estadosDisponibles = partidos.stream()
+                .filter(partido -> partido.getFase() != FaseTorneo.GRUPOS)
+                .map(TorneoPartido::getEstado)
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .sorted(java.util.Comparator.comparingInt(Enum::ordinal))
+                .toList();
+
+        filtroFase.setItems(
+                FXCollections.observableArrayList(fasesDisponibles));
+        filtroEstado.setItems(
+                FXCollections.observableArrayList(estadosDisponibles));
+
+        if (faseSeleccionada != null
+                && fasesDisponibles.contains(faseSeleccionada)) {
+            filtroFase.setValue(faseSeleccionada);
+        } else {
+            filtroFase.getSelectionModel().clearSelection();
+        }
+        if (estadoSeleccionado != null
+                && estadosDisponibles.contains(estadoSeleccionado)) {
+            filtroEstado.setValue(estadoSeleccionado);
+        } else {
+            filtroEstado.getSelectionModel().clearSelection();
+        }
     }
 
     private void cargarCanchasYHorarios() {
@@ -287,6 +337,7 @@ public class TorneoCuadroController {
                         "El torneo de la categoria ya no existe.");
             }
             partidos.setAll(partidoDAO.listarPorCategoria(categoriaId));
+            actualizarOpcionesFiltros();
             filtrar();
             boolean existeEliminatorio = partidos.stream()
                     .anyMatch(p -> p.getFase() != FaseTorneo.GRUPOS);
@@ -321,7 +372,7 @@ public class TorneoCuadroController {
         selector.setTitle("Guardar cuadro mural");
         selector.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Documento PDF", "*.pdf"));
-        selector.setInitialFileName(nombreArchivoPdf());
+        selector.setInitialFileName(nombreArchivoPdf(modo));
         File destino = selector.showSaveDialog(
                 tablaPartidos.getScene().getWindow());
         if (destino == null) return;
@@ -330,17 +381,23 @@ public class TorneoCuadroController {
                     destino.getName() + ".pdf");
         }
 
+        Path temporal = null;
         try {
             File archivo = destino;
+            Path destinoPath = archivo.toPath().toAbsolutePath();
+            Path carpeta = destinoPath.getParent();
+            if (carpeta == null) {
+                carpeta = Path.of(".").toAbsolutePath().normalize();
+            }
+            temporal = Files.createTempFile(
+                    carpeta, ".cuadro-torneo-", ".pdf.tmp");
             pdfService.generar(
-                    archivo,
-                    torneo,
-                    categoria,
-                    List.copyOf(partidos),
-                    this::nombrePareja,
-                    this::nombreCancha,
-                    configuracionService.obtener(),
+                    temporal.toFile(), torneo, categoria,
+                    List.copyOf(partidos), this::nombrePareja,
+                    this::nombreCancha, configuracionService.obtener(),
                     modo == ExportarCuadroTorneoDialog.Modo.ACTUALIZADO);
+            reemplazarPdfSeguro(temporal, destinoPath);
+            temporal = null;
             etiquetaMensaje.setText("PDF generado: " + archivo.getName());
             Dialogos.exito("Cuadro listo para imprimir",
                     "El PDF se guardo correctamente.");
@@ -348,10 +405,24 @@ public class TorneoCuadroController {
                     && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                 Desktop.getDesktop().open(archivo);
             }
+        } catch (IOException exception) {
+            Dialogos.error("No se pudo guardar el PDF",
+                    "No se pudo reemplazar el archivo seleccionado. "
+                            + "Si el PDF esta abierto, cerralo e intenta "
+                            + "nuevamente.\n\nDetalle: "
+                            + exception.getMessage());
         } catch (Exception exception) {
             mostrarError(new RuntimeException(
                     "No se pudo generar o abrir el PDF: "
                             + exception.getMessage(), exception));
+        } finally {
+            if (temporal != null) {
+                try {
+                    Files.deleteIfExists(temporal);
+                } catch (IOException ignored) {
+                    // No se oculta el error principal por la limpieza.
+                }
+            }
         }
     }
 
@@ -392,12 +463,28 @@ public class TorneoCuadroController {
                 .findFirst().orElse("Cancha #" + canchaId);
     }
 
-    private String nombreArchivoPdf() {
+    private String nombreArchivoPdf(
+            ExportarCuadroTorneoDialog.Modo modo) {
         String base = torneo.getNombre() + "-" + categoria.getNombre()
                 + "-" + categoria.getRama();
+        String sufijo = modo == ExportarCuadroTorneoDialog.Modo.ACTUALIZADO
+                ? "cuadro-actualizado" : "planilla-resultados";
         return "cuadro-" + base.toLowerCase(Locale.ROOT)
                 .replaceAll("[^a-z0-9]+", "-")
-                .replaceAll("(^-|-$)", "") + ".pdf";
+                .replaceAll("(^-|-$)", "")
+                + "-" + sufijo + ".pdf";
+    }
+
+    private void reemplazarPdfSeguro(Path temporal, Path destino)
+            throws IOException {
+        try {
+            Files.move(temporal, destino,
+                    StandardCopyOption.ATOMIC_MOVE,
+                    StandardCopyOption.REPLACE_EXISTING);
+        } catch (AtomicMoveNotSupportedException exception) {
+            Files.move(temporal, destino,
+                    StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
     @FXML
@@ -595,19 +682,22 @@ public class TorneoCuadroController {
             scrollHistorial.setManaged(false);
             etiquetaTituloPanel.setText("DETALLE DEL PARTIDO");
             etiquetaPartido.setText("Selecciona un partido");
+            etiquetaEnfrentamiento.setText("");
             panelResultado.setVisible(false);
             panelResultado.setManaged(false);
             limpiarHistorial();
             limpiarFormulario();
             return;
         }
-        boolean finalizado = partido.getEstado() == EstadoPartidoTorneo.FINALIZADO;
+        boolean finalizado = partido.getEstado()
+                == EstadoPartidoTorneo.FINALIZADO;
         boolean puedeRegistrar = !partido.isBye()
                 && (partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO
                     || partido.getEstado() == EstadoPartidoTorneo.EN_CURSO);
         panelProgramacion.setVisible(!finalizado && !partido.isBye());
         panelProgramacion.setManaged(!finalizado && !partido.isBye());
-        botonQuitar.setVisible(partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO);
+        botonQuitar.setVisible(
+                partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO);
         botonQuitar.setManaged(botonQuitar.isVisible());
         botonResultado.setVisible(puedeRegistrar);
         botonResultado.setManaged(puedeRegistrar);
@@ -615,11 +705,16 @@ public class TorneoCuadroController {
         botonCorregirResultado.setManaged(finalizado);
         scrollHistorial.setVisible(finalizado);
         scrollHistorial.setManaged(finalizado);
-        etiquetaPartido.setText(partido.getFase() + " · PARTIDO "
-                + partido.getOrdenFase() + "\n"
-                + nombrePareja(partido.getPareja1InscripcionId())
+        etiquetaPartido.setText(nombreFaseVisible(partido)
+                + " · PARTIDO " + partido.getOrdenFase());
+        etiquetaEnfrentamiento.setText(
+                nombrePareja(partido.getPareja1InscripcionId())
                 + "\nVS\n"
                 + nombrePareja(partido.getPareja2InscripcionId()));
+        botonProgramar.setText(partido.getEstado()
+                == EstadoPartidoTorneo.PROGRAMADO
+                        ? "ACTUALIZAR PROGRAMACIÓN"
+                        : "GUARDAR PROGRAMACIÓN");
         selectorFecha.setValue(partido.getFecha());
         comboInicio.setValue(partido.getHoraInicio());
         comboFin.setValue(partido.getHoraFin());
@@ -724,6 +819,8 @@ public class TorneoCuadroController {
             protected void updateItem(String texto, boolean vacia) {
                 super.updateItem(texto, vacia);
                 setText(vacia ? null : texto);
+                setTooltip(vacia || texto == null
+                        ? null : new Tooltip(texto));
                 setWrapText(true);
                 getStyleClass().removeAll(
                         "bracket-winner-cell", "bracket-loser-cell");
@@ -769,6 +866,8 @@ public class TorneoCuadroController {
         etiquetaResultadoFinal.setText(definida
                 ? "Resultado de la final: " + resultado(finalPartido)
                 : "La final todavía no tiene un resultado registrado.");
+        tarjetaCampeona.setVisible(definida);
+        tarjetaCampeona.setManaged(definida);
         etiquetaTrofeo.setVisible(definida);
         etiquetaTrofeo.setManaged(definida);
         tarjetaCampeona.getStyleClass().removeAll(

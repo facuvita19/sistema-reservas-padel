@@ -1,5 +1,7 @@
 package vista;
 
+import javafx.application.Platform;
+
 import java.net.URL;
 import java.util.Optional;
 
@@ -14,6 +16,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public final class Dialogos {
+
+    // modernizar-dialogos-resultado-torneo-v1
 
     private static final String CSS = "/css/dialogos.css";
     private static final String CSS_INTERFAZ = "/css/interfaz-unificada.css";
@@ -31,13 +35,66 @@ public final class Dialogos {
         TemaDinamico.aplicar(panel, Navegacion.getConfiguracionActual());
         dialogo.initModality(Modality.APPLICATION_MODAL);
         dialogo.setResizable(true);
+        // maximizar-dialogos-grandes-v1
         dialogo.setOnShown(evento -> {
-            if (dialogo.getDialogPane().getScene() != null
-                    && dialogo.getDialogPane().getScene().getWindow() instanceof Stage stage) {
-                stage.setMinWidth(Math.min(stage.getWidth(), 520));
-                stage.centerOnScreen();
+            if (dialogo.getDialogPane().getScene() == null
+                    || !(dialogo.getDialogPane().getScene().getWindow()
+                            instanceof Stage stage)) {
+                return;
             }
+            stage.setMinWidth(Math.min(stage.getWidth(), 520));
+            if (!esDialogoDeTrabajoGrande(dialogo)) {
+                stage.centerOnScreen();
+                return;
+            }
+            // Los Dialog crean el Stage al mostrarse. Se maximiza en el
+            // siguiente pulso para conservar el marco normal de Windows.
+            Platform.runLater(() -> {
+                stage.setFullScreen(false);
+                stage.setMaximized(true);
+            });
         });
+    }
+
+    private static boolean esDialogoDeTrabajoGrande(Dialog<?> dialogo) {
+        // Alertas, mensajes y confirmaciones siempre conservan tamano normal.
+        if (dialogo instanceof Alert) return false;
+
+        // agregar-partido-tamano-normal-v1
+        // Este formulario es acotado y debe conservar el marco normal de
+        // Windows sin ocupar toda la pantalla.
+        String titulo = dialogo.getTitle() == null
+                ? "" : dialogo.getTitle().trim().toLowerCase();
+        if (titulo.contains("agregar partido")
+                || titulo.contains("nuevo partido")
+                || titulo.contains("registrar resultado")
+                || titulo.contains("corregir resultado")) {
+            return false;
+        }
+
+        DialogPane panel = dialogo.getDialogPane();
+
+        // Las vistas operativas conocidas se maximizan aunque su tamano
+        // preferido todavia no haya sido calculado por JavaFX.
+        boolean claseGrande = panel.getStyleClass().stream().anyMatch(clase ->
+                clase.contains("proposal-review")
+                || clase.contains("proposal-preview")
+                || clase.contains("structural-editor")
+                || clase.contains("tournament")
+                || clase.contains("torneo")
+                || clase.contains("bracket")
+                || clase.contains("group")
+                || clase.contains("grupo")
+                || clase.contains("inscription")
+                || clase.contains("inscripcion")
+                || clase.contains("management")
+                || clase.contains("gestion"));
+        if (claseGrande) return true;
+
+        // Regla general para cualquier nueva ventana de trabajo amplia.
+        double ancho = Math.max(panel.getPrefWidth(), panel.getWidth());
+        double alto = Math.max(panel.getPrefHeight(), panel.getHeight());
+        return ancho >= 850 || alto >= 600;
     }
 
     private static void agregarEstilo(DialogPane panel, String recurso) {
@@ -67,6 +124,27 @@ public final class Dialogos {
 
     public static boolean confirmarPeligro(String titulo, String mensaje) {
         return confirmar(titulo, mensaje, true);
+    }
+
+    // confirmar-peligro-personalizado-v1
+    public static boolean confirmarPeligroPersonalizado(
+            String titulo,
+            String encabezado,
+            String mensaje,
+            String textoAceptar,
+            String textoCancelar) {
+        ButtonType aceptar = new ButtonType(
+                textoAceptar, ButtonBar.ButtonData.OK_DONE);
+        ButtonType cancelar = new ButtonType(
+                textoCancelar, ButtonBar.ButtonData.CANCEL_CLOSE);
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION,
+                mensaje, aceptar, cancelar);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(encabezado);
+        alerta.setGraphic(null);
+        configurarContenido(alerta, mensaje, 520);
+        preparar(alerta, "dialog-danger");
+        return alerta.showAndWait().orElse(cancelar) == aceptar;
     }
 
     private static boolean confirmar(String titulo, String mensaje, boolean peligro) {

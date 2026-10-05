@@ -419,30 +419,52 @@ public class PropuestaEtapaEliminatoriaService {
 
     public void intercambiarRivalesAcceso(
             PropuestaEtapaEliminatoria propuesta) {
+        if (propuesta == null) return;
         List<CrucePropuestoTorneo> cruces = propuesta.getCruces();
-        List<CrucePropuestoTorneo> acceso = cruces.stream()
-                .filter(c -> c.getInstancia().startsWith("Acceso R1"))
+        int primeraRonda = cruces.stream().mapToInt(
+                CrucePropuestoTorneo::getRonda).min().orElse(-1);
+        List<CrucePropuestoTorneo> iniciales = cruces.stream()
+                .filter(c -> c.getRonda() == primeraRonda)
+                .sorted(Comparator.comparingInt(CrucePropuestoTorneo::getOrden))
                 .toList();
-        if (acceso.size() < 2) return;
-        String rival = acceso.get(0).getParticipante2();
-        acceso.get(0).setParticipante2(acceso.get(1).getParticipante2());
-        acceso.get(1).setParticipante2(rival);
+        if (iniciales.size() < 2) return;
+        List<String> segundos = iniciales.stream()
+                .map(CrucePropuestoTorneo::getParticipante2)
+                .toList();
+        for (int i = 0; i < iniciales.size(); i++) {
+            iniciales.get(i).setParticipante2(
+                    segundos.get((i + 1) % segundos.size()));
+        }
         propuesta.setCruces(cruces);
-        validar(propuesta);
+        validarEdicionManual(propuesta);
     }
 
     public void rotarPrimeros(PropuestaEtapaEliminatoria propuesta) {
-        List<CrucePropuestoTorneo> principales = propuesta.getCruces().stream()
-                .filter(c -> !c.getInstancia().startsWith("Acceso"))
-                .filter(c -> c.getParticipante1().startsWith("1°")
-                        || c.getParticipante2().startsWith("1°"))
-                .toList();
-        if (principales.size() < 2) return;
-        String a = principales.get(0).getParticipante1();
-        String b = principales.get(1).getParticipante1();
-        principales.get(0).setParticipante1(b);
-        principales.get(1).setParticipante1(a);
-        validar(propuesta);
+        if (propuesta == null) return;
+        record Plaza(CrucePropuestoTorneo cruce, boolean primera, String valor) {}
+        List<Plaza> plazas = new ArrayList<>();
+        for (CrucePropuestoTorneo cruce : propuesta.getCruces().stream()
+                .sorted(Comparator.comparingInt(CrucePropuestoTorneo::getRonda)
+                        .thenComparingInt(CrucePropuestoTorneo::getOrden))
+                .toList()) {
+            if (cruce.getParticipante1() != null
+                    && cruce.getParticipante1().startsWith("1°")) {
+                plazas.add(new Plaza(cruce, true, cruce.getParticipante1()));
+            }
+            if (cruce.getParticipante2() != null
+                    && cruce.getParticipante2().startsWith("1°")) {
+                plazas.add(new Plaza(cruce, false, cruce.getParticipante2()));
+            }
+        }
+        if (plazas.size() < 2) return;
+        List<String> valores = plazas.stream().map(Plaza::valor).toList();
+        for (int i = 0; i < plazas.size(); i++) {
+            Plaza plaza = plazas.get(i);
+            String nuevo = valores.get((i + 1) % valores.size());
+            if (plaza.primera()) plaza.cruce().setParticipante1(nuevo);
+            else plaza.cruce().setParticipante2(nuevo);
+        }
+        validarEdicionManual(propuesta);
     }
 
     private List<ClasificadoEtapaEliminatoria> porPosicion(
@@ -650,6 +672,14 @@ public class PropuestaEtapaEliminatoriaService {
             }
         }
         return hayPrimero && hayInferior;
+    }
+
+    public PropuestaEtapaEliminatoria copiar(
+            PropuestaEtapaEliminatoria origen) {
+        if (origen == null) return null;
+        PropuestaEtapaEliminatoria copia = new PropuestaEtapaEliminatoria();
+        restaurarPropuesta(copia, origen);
+        return copia;
     }
 
     public void restaurarPropuesta(PropuestaEtapaEliminatoria destino,

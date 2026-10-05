@@ -47,7 +47,8 @@ import vista.Navegacion;
 
 public class LlaveGraficaTorneoView {
     private static final double ANCHO_TARJETA = 380;
-    private static final double ALTO_TARJETA = 150;
+    // tarjetas-participantes-llave-v2
+    private static final double ALTO_TARJETA = 126;
     private static final double ANCHO_COLUMNA = 405;
     private static final double MARGEN_X = 28;
     private static final double Y_ENCABEZADO = 18;
@@ -62,6 +63,7 @@ public class LlaveGraficaTorneoView {
     private final Runnable alAgregarPartido;
     private final Runnable alCrearNuevoCuadro;
     private final Consumer<String> alEliminarPartido;
+    private final boolean soloLectura;
     private final ConstructorLlaveTorneoVisualService constructor =
             new ConstructorLlaveTorneoVisualService();
     private final Map<String, PosicionTarjeta> posiciones = new HashMap<>();
@@ -80,6 +82,19 @@ public class LlaveGraficaTorneoView {
             Runnable alAgregarPartido,
             Runnable alCrearNuevoCuadro,
             Consumer<String> alEliminarPartido) {
+        this(propuesta, nombres, alCambiarPlaza, alIntercambiarPartido,
+                alAgregarPartido, alCrearNuevoCuadro, alEliminarPartido, false);
+    }
+
+    // bracket-readonly-mode-v1
+    public LlaveGraficaTorneoView(PropuestaEtapaEliminatoria propuesta,
+            Map<String, String> nombres,
+            BiConsumer<String, CambioPlaza> alCambiarPlaza,
+            Consumer<String> alIntercambiarPartido,
+            Runnable alAgregarPartido,
+            Runnable alCrearNuevoCuadro,
+            Consumer<String> alEliminarPartido,
+            boolean soloLectura) {
         this.propuesta = propuesta;
         this.nombres = new HashMap<>(nombres);
         this.alCambiarPlaza = alCambiarPlaza;
@@ -87,6 +102,7 @@ public class LlaveGraficaTorneoView {
         this.alAgregarPartido = alAgregarPartido;
         this.alCrearNuevoCuadro = alCrearNuevoCuadro;
         this.alEliminarPartido = alEliminarPartido;
+        this.soloLectura = soloLectura;
     }
 
     public Node crear() {
@@ -104,7 +120,7 @@ public class LlaveGraficaTorneoView {
         tablero.setPrefSize(ancho, alto);
         tablero.setMinSize(ancho, alto);
         tablero.setMaxSize(ancho, alto);
-        tablero.setStyle("-fx-background-color:#08151e;");
+        tablero.getStyleClass().add("structural-bracket-board");
         capaLineas.setPrefSize(ancho, alto);
         capaTarjetas.setPrefSize(ancho, alto);
         capaLineas.setMouseTransparent(true);
@@ -127,11 +143,7 @@ public class LlaveGraficaTorneoView {
         scroll.setPrefViewportHeight(510);
         scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        scroll.setStyle("-fx-background:#08151e;"
-                + "-fx-background-color:#08151e;"
-                + "-fx-border-color:#294351;"
-                + "-fx-border-radius:10;"
-                + "-fx-background-radius:10;");
+        scroll.getStyleClass().add("structural-bracket-scroll");
         scroll.addEventFilter(ScrollEvent.SCROLL, evento -> {
             double delta = Math.abs(evento.getDeltaY()) > 0.01
                     ? evento.getDeltaY() : evento.getDeltaX();
@@ -147,12 +159,14 @@ public class LlaveGraficaTorneoView {
         });
 
         Label porcentaje = new Label("100%");
-        porcentaje.setMinWidth(54);
+        porcentaje.setMinWidth(48);
+        porcentaje.setMouseTransparent(true);
         porcentaje.setAlignment(Pos.CENTER);
-        porcentaje.setStyle("-fx-text-fill:#d7e4e9;"
-                + "-fx-font-weight:900;-fx-font-size:12px;");
-        Button reducir = botonZoom("−");
+        porcentaje.getStyleClass().add("structural-zoom-value");
+        Button reducir = botonZoom("-");
+        reducir.setTooltip(new Tooltip("Alejar"));
         Button aumentar = botonZoom("+");
+        aumentar.setTooltip(new Tooltip("Acercar"));
         Button ajustar = botonZoom("AJUSTAR A VENTANA");
         reducir.setOnAction(e -> {
             ajusteAutomatico = false;
@@ -167,35 +181,44 @@ public class LlaveGraficaTorneoView {
         ajustar.setOnAction(e -> {
             ajusteAutomatico = false;
             ajustar(scroll, contenidoEscalado, porcentaje, true);
+            scroll.setVvalue(0.0);
+            scroll.setHvalue(0.0);
         });
         Button nuevoCuadro = botonZoom("NUEVO CUADRO");
-        nuevoCuadro.setStyle("-fx-background-color:#173646;"
-                + "-fx-border-color:#5e879a;-fx-border-radius:7;"
-                + "-fx-background-radius:7;-fx-text-fill:#eaf4f8;"
-                + "-fx-font-weight:900;-fx-padding:7 13;"
-                + "-fx-cursor:hand;");
+        nuevoCuadro.getStyleClass().add("structural-tool-new");
         nuevoCuadro.setOnAction(evento -> {
             if (alCrearNuevoCuadro != null) alCrearNuevoCuadro.run();
         });
 
         Button agregarPartido = botonZoom("+  AGREGAR PARTIDO");
-        agregarPartido.setStyle("-fx-background-color:#245875;"
-                + "-fx-border-color:#65b9d7;-fx-border-radius:7;"
-                + "-fx-background-radius:7;-fx-text-fill:#ffffff;"
-                + "-fx-font-weight:900;-fx-padding:7 13;"
-                + "-fx-cursor:hand;");
+        agregarPartido.getStyleClass().add("structural-tool-add");
         agregarPartido.setOnAction(evento -> {
             if (alAgregarPartido != null) alAgregarPartido.run();
         });
+        ajustar.getStyleClass().add("structural-tool-fit");
+        HBox grupoEstructura = new HBox(8, nuevoCuadro, agregarPartido);
+        grupoEstructura.setAlignment(Pos.CENTER_LEFT);
+        grupoEstructura.getStyleClass().add("structural-toolbar-group");
+
+        HBox grupoZoom = new HBox(7, ajustar, reducir, porcentaje, aumentar);
+        grupoZoom.setAlignment(Pos.CENTER_LEFT);
+        grupoZoom.getStyleClass().add("structural-toolbar-group");
+
         HBox leyenda = crearLeyenda();
-        HBox herramientas = new HBox(12, nuevoCuadro, agregarPartido,
-                new Separator(), ajustar, new Separator(),
-                reducir, porcentaje, aumentar, new Separator(), leyenda);
+        leyenda.getStyleClass().add("structural-toolbar-legend");
+        if (soloLectura) {
+            Label tituloLeyenda = new Label("ESTADO ESTRUCTURAL");
+            tituloLeyenda.getStyleClass().add("structural-legend-title");
+            leyenda.getChildren().add(0, tituloLeyenda);
+        }
+        javafx.scene.layout.Region espacio = new javafx.scene.layout.Region();
+        HBox.setHgrow(espacio, javafx.scene.layout.Priority.ALWAYS);
+        HBox herramientas = soloLectura
+                ? new HBox(18, grupoZoom, espacio, leyenda)
+                : new HBox(18, grupoEstructura, grupoZoom, espacio, leyenda);
         herramientas.setAlignment(Pos.CENTER_LEFT);
         herramientas.setPadding(new Insets(8, 10, 8, 10));
-        herramientas.setStyle("-fx-background-color:#0e202b;"
-                + "-fx-border-color:#294351;"
-                + "-fx-border-width:0 0 1 0;");
+        herramientas.getStyleClass().add("structural-toolbar");
 
         Platform.runLater(() -> {
             ajustar(scroll, contenidoEscalado, porcentaje, true);
@@ -206,17 +229,16 @@ public class LlaveGraficaTorneoView {
         contenedor.setTop(herramientas);
         contenedor.setPrefHeight(560);
         contenedor.setMinHeight(390);
-        contenedor.setStyle("-fx-background-color:#08151e;"
-                + "-fx-border-color:#294351;-fx-border-radius:10;"
-                + "-fx-background-radius:10;");
+        contenedor.getStyleClass().add("structural-bracket-shell");
         return contenedor;
     }
 
     private HBox crearLeyenda() {
-        HBox leyenda = new HBox(12,
-                itemLeyenda("#65b9d7", "Valido"),
-                itemLeyenda("#e6b85c", "Requiere atencion"),
-                itemLeyenda("#e56d76", "Estructura invalida"));
+        // estados-conectores-llave-v1
+        HBox leyenda = new HBox(14,
+                itemLeyenda("#65b998", "Valido"),
+                itemLeyenda("#d8b36d", "Requiere atencion"),
+                itemLeyenda("#d97882", "Estructura invalida"));
         leyenda.setAlignment(Pos.CENTER_LEFT);
         return leyenda;
     }
@@ -224,11 +246,10 @@ public class LlaveGraficaTorneoView {
     private HBox itemLeyenda(String color, String texto) {
         Label punto = new Label("●");
         punto.setStyle("-fx-text-fill:" + color
-                + ";-fx-font-size:14px;-fx-font-weight:900;");
+                + ";-fx-font-size:11px;-fx-font-weight:900;");
         Label descripcion = new Label(texto);
-        descripcion.setStyle("-fx-text-fill:#c7d8df;"
-                + "-fx-font-size:11px;-fx-font-weight:700;");
-        HBox item = new HBox(5, punto, descripcion);
+        descripcion.getStyleClass().add("structural-legend-text");
+        HBox item = new HBox(6, punto, descripcion);
         item.setAlignment(Pos.CENTER_LEFT);
         return item;
     }
@@ -239,11 +260,10 @@ public class LlaveGraficaTorneoView {
 
     private Button botonZoom(String texto) {
         Button boton = new Button(texto);
-        boton.setStyle("-fx-background-color:#173747;"
-                + "-fx-border-color:#3d6f88;-fx-border-radius:7;"
-                + "-fx-background-radius:7;-fx-text-fill:#f4fbff;"
-                + "-fx-font-weight:900;-fx-padding:7 12;"
-                + "-fx-cursor:hand;");
+        boton.getStyleClass().add("structural-tool-button");
+        if ("-".equals(texto) || "+".equals(texto)) {
+            boton.getStyleClass().add("structural-tool-icon");
+        }
         return boton;
     }
 
@@ -279,16 +299,37 @@ public class LlaveGraficaTorneoView {
 
     private void crearFase(FaseLlaveVisual fase, int indice, double alto) {
         double x = MARGEN_X + indice * ANCHO_COLUMNA;
+        // encabezados-fases-llave-v2
         Label titulo = new Label(nombreFase(fase.nombre()));
-        titulo.setAlignment(Pos.CENTER);
-        titulo.setPrefSize(ANCHO_TARJETA, 48);
-        titulo.setLayoutX(x);
-        titulo.setLayoutY(Y_ENCABEZADO);
-        titulo.setStyle(estiloFase(fase.nombre())
-                + "-fx-text-fill:#ffffff;-fx-font-weight:900;"
-                + "-fx-font-size:13px;-fx-background-radius:9;"
-                + "-fx-border-radius:9;");
-        capaTarjetas.getChildren().add(titulo);
+        titulo.setStyle("-fx-text-fill:" + colorFase(fase.nombre())
+                + ";-fx-font-weight:900;-fx-font-size:12px;");
+
+        int cantidadPartidosFase = fase.partidos().size();
+        Label contador = new Label(cantidadPartidosFase
+                + (cantidadPartidosFase == 1
+                        ? " PARTIDO" : " PARTIDOS"));
+        contador.setStyle("-fx-text-fill:#9ba6aa;"
+                + "-fx-font-size:9px;-fx-font-weight:900;");
+
+        javafx.scene.layout.Region espacioEncabezado =
+                new javafx.scene.layout.Region();
+        HBox.setHgrow(espacioEncabezado,
+                javafx.scene.layout.Priority.ALWAYS);
+        HBox encabezadoFase = new HBox(8, titulo,
+                espacioEncabezado, contador);
+        encabezadoFase.setAlignment(Pos.CENTER_LEFT);
+        encabezadoFase.setPadding(new Insets(0, 12, 0, 12));
+        encabezadoFase.setPrefSize(ANCHO_TARJETA, 38);
+        encabezadoFase.setMaxSize(ANCHO_TARJETA, 38);
+        encabezadoFase.setLayoutX(x);
+        encabezadoFase.setLayoutY(Y_ENCABEZADO + 5);
+        encabezadoFase.setStyle("-fx-background-color:#1b2024;"
+                + "-fx-border-color:" + colorFase(fase.nombre())
+                + ";-fx-border-width:0 0 3 0;"
+                + "-fx-border-radius:8;-fx-background-radius:8;"
+                + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.18),"
+                + "7,0.08,0,2);");
+        capaTarjetas.getChildren().add(encabezadoFase);
 
         int cantidad = Math.max(1, fase.partidos().size());
         double zona = alto - Y_INICIO - 30;
@@ -307,35 +348,41 @@ public class LlaveGraficaTorneoView {
     }
 
     private StackPane crearTarjeta(PartidoLlaveVisual partido) {
+        // acciones-llave-estructura-v1
         Label cabecera = new Label(nombreFase(partido.fase())
                 + "  ·  PARTIDO " + partido.orden());
+        cabecera.setMinWidth(0);
         cabecera.setMaxWidth(Double.MAX_VALUE);
-        cabecera.setPadding(new Insets(7, 10, 7, 10));
-        cabecera.setStyle(estiloFase(partido.fase())
-                + "-fx-text-fill:#ffffff;-fx-font-size:11px;"
-                + "-fx-font-weight:900;-fx-background-radius:8 8 0 0;");
-        Button intercambiar = new Button("⇅  INTERCAMBIAR");
+        cabecera.setTextOverrun(
+                javafx.scene.control.OverrunStyle.ELLIPSIS);
+        cabecera.setStyle("-fx-text-fill:" + colorFase(partido.fase())
+                + ";-fx-font-size:10px;-fx-font-weight:900;");
+        Button intercambiar = new Button("INTERCAMBIAR");
         intercambiar.setFocusTraversable(false);
-        intercambiar.setStyle("-fx-background-color:rgba(7,16,24,0.35);"
-                + "-fx-border-color:rgba(255,255,255,0.25);"
-                + "-fx-border-radius:6;-fx-background-radius:6;"
-                + "-fx-text-fill:#eaf4f8;-fx-font-size:9px;"
-                + "-fx-font-weight:900;-fx-padding:3 7;"
-                + "-fx-cursor:hand;");
+        aplicarEstiloAccionTarjeta(intercambiar, false);
         Button eliminar = new Button("ELIMINAR");
         eliminar.setFocusTraversable(false);
-        eliminar.setStyle("-fx-background-color:rgba(80,30,36,0.72);"
-                + "-fx-border-color:#a95660;-fx-border-radius:6;"
-                + "-fx-background-radius:6;-fx-text-fill:#ffd7da;"
-                + "-fx-font-size:9px;-fx-font-weight:900;"
-                + "-fx-padding:3 7;-fx-cursor:hand;");
+        aplicarEstiloAccionTarjeta(eliminar, true);
         eliminar.setOnAction(evento -> confirmarEliminacion(partido));
         HBox acciones = new HBox(5, intercambiar, eliminar);
         acciones.setAlignment(Pos.CENTER_RIGHT);
-        StackPane encabezado = new StackPane(cabecera, acciones);
-        StackPane.setAlignment(cabecera, Pos.CENTER_LEFT);
-        StackPane.setAlignment(acciones, Pos.CENTER_RIGHT);
-        encabezado.setPadding(new Insets(0, 6, 0, 0));
+        acciones.setVisible(!soloLectura);
+        acciones.setManaged(!soloLectura);
+        javafx.scene.layout.Region espacioCabecera =
+                new javafx.scene.layout.Region();
+        HBox.setHgrow(espacioCabecera,
+                javafx.scene.layout.Priority.ALWAYS);
+        HBox encabezado = new HBox(6, cabecera,
+                espacioCabecera, acciones);
+        encabezado.setAlignment(Pos.CENTER_LEFT);
+        encabezado.setPadding(new Insets(5, 7, 5, 10));
+        encabezado.setMinHeight(34);
+        encabezado.setPrefHeight(34);
+        encabezado.setMaxHeight(34);
+        encabezado.setStyle("-fx-background-color:#20262a;"
+                + "-fx-border-color:" + colorFase(partido.fase())
+                + ";-fx-border-width:0 0 2 0;"
+                + "-fx-background-radius:8 8 0 0;");
 
         Label uno = plaza(partido.clave(), 1,
                 partido.plaza1().referencia(),
@@ -357,22 +404,24 @@ public class LlaveGraficaTorneoView {
             dibujarConexiones(constructor.construir(propuesta));
         });
         Label vs = new Label("VS");
-        vs.setStyle("-fx-text-fill:#79a8bb;-fx-font-size:10px;"
-                + "-fx-font-weight:900;");
+        vs.setMaxWidth(Double.MAX_VALUE);
+        vs.setAlignment(Pos.CENTER);
+        vs.setStyle("-fx-text-fill:#7f8b90;-fx-font-size:8.5px;"
+                + "-fx-font-weight:900;-fx-padding:1 0;");
         VBox contenido = new VBox(1, uno, vs, dos);
         contenido.setAlignment(Pos.CENTER_LEFT);
-        contenido.setPadding(new Insets(9, 11, 10, 11));
+        contenido.setPadding(new Insets(7, 9, 8, 9));
 
         EstadoTarjeta estado = estadoTarjeta(partido);
         VBox caja = new VBox(0, encabezado, contenido);
         caja.setPrefSize(ANCHO_TARJETA, ALTO_TARJETA);
         caja.setMaxSize(ANCHO_TARJETA, ALTO_TARJETA);
-        caja.setStyle("-fx-background-color:#102532;"
+        caja.setStyle("-fx-background-color:#1b2024;"
                 + "-fx-border-color:" + estado.color()
                 + ";-fx-border-width:" + estado.grosor()
                 + ";-fx-border-radius:9;-fx-background-radius:9;"
-                + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.30),"
-                + "10,0.12,0,3);");
+                + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.20),"
+                + "8,0.08,0,2);");
         if (estado.mensaje() != null) {
             Tooltip problema = new Tooltip(estado.mensaje());
             problema.setWrapText(true);
@@ -389,13 +438,14 @@ public class LlaveGraficaTorneoView {
         String nombreCompleto = nombres.get(referencia);
         String visible = nombreCompleto == null ? texto : nombreCompleto;
         Label label = new Label(visible == null ? "Sin asignar" : visible);
-        label.setWrapText(true);
-        label.setTextOverrun(javafx.scene.control.OverrunStyle.CLIP);
-        label.setMaxWidth(ANCHO_TARJETA - 24);
-        label.setPrefWidth(ANCHO_TARJETA - 24);
-        label.setMinHeight(46);
-        label.setPrefHeight(46);
-        label.setMaxHeight(46);
+        label.setWrapText(false);
+        label.setTextOverrun(
+                javafx.scene.control.OverrunStyle.ELLIPSIS);
+        label.setMaxWidth(ANCHO_TARJETA - 20);
+        label.setPrefWidth(ANCHO_TARJETA - 20);
+        label.setMinHeight(31);
+        label.setPrefHeight(31);
+        label.setMaxHeight(31);
         String detalle = visible == null ? "Sin asignar" : visible;
         if (nombreCompleto != null && referencia != null) {
             detalle = referencia + " · " + nombreCompleto;
@@ -404,26 +454,21 @@ public class LlaveGraficaTorneoView {
         tooltip.setWrapText(true);
         tooltip.setMaxWidth(520);
         label.setTooltip(tooltip);
-        String estiloNormal = "-fx-text-fill:"
-                + (referencia == null ? "#ffd58a" : "#f4fbff")
-                + ";-fx-font-size:12.5px;-fx-font-weight:700;"
-                + "-fx-background-color:rgba(255,255,255,0.035);"
-                + "-fx-border-color:transparent;-fx-border-radius:6;"
-                + "-fx-background-radius:6;-fx-padding:4 6;"
-                + "-fx-cursor:hand;";
-        String estiloActivo = "-fx-text-fill:#ffffff;"
-                + "-fx-font-size:12.5px;-fx-font-weight:800;"
-                + "-fx-background-color:#214b60;"
-                + "-fx-border-color:#91d7f4;-fx-border-radius:6;"
-                + "-fx-background-radius:6;-fx-padding:4 6;"
-                + "-fx-cursor:hand;";
+        String estiloNormal = estiloPlazaLlave(
+                referencia == null, false);
+        String estiloActivo = estiloPlazaLlave(
+                referencia == null, true);
         label.setStyle(estiloNormal);
-        label.setOnMouseEntered(evento -> label.setStyle(estiloActivo));
-        label.setOnMouseExited(evento -> label.setStyle(estiloNormal));
-        label.setOnMouseClicked(evento -> {
-            label.setStyle(estiloActivo);
-            seleccionarOrigen(partidoClave, posicion, referencia, label);
-        });
+        if (!soloLectura) {
+            label.setOnMouseEntered(evento -> label.setStyle(estiloActivo));
+            label.setOnMouseExited(evento -> label.setStyle(estiloNormal));
+            label.setOnMouseClicked(evento -> {
+                label.setStyle(estiloActivo);
+                seleccionarOrigen(partidoClave, posicion, referencia, label);
+            });
+        } else {
+            label.setStyle(estiloNormal.replace("-fx-cursor:hand;", ""));
+        }
         return label;
     }
 
@@ -439,7 +484,7 @@ public class LlaveGraficaTorneoView {
         ButtonType cancelar = new ButtonType("CANCELAR",
                 ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogo.getDialogPane().getButtonTypes().setAll(
-                aplicar, limpiar, cancelar);
+                limpiar, aplicar, cancelar);
 
         Set<String> valores = opcionesValidas(partidoClave, actual);
         ComboBox<String> selector = new ComboBox<>(
@@ -447,26 +492,53 @@ public class LlaveGraficaTorneoView {
         selector.setValue(actual);
         selector.setMaxWidth(Double.MAX_VALUE);
         selector.setPrefWidth(620);
-        selector.setStyle("-fx-background-color:#0a1922;"
-                + "-fx-border-color:#3d6f88;-fx-border-radius:7;"
-                + "-fx-background-radius:7;-fx-mark-color:#91d7f4;"
-                + "-fx-text-fill:#f4fbff;-fx-padding:3 7;");
+        selector.getStyleClass().addAll(
+                "structural-add-combo",
+                "structural-participant-combo");
         selector.setCellFactory(lista -> celdaOrigen(false));
         selector.setButtonCell(celdaOrigen(true));
 
-        Label ayuda = new Label("Selecciona una opcion habilitada para esta "
-                + "fase. Se muestran solamente las parejas que ingresan en "
+        // cambiar-participante-moderno-v1
+        Label insignia = new Label("CAMBIAR PARTICIPANTE");
+        insignia.getStyleClass().add("structural-add-badge");
+        Label ayuda = new Label(
+                "Selecciona una opcion habilitada para esta fase. "
+                + "Se muestran solamente las parejas que ingresan en "
                 + "esta ronda y los ganadores de la ronda anterior.");
         ayuda.setWrapText(true);
-        ayuda.setStyle("-fx-text-fill:#d7e4e9;-fx-font-size:13px;");
-        VBox contenido = new VBox(12, ayuda, selector);
-        contenido.setPadding(new Insets(16));
-        contenido.setStyle("-fx-background-color:#0b1821;");
+        ayuda.getStyleClass().add("structural-add-help");
+        VBox contexto = new VBox(6, insignia, ayuda);
+        contexto.getStyleClass().add("structural-add-context");
+
+        Label etiquetaSelector = new Label("PARTICIPANTE U ORIGEN");
+        etiquetaSelector.getStyleClass().add(
+                "structural-participant-field-label");
+        VBox campo = new VBox(7, etiquetaSelector, selector);
+        campo.getStyleClass().add("structural-add-fields");
+
+        VBox contenido = new VBox(10, contexto, campo);
+        contenido.getStyleClass().add("structural-add-root");
         dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefWidth(700);
-        Dialogos.preparar(dialogo, "dialog-tournament-bracket-manual");
-        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
-                Navegacion.getConfiguracionActual());
+        dialogo.getDialogPane().setPrefWidth(760);
+        Dialogos.preparar(dialogo, "structural-add-dialog");
+        // participante-dialog-ajuste-final-v1
+        dialogo.getDialogPane().getStyleClass().add(
+                "structural-participant-dialog");
+        dialogo.setResizable(false);
+
+        javafx.scene.Node botonAplicar = dialogo.getDialogPane()
+                .lookupButton(aplicar);
+        javafx.scene.Node botonLimpiar = dialogo.getDialogPane()
+                .lookupButton(limpiar);
+        javafx.scene.Node botonCancelar = dialogo.getDialogPane()
+                .lookupButton(cancelar);
+        botonAplicar.getStyleClass().add(
+                "structural-participant-confirm");
+        botonLimpiar.getStyleClass().add(
+                "structural-participant-clear");
+        botonCancelar.getStyleClass().add(
+                "structural-add-cancel");
+
         final String limpiarMarca = "__LIMPIAR_PLAZA__";
         dialogo.setResultConverter(tipo -> {
             if (tipo == aplicar) return selector.getValue();
@@ -487,16 +559,6 @@ public class LlaveGraficaTorneoView {
     }
 
     private void confirmarEliminacion(PartidoLlaveVisual partido) {
-        Dialog<ButtonType> dialogo = new Dialog<>();
-        dialogo.setTitle("Eliminar partido");
-        dialogo.setHeaderText("Eliminar " + partido.fase()
-                + " (Partido " + partido.orden() + ")");
-        ButtonType eliminar = new ButtonType("ELIMINAR PARTIDO",
-                ButtonBar.ButtonData.OK_DONE);
-        ButtonType cancelar = new ButtonType("CANCELAR",
-                ButtonBar.ButtonData.CANCEL_CLOSE);
-        dialogo.getDialogPane().getButtonTypes().setAll(eliminar, cancelar);
-
         long destinos = propuesta.getCruces().stream()
                 .flatMap(c -> java.util.stream.Stream.of(
                         c.getParticipante1(), c.getParticipante2()))
@@ -508,22 +570,19 @@ public class LlaveGraficaTorneoView {
                     + " plaza(s). Si lo eliminas, esas plazas quedaran "
                     + "sin un origen valido."
                 : "Este partido no alimenta ninguna plaza posterior.";
-        Label mensaje = new Label(texto
-                + "\n\nLa estructura debera quedar valida antes de aplicarla.");
-        mensaje.setWrapText(true);
-        mensaje.setStyle("-fx-text-fill:#eaf4f8;-fx-font-size:13px;"
-                + "-fx-line-spacing:3px;");
-        VBox contenido = new VBox(mensaje);
-        contenido.setPadding(new Insets(16));
-        contenido.setStyle("-fx-background-color:#0b1821;");
-        dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefWidth(610);
-        Dialogos.preparar(dialogo, "dialog-error");
-        vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
-                Navegacion.getConfiguracionActual());
-        dialogo.setResultConverter(tipo -> tipo);
-        ButtonType resultado = dialogo.showAndWait().orElse(cancelar);
-        if (resultado == eliminar && alEliminarPartido != null) {
+        String mensaje = texto
+                + "\n\nLa estructura debera quedar valida antes "
+                + "de aplicarla.";
+
+        // eliminar-con-alert-comun-v1
+        boolean confirmado = Dialogos.confirmarPeligroPersonalizado(
+                "Eliminar partido",
+                "Eliminar " + partido.fase()
+                        + " (Partido " + partido.orden() + ")",
+                mensaje,
+                "ELIMINAR PARTIDO",
+                "CANCELAR");
+        if (confirmado && alEliminarPartido != null) {
             alEliminarPartido.accept(partido.clave());
         }
     }
@@ -622,17 +681,19 @@ public class LlaveGraficaTorneoView {
     private javafx.scene.control.ListCell<String> celdaOrigen(
             boolean boton) {
         return new javafx.scene.control.ListCell<>() {
+            {
+                // desplegable-participante-grafito-v1
+                getStyleClass().add(boton
+                        ? "structural-add-button-cell"
+                        : "structural-add-popup-cell");
+            }
+
             @Override
             protected void updateItem(String valor, boolean vacia) {
                 super.updateItem(valor, vacia);
-                setText(vacia || valor == null ? null : textoOrigen(valor));
-                setTextFill(Color.web("#f4fbff"));
-                setStyle((boton
-                        ? "-fx-background-color:#0a1922;"
-                        : isSelected()
-                            ? "-fx-background-color:#315f79;"
-                            : "-fx-background-color:#102532;")
-                        + "-fx-text-fill:#f4fbff;-fx-padding:8 10;");
+                setText(vacia || valor == null
+                        ? null : textoOrigen(valor));
+                setGraphic(null);
             }
         };
     }
@@ -697,9 +758,9 @@ public class LlaveGraficaTorneoView {
         }
         String mensaje = problemas.isEmpty() ? null
                 : String.join("\n", problemas.stream().distinct().toList());
-        if (invalida) return new EstadoTarjeta("#e56d76", 2.4, mensaje);
-        if (atencion) return new EstadoTarjeta("#e6b85c", 2.2, mensaje);
-        return new EstadoTarjeta("#315f79", 1.2, null);
+        if (invalida) return new EstadoTarjeta("#d97882", 2.2, mensaje);
+        if (atencion) return new EstadoTarjeta("#d8b36d", 2.0, mensaje);
+        return new EstadoTarjeta("#65b998", 1.3, null);
     }
 
     private long contarUso(String referencia) {
@@ -752,8 +813,8 @@ public class LlaveGraficaTorneoView {
             double x2 = destino.x();
             double y2 = destino.y()
                     + (conexion.posicionDestino() == 1
-                        ? destino.alto() * 0.54
-                        : destino.alto() * 0.82);
+                        ? destino.alto() * 0.53
+                        : destino.alto() * 0.80);
             double medio = x1 + (x2 - x1) * 0.50;
             Color color = color(conexion.estado());
 
@@ -762,12 +823,17 @@ public class LlaveGraficaTorneoView {
                     new LineTo(medio, y2),
                     new LineTo(x2 - 11, y2));
             linea.setStroke(color);
-            linea.setStrokeWidth(conexion.estado() == EstadoConexionLlave.VALIDA
-                    ? 2.4 : 3.2);
+            linea.setStrokeWidth(switch (conexion.estado()) {
+                case VALIDA -> 2.0;
+                case SIN_DESTINO -> 2.6;
+                case ORIGEN_INEXISTENTE, DUPLICADA, RONDA_INVALIDA -> 2.8;
+            });
+            linea.setStrokeLineCap(javafx.scene.shape.StrokeLineCap.ROUND);
+            linea.setStrokeLineJoin(javafx.scene.shape.StrokeLineJoin.ROUND);
             linea.setFill(Color.TRANSPARENT);
 
-            Polygon flecha = new Polygon(x2 - 11, y2 - 5,
-                    x2, y2, x2 - 11, y2 + 5);
+            Polygon flecha = new Polygon(x2 - 9, y2 - 4,
+                    x2, y2, x2 - 9, y2 + 4);
             flecha.setFill(color);
             capaLineas.getChildren().addAll(linea, flecha);
         }
@@ -775,11 +841,50 @@ public class LlaveGraficaTorneoView {
 
     private Color color(EstadoConexionLlave estado) {
         return switch (estado) {
-            case VALIDA -> Color.web("#65b9d7");
-            case SIN_DESTINO -> Color.web("#e6b85c");
+            case VALIDA -> Color.web("#65b998");
+            case SIN_DESTINO -> Color.web("#d8b36d");
             case ORIGEN_INEXISTENTE, DUPLICADA, RONDA_INVALIDA ->
-                    Color.web("#e56d76");
+                    Color.web("#d97882");
         };
+    }
+
+    private void aplicarEstiloAccionTarjeta(
+            Button boton, boolean peligrosa) {
+        String normal = peligrosa
+                ? "-fx-background-color:#332427;-fx-border-color:#7d454c;"
+                  + "-fx-text-fill:#e8b0b5;"
+                : "-fx-background-color:#252b2f;-fx-border-color:#515c62;"
+                  + "-fx-text-fill:#d7dddf;";
+        String hover = peligrosa
+                ? "-fx-background-color:#432b2f;-fx-border-color:#a85c65;"
+                  + "-fx-text-fill:#ffd5d8;"
+                : "-fx-background-color:#302a38;-fx-border-color:#78638d;"
+                  + "-fx-text-fill:#eee3f6;";
+        String comun = "-fx-border-radius:6;-fx-background-radius:6;"
+                + "-fx-font-size:8px;-fx-font-weight:900;"
+                + "-fx-padding:4 7;-fx-cursor:hand;";
+        boton.setStyle(normal + comun);
+        boton.setOnMouseEntered(e ->
+                boton.setStyle(hover + comun + "-fx-translate-y:-1;"));
+        boton.setOnMouseExited(e -> boton.setStyle(normal + comun));
+        boton.setOnMousePressed(e -> boton.setStyle(hover + comun));
+        boton.setOnMouseReleased(e ->
+                boton.setStyle(hover + comun + "-fx-translate-y:-1;"));
+    }
+    private String estiloPlazaLlave(boolean vacia, boolean activa) {
+        if (activa) {
+            return "-fx-text-fill:#ffffff;-fx-font-size:11px;"
+                    + "-fx-font-weight:800;-fx-background-color:#302a38;"
+                    + "-fx-border-color:#78638d;-fx-border-radius:6;"
+                    + "-fx-background-radius:6;-fx-padding:4 7;"
+                    + "-fx-cursor:hand;";
+        }
+        return "-fx-text-fill:" + (vacia ? "#d8b36d" : "#e3e8e9")
+                + ";-fx-font-size:11px;-fx-font-weight:700;"
+                + "-fx-background-color:#22292d;"
+                + "-fx-border-color:transparent;-fx-border-radius:6;"
+                + "-fx-background-radius:6;-fx-padding:4 7;"
+                + "-fx-cursor:hand;";
     }
 
     private String nombreFase(String fase) {
@@ -792,14 +897,18 @@ public class LlaveGraficaTorneoView {
     }
 
     private String estiloFase(String fase) {
+        return "-fx-background-color:" + colorFase(fase) + ";";
+    }
+
+    private String colorFase(String fase) {
         String valor = fase == null ? "" : fase.toLowerCase();
-        if (valor.equals("final")) return "-fx-background-color:#80651f;";
-        if (valor.contains("semifinal")) return "-fx-background-color:#563c78;";
-        if (valor.contains("cuartos")) return "-fx-background-color:#245875;";
-        if (valor.contains("octavos")) return "-fx-background-color:#23656a;";
-        if (valor.contains("dieciseisavos")) return "-fx-background-color:#2d6260;";
-        if (valor.contains("acceso")) return "-fx-background-color:#7a4f28;";
-        return "-fx-background-color:#344f60;";
+        if (valor.equals("final")) return "#b08a2e";
+        if (valor.contains("semifinal")) return "#7a5aa0";
+        if (valor.contains("cuartos")) return "#4f829d";
+        if (valor.contains("octavos")) return "#4f9290";
+        if (valor.contains("dieciseisavos")) return "#5b8b7f";
+        if (valor.contains("acceso")) return "#a66f3b";
+        return "#687b86";
     }
 
     public record CambioPlaza(int posicion, String referencia) {

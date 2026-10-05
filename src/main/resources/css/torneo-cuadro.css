@@ -36,3 +36,152 @@
 
 /* colores-fases-cuadro-v1 */
 .bracket-table-v2 .table-cell{-fx-font-smoothing-type:gray;}
+
+/* separar-enfrentamiento-cuadro-paso2-v1 */
+.bracket-match-text-v2 {
+    -fx-text-fill: #dce3e6;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-line-spacing: 1px;
+    -fx-padding: 0 0 2 0;
+}
+
+/* reorganizar-filtros-campeon-cuadro-v1 */
+.bracket-table-tools-v2 {
+    -fx-min-height: 38;
+}
+.bracket-table-tools-v2 .bracket-filter-v2 {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+}
+.bracket-table-tools-v2 .bracket-clear-v2 {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+}
+
+/* interacciones-boton-limpiar-v1 */
+.bracket-clear-v2 {
+    -fx-cursor: hand;
+}
+.bracket-clear-v2:hover {
+    -fx-background-color: #253037;
+    -fx-border-color: #60717a;
+    -fx-text-fill: #f2f5f6;
+}
+.bracket-clear-v2:pressed {
+    -fx-background-color: #11181c;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+    -fx-translate-y: 1px;
+}
+.bracket-clear-v2:focused {
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1.5px;
+}
+.bracket-clear-v2:disabled {
+    -fx-cursor: default;
+    -fx-opacity: 0.38;
+    -fx-translate-y: 0;
+}
+
+/* diferenciar-registrar-resultado-cuadro-v1 */
+.bracket-action-result-secondary {
+    -fx-min-height: 40;
+    -fx-background-color: #20343d;
+    -fx-background-radius: 9;
+    -fx-border-color: #477282;
+    -fx-border-radius: 9;
+    -fx-text-fill: #cfe8f0;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 13;
+    -fx-cursor: hand;
+}
+.bracket-action-result-secondary:hover {
+    -fx-background-color: #294653;
+    -fx-border-color: #69a7bd;
+    -fx-text-fill: white;
+}
+.bracket-action-result-secondary:pressed {
+    -fx-background-color: #17272e;
+    -fx-border-color: #82bfd3;
+    -fx-translate-y: 1px;
+}
+.bracket-action-result-secondary:focused {
+    -fx-border-color: #69a7bd;
+    -fx-border-width: 1.5px;
+}
+.bracket-action-result-secondary:disabled {
+    -fx-opacity: 0.38;
+    -fx-cursor: default;
+    -fx-translate-y: 0;
+}
+
+/* mejorar-historial-correcciones-cuadro-v1 */
+.bracket-history-scroll-v2 {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.bracket-history-scroll-v2 > .viewport {
+    -fx-background-color: transparent;
+}
+.bracket-history-scroll-v2 .scroll-bar:vertical {
+    -fx-pref-width: 8;
+    -fx-background-color: transparent;
+}
+.bracket-history-scroll-v2 .scroll-bar:vertical .thumb {
+    -fx-background-color: #40535d;
+    -fx-background-radius: 8;
+}
+.bracket-history-scroll-v2 .scroll-bar:vertical .increment-button,
+.bracket-history-scroll-v2 .scroll-bar:vertical .decrement-button {
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+}
+.bracket-history-v2 {
+    -fx-padding: 10;
+    -fx-spacing: 8;
+}
+.bracket-history-entry {
+    -fx-background-color: #182126;
+    -fx-background-radius: 8;
+    -fx-border-color: #34434a;
+    -fx-border-radius: 8;
+    -fx-padding: 9 10;
+}
+.bracket-history-meta {
+    -fx-text-fill: #8ea0a8;
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+}
+.bracket-history-old-score {
+    -fx-text-fill: #a0adb2;
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+}
+.bracket-history-arrow {
+    -fx-text-fill: #6094a8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 0 0 4;
+}
+.bracket-history-new-score {
+    -fx-text-fill: #d9edf4;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+.bracket-history-winner {
+    -fx-text-fill: #c9d3d7;
+    -fx-font-size: 9px;
+    -fx-line-spacing: 1px;
+}
+.bracket-history-reason {
+    -fx-text-fill: #9eb0b7;
+    -fx-font-size: 9px;
+    -fx-padding: 5 0 0 0;
+    -fx-border-color: #2d3a40 transparent transparent transparent;
+}
+.bracket-history-error {
+    -fx-text-fill: #e5a0a8;
+    -fx-font-size: 9px;
+}

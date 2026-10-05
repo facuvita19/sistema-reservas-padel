@@ -4,17 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
 import negocio.TipoSetTorneo;
+import negocio.TorneoInscripcion;
 import negocio.TorneoPartido;
 import negocio.TorneoPartidoSet;
 import servicio.ResultadoPartidoTorneoService;
@@ -23,8 +34,20 @@ import vista.Navegacion;
 
 public class ResultadoPartidoTorneoDialog {
 
+    // resultado-dialog-scroll-botones-v1
+
+    // separar-parejas-centrar-marcadores-v1
+
+    // mostrar-parejas-compactar-marcadores-v1
+
+    // pulir-dialogos-resultado-torneo-v1
+
+    // modernizar-dialogos-resultado-torneo-v1
+
     private final TorneoPartido partido;
     private final ResultadoPartidoTorneoService service;
+    private final TorneoInscripcionDAO inscripcionDAO =
+            new TorneoInscripcionDAOMySQL();
     private final boolean correccion;
     private final Dialog<TorneoPartido> dialogo = new Dialog<>();
     private final ComboBox<Integer> set1Pareja1 = puntosSet();
@@ -33,6 +56,7 @@ public class ResultadoPartidoTorneoDialog {
     private final ComboBox<Integer> set2Pareja2 = puntosSet();
     private final ComboBox<Integer> set3Pareja1 = puntosSet();
     private final ComboBox<Integer> set3Pareja2 = puntosSet();
+    private final Label etiquetaSet3 = new Label("Set 3");
     private final CheckBox incluirTercero =
             new CheckBox("Incluir tercer set");
     private final CheckBox superTieBreak =
@@ -78,15 +102,23 @@ public class ResultadoPartidoTorneoDialog {
     private void construir() {
         dialogo.setTitle(correccion
                 ? "Corregir resultado" : "Registrar resultado");
-        dialogo.setHeaderText(partido.getFase() + " #"
+        dialogo.setHeaderText(partido.getFase() + " · PARTIDO "
                 + partido.getOrdenFase());
         ButtonType guardar = new ButtonType(
-                correccion ? "GUARDAR CORRECCION" : "REGISTRAR RESULTADO",
+                correccion ? "GUARDAR CORRECCIÓN" : "REGISTRAR RESULTADO",
                 ButtonBar.ButtonData.OK_DONE);
         ButtonType cancelar = new ButtonType(
-                "VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE);
+                "CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogo.getDialogPane().getButtonTypes().setAll(guardar, cancelar);
-        dialogo.getDialogPane().setContent(contenido());
+        VBox formulario = contenido();
+        ScrollPane desplazamiento = new ScrollPane(formulario);
+        desplazamiento.setFitToWidth(true);
+        desplazamiento.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        desplazamiento.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        desplazamiento.setPrefViewportHeight(correccion ? 555 : 515);
+        desplazamiento.setMaxHeight(correccion ? 555 : 515);
+        desplazamiento.getStyleClass().add("result-dialog-scroll");
+        dialogo.getDialogPane().setContent(desplazamiento);
         Dialogos.preparar(dialogo, "dialog-tournament-result");
         var cssResultado = ResultadoPartidoTorneoDialog.class
                 .getResource("/css/torneo-resultado.css");
@@ -159,34 +191,117 @@ public class ResultadoPartidoTorneoDialog {
     }
 
     private VBox contenido() {
+        HBox enfrentamiento = crearFranjaEnfrentamiento();
+
         GridPane sets = new GridPane();
         sets.setHgap(10);
-        sets.setVgap(10);
+        sets.setVgap(9);
+        sets.setAlignment(Pos.CENTER);
         sets.getStyleClass().add("result-sets-grid");
-        sets.add(new Label("SET"), 0, 0);
-        sets.add(new Label("PAREJA 1"), 1, 0);
-        sets.add(new Label("PAREJA 2"), 2, 0);
+
+        ColumnConstraints columnaSet = new ColumnConstraints();
+        columnaSet.setMinWidth(68);
+        columnaSet.setPrefWidth(78);
+        columnaSet.setHalignment(HPos.LEFT);
+        ColumnConstraints columnaPareja1 = new ColumnConstraints();
+        columnaPareja1.setMinWidth(118);
+        columnaPareja1.setPrefWidth(128);
+        columnaPareja1.setHalignment(HPos.CENTER);
+        ColumnConstraints columnaPareja2 = new ColumnConstraints();
+        columnaPareja2.setMinWidth(118);
+        columnaPareja2.setPrefWidth(128);
+        columnaPareja2.setHalignment(HPos.CENTER);
+        sets.getColumnConstraints().setAll(
+                columnaSet, columnaPareja1, columnaPareja2);
+
+        Label encabezadoSet = new Label("SET");
+        Label encabezadoP1 = new Label("P1");
+        Label encabezadoP2 = new Label("P2");
+        encabezadoSet.getStyleClass().add("result-grid-header");
+        encabezadoP1.getStyleClass().add("result-grid-header");
+        encabezadoP2.getStyleClass().add("result-grid-header");
+        sets.add(encabezadoSet, 0, 0);
+        sets.add(encabezadoP1, 1, 0);
+        sets.add(encabezadoP2, 2, 0);
         agregarFila(sets, 1, set1Pareja1, set1Pareja2);
         agregarFila(sets, 2, set2Pareja1, set2Pareja2);
         agregarFila(sets, 3, set3Pareja1, set3Pareja2);
 
         motivoCorreccion.setPromptText(
-                "Motivo opcional de la correccion (hasta 500 caracteres)");
-        motivoCorreccion.setPrefRowCount(3);
+                "Describe por qué se modifica el resultado");
+        motivoCorreccion.setPrefRowCount(2);
         motivoCorreccion.setWrapText(true);
-        observaciones.setPromptText("Observaciones opcionales");
-        observaciones.setPrefRowCount(3);
+        motivoCorreccion.getStyleClass().add("result-notes-area");
+        observaciones.setPromptText("Observaciones adicionales (opcional)");
+        observaciones.setPrefRowCount(2);
         observaciones.setWrapText(true);
+        observaciones.getStyleClass().add("result-notes-area");
 
-        VBox caja = new VBox(12,
-                new Label("Cargá los sets ganados por cada pareja."),
-                sets, incluirTercero, superTieBreak,
-                new Label("MOTIVO DE LA CORRECCION (OPCIONAL)"),
-                motivoCorreccion,
-                new Label("OBSERVACIONES"), observaciones);
-        caja.setPadding(new Insets(4));
-        caja.setPrefWidth(480);
+        Label ayuda = new Label(correccion
+                ? "Modificá el marcador. El cambio quedará registrado "
+                    + "en el historial."
+                : "Ingresá el marcador de cada set.");
+        ayuda.setWrapText(true);
+        ayuda.getStyleClass().add("result-helper-text");
+
+        Label tituloMotivo = new Label("MOTIVO DE LA CORRECCIÓN");
+        tituloMotivo.getStyleClass().add("result-field-title");
+        Label tituloObservaciones = new Label("OBSERVACIONES ADICIONALES");
+        tituloObservaciones.getStyleClass().add("result-field-title");
+
+        VBox caja = new VBox(10);
+        caja.getStyleClass().add(correccion
+                ? "result-dialog-correction" : "result-dialog-register");
+        caja.getChildren().addAll(
+                ayuda, enfrentamiento, sets,
+                incluirTercero, superTieBreak);
+        if (correccion) {
+            caja.getChildren().addAll(tituloMotivo, motivoCorreccion);
+        }
+        caja.getChildren().addAll(tituloObservaciones, observaciones);
+        caja.setPadding(new Insets(6));
+        caja.setMinWidth(560);
+        caja.setPrefWidth(620);
         return caja;
+    }
+
+    private HBox crearFranjaEnfrentamiento() {
+        Label pareja1 = crearTarjetaPareja(
+                "PAREJA 1", partido.getPareja1InscripcionId());
+        Label pareja2 = crearTarjetaPareja(
+                "PAREJA 2", partido.getPareja2InscripcionId());
+        Label versus = new Label("VS");
+        versus.getStyleClass().add("result-versus");
+
+        HBox franja = new HBox(10, pareja1, versus, pareja2);
+        franja.setAlignment(Pos.CENTER);
+        franja.getStyleClass().add("result-matchup-strip");
+        HBox.setHgrow(pareja1, Priority.ALWAYS);
+        HBox.setHgrow(pareja2, Priority.ALWAYS);
+        return franja;
+    }
+
+    private Label crearTarjetaPareja(String rotulo, Long inscripcionId) {
+        String nombre = nombrePareja(inscripcionId);
+        Label etiqueta = new Label(rotulo + "\n" + nombre);
+        etiqueta.setWrapText(true);
+        etiqueta.setAlignment(Pos.CENTER);
+        etiqueta.setMaxWidth(Double.MAX_VALUE);
+        etiqueta.setMinWidth(0);
+        etiqueta.setTooltip(new Tooltip(nombre));
+        etiqueta.getStyleClass().add("result-team-card");
+        return etiqueta;
+    }
+
+    private String nombrePareja(Long inscripcionId) {
+        if (inscripcionId == null) return "Por definir";
+        TorneoInscripcion inscripcion = inscripcionDAO.buscar(inscripcionId);
+        if (inscripcion == null) return "Inscripción #" + inscripcionId;
+        return inscripcion.getJugadores().stream()
+                .map(jugador -> jugador.getNombreCompleto())
+                .filter(nombre -> nombre != null && !nombre.isBlank())
+                .reduce((primero, segundo) -> primero + " / " + segundo)
+                .orElse("Inscripción #" + inscripcionId);
     }
 
     private void agregarFila(
@@ -194,14 +309,23 @@ public class ResultadoPartidoTorneoDialog {
             int numero,
             ComboBox<Integer> pareja1,
             ComboBox<Integer> pareja2) {
-        grilla.add(new Label("Set " + numero), 0, numero);
+        Label etiqueta = numero == 3
+                ? etiquetaSet3 : new Label("Set " + numero);
+        etiqueta.getStyleClass().add("result-set-label");
+        pareja1.getStyleClass().add("result-score-combo");
+        pareja2.getStyleClass().add("result-score-combo");
+        grilla.add(etiqueta, 0, numero);
         grilla.add(pareja1, 1, numero);
         grilla.add(pareja2, 2, numero);
     }
 
     private void actualizarTercerSet(boolean visible) {
-        set3Pareja1.setDisable(!visible);
-        set3Pareja2.setDisable(!visible);
+        etiquetaSet3.setVisible(visible);
+        etiquetaSet3.setManaged(visible);
+        set3Pareja1.setVisible(visible);
+        set3Pareja1.setManaged(visible);
+        set3Pareja2.setVisible(visible);
+        set3Pareja2.setManaged(visible);
         superTieBreak.setDisable(!visible);
         if (!visible) {
             set3Pareja1.getSelectionModel().clearSelection();
@@ -244,6 +368,15 @@ public class ResultadoPartidoTorneoDialog {
     }
 
     private void validarSesion() {
+        if (correccion && (motivoCorreccion.getText() == null
+                || motivoCorreccion.getText().isBlank())) {
+            throw new IllegalArgumentException(
+                    "Indica el motivo de la corrección.");
+        }
+        if (correccion && motivoCorreccion.getText().length() > 500) {
+            throw new IllegalArgumentException(
+                    "El motivo no puede superar los 500 caracteres.");
+        }
         if (Navegacion.getUsuarioActual() == null
                 || Navegacion.getUsuarioActual().getId() <= 0) {
             throw new IllegalArgumentException(
@@ -257,7 +390,9 @@ public class ResultadoPartidoTorneoDialog {
         combo.setItems(FXCollections.observableArrayList(
                 java.util.stream.IntStream.rangeClosed(0, 30)
                         .boxed().toList()));
-        combo.setPrefWidth(130);
+        combo.setMinWidth(92);
+        combo.setPrefWidth(104);
+        combo.setMaxWidth(112);
         return combo;
     }
 }

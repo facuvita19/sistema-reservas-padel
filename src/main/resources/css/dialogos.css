@@ -1017,3 +1017,2630 @@
     -fx-min-width: 150;
     -fx-pref-width: 150;
 }
+
+
+/* bracket-editor-unified-v1 */
+.dialog-bracket-editor-new{-fx-pref-width:1120;-fx-pref-height:760}.bracket-editor-root{-fx-background-color:#171c20}.bracket-editor-navigation{-fx-padding:0 0 4 0}.bracket-editor-tab{-fx-background-color:#242a2e;-fx-border-color:#3c454b;-fx-background-radius:9;-fx-border-radius:9;-fx-text-fill:#cfd6d8;-fx-font-size:11px;-fx-font-weight:900;-fx-padding:9 15}.bracket-editor-tab:hover{-fx-border-color:-color-principal}.bracket-editor-tab:selected{-fx-background-color:-color-principal-transparente;-fx-border-color:-color-principal;-fx-text-fill:-color-principal-hover}.bracket-editor-mode{-fx-background-color:#171c20}.bracket-editor-help{-fx-text-fill:#9da9ae;-fx-font-size:12px;-fx-line-spacing:2px}.bracket-editor-tools{-fx-padding:2 0 5 0}.bracket-editor-scroll,.bracket-editor-scroll>.viewport{-fx-background-color:transparent}.bracket-editor-match{-fx-background-color:#1b2024;-fx-border-color:#343d42;-fx-background-radius:10;-fx-border-radius:10}.bracket-editor-match-title{-fx-text-fill:#8fd1b2;-fx-font-size:12px;-fx-font-weight:900}.bracket-editor-field-label{-fx-text-fill:#89979d;-fx-font-size:9px;-fx-font-weight:900}.bracket-editor-protected{-fx-background-color:#20262a;-fx-border-color:#3a4349;-fx-background-radius:8;-fx-border-radius:8;-fx-text-fill:#a9b4b8;-fx-padding:10 12}.bracket-editor-combo{-fx-pref-height:39}.bracket-editor-section{-fx-text-fill:#8fd1b2;-fx-font-size:13px;-fx-font-weight:900}.bracket-editor-advanced{-fx-border-color:#343d42;-fx-border-radius:10;-fx-background-radius:10}.bracket-editor-status{-fx-background-color:#20262a;-fx-background-radius:9;-fx-padding:9 12;-fx-font-size:10px;-fx-font-weight:900}.bracket-editor-status.valid{-fx-text-fill:#7bd4ae}.bracket-editor-status.warning{-fx-text-fill:#deb86a}.bracket-action-primary{-fx-background-color:#3f936f;-fx-border-color:#69b18f;-fx-text-fill:white}.bracket-action-secondary{-fx-background-color:#242a2e;-fx-border-color:#525d63;-fx-text-fill:#e0e5e6}
+
+
+/* bracket-editor-visual-v2 */
+.dialog-pane.dialog-bracket-editor-new {
+    -fx-pref-width: 1240;
+    -fx-pref-height: 800;
+}
+.dialog-bracket-editor-new > .header-panel {
+    -fx-padding: 12 22 11 22;
+    -fx-pref-height: 66;
+}
+.dialog-bracket-editor-new > .header-panel .label {
+    -fx-font-size: 17px;
+    -fx-line-spacing: 2px;
+}
+.dialog-bracket-editor-new .button-bar {
+    -fx-padding: 10 20 12 20;
+}
+.dialog-bracket-editor-new .button-bar > .container {
+    -fx-alignment: CENTER_RIGHT;
+}
+.dialog-bracket-editor-new .button-bar .button {
+    -fx-min-width: 166;
+    -fx-pref-width: 166;
+    -fx-max-width: 190;
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.bracket-editor-root {
+    -fx-background-color: #171c20;
+}
+.bracket-editor-navigation {
+    -fx-padding: 0 0 3 0;
+}
+.bracket-editor-tab {
+    -fx-min-height: 40;
+    -fx-background-color: #242a2e;
+    -fx-border-color: #3c454b;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #cfd6d8;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 16;
+}
+.bracket-editor-tab:hover {
+    -fx-background-color: #2c3338;
+    -fx-border-color: -color-principal;
+}
+.bracket-editor-tab:selected {
+    -fx-background-color: #1b342a;
+    -fx-border-color: #438e6c;
+    -fx-text-fill: #79d1a7;
+}
+.bracket-editor-mode-badge {
+    -fx-text-fill: #75cda3;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-mode-copy {
+    -fx-text-fill: #89969c;
+    -fx-font-size: 10px;
+}
+.advanced .bracket-editor-mode-badge {
+    -fx-text-fill: #dfb96d;
+}
+.bracket-editor-mode {
+    -fx-background-color: #171c20;
+}
+.bracket-safe-card {
+    -fx-background-color: #1b2421;
+    -fx-border-color: #3b6653;
+    -fx-border-width: 0 0 0 3;
+    -fx-background-radius: 8;
+    -fx-border-radius: 3 8 8 3;
+    -fx-padding: 9 12;
+}
+.bracket-safe-title {
+    -fx-text-fill: #85cfad;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.bracket-safe-copy {
+    -fx-text-fill: #9eaaa6;
+    -fx-font-size: 10.5px;
+    -fx-line-spacing: 1px;
+}
+.bracket-editor-tools-title {
+    -fx-text-fill: #89969c;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-tools {
+    -fx-padding: 0 0 2 0;
+}
+.bracket-tool-button {
+    -fx-min-height: 37;
+    -fx-padding: 0 14;
+    -fx-font-size: 10px;
+}
+.bracket-restore-button {
+    -fx-background-color: #302b23;
+    -fx-border-color: #66543b;
+    -fx-text-fill: #d7bd8b;
+}
+.bracket-restore-button:hover {
+    -fx-background-color: #3b3327;
+    -fx-border-color: #a47d43;
+    -fx-text-fill: #f1d09a;
+}
+.bracket-editor-scroll,
+.bracket-editor-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.bracket-editor-scroll {
+    -fx-border-color: #30383d;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 9 2 5 10;
+}
+.bracket-editor-scroll .scroll-bar:vertical {
+    -fx-pref-width: 9;
+}
+.bracket-editor-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #171c20;
+}
+.bracket-editor-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #485259;
+    -fx-background-radius: 7;
+}
+.bracket-editor-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -color-principal;
+}
+.bracket-phase-section {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10;
+}
+.bracket-phase-header {
+    -fx-padding: 0 2 2 2;
+}
+.bracket-phase-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 0 0 8;
+    -fx-border-width: 0 0 0 3;
+}
+.bracket-phase-title.phase-round16 {
+    -fx-text-fill: #70b9b7;
+    -fx-border-color: #3f8585;
+}
+.bracket-phase-title.phase-quarter {
+    -fx-text-fill: #78afd0;
+    -fx-border-color: #477e9e;
+}
+.bracket-phase-title.phase-semifinal {
+    -fx-text-fill: #ae91cf;
+    -fx-border-color: #735998;
+}
+.bracket-phase-title.phase-final {
+    -fx-text-fill: #d6b85e;
+    -fx-border-color: #987c2f;
+}
+.bracket-phase-title.phase-round32,
+.bracket-phase-title.phase-access {
+    -fx-text-fill: #cf9b6b;
+    -fx-border-color: #8f613c;
+}
+.bracket-phase-count {
+    -fx-background-color: #22282c;
+    -fx-background-radius: 9;
+    -fx-text-fill: #8e9a9f;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 8;
+}
+.bracket-editor-match {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #384147;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+}
+.bracket-editor-match:hover {
+    -fx-border-color: #4a585f;
+}
+.bracket-match-header {
+    -fx-background-color: #20262a;
+    -fx-background-radius: 8 8 0 0;
+    -fx-border-color: transparent transparent #343d42 transparent;
+    -fx-padding: 7 10;
+}
+.bracket-editor-match-title {
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-field-label {
+    -fx-min-width: 27;
+    -fx-pref-width: 27;
+    -fx-max-width: 27;
+    -fx-text-fill: #879399;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-combo {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+}
+.bracket-reference-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e5e9ea;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+    -fx-padding: 7 9;
+}
+.bracket-reference-cell.button-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.bracket-editor-protected {
+    -fx-min-height: 38;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: #20262a;
+    -fx-border-color: #3b4449;
+    -fx-border-style: segments(5, 4);
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-text-fill: #adb7bb;
+    -fx-font-size: 10.5px;
+    -fx-padding: 8 10;
+}
+.bracket-protected-badge {
+    -fx-background-color: #2c3337;
+    -fx-background-radius: 7;
+    -fx-text-fill: #7f8b90;
+    -fx-font-size: 7.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 3 6;
+}
+.bracket-editor-status {
+    -fx-min-height: 34;
+    -fx-alignment: CENTER_LEFT;
+    -fx-background-color: #20262a;
+    -fx-background-radius: 9;
+    -fx-padding: 8 12;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-status.valid {
+    -fx-text-fill: #7bd4ae;
+    -fx-border-color: #355e4d;
+    -fx-border-radius: 9;
+}
+.bracket-editor-status.warning {
+    -fx-text-fill: #deb86a;
+    -fx-border-color: #6f5932;
+    -fx-border-radius: 9;
+}
+.bracket-editor-section {
+    -fx-text-fill: #dfb96d;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-help {
+    -fx-text-fill: #9da9ae;
+    -fx-font-size: 12px;
+    -fx-line-spacing: 2px;
+}
+.bracket-editor-advanced {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #554a37;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.bracket-advanced-note {
+    -fx-background-color: #29271f;
+    -fx-background-radius: 8;
+    -fx-text-fill: #cbb88d;
+    -fx-font-size: 10.5px;
+    -fx-padding: 9 11;
+}
+
+
+/* bracket-editor-final-polish-v3 */
+.dialog-bracket-editor-new > .header-panel {
+    -fx-pref-height: 58;
+    -fx-min-height: 58;
+    -fx-max-height: 58;
+    -fx-padding: 0 22;
+}
+.dialog-bracket-editor-new > .header-panel .label {
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+    -fx-wrap-text: false;
+    -fx-text-overrun: clip;
+}
+.bracket-editor-mode-badge {
+    -fx-background-color: #1b342a;
+    -fx-border-color: #3d755b;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #82d2aa;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 5 9;
+}
+.advanced .bracket-editor-mode-badge {
+    -fx-background-color: #342e23;
+    -fx-border-color: #705a36;
+    -fx-text-fill: #dfba73;
+}
+.bracket-tool-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-tool-button {
+    -fx-background-color: linear-gradient(to bottom, #2b312f, #232927);
+    -fx-border-color: #46534d;
+    -fx-text-fill: #dce4e0;
+    -fx-effect: none;
+}
+.bracket-tool-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-tool-button:hover {
+    -fx-background-color: #303a35;
+    -fx-border-color: #579174;
+    -fx-text-fill: #f1f6f3;
+    -fx-effect: dropshadow(gaussian, rgba(72,139,103,.20), 7, .08, 0, 2);
+}
+.bracket-tool-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-tool-button:pressed {
+    -fx-background-color: #202622;
+    -fx-border-color: #46745e;
+    -fx-effect: none;
+}
+.bracket-restore-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #393126, #2d2922);
+    -fx-border-color: #756141;
+    -fx-text-fill: #dec18c;
+    -fx-effect: none;
+}
+.bracket-restore-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default):hover {
+    -fx-background-color: #453a2b;
+    -fx-border-color: #ad8750;
+    -fx-text-fill: #f2d5a0;
+    -fx-effect: dropshadow(gaussian, rgba(173,135,80,.20), 7, .08, 0, 2);
+}
+.bracket-restore-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button:pressed {
+    -fx-background-color: #29251f;
+    -fx-border-color: #806a48;
+    -fx-effect: none;
+}
+.bracket-reference-cell {
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 600;
+}
+.bracket-editor-field-label {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-text-fill: #a0aaae;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.bracket-editor-protected {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-padding: 0 9;
+}
+.bracket-protected-origin {
+    -fx-text-fill: #adb7bb;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 600;
+}
+.bracket-protected-badge {
+    -fx-min-width: 66;
+    -fx-alignment: CENTER;
+}
+.bracket-editor-navigation {
+    -fx-min-height: 42;
+}
+.bracket-safe-title,
+.bracket-editor-tools-title,
+.bracket-editor-status,
+.bracket-phase-title,
+.bracket-phase-count,
+.bracket-protected-badge,
+.bracket-editor-mode-badge {
+    -fx-text-overrun: clip;
+}
+
+
+/* bracket-advanced-view-v4 */
+.bracket-advanced-card {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #5d4e34;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 22 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 10, .08, 0, 3);
+}
+.bracket-structure-summary {
+    -fx-background-color: #181d21;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 12 14;
+}
+.bracket-structure-summary-title {
+    -fx-text-fill: #89969c;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-structure-summary-main {
+    -fx-text-fill: #e0e5e7;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+.bracket-structure-phase-chip {
+    -fx-background-color: #22282c;
+    -fx-border-color: #3b4449;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+    -fx-padding: 5 8;
+}
+.bracket-structure-phase-chip.phase-round16 {
+    -fx-border-color: #3f8585;
+    -fx-text-fill: #70b9b7;
+}
+.bracket-structure-phase-chip.phase-quarter {
+    -fx-border-color: #477e9e;
+    -fx-text-fill: #78afd0;
+}
+.bracket-structure-phase-chip.phase-semifinal {
+    -fx-border-color: #735998;
+    -fx-text-fill: #ae91cf;
+}
+.bracket-structure-phase-chip.phase-final {
+    -fx-border-color: #987c2f;
+    -fx-text-fill: #d6b85e;
+}
+.bracket-structure-phase-chip.phase-access,
+.bracket-structure-phase-chip.phase-round32 {
+    -fx-border-color: #8f613c;
+    -fx-text-fill: #cf9b6b;
+}
+.bracket-advanced-note {
+    -fx-background-color: #29271f;
+    -fx-border-color: #5f5135;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 3 8 8 3;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+}
+.bracket-advanced-note-title {
+    -fx-text-fill: #dbb66e;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-advanced-note-copy {
+    -fx-text-fill: #b9aa8b;
+    -fx-font-size: 10.5px;
+}
+.bracket-advanced-alternative {
+    -fx-background-color: #1c2521;
+    -fx-border-color: #365a49;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10 12;
+}
+.bracket-advanced-alternative-title {
+    -fx-text-fill: #7ec8a2;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.bracket-advanced-alternative-copy {
+    -fx-text-fill: #98aaa1;
+    -fx-font-size: 10.5px;
+}
+.bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default) {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-width: 280;
+    -fx-background-color: linear-gradient(to bottom, #3b3327, #302b24);
+    -fx-border-color: #806944;
+    -fx-text-fill: #ead09d;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+}
+.bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):hover {
+    -fx-background-color: #493d2c;
+    -fx-border-color: #b08a50;
+    -fx-text-fill: #ffe0a9;
+    -fx-effect: dropshadow(gaussian, rgba(176,138,80,.24), 8, .10, 0, 2);
+}
+.bracket-advanced-open-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:pressed {
+    -fx-background-color: #2c2720;
+    -fx-border-color: #78623f;
+    -fx-effect: none;
+}
+
+
+/* bracket-editor-violet-palette-v5 */
+/* El violeta grafito identifica acciones especiales o avanzadas. */
+.advanced .bracket-editor-mode-badge {
+    -fx-background-color: #29242f;
+    -fx-border-color: #62536f;
+    -fx-text-fill: #c5afd8;
+}
+
+.bracket-advanced-card {
+    -fx-background-color: #1f1e25;
+    -fx-border-color: #51475f;
+}
+
+.bracket-editor-section {
+    -fx-text-fill: #b6a1cc;
+}
+
+.bracket-advanced-note {
+    -fx-background-color: #292631;
+    -fx-border-color: #62536f;
+}
+
+.bracket-advanced-note-title {
+    -fx-text-fill: #c5afd8;
+}
+
+.bracket-advanced-note-copy {
+    -fx-text-fill: #ada2b8;
+}
+
+.bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #342d3d, #2b2632);
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+    -fx-effect: none;
+}
+
+.bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f0e5f8;
+    -fx-effect: dropshadow(gaussian, rgba(116, 89, 146, .24), 8, .10, 0, 2);
+}
+
+.bracket-advanced-open-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:pressed {
+    -fx-background-color: #28232e;
+    -fx-border-color: #594969;
+    -fx-effect: none;
+}
+
+/* Restaurar en Cruces deja el marron y adopta la misma familia violeta. */
+.bracket-restore-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #302a38, #28242f);
+    -fx-border-color: #62536f;
+    -fx-text-fill: #d6c8e1;
+    -fx-effect: none;
+}
+
+.bracket-restore-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default):hover {
+    -fx-background-color: #393142;
+    -fx-border-color: #846d9a;
+    -fx-text-fill: #eee3f6;
+    -fx-effect: dropshadow(gaussian, rgba(116, 89, 146, .20), 7, .08, 0, 2);
+}
+
+.bracket-restore-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button:pressed {
+    -fx-background-color: #25212b;
+    -fx-border-color: #584966;
+    -fx-effect: none;
+}
+
+
+/* bracket-advanced-balanced-palette-v6 */
+/* Grafito como superficie; violeta solo como identidad del modo avanzado. */
+.bracket-advanced-card {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #51475f;
+}
+
+.bracket-editor-section {
+    -fx-text-fill: #b6a1cc;
+}
+
+/* Precaucion moderada: cambios aun no definitivos. */
+.bracket-advanced-note {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-border-width: 0 0 0 3;
+}
+
+.bracket-advanced-note-title {
+    -fx-text-fill: #d8b36d;
+}
+
+.bracket-advanced-note-copy {
+    -fx-text-fill: #b9aa8b;
+}
+
+/* El resumen permanece neutral para que destaquen los chips de fase. */
+.bracket-structure-summary {
+    -fx-background-color: #181d21;
+    -fx-border-color: #343d42;
+}
+
+/* La accion avanzada conserva el violeta grafito. */
+.bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #342d3d, #2b2632);
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+}
+
+/* Las tres herramientas comparten dimensiones y el ambar apagado de precaucion. */
+.bracket-adjustment-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-adjustment-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default) {
+    -fx-min-width: 238;
+    -fx-pref-width: 238;
+    -fx-max-width: 238;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 14;
+    -fx-alignment: CENTER;
+    -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
+    -fx-border-color: #77613c;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #dec08a;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+}
+
+.bracket-adjustment-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-adjustment-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default):hover {
+    -fx-background-color: #403a2b;
+    -fx-border-color: #a6844c;
+    -fx-text-fill: #f0d29b;
+    -fx-effect: dropshadow(gaussian, rgba(166,132,76,.18), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+
+.bracket-adjustment-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-adjustment-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:not(:default):pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default):pressed {
+    -fx-background-color: #27241e;
+    -fx-border-color: #685535;
+    -fx-text-fill: #d0b47f;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* Restaurar conserva separacion espacial, pero no cambia de estructura ni tamaño. */
+.bracket-restore-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-restore-button {
+    -fx-min-width: 238;
+    -fx-pref-width: 238;
+    -fx-max-width: 238;
+}
+
+/* bracket-quick-actions-corrected-v8 */
+/* Selectores compatibles con JavaFX CSS. Sin :not(), para que las reglas no sean descartadas. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
+    -fx-min-width: 238;
+    -fx-pref-width: 238;
+    -fx-max-width: 238;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 14;
+    -fx-alignment: CENTER;
+    -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
+    -fx-border-color: #77613c;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #dec08a;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+}
+
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:hover {
+    -fx-background-color: #403a2b;
+    -fx-border-color: #a6844c;
+    -fx-text-fill: #f0d29b;
+    -fx-effect: dropshadow(gaussian, rgba(166,132,76,.18), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:pressed {
+    -fx-background-color: #27241e;
+    -fx-border-color: #685535;
+    -fx-text-fill: #d0b47f;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* bracket-quick-actions-compact-v9 */
+/* Tres acciones iguales y compactas; Restaurar conserva su posicion apartada. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
+    -fx-min-width: 220;
+    -fx-pref-width: 220;
+    -fx-max-width: 220;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0 11;
+    -fx-alignment: CENTER;
+    -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
+    -fx-border-color: #77613c;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #dec08a;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:hover {
+    -fx-background-color: #403a2b;
+    -fx-border-color: #a6844c;
+    -fx-text-fill: #f0d29b;
+    -fx-effect: dropshadow(gaussian, rgba(166,132,76,.18), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:pressed {
+    -fx-background-color: #27241e;
+    -fx-border-color: #685535;
+    -fx-text-fill: #d0b47f;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* bracket-secondary-rotation-buttons-v10 */
+/* Rotar es secundario: menor ancho, altura, tipografia y presencia visual. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-padding: 0 10;
+    -fx-font-size: 9px;
+    -fx-background-color: linear-gradient(to bottom, #302e26, #282720);
+    -fx-border-color: #685737;
+    -fx-text-fill: #d2b77f;
+    -fx-effect: none;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button:hover {
+    -fx-background-color: #393529;
+    -fx-border-color: #927442;
+    -fx-text-fill: #e8ca91;
+    -fx-effect: dropshadow(gaussian, rgba(146,116,66,.14), 6, .06, 0, 1);
+    -fx-translate-y: -1;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button:pressed {
+    -fx-background-color: #25231e;
+    -fx-border-color: #5e4e34;
+    -fx-text-fill: #c7aa74;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* bracket-restore-compact-v11 */
+/* Restaurar iguala las dimensiones compactas de las rotaciones sin cambiar de posicion. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-padding: 0 10;
+    -fx-font-size: 9px;
+}
+
+/* bracket-advanced-open-interaction-v12 */
+/* El color acompana la animacion JavaFX de elevacion y escala. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #443850, #382f42);
+    -fx-border-color: #9278aa;
+    -fx-text-fill: #f4eafa;
+    -fx-effect: dropshadow(gaussian, rgba(128, 94, 155, .30), 10, .12, 0, 3);
+    -fx-cursor: hand;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:pressed {
+    -fx-background-color: #2a2430;
+    -fx-border-color: #665475;
+    -fx-text-fill: #ddd0e8;
+    -fx-effect: none;
+}
+
+/* structural-editor-shell-v1 */
+.structural-editor-dialog,
+.structural-editor-dialog > .content,
+.structural-editor-root {
+    -fx-background-color: #171c20;
+}
+.structural-editor-dialog > .header-panel {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 14 22;
+}
+.structural-editor-dialog > .header-panel .label {
+    -fx-text-fill: #e4e8e9;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+.structural-editor-intro {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #51475f;
+    -fx-border-radius: 11;
+    -fx-background-radius: 11;
+    -fx-padding: 14 16;
+}
+.structural-editor-badge {
+    -fx-background-color: #29242f;
+    -fx-border-color: #62536f;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-text-fill: #c5afd8;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 9;
+    -fx-max-width: 112;
+}
+.structural-editor-section-title {
+    -fx-text-fill: #c5afd8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+}
+.structural-editor-help { -fx-text-fill: #b9c1c5; }
+.structural-editor-note {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 3 7 7 3;
+    -fx-background-radius: 7;
+    -fx-text-fill: #d8b36d;
+    -fx-padding: 7 10;
+}
+.structural-editor-tabs { -fx-padding: 1 0 3 0; }
+.structural-editor-tab {
+    -fx-background-color: #22282c;
+    -fx-border-color: #424b50;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: #c9d0d2;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 9 16;
+    -fx-cursor: hand;
+}
+.structural-editor-tab:hover {
+    -fx-background-color: #292f34;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+}
+.structural-editor-tab:selected {
+    -fx-background-color: #302a38;
+    -fx-border-color: #78638d;
+    -fx-text-fill: #eee3f6;
+}
+.structural-bracket-shell {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+.structural-bracket-board { -fx-background-color: #151a1e; }
+.structural-bracket-scroll,
+.structural-bracket-scroll > .viewport,
+.structural-editor-detail-scroll,
+.structural-editor-detail-scroll > .viewport {
+    -fx-background-color: #151a1e;
+}
+.structural-bracket-scroll {
+    -fx-border-color: #30383d;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+}
+.structural-toolbar {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 10;
+}
+.structural-toolbar .separator:vertical .line { -fx-border-color: #3a4247; }
+.structural-tool-button,
+.structural-tool-new,
+.structural-tool-add {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #4b555b;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 13;
+    -fx-cursor: hand;
+}
+.structural-tool-button:hover,
+.structural-tool-new:hover {
+    -fx-background-color: #2c3337;
+    -fx-border-color: #68747a;
+    -fx-text-fill: #f1f4f5;
+    -fx-translate-y: -1;
+}
+.structural-tool-add {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+}
+.structural-tool-add:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f0e5f8;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.20), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.structural-tool-new {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-text-fill: #d8b36d;
+}
+.structural-tool-new:hover {
+    -fx-background-color: #343126;
+    -fx-border-color: #a6844c;
+    -fx-text-fill: #f0d29b;
+}
+.structural-tool-button:pressed,
+.structural-tool-new:pressed,
+.structural-tool-add:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .99;
+    -fx-scale-y: .99;
+}
+.structural-tool-icon {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-padding: 8 0;
+    -fx-font-size: 13px;
+}
+.structural-zoom-value {
+    -fx-text-fill: #d8dddf;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-background-color: #20262a;
+    -fx-background-radius: 7;
+    -fx-padding: 7 8;
+}
+.structural-legend-text {
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+}
+.structural-editor-status {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #b9c3c6;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 9 12;
+}
+.structural-editor-apply {
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+.structural-editor-apply:hover {
+    -fx-background-color: #49a77e;
+    -fx-border-color: #83c8a6;
+    -fx-effect: dropshadow(gaussian, rgba(73,167,126,.22), 8, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.structural-editor-cancel {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #525d63;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: #e0e5e6;
+    -fx-font-weight: 900;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+.structural-editor-cancel:hover {
+    -fx-background-color: #2d3438;
+    -fx-border-color: #6c787e;
+    -fx-text-fill: white;
+}
+.structural-editor-button {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #ddd0e8;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 9 15;
+    -fx-cursor: hand;
+}
+.structural-editor-button:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f0e5f8;
+}
+
+/* structural-editor-shell-polish-v1-1 */
+/* Refuerzo de especificidad frente a los estilos generales del tema. */
+.dialog-pane.structural-editor-dialog .structural-editor-intro {
+    -fx-padding: 11 14;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-badge {
+    -fx-padding: 3 8;
+    -fx-font-size: 8.5px;
+    -fx-max-width: 106;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-section-title {
+    -fx-font-size: 11.5px;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-help {
+    -fx-font-size: 11.5px;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-note {
+    -fx-font-size: 10.5px;
+    -fx-padding: 6 9;
+}
+.dialog-pane.structural-editor-dialog .toggle-button.structural-editor-tab {
+    -fx-background-color: #22282c;
+    -fx-border-color: #424b50;
+    -fx-text-fill: #c9d0d2;
+}
+.dialog-pane.structural-editor-dialog .toggle-button.structural-editor-tab:hover {
+    -fx-background-color: #292f34;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-editor-dialog .toggle-button.structural-editor-tab:selected {
+    -fx-background-color: #302a38;
+    -fx-border-color: #78638d;
+    -fx-text-fill: #eee3f6;
+}
+.dialog-pane.structural-editor-dialog .structural-toolbar {
+    -fx-background-color: #1b2024;
+    -fx-padding: 9 12;
+}
+.structural-toolbar-group {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 5 6;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-button,
+.dialog-pane.structural-editor-dialog .button.structural-tool-new,
+.dialog-pane.structural-editor-dialog .button.structural-tool-add {
+    -fx-font-size: 9.5px;
+    -fx-padding: 7 12;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #4b555b;
+    -fx-text-fill: #dce2e4;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-new {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-text-fill: #d8b36d;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-add {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-button:hover {
+    -fx-background-color: #2c3337;
+    -fx-border-color: #68747a;
+    -fx-text-fill: #f1f4f5;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-new:hover {
+    -fx-background-color: #343126;
+    -fx-border-color: #a6844c;
+    -fx-text-fill: #f0d29b;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-add:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f0e5f8;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-icon {
+    -fx-min-width: 34;
+    -fx-pref-width: 34;
+    -fx-max-width: 34;
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+    -fx-padding: 0;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #e5eaec;
+}
+.dialog-pane.structural-editor-dialog .structural-zoom-value {
+    -fx-min-width: 52;
+    -fx-pref-width: 52;
+    -fx-alignment: CENTER;
+    -fx-padding: 7 6;
+}
+.structural-toolbar-legend {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 6 9;
+}
+.dialog-pane.structural-editor-dialog .button.structural-editor-button {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #ddd0e8;
+    -fx-font-size: 9.5px;
+    -fx-padding: 8 14;
+}
+.dialog-pane.structural-editor-dialog .button.structural-editor-button:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f0e5f8;
+    -fx-translate-y: -1;
+}
+
+/* structural-editor-consistency-close-v1-2 */
+.dialog-pane.structural-editor-dialog > .header-panel {
+    -fx-padding: 12 22 11 22;
+}
+.dialog-pane.structural-editor-dialog > .header-panel .label {
+    -fx-font-size: 17px;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-tabs {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-alignment: CENTER_LEFT;
+}
+.structural-editor-context-actions {
+    -fx-alignment: CENTER_RIGHT;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-intro {
+    -fx-padding: 10 13;
+}
+.dialog-pane.structural-editor-dialog .structural-toolbar-group,
+.dialog-pane.structural-editor-dialog .structural-toolbar-legend {
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-max-height: 46;
+    -fx-alignment: CENTER_LEFT;
+}
+.dialog-pane.structural-editor-dialog .button.structural-tool-fit {
+    -fx-padding: 7 10;
+    -fx-font-size: 9px;
+}
+.dialog-pane.structural-editor-dialog .structural-zoom-value {
+    -fx-min-width: 46;
+    -fx-pref-width: 46;
+    -fx-max-width: 46;
+    -fx-background-color: #171c20;
+    -fx-border-color: transparent;
+    -fx-text-fill: #b8c1c4;
+    -fx-font-size: 10px;
+    -fx-padding: 7 4;
+}
+.dialog-pane.structural-editor-dialog .structural-toolbar-legend {
+    -fx-padding: 5 9;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-status {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-padding: 9 13;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-valid {
+    -fx-background-color: #1c2722;
+    -fx-border-color: #3f6c56;
+    -fx-text-fill: #8fd1b2;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-warning {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-text-fill: #d8b36d;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-invalid {
+    -fx-background-color: #2b2022;
+    -fx-border-color: #7d454c;
+    -fx-text-fill: #e59aa1;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-shell,
+.dialog-pane.structural-editor-dialog .structural-editor-detail-scroll {
+    -fx-margin: 0 0 4 0;
+}
+
+/* structural-add-dialog-modern-v1 */
+.dialog-pane.structural-add-dialog,
+.dialog-pane.structural-add-dialog > .content,
+.structural-add-root {
+    -fx-background-color: #171c20;
+}
+.dialog-pane.structural-add-dialog > .header-panel {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 12 20;
+}
+.dialog-pane.structural-add-dialog > .header-panel .label {
+    -fx-text-fill: #e5e9ea;
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.structural-add-root { -fx-padding: 16 18; }
+.structural-add-context {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #51475f;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 11 13;
+}
+.structural-add-badge {
+    -fx-background-color: #29242f;
+    -fx-border-color: #62536f;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-text-fill: #c5afd8;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 3 8;
+    -fx-max-width: 100;
+}
+.structural-add-help {
+    -fx-text-fill: #c2c9cc;
+    -fx-font-size: 11.5px;
+}
+.structural-add-capacity {
+    -fx-background-color: #202229;
+    -fx-border-color: #51475f;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-text-fill: #bfa9d3;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 800;
+    -fx-padding: 7 9;
+}
+.structural-add-fields {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 13;
+}
+.dialog-pane.structural-add-dialog .structural-add-fields > .label {
+    -fx-text-fill: #aeb9bd;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo {
+    -fx-background-color: #20262a;
+    -fx-border-color: #4a555b;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-mark-color: #b6a1cc;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:hover,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:focused {
+    -fx-border-color: #68577b;
+}
+.structural-add-previous {
+    -fx-text-fill: #c3cbce;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.structural-add-previous > .box {
+    -fx-background-color: #20262a;
+    -fx-border-color: #566168;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+.structural-add-previous:hover > .box { -fx-border-color: #78638d; }
+.structural-add-previous:selected > .box {
+    -fx-background-color: #62536f;
+    -fx-border-color: #8a72a2;
+}
+.structural-add-previous:selected > .box > .mark {
+    -fx-background-color: white;
+}
+.structural-add-note {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 3 7 7 3;
+    -fx-background-radius: 7;
+    -fx-text-fill: #d8b36d;
+    -fx-padding: 8 10;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: #eee3f6;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f5ecfa;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.20), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .99;
+    -fx-scale-y: .99;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-cancel {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #525d63;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-text-fill: #e0e5e6;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-cancel:hover {
+    -fx-background-color: #2d3438;
+    -fx-border-color: #6c787e;
+    -fx-text-fill: white;
+}
+
+/* structural-add-dialog-polish-v2 */
+.dialog-pane.structural-add-dialog {
+    -fx-pref-width: 760;
+    -fx-pref-height: 560;
+    -fx-min-width: 700;
+    -fx-min-height: 530;
+}
+.dialog-pane.structural-add-dialog > .header-panel {
+    -fx-pref-height: 58;
+    -fx-min-height: 58;
+    -fx-padding: 10 20;
+}
+.dialog-pane.structural-add-dialog > .header-panel .label {
+    -fx-font-size: 16px;
+}
+.dialog-pane.structural-add-dialog > .content {
+    -fx-padding: 0;
+}
+.structural-add-root {
+    -fx-padding: 14 16;
+    -fx-spacing: 10;
+}
+.structural-add-context {
+    -fx-padding: 10 12;
+}
+.structural-add-capacity {
+    -fx-font-size: 10px;
+    -fx-font-weight: 700;
+    -fx-padding: 6 8;
+}
+.structural-add-fields {
+    -fx-padding: 12 14;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-phase {
+    -fx-min-width: 420;
+    -fx-pref-width: 420;
+    -fx-max-width: 420;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+}
+.structural-add-previous {
+    -fx-padding: 1 0 2 0;
+}
+.structural-add-note {
+    -fx-font-size: 10.5px;
+    -fx-padding: 7 9;
+}
+.dialog-pane.structural-add-dialog > .button-bar {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343d42;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 16 12 16;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm,
+.dialog-pane.structural-add-dialog .button.structural-add-cancel {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 16;
+    -fx-font-size: 10px;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #eee3f6;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-cancel {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #525d63;
+    -fx-text-fill: #e0e5e6;
+}
+
+/* structural-add-combos-final-v3 */
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo {
+    -fx-background-color: #20262a;
+    -fx-border-color: #4b555b;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0;
+    -fx-mark-color: #b9c2c6;
+    -fx-effect: none;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:hover {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #68577b;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:focused,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:showing {
+    -fx-background-color: #252a30;
+    -fx-border-color: #806b94;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.18), 6, .06, 0, 1);
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo > .list-cell,
+.dialog-pane.structural-add-dialog .structural-add-button-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e4e9ea;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 12;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo > .arrow-button {
+    -fx-background-color: #292f33;
+    -fx-border-color: #414a4f;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-radius: 0 7 7 0;
+    -fx-border-radius: 0 7 7 0;
+    -fx-padding: 0 13;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:hover > .arrow-button,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:showing > .arrow-button {
+    -fx-background-color: #332d3b;
+    -fx-border-color: #68577b;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo > .arrow-button > .arrow {
+    -fx-background-color: #b9c2c6;
+    -fx-padding: 3.5 5;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:showing > .arrow-button > .arrow {
+    -fx-background-color: #d8c9e4;
+}
+.combo-box-popup .list-view {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #51475f;
+    -fx-border-width: 1;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 4;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell {
+    -fx-background-color: #1b2024;
+    -fx-text-fill: #d9dfe1;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 9 11;
+    -fx-background-radius: 6;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell:hover {
+    -fx-background-color: #29242f;
+    -fx-text-fill: #eee3f6;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell:selected {
+    -fx-background-color: #342d3d;
+    -fx-text-fill: #f2e8f8;
+}
+.dialog-pane.structural-add-dialog .structural-add-fields > .label {
+    -fx-text-fill: #aeb8bc;
+}
+
+/* structural-detail-view-modern-v1 */
+.structural-editor-detail-scroll,
+.structural-editor-detail-scroll > .viewport {
+    -fx-background-color: #151a1e;
+}
+.structural-editor-detail-scroll {
+    -fx-border-color: #30383d;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0;
+}
+.structural-editor-detail-scroll .scroll-bar:vertical {
+    -fx-background-color: #171c20;
+}
+.structural-editor-detail-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4a5156;
+    -fx-background-radius: 8;
+}
+.structural-detail-card {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 0 12 11 12;
+    -fx-spacing: 9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.18), 8, .06, 0, 2);
+}
+.structural-detail-card:hover {
+    -fx-border-color: #4d575c;
+}
+.structural-detail-card-header {
+    -fx-background-color: #20262a;
+    -fx-border-color: #51475f;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 8 10;
+    -fx-background-radius: 9 9 0 0;
+}
+.structural-detail-card-title {
+    -fx-text-fill: #c5afd8;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 900;
+}
+.structural-detail-controls {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 9;
+}
+.structural-detail-field-label,
+.structural-detail-origin-label {
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+.structural-detail-origins {
+    -fx-padding: 0 2 1 2;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo {
+    -fx-background-color: #20262a;
+    -fx-border-color: #4a555b;
+    -fx-border-width: 1;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-padding: 0;
+    -fx-mark-color: #b9c2c6;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo:hover {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #68577b;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo:focused,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo:showing {
+    -fx-background-color: #252a30;
+    -fx-border-color: #806b94;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-phase {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-number {
+    -fx-min-width: 82;
+    -fx-pref-width: 82;
+    -fx-max-width: 82;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-origin {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo > .list-cell,
+.dialog-pane.structural-editor-dialog .structural-detail-button-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e3e8e9;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+    -fx-padding: 0 11;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo > .arrow-button {
+    -fx-background-color: #292f33;
+    -fx-border-color: #414a4f;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-radius: 0 6 6 0;
+    -fx-border-radius: 0 6 6 0;
+    -fx-padding: 0 12;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo:hover > .arrow-button,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo:showing > .arrow-button {
+    -fx-background-color: #332d3b;
+    -fx-border-color: #68577b;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-combo > .arrow-button > .arrow {
+    -fx-background-color: #b9c2c6;
+    -fx-padding: 3 4.5;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell {
+    -fx-background-color: #1b2024;
+    -fx-text-fill: #d9dfe1;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 600;
+    -fx-padding: 8 10;
+    -fx-background-radius: 6;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:hover {
+    -fx-background-color: #29242f;
+    -fx-text-fill: #eee3f6;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:selected {
+    -fx-background-color: #342d3d;
+    -fx-text-fill: #f2e8f8;
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete {
+    -fx-background-color: #332427;
+    -fx-border-color: #7d454c;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+    -fx-text-fill: #e8b0b5;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 6 11;
+    -fx-cursor: hand;
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:hover {
+    -fx-background-color: #432b2f;
+    -fx-border-color: #a85c65;
+    -fx-text-fill: #ffd5d8;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+
+/* Misma estructura visual que Dialogos.confirmar(); solo cambia el color semantico. */
+
+/* structural-bracket-scroll-polish-v1 */
+.dialog-pane.structural-editor-dialog .structural-toolbar-legend {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-padding: 5 10;
+}
+.dialog-pane.structural-editor-dialog .structural-legend-text {
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 700;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll,
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll > .viewport {
+    -fx-background-color: #151a1e;
+    -fx-background-insets: 0;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar {
+    -fx-background-color: #151a1e;
+    -fx-padding: 1;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar:vertical {
+    -fx-pref-width: 11;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar:horizontal {
+    -fx-pref-height: 11;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .track {
+    -fx-background-color: #171c20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .thumb {
+    -fx-background-color: #465057;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .thumb:hover {
+    -fx-background-color: -color-principal;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .thumb:pressed {
+    -fx-background-color: -color-principal-presionado;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .increment-button,
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .decrement-button {
+    -fx-background-color: #1b2024;
+    -fx-border-color: transparent;
+    -fx-padding: 2;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .increment-arrow,
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .decrement-arrow {
+    -fx-background-color: #78848a;
+    -fx-scale-x: .65;
+    -fx-scale-y: .65;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .increment-button:hover,
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .scroll-bar .decrement-button:hover {
+    -fx-background-color: #242a2e;
+}
+.dialog-pane.structural-editor-dialog .structural-bracket-scroll .corner {
+    -fx-background-color: #151a1e;
+}
+
+/* structural-participant-dialog-v1 */
+.dialog-pane.structural-add-dialog.structural-participant-dialog {
+    -fx-pref-width: 760;
+    -fx-min-width: 700;
+}
+.dialog-pane.structural-add-dialog .structural-participant-field-label {
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-participant-combo {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-max-width: infinity;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-confirm {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: white;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-confirm:hover {
+    -fx-background-color: #49a77e;
+    -fx-border-color: #83c8a6;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-confirm:pressed {
+    -fx-background-color: #337b5c;
+    -fx-translate-y: 0;
+    -fx-scale-x: .99;
+    -fx-scale-y: .99;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-clear {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #3a3324;
+    -fx-border-color: #77613c;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #e3bf78;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-clear:hover {
+    -fx-background-color: #473d29;
+    -fx-border-color: #987b49;
+    -fx-text-fill: #f0cd87;
+    -fx-translate-y: -1;
+}
+.dialog-pane.structural-add-dialog .button.structural-participant-clear:pressed {
+    -fx-background-color: #302a1f;
+    -fx-translate-y: 0;
+    -fx-scale-x: .99;
+    -fx-scale-y: .99;
+}
+.dialog-pane.structural-add-dialog > .button-bar > .container {
+    -fx-alignment: center;
+    -fx-spacing: 14;
+}
+
+/* participant-dialog-final-size-v1 */
+.dialog-pane.structural-add-dialog.structural-participant-dialog {
+    -fx-pref-width: 760;
+    -fx-min-width: 700;
+    -fx-pref-height: 390;
+    -fx-min-height: 370;
+    -fx-max-height: 430;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog > .header-panel {
+    -fx-pref-height: 58;
+    -fx-min-height: 58;
+    -fx-max-height: 58;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog > .content {
+    -fx-padding: 0;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog .structural-add-root {
+    -fx-padding: 12 16;
+    -fx-spacing: 10;
+    -fx-min-height: 190;
+    -fx-pref-height: 190;
+    -fx-max-height: 190;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog .structural-add-context {
+    -fx-padding: 9 12;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog .structural-add-badge {
+    -fx-min-width: 142;
+    -fx-pref-width: 142;
+    -fx-max-width: 142;
+    -fx-alignment: center;
+    -fx-text-overrun: clip;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog .structural-add-fields {
+    -fx-padding: 11 13;
+}
+.dialog-pane.structural-add-dialog.structural-participant-dialog > .button-bar {
+    -fx-padding: 10 16 12 16;
+}
+
+/* bracket-editor-final-review-v1 */
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tools {
+    -fx-padding: 0 0 4 0;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0 16;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-text-overrun: clip;
+    -fx-cursor: hand;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-rotation-button {
+    -fx-background-color: linear-gradient(to bottom, #343023, #292820);
+    -fx-border-color: #75613b;
+    -fx-text-fill: #dfbd72;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-rotation-button:hover {
+    -fx-background-color: #423927;
+    -fx-border-color: #a78349;
+    -fx-text-fill: #f0cf88;
+    -fx-translate-y: -1;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-rotation-button:pressed {
+    -fx-background-color: #29251e;
+    -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button {
+    -fx-min-width: 270;
+    -fx-pref-width: 270;
+    -fx-max-width: 270;
+    -fx-text-overrun: clip;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll {
+    -fx-padding: 9 5 5 10;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical {
+    -fx-pref-width: 11;
+    -fx-background-color: #151a1e;
+    -fx-padding: 1;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #171c20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #485259;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -color-principal;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: -color-principal-presionado;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .increment-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .decrement-button {
+    -fx-background-color: #1b2024;
+    -fx-border-color: transparent;
+    -fx-padding: 2;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .increment-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .decrement-button:hover {
+    -fx-background-color: #242a2e;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .increment-arrow,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: #78848a;
+    -fx-scale-x: .62;
+    -fx-scale-y: .62;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll .corner {
+    -fx-background-color: #151a1e;
+}
+
+/* proposal-review-redesign-v1 */
+.dialog-pane.proposal-review-dialog,
+.dialog-pane.proposal-review-dialog > .content,
+.proposal-review-root {
+    -fx-background-color: #151a1e;
+}
+.dialog-pane.proposal-review-dialog {
+    -fx-pref-width: 1180;
+    -fx-pref-height: 820;
+    -fx-min-width: 900;
+    -fx-min-height: 680;
+}
+.dialog-pane.proposal-review-dialog > .header-panel {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 13 22 12 22;
+}
+.dialog-pane.proposal-review-dialog > .header-panel .label {
+    -fx-text-fill: #e8ecee;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.proposal-review-dialog > .content { -fx-padding: 0; }
+.proposal-fixed-summary { -fx-spacing: 9; }
+.proposal-intro-card,
+.proposal-detail-card {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 10 12;
+}
+.proposal-eyebrow,
+.proposal-section-title {
+    -fx-text-fill: #b6a1cc;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+.proposal-intro-copy,
+.proposal-detail-copy {
+    -fx-text-fill: #c5cdd0;
+    -fx-font-size: 11.5px;
+}
+.proposal-passes {
+    -fx-text-fill: #9fb1b8;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 700;
+}
+.proposal-metric {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #3b4449;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #d9dfe1;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-alignment: center;
+    -fx-padding: 9 10;
+}
+.proposal-metric.proposal-metric-ok {
+    -fx-border-color: #3f6c56;
+    -fx-text-fill: #8fd1b2;
+}
+.proposal-metric.proposal-metric-warning {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-text-fill: #d8b36d;
+}
+.proposal-warning-card {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 3 9 9 3;
+    -fx-background-radius: 9;
+    -fx-padding: 9 11;
+}
+.proposal-warning-title {
+    -fx-text-fill: #e2bd74;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.proposal-warning-item {
+    -fx-text-fill: #dbc89e;
+    -fx-font-size: 10.5px;
+}
+.proposal-review-button,
+.proposal-edit-button {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #eee3f6;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+.proposal-review-button:hover,
+.proposal-edit-button:hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-translate-y: -1;
+}
+.proposal-phase-tabs { -fx-padding: 0; }
+.proposal-phase-tab {
+    -fx-background-color: #22282c;
+    -fx-border-color: #424b50;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #c9d0d2;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 13;
+    -fx-cursor: hand;
+}
+.proposal-phase-tab:hover { -fx-border-color: #68747a; }
+.proposal-phase-tab:selected {
+    -fx-background-color: #302a38;
+    -fx-border-color: #78638d;
+    -fx-text-fill: #eee3f6;
+}
+.proposal-matches-scroll,
+.proposal-matches-scroll > .viewport {
+    -fx-background-color: #151a1e;
+    -fx-background-insets: 0;
+}
+.proposal-matches-scroll {
+    -fx-border-color: #30383d;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 10 5 10 10;
+}
+.proposal-match-grid { -fx-padding: 0 5 0 0; }
+.proposal-match-card {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #3b4449;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.16), 7, .06, 0, 2);
+}
+.proposal-match-header {
+    -fx-background-color: #20262a;
+    -fx-border-width: 0 0 2 0;
+    -fx-border-color: #59666c;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 8 10;
+}
+.proposal-match-phase,
+.proposal-match-number {
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+.proposal-match-number { -fx-text-fill: #9ca8ad; }
+.proposal-match-body { -fx-padding: 10 12 11 12; }
+.proposal-participant {
+    -fx-text-fill: #e3e8ea;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.proposal-versus {
+    -fx-text-fill: #7f8b90;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 900;
+}
+.proposal-match-card.phase-round32 .proposal-match-header { -fx-border-color: #57918e; }
+.proposal-match-card.phase-round16 .proposal-match-header { -fx-border-color: #4b9297; }
+.proposal-match-card.phase-quarter .proposal-match-header { -fx-border-color: #4d88a8; }
+.proposal-match-card.phase-semifinal .proposal-match-header { -fx-border-color: #8f70b7; }
+.proposal-match-card.phase-final .proposal-match-header { -fx-border-color: #d8b84d; }
+.proposal-match-card.phase-qualifying .proposal-match-header { -fx-border-color: #b77c43; }
+.proposal-match-phase.phase-round32 { -fx-text-fill: #7fc1bd; }
+.proposal-match-phase.phase-round16 { -fx-text-fill: #7bc5c8; }
+.proposal-match-phase.phase-quarter { -fx-text-fill: #78afd0; }
+.proposal-match-phase.phase-semifinal { -fx-text-fill: #b291d5; }
+.proposal-match-phase.phase-final { -fx-text-fill: #e1c665; }
+.proposal-match-phase.phase-qualifying { -fx-text-fill: #d39b63; }
+.proposal-local-actions {
+    -fx-background-color: #181d21;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 9 10;
+}
+.proposal-restore-button {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #525d63;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+.proposal-restore-button:hover {
+    -fx-background-color: #2d3438;
+    -fx-border-color: #6c787e;
+    -fx-translate-y: -1;
+}
+.proposal-status-badge {
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 6 10;
+}
+.proposal-status-badge.valid {
+    -fx-background-color: #1c2722;
+    -fx-border-color: #3f6c56;
+    -fx-text-fill: #8fd1b2;
+}
+.proposal-status-badge.warning {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-text-fill: #d8b36d;
+}
+.proposal-status-badge.invalid {
+    -fx-background-color: #2b2022;
+    -fx-border-color: #7d454c;
+    -fx-text-fill: #e59aa1;
+}
+.dialog-pane.proposal-review-dialog > .button-bar {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343d42;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 20 12 20;
+}
+.dialog-pane.proposal-review-dialog > .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 14;
+}
+.dialog-pane.proposal-review-dialog > .button-bar .button {
+    -fx-min-width: 205;
+    -fx-pref-width: 205;
+    -fx-max-width: 205;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 900;
+}
+.proposal-matches-scroll .scroll-bar:vertical {
+    -fx-pref-width: 11;
+    -fx-background-color: #151a1e;
+    -fx-padding: 1;
+}
+.proposal-matches-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #171c20;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+.proposal-matches-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #465057;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.proposal-matches-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: -color-principal;
+}
+.proposal-matches-scroll .scroll-bar:vertical .increment-button,
+.proposal-matches-scroll .scroll-bar:vertical .decrement-button {
+    -fx-background-color: #1b2024;
+    -fx-border-color: transparent;
+    -fx-padding: 2;
+}
+.proposal-matches-scroll .scroll-bar:vertical .increment-arrow,
+.proposal-matches-scroll .scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: #78848a;
+    -fx-scale-x: .62;
+    -fx-scale-y: .62;
+}
+
+/* proposal-review-final-polish-v1 */
+.dialog-pane.proposal-review-dialog {
+    -fx-pref-width: 1100;
+    -fx-pref-height: 720;
+    -fx-min-width: 900;
+    -fx-min-height: 650;
+}
+.dialog-pane.proposal-review-dialog .proposal-review-root {
+    -fx-padding: 12 16 10 16;
+    -fx-spacing: 8;
+}
+.dialog-pane.proposal-review-dialog .proposal-intro-card {
+    -fx-padding: 9 12;
+}
+.dialog-pane.proposal-review-dialog .proposal-detail-copy {
+    -fx-font-size: 10.5px;
+    -fx-padding: 3 0 0 0;
+}
+.dialog-pane.proposal-review-dialog .proposal-passes {
+    -fx-padding: 1 0 0 0;
+}
+.dialog-pane.proposal-review-dialog .proposal-metric {
+    -fx-padding: 8 10;
+}
+.dialog-pane.proposal-review-dialog .proposal-warning-card {
+    -fx-padding: 7 11;
+    -fx-spacing: 5;
+    -fx-translate-x: 2;
+}
+.proposal-warning-count {
+    -fx-text-fill: #bc9f65;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.proposal-review-dialog .proposal-warning-item {
+    -fx-font-size: 10px;
+}
+.dialog-pane.proposal-review-dialog .proposal-matches-scroll {
+    -fx-pref-height: 250;
+    -fx-min-height: 160;
+    -fx-padding: 9 5 9 9;
+}
+.dialog-pane.proposal-review-dialog .proposal-match-card {
+    -fx-min-height: 118;
+}
+.dialog-pane.proposal-review-dialog .proposal-participant {
+    -fx-min-height: 30;
+    -fx-alignment: center-left;
+}
+.dialog-pane.proposal-review-dialog .proposal-local-actions {
+    -fx-padding: 8 10;
+}
+.dialog-pane.proposal-review-dialog .proposal-restore-button {
+    -fx-background-color: #302b23;
+    -fx-border-color: #66543b;
+    -fx-text-fill: #d7bd8b;
+}
+.dialog-pane.proposal-review-dialog .proposal-restore-button:hover {
+    -fx-background-color: #3b3327;
+    -fx-border-color: #a47d43;
+    -fx-text-fill: #f1d09a;
+}
+.dialog-pane.proposal-review-dialog > .button-bar {
+    -fx-padding: 9 18 11 18;
+}
+.dialog-pane.proposal-review-dialog > .button-bar .button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+
+/* proposal-preview-readonly-v1 */
+.dialog-pane.proposal-review-dialog .proposal-metrics {
+    -fx-background-color: #181d21;
+    -fx-border-color: #30383d;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 11;
+}
+.dialog-pane.proposal-review-dialog .proposal-metric {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 0;
+    -fx-text-fill: #aeb8bc;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 800;
+    -fx-alignment: center-left;
+}
+.dialog-pane.proposal-review-dialog .proposal-metric.proposal-metric-ok {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #86c9a8;
+}
+.dialog-pane.proposal-review-dialog .proposal-metric.proposal-metric-warning {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #d8b36d;
+}
+.proposal-metric-separator {
+    -fx-text-fill: #59656b;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button,
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:not(:default) {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #68577b;
+    -fx-text-fill: #eee3f6;
+    -fx-effect: none;
+}
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:hover,
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:not(:default):hover {
+    -fx-background-color: #3d3448;
+    -fx-border-color: #8a72a2;
+    -fx-text-fill: #f5ecfa;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.20), 7, .08, 0, 2);
+}
+.dialog-pane.proposal-review-dialog .button.proposal-preview-button {
+    -fx-background-color: #25312d;
+    -fx-border-color: #48685a;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #b9d8ca;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+.dialog-pane.proposal-review-dialog .button.proposal-preview-button:hover {
+    -fx-background-color: #2d3b35;
+    -fx-border-color: #629078;
+    -fx-text-fill: #d8eee4;
+    -fx-translate-y: -1;
+}
+.dialog-pane.proposal-preview-dialog,
+.dialog-pane.proposal-preview-dialog > .content,
+.proposal-preview-root {
+    -fx-background-color: #151a1e;
+}
+.dialog-pane.proposal-preview-dialog {
+    -fx-pref-width: 1320;
+    -fx-pref-height: 820;
+    -fx-min-width: 960;
+    -fx-min-height: 650;
+}
+.dialog-pane.proposal-preview-dialog > .header-panel {
+    -fx-background-color: #1b2024;
+    -fx-border-color: #343d42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 12 22;
+}
+.dialog-pane.proposal-preview-dialog > .header-panel .label {
+    -fx-text-fill: #e8ecee;
+    -fx-font-size: 18px;
+    -fx-font-weight: 900;
+}
+.dialog-pane.proposal-preview-dialog > .content { -fx-padding: 0; }
+.dialog-pane.proposal-preview-dialog .structural-bracket-shell {
+    -fx-min-height: 560;
+    -fx-pref-height: 660;
+}
+.dialog-pane.proposal-preview-dialog > .button-bar {
+    -fx-background-color: #171c20;
+    -fx-border-color: #343d42;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 10 18 12 18;
+}
+.dialog-pane.proposal-preview-dialog > .button-bar .button {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+
+/* proposal-preview-final-v1 */
+.dialog-pane.proposal-review-dialog .proposal-phase-tab {
+    -fx-padding: 6 11;
+    -fx-font-size: 9px;
+}
+.dialog-pane.proposal-review-dialog .proposal-matches-scroll {
+    -fx-min-height: 150;
+}
+.dialog-pane.proposal-review-dialog .proposal-edit-button,
+.dialog-pane.proposal-review-dialog .proposal-edit-button:hover,
+.dialog-pane.proposal-review-dialog .proposal-edit-button:focused,
+.dialog-pane.proposal-review-dialog .proposal-edit-button:pressed {
+    -fx-background-color: #342d3d;
+    -fx-border-color: #78638d;
+    -fx-text-fill: #eee3f6;
+}
+.dialog-pane.proposal-review-dialog .proposal-edit-button:hover {
+    -fx-background-color: #40364c;
+    -fx-border-color: #967caf;
+    -fx-translate-y: -1;
+}
+.dialog-pane.proposal-preview-dialog {
+    -fx-pref-width: 1280;
+    -fx-pref-height: 720;
+    -fx-min-width: 920;
+    -fx-min-height: 620;
+}
+.dialog-pane.proposal-preview-dialog .structural-bracket-shell {
+    -fx-min-height: 450;
+    -fx-pref-height: 540;
+}
+.proposal-preview-info-bar {
+    -fx-background-color: #181d21;
+    -fx-border-color: #343d42;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 7 10;
+}
+.proposal-preview-readonly-badge {
+    -fx-background-color: #302a38;
+    -fx-border-color: #78638d;
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-text-fill: #e7dcef;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 5 10;
+}
+.proposal-preview-structural-note {
+    -fx-text-fill: #8f9ba0;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 700;
+}
+.proposal-preview-warning-card {
+    -fx-background-color: #29271f;
+    -fx-border-color: #77613c;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 3 8 8 3;
+    -fx-background-radius: 8;
+    -fx-padding: 7 10;
+}
+.proposal-preview-warning-title {
+    -fx-text-fill: #dfba73;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.proposal-preview-warning-item {
+    -fx-text-fill: #d6c397;
+    -fx-font-size: 9.5px;
+}
+.structural-legend-title {
+    -fx-text-fill: #879399;
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+    -fx-padding: 0 5 0 0;
+}
+
+/* preview-clipping-fix-v1 */
+.dialog-pane.proposal-preview-dialog {
+    -fx-pref-height: 700;
+    -fx-min-height: 600;
+}
+.dialog-pane.proposal-preview-dialog .proposal-preview-root {
+    -fx-padding: 8 10 8 10;
+    -fx-spacing: 6;
+}
+.dialog-pane.proposal-preview-dialog .proposal-preview-info-bar {
+    -fx-padding: 5 9;
+}
+.dialog-pane.proposal-preview-dialog .proposal-preview-warning-card {
+    -fx-padding: 6 9;
+    -fx-spacing: 10;
+}
+.dialog-pane.proposal-preview-dialog .proposal-preview-warning-title {
+    -fx-min-width: 155;
+}
+.dialog-pane.proposal-preview-dialog .proposal-preview-warning-item {
+    -fx-text-overrun: ellipsis;
+}
+.dialog-pane.proposal-preview-dialog .structural-toolbar {
+    -fx-padding: 6 8;
+}
+.dialog-pane.proposal-preview-dialog .structural-bracket-shell {
+    -fx-min-height: 420;
+    -fx-pref-height: 520;
+}
+.dialog-pane.proposal-preview-dialog > .button-bar {
+    -fx-padding: 8 16 10 16;
+}
+
+/* anchored-actions-advanced-layout-v1 */
+.dialog-pane.proposal-review-dialog .proposal-review-root {
+    -fx-fill-height: true;
+}
+.dialog-pane.proposal-review-dialog .proposal-matches-scroll {
+    -fx-min-height: 180;
+    -fx-max-height: infinity;
+}
+.dialog-pane.proposal-review-dialog .proposal-local-actions {
+    -fx-min-height: 58;
+    -fx-pref-height: 58;
+    -fx-max-height: 58;
+}
+.editor-advanced-view {
+    -fx-alignment: top-center;
+}
+.advanced-structure-card {
+    -fx-padding: 24 28 26 28;
+}
+.advanced-structure-columns {
+    -fx-alignment: top-left;
+}
+.advanced-structure-column {
+    -fx-pref-width: 520;
+    -fx-min-width: 320;
+}
+.advanced-structure-column .button {
+    -fx-min-width: 300;
+    -fx-pref-width: 300;
+}
+
+/* advanced-layout-panel-v2 */
+.editor-advanced-view {
+    -fx-alignment: top-center;
+}
+.advanced-structure-card-v2 {
+    -fx-background-color: #181e22;
+    -fx-border-color: #3f4850;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 24 28 26 28;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 14, 0.14, 0, 4);
+}
+.advanced-operation-panel {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #313a40;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 16;
+}
+.advanced-summary-wide {
+    -fx-min-height: 112;
+    -fx-pref-height: 112;
+}
+.advanced-notices-row {
+    -fx-spacing: 14;
+}
+.advanced-equal-notice {
+    -fx-pref-width: 560;
+    -fx-min-width: 340;
+}
+.advanced-equal-notice .label {
+    -fx-wrap-text: true;
+}
+.advanced-editor-action {
+    -fx-alignment: center-right;
+}
+.advanced-editor-help {
+    -fx-text-fill: #8f9aa0;
+    -fx-font-size: 9px;
+    -fx-font-weight: 700;
+}
+.advanced-editor-action .button {
+    -fx-min-width: 310;
+    -fx-pref-width: 310;
+    -fx-max-width: 310;
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+}

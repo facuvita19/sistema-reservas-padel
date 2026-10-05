@@ -19,6 +19,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -62,38 +63,36 @@ public class EstructuraManualTorneoDialog {
     private void construir() {
         dialogo.setTitle("Configuracion estructural manual");
         dialogo.initStyle(javafx.stage.StageStyle.DECORATED);
-        dialogo.setHeaderText("Crea, elimina y conecta los partidos del cuadro");
+        dialogo.setHeaderText("Editor estructural del cuadro");
         ButtonType aplicarTipo = new ButtonType("APLICAR ESTRUCTURA",
                 ButtonBar.ButtonData.OK_DONE);
         dialogo.getDialogPane().getButtonTypes().setAll(aplicarTipo,
                 new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
         aplicar = (Button) dialogo.getDialogPane().lookupButton(aplicarTipo);
-        aplicar.setStyle("-fx-background-color:#4f91b5;"
-                + "-fx-text-fill:#ffffff;-fx-font-weight:900;"
-                + "-fx-background-radius:9;-fx-padding:11 24;");
+        aplicar.getStyleClass().add("structural-editor-apply");
+        Button cancelar = (Button) dialogo.getDialogPane().lookupButton(
+                dialogo.getDialogPane().getButtonTypes().get(1));
+        cancelar.getStyleClass().add("structural-editor-cancel");
 
-        Label seccion = etiqueta("EDITOR ESTRUCTURAL DEL CUADRO",
-                "#91d7f4", 12, false);
-        seccion.setStyle(seccion.getStyle()
-                + "-fx-font-weight:900;-fx-letter-spacing:0.8px;");
-        Label ayuda = etiqueta(
-                "Organiza las fases, el orden de los partidos y el origen "
-                + "de cada plaza. Podes usar parejas clasificadas o ganadores "
-                + "de encuentros anteriores.", "#d7e4e9", 13, true);
-        Label aviso = etiqueta(
-                "Los cambios se guardan solamente al aplicar la estructura. "
-                + "Cancelar conserva la propuesta anterior.",
-                "#ffd58a", 12, true);
-        VBox introduccion = new VBox(6, seccion, ayuda, aviso);
-        introduccion.setPadding(new Insets(14));
-        introduccion.setStyle("-fx-background-color:#102532;"
-                + "-fx-border-color:#315f79;-fx-border-radius:10;"
-                + "-fx-background-radius:10;");
+        // cabecera-modo-reutilizada-v1
+        Label modo = new Label("MODO AVANZADO");
+        modo.setWrapText(true);
+        modo.setMaxWidth(Double.MAX_VALUE);
+        modo.getStyleClass().add("bracket-editor-mode-badge");
+        Tooltip ayudaModo = new Tooltip(
+                "Crea, elimina y conecta partidos para construir "
+                + "una llave personalizada.\n\n"
+                + "Los cambios solo se guardan al aplicar. "
+                + "Cancelar conserva la propuesta anterior.");
+        ayudaModo.setWrapText(true);
+        ayudaModo.setMaxWidth(430);
+        modo.setTooltip(ayudaModo);
+        VBox contextoModo = new VBox(modo);
+        contextoModo.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        contextoModo.getStyleClass().add("advanced");
         Button agregar = new Button("+  AGREGAR PARTIDO");
-        agregar.setStyle("-fx-background-color:#245875;"
-                + "-fx-text-fill:#ffffff;-fx-font-weight:900;"
-                + "-fx-background-radius:8;-fx-padding:10 18;"
-                + "-fx-cursor:hand;");
+        agregar.getStyleClass().addAll("structural-editor-button",
+                "structural-editor-button-primary");
         agregar.setOnAction(e -> agregarFila(null));
 
         for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
@@ -103,9 +102,7 @@ public class EstructuraManualTorneoDialog {
         ScrollPane scroll = new ScrollPane(filas);
         scroll.setFitToWidth(true);
         scroll.setPrefViewportHeight(520);
-        scroll.setStyle("-fx-background:#08151e;"
-                + "-fx-background-color:#08151e;"
-                + "-fx-border-color:transparent;");
+        scroll.getStyleClass().add("structural-editor-detail-scroll");
 
         javafx.scene.Node grafica = crearVistaGrafica();
         contenedorVistas.getChildren().setAll(grafica, scroll);
@@ -114,8 +111,9 @@ public class EstructuraManualTorneoDialog {
         scroll.setVisible(false);
         scroll.setManaged(false);
 
-        VBox barraAcciones = new VBox(8, agregar);
-        barraAcciones.setPadding(new Insets(2, 0, 2, 0));
+        HBox barraAcciones = new HBox(agregar);
+        barraAcciones.setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+        barraAcciones.getStyleClass().add("structural-editor-context-actions");
 
         ToggleButton botonLlave = new ToggleButton("VISTA DE LLAVE");
         ToggleButton botonDetalle = new ToggleButton("VISTA DETALLADA");
@@ -131,26 +129,33 @@ public class EstructuraManualTorneoDialog {
                 return;
             }
             boolean llave = actual == botonLlave;
-            grafica.setVisible(llave);
-            grafica.setManaged(llave);
+            javafx.scene.Node vistaGraficaActual = contenedorVistas.getChildren().isEmpty()
+                    ? null : contenedorVistas.getChildren().get(0);
+            if (vistaGraficaActual != null) {
+                vistaGraficaActual.setVisible(llave);
+                vistaGraficaActual.setManaged(llave);
+            }
             scroll.setVisible(!llave);
             scroll.setManaged(!llave);
             barraAcciones.setVisible(!llave);
             barraAcciones.setManaged(!llave);
-            introduccion.setVisible(!llave);
-            introduccion.setManaged(!llave);
         });
-        HBox selectorVista = new HBox(8, botonLlave, botonDetalle);
+        javafx.scene.layout.Region separadorNavegacion =
+                new javafx.scene.layout.Region();
+        HBox.setHgrow(separadorNavegacion, Priority.ALWAYS);
+        HBox selectorVista = new HBox(8, botonLlave, botonDetalle,
+                separadorNavegacion, barraAcciones, contextoModo);
+        selectorVista.getStyleClass().addAll(
+                "structural-editor-tabs",
+                "bracket-editor-navigation");
         selectorVista.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
         barraAcciones.setVisible(false);
         barraAcciones.setManaged(false);
-        introduccion.setVisible(false);
-        introduccion.setManaged(false);
-        VBox contenido = new VBox(10, introduccion, selectorVista,
-                barraAcciones, contenedorVistas, estado);
+        VBox contenido = new VBox(8, selectorVista,
+                contenedorVistas, estado);
         VBox.setVgrow(contenedorVistas, Priority.ALWAYS);
-        contenido.setPadding(new Insets(18));
-        contenido.setStyle("-fx-background-color:#08151e;");
+        contenido.setPadding(new Insets(14, 18, 14, 18));
+        contenido.getStyleClass().add("structural-editor-root");
         contenido.setPrefWidth(1040);
         dialogo.getDialogPane().setContent(contenido);
         dialogo.getDialogPane().setPrefSize(1380, 780);
@@ -169,6 +174,8 @@ public class EstructuraManualTorneoDialog {
         });
         dialogo.setResizable(true);
         Dialogos.preparar(dialogo, "dialog-tournament-bracket-manual");
+        dialogo.getDialogPane().getStyleClass().add("structural-editor-dialog");
+        estado.getStyleClass().add("structural-editor-status");
         vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                 Navegacion.getConfiguracionActual());
 
@@ -266,9 +273,7 @@ public class EstructuraManualTorneoDialog {
         javafx.scene.control.CheckBox incluirPrevias =
                 new javafx.scene.control.CheckBox("INCLUIR FASES PREVIAS");
         incluirPrevias.setFocusTraversable(false);
-        incluirPrevias.setStyle("-fx-text-fill:#b9ced8;"
-                + "-fx-font-size:11px;-fx-font-weight:800;"
-                + "-fx-cursor:hand;");
+        incluirPrevias.getStyleClass().add("structural-add-previous");
         incluirPrevias.selectedProperty().addListener((o, anterior, incluir) -> {
             String seleccionActual = fase.getValue();
             List<String> opciones = incluir
@@ -282,40 +287,33 @@ public class EstructuraManualTorneoDialog {
                 fase.setValue(opciones.get(0));
             }
         });
-        fase.setCellFactory(lista -> celdaSelectorAnimada(
-                valor -> textoCapacidadFase(valor)));
-        fase.setButtonCell(new javafx.scene.control.ListCell<>() {
-            @Override
-            protected void updateItem(String valor, boolean vacia) {
-                super.updateItem(valor, vacia);
-                setText(vacia || valor == null
-                        ? null : textoCapacidadFase(valor));
-                setStyle("-fx-background-color:#0a1922;"
-                        + "-fx-text-fill:#f4fbff;-fx-padding:6 9;");
-            }
-        });
+        fase.setCellFactory(lista -> celdaAgregarPartido(
+                valor -> textoCapacidadFase(valor), false));
+        fase.setButtonCell(celdaAgregarPartido(
+                valor -> textoCapacidadFase(valor), true));
 
         ComboBox<Integer> rondaNueva = new ComboBox<>();
         rondaNueva.setItems(FXCollections.observableArrayList(
                 java.util.stream.IntStream.rangeClosed(1, 10)
                         .boxed().toList()));
         estiloComboNumerico(rondaNueva, 130);
-        rondaNueva.setCellFactory(lista -> celdaSelectorAnimada(
-                valor -> String.valueOf(valor)));
-        rondaNueva.setButtonCell(celdaBotonSelector(
-                valor -> String.valueOf(valor)));
+        rondaNueva.setCellFactory(lista -> celdaAgregarPartido(
+                valor -> String.valueOf(valor), false));
+        rondaNueva.setButtonCell(celdaAgregarPartido(
+                valor -> String.valueOf(valor), true));
 
         ComboBox<Integer> ordenNuevo = new ComboBox<>();
         ordenNuevo.setItems(FXCollections.observableArrayList(
                 java.util.stream.IntStream.rangeClosed(1, 32)
                         .boxed().toList()));
         estiloComboNumerico(ordenNuevo, 130);
-        ordenNuevo.setCellFactory(lista -> celdaSelectorAnimada(
-                valor -> String.valueOf(valor)));
-        ordenNuevo.setButtonCell(celdaBotonSelector(
-                valor -> String.valueOf(valor)));
+        ordenNuevo.setCellFactory(lista -> celdaAgregarPartido(
+                valor -> String.valueOf(valor), false));
+        ordenNuevo.setButtonCell(celdaAgregarPartido(
+                valor -> String.valueOf(valor), true));
 
-        Label capacidad = etiqueta("", "#91d7f4", 12, true);
+        Label capacidad = etiqueta("", "#bfa9d3", 12, true);
+        capacidad.getStyleClass().add("structural-add-capacity");
         Runnable actualizarSugerencias = () -> {
             String seleccionada = fase.getValue();
             if (seleccionada == null || seleccionada.isBlank()) return;
@@ -327,14 +325,26 @@ public class EstructuraManualTorneoDialog {
                 actualizarSugerencias.run());
         actualizarSugerencias.run();
 
+        Label insigniaAgregar = new Label("NUEVO PARTIDO");
+        insigniaAgregar.getStyleClass().add("structural-add-badge");
         Label ayuda = etiqueta(
-                "Selecciona una fase con lugares disponibles. Las fases "
-                + "previas permanecen ocultas salvo que decidas incluirlas. "
-                + "La ronda y el numero se sugieren automaticamente.",
-                "#d7e4e9", 13, true);
+                "Selecciona una fase con lugares disponibles. La ronda y el "
+                + "numero se sugieren automaticamente.",
+                "#c2c9cc", 12, true);
+        ayuda.getStyleClass().add("structural-add-help");
         GridPane campos = new GridPane();
-        campos.setHgap(12);
-        campos.setVgap(12);
+        campos.setHgap(16);
+        campos.setVgap(10);
+        campos.getStyleClass().add("structural-add-fields");
+        javafx.scene.layout.ColumnConstraints etiquetasColumna =
+                new javafx.scene.layout.ColumnConstraints();
+        etiquetasColumna.setMinWidth(145);
+        etiquetasColumna.setPrefWidth(145);
+        javafx.scene.layout.ColumnConstraints controlesColumna =
+                new javafx.scene.layout.ColumnConstraints();
+        controlesColumna.setHgrow(Priority.ALWAYS);
+        campos.getColumnConstraints().setAll(
+                etiquetasColumna, controlesColumna);
         campos.add(etiqueta("FASE", "#91b3c3", 11, false), 0, 0);
         campos.add(fase, 1, 0);
         campos.add(incluirPrevias, 1, 1);
@@ -347,14 +357,34 @@ public class EstructuraManualTorneoDialog {
         Label aviso = etiqueta(
                 "Las dos plazas se agregaran sin asignar y deberan "
                 + "completarse antes de aplicar la estructura.",
-                "#ffd58a", 12, true);
-        VBox contenidoNuevo = new VBox(13, ayuda, capacidad, campos, aviso);
-        contenidoNuevo.setPadding(new Insets(18));
-        contenidoNuevo.setStyle("-fx-background-color:#0b1821;");
+                "#d8b36d", 11, true);
+        aviso.getStyleClass().add("structural-add-note");
+        VBox contexto = new VBox(6, insigniaAgregar, ayuda, capacidad);
+        contexto.getStyleClass().add("structural-add-context");
+        fase.setStyle("");
+        rondaNueva.setStyle("");
+        ordenNuevo.setStyle("");
+        fase.getStyleClass().addAll("structural-add-combo",
+                "structural-add-phase");
+        rondaNueva.getStyleClass().addAll("structural-add-combo",
+                "structural-add-number");
+        ordenNuevo.getStyleClass().addAll("structural-add-combo",
+                "structural-add-number");
+        VBox contenidoNuevo = new VBox(12, contexto, campos, aviso);
+        contenidoNuevo.getStyleClass().add("structural-add-root");
         dialogoNuevo.getDialogPane().setContent(contenidoNuevo);
-        dialogoNuevo.getDialogPane().setPrefWidth(680);
+        dialogoNuevo.getDialogPane().setPrefSize(760, 560);
+        dialogoNuevo.getDialogPane().setMinSize(700, 530);
         Dialogos.preparar(dialogoNuevo,
                 "dialog-tournament-bracket-manual");
+        dialogoNuevo.getDialogPane().getStyleClass().add(
+                "structural-add-dialog");
+        Button botonAgregar = (Button) dialogoNuevo.getDialogPane()
+                .lookupButton(agregarTipo);
+        Button botonCancelar = (Button) dialogoNuevo.getDialogPane()
+                .lookupButton(cancelarTipo);
+        botonAgregar.getStyleClass().add("structural-add-confirm");
+        botonCancelar.getStyleClass().add("structural-add-cancel");
         vista.TemaDinamico.aplicar(dialogoNuevo.getDialogPane(),
                 Navegacion.getConfiguracionActual());
         dialogoNuevo.setResultConverter(tipo -> tipo == agregarTipo
@@ -704,9 +734,43 @@ public class EstructuraManualTorneoDialog {
                 .filter(r -> r != null)
                 .forEach(opciones::add);
         for (Fila fila : ediciones) fila.actualizarOpciones(opciones);
-        estado.setText("Partidos configurados: " + ediciones.size()
-                + " | Clasificados disponibles: "
-                + propuesta.getClasificados().size());
+        actualizarEstadoGeneral();
+    }
+
+    private void actualizarEstadoGeneral() {
+        List<String> errores = validar();
+        estado.getStyleClass().removeAll(
+                "structural-status-valid",
+                "structural-status-warning",
+                "structural-status-invalid");
+
+        String resumen = ediciones.size() + " PARTIDOS  ·  "
+                + propuesta.getClasificados().size() + " CLASIFICADOS";
+        if (errores.isEmpty()) {
+            estado.setText("ESTRUCTURA VALIDA  ·  " + resumen
+                    + "  ·  SIN PROBLEMAS");
+            estado.getStyleClass().add("structural-status-valid");
+            return;
+        }
+
+        boolean invalida = errores.stream().anyMatch(error -> {
+            String valor = error == null ? "" : error.toUpperCase();
+            return valor.contains("PARTIDO REPETIDO")
+                    || valor.contains("ORIGEN INEXISTENTE")
+                    || valor.contains("SE REFERENCIA A SI MISMO")
+                    || valor.contains("EXACTAMENTE UNA FINAL")
+                    || valor.contains("RONDA")
+                    || valor.contains("CICLO");
+        });
+        estado.setText((invalida ? "ESTRUCTURA INVALIDA"
+                : "REQUIERE ATENCION") + "  ·  " + resumen
+                + "  ·  " + errores.size()
+                + (errores.size() == 1 ? " PROBLEMA" : " PROBLEMAS"));
+        estado.getStyleClass().add(invalida
+                ? "structural-status-invalid"
+                : "structural-status-warning");
+        estado.setTooltip(new javafx.scene.control.Tooltip(
+                String.join("\n", errores)));
     }
 
     private List<String> validar() {
@@ -745,7 +809,8 @@ public class EstructuraManualTorneoDialog {
             if (cantidad > 1) errores.add(clasificado + " esta repetido.");
         }
         for (Fila fila : ediciones) {
-            for (String origen : List.of(fila.p1.getValue(), fila.p2.getValue())) {
+            for (String origen : new String[] {
+                    fila.p1.getValue(), fila.p2.getValue() }) {
                 if (origen != null && origen.startsWith("Ganador ")
                         && !ganadores.contains(origen)) {
                     errores.add("ORIGEN INEXISTENTE:\n"
@@ -813,23 +878,7 @@ public class EstructuraManualTorneoDialog {
     }
 
     private static void estiloSelectorVista(ToggleButton boton) {
-        boton.setStyle("-fx-background-color:#102532;"
-                + "-fx-border-color:#3d6f88;-fx-border-radius:8;"
-                + "-fx-background-radius:8;-fx-text-fill:#eaf4f8;"
-                + "-fx-font-weight:900;-fx-padding:9 16;"
-                + "-fx-cursor:hand;");
-        boton.selectedProperty().addListener((obs, antes, seleccionado) ->
-                boton.setStyle(seleccionado
-                        ? "-fx-background-color:#315f79;"
-                            + "-fx-border-color:#91d7f4;"
-                            + "-fx-border-radius:8;-fx-background-radius:8;"
-                            + "-fx-text-fill:#ffffff;-fx-font-weight:900;"
-                            + "-fx-padding:9 16;-fx-cursor:hand;"
-                        : "-fx-background-color:#102532;"
-                            + "-fx-border-color:#3d6f88;"
-                            + "-fx-border-radius:8;-fx-background-radius:8;"
-                            + "-fx-text-fill:#eaf4f8;-fx-font-weight:900;"
-                            + "-fx-padding:9 16;-fx-cursor:hand;"));
+        boton.getStyleClass().add("structural-editor-tab");
     }
 
     private static void estiloCombo(ComboBox<String> combo, double ancho) {
@@ -955,6 +1004,26 @@ public class EstructuraManualTorneoDialog {
         };
     }
 
+    private <T> javafx.scene.control.ListCell<T> celdaAgregarPartido(
+            java.util.function.Function<T, String> textoVisible,
+            boolean celdaBoton) {
+        return new javafx.scene.control.ListCell<>() {
+            {
+                getStyleClass().add(celdaBoton
+                        ? "structural-add-button-cell"
+                        : "structural-add-popup-cell");
+            }
+
+            @Override
+            protected void updateItem(T valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setText(vacia || valor == null
+                        ? null : textoVisible.apply(valor));
+                setGraphic(null);
+            }
+        };
+    }
+
     private record ConfiguracionNuevoPartido(
             String fase, Integer ronda, Integer orden) {
     }
@@ -981,46 +1050,97 @@ public class EstructuraManualTorneoDialog {
             estiloCombo(instancia, 170);
             estiloComboNumerico(ronda, 92);
             estiloComboNumerico(orden, 92);
+            instancia.setStyle("");
+            ronda.setStyle("");
+            orden.setStyle("");
+            instancia.getStyleClass().addAll(
+                    "structural-detail-combo", "structural-detail-phase");
+            ronda.getStyleClass().addAll(
+                    "structural-detail-combo", "structural-detail-number");
+            orden.getStyleClass().addAll(
+                    "structural-detail-combo", "structural-detail-number");
+            configurarComboDetalle(instancia, valor -> valor);
+            configurarComboDetalle(ronda, valor -> String.valueOf(valor));
+            configurarComboDetalle(orden, valor -> String.valueOf(valor));
+
             Button eliminar = new Button("ELIMINAR");
-            eliminar.setStyle("-fx-background-color:#43262b;"
-                    + "-fx-border-color:#a95660;-fx-text-fill:#ffd7da;"
-                    + "-fx-font-weight:900;-fx-border-radius:7;"
-                    + "-fx-background-radius:7;-fx-padding:8 14;"
-                    + "-fx-cursor:hand;");
+            eliminar.getStyleClass().add("structural-detail-delete");
             eliminar.setOnAction(e -> quitar(this));
-            Label faseLabel = etiqueta("FASE", "#91b3c3", 11, false);
-            Label rondaLabel = etiqueta("RONDA", "#91b3c3", 11, false);
-            Label ordenLabel = etiqueta("ORDEN", "#91b3c3", 11, false);
-            HBox encabezado = new HBox(10, faseLabel, instancia,
-                    rondaLabel, ronda, ordenLabel, orden, eliminar);
-            encabezado.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+            Label tituloPartido = new Label();
+            tituloPartido.getStyleClass().add("structural-detail-card-title");
+            javafx.scene.layout.Region espacioTitulo =
+                    new javafx.scene.layout.Region();
+            HBox.setHgrow(espacioTitulo, Priority.ALWAYS);
+            HBox cabeceraTarjeta = new HBox(10, tituloPartido,
+                    espacioTitulo, eliminar);
+            cabeceraTarjeta.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            cabeceraTarjeta.getStyleClass().add(
+                    "structural-detail-card-header");
+
+            Label faseLabel = etiqueta("FASE", "#aeb8bc", 10, false);
+            Label rondaLabel = etiqueta("RONDA", "#aeb8bc", 10, false);
+            Label ordenLabel = etiqueta("ORDEN", "#aeb8bc", 10, false);
+            faseLabel.getStyleClass().add("structural-detail-field-label");
+            rondaLabel.getStyleClass().add("structural-detail-field-label");
+            ordenLabel.getStyleClass().add("structural-detail-field-label");
+            HBox controles = new HBox(10, faseLabel, instancia,
+                    rondaLabel, ronda, ordenLabel, orden);
+            controles.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            controles.getStyleClass().add("structural-detail-controls");
             GridPane plazas = new GridPane();
-            plazas.setHgap(10);
-            plazas.setVgap(8);
-            plazas.add(etiqueta("Origen 1", "#b9ced8", 12, false), 0, 0);
+            plazas.setHgap(12);
+            plazas.setVgap(7);
+            plazas.getStyleClass().add("structural-detail-origins");
+            Label origen1Label = etiqueta("ORIGEN 1", "#aeb8bc", 10, false);
+            Label origen2Label = etiqueta("ORIGEN 2", "#aeb8bc", 10, false);
+            origen1Label.getStyleClass().add("structural-detail-origin-label");
+            origen2Label.getStyleClass().add("structural-detail-origin-label");
+            plazas.add(origen1Label, 0, 0);
             plazas.add(p1, 1, 0);
-            plazas.add(etiqueta("Origen 2", "#b9ced8", 12, false), 0, 1);
+            plazas.add(origen2Label, 0, 1);
             plazas.add(p2, 1, 1);
             estiloCombo(p1, 760);
             estiloCombo(p2, 760);
+            p1.setStyle("");
+            p2.setStyle("");
+            p1.getStyleClass().addAll(
+                    "structural-detail-combo", "structural-detail-origin");
+            p2.getStyleClass().addAll(
+                    "structural-detail-combo", "structural-detail-origin");
             p1.setMaxWidth(Double.MAX_VALUE);
             p2.setMaxWidth(Double.MAX_VALUE);
             GridPane.setHgrow(p1, Priority.ALWAYS);
             GridPane.setHgrow(p2, Priority.ALWAYS);
-            raiz.getChildren().addAll(encabezado, plazas);
-            raiz.setPadding(new Insets(14));
-            raiz.setStyle("-fx-background-color:#0f2633;"
-                    + "-fx-border-color:#315f79;-fx-border-width:1;"
-                    + "-fx-border-radius:11;-fx-background-radius:11;"
-                    + "-fx-effect:dropshadow(gaussian,rgba(0,0,0,0.26),"
-                    + "10,0.12,0,3);");
+            javafx.scene.layout.ColumnConstraints etiquetaOrigen =
+                    new javafx.scene.layout.ColumnConstraints();
+            etiquetaOrigen.setMinWidth(72);
+            etiquetaOrigen.setPrefWidth(72);
+            javafx.scene.layout.ColumnConstraints controlOrigen =
+                    new javafx.scene.layout.ColumnConstraints();
+            controlOrigen.setHgrow(Priority.ALWAYS);
+            plazas.getColumnConstraints().setAll(
+                    etiquetaOrigen, controlOrigen);
+            raiz.getChildren().addAll(cabeceraTarjeta, controles, plazas);
+            raiz.getStyleClass().add("structural-detail-card");
+            Runnable actualizarTitulo = () -> tituloPartido.setText(
+                    nombrePartidoDetalle(instancia.getValue(),
+                            orden.getValue()));
+            actualizarTitulo.run();
             if (cruce != null) {
                 p1.setValue(cruce.getParticipante1());
                 p2.setValue(cruce.getParticipante2());
             }
-            instancia.valueProperty().addListener((o, a, b) -> EstructuraManualTorneoDialog.this.actualizarOpciones());
-            ronda.valueProperty().addListener((o, a, b) -> EstructuraManualTorneoDialog.this.actualizarOpciones());
-            orden.valueProperty().addListener((o, a, b) -> EstructuraManualTorneoDialog.this.actualizarOpciones());
+            instancia.valueProperty().addListener((o, a, b) -> {
+                actualizarTitulo.run();
+                EstructuraManualTorneoDialog.this.actualizarOpciones();
+            });
+            ronda.valueProperty().addListener((o, a, b) ->
+                    EstructuraManualTorneoDialog.this.actualizarOpciones());
+            orden.valueProperty().addListener((o, a, b) -> {
+                actualizarTitulo.run();
+                EstructuraManualTorneoDialog.this.actualizarOpciones();
+            });
         }
 
         private String clave() {
@@ -1042,29 +1162,52 @@ public class EstructuraManualTorneoDialog {
             configurarCeldas(p2);
         }
         private void configurarCeldas(ComboBox<String> combo) {
-            combo.setCellFactory(v -> new javafx.scene.control.ListCell<>() {
-                @Override
-                protected void updateItem(String valor, boolean vacia) {
-                    super.updateItem(valor, vacia);
-                    setText(vacia || valor == null ? null : mostrar(valor));
-                    setTextFill(javafx.scene.paint.Color.web("#f4fbff"));
-                    setStyle((isSelected()
-                            ? "-fx-background-color:#315f79;"
-                            : "-fx-background-color:#102532;")
-                            + "-fx-text-fill:#f4fbff;-fx-padding:8 10;");
-                }
-            });
-            combo.setButtonCell(new javafx.scene.control.ListCell<>() {
-                @Override
-                protected void updateItem(String valor, boolean vacia) {
-                    super.updateItem(valor, vacia);
-                    setText(vacia || valor == null ? null : mostrar(valor));
-                    setTextFill(javafx.scene.paint.Color.web("#f4fbff"));
-                    setStyle("-fx-background-color:#0a1922;"
-                            + "-fx-text-fill:#f4fbff;-fx-padding:7 10;");
-                }
-            });
+            configurarComboDetalle(combo, valor -> mostrar(valor));
         }
+
+        private <T> void configurarComboDetalle(ComboBox<T> combo,
+                java.util.function.Function<T, String> textoVisible) {
+            combo.setCellFactory(v -> celdaComboDetalle(
+                    textoVisible, false));
+            combo.setButtonCell(celdaComboDetalle(textoVisible, true));
+        }
+
+        private <T> javafx.scene.control.ListCell<T> celdaComboDetalle(
+                java.util.function.Function<T, String> textoVisible,
+                boolean boton) {
+            return new javafx.scene.control.ListCell<>() {
+                {
+                    getStyleClass().add(boton
+                            ? "structural-detail-button-cell"
+                            : "structural-detail-popup-cell");
+                }
+
+                @Override
+                protected void updateItem(T valor, boolean vacia) {
+                    super.updateItem(valor, vacia);
+                    setText(vacia || valor == null
+                            ? null : textoVisible.apply(valor));
+                    setGraphic(null);
+                    if (boton && valor != null) {
+                        Tooltip tooltip = new Tooltip(
+                                textoVisible.apply(valor));
+                        tooltip.setWrapText(true);
+                        tooltip.setMaxWidth(520);
+                        setTooltip(tooltip);
+                    } else {
+                        setTooltip(null);
+                    }
+                }
+            };
+        }
+
+        private String nombrePartidoDetalle(String fase, Integer numero) {
+            String faseVisible = fase == null || fase.isBlank()
+                    ? "PARTIDO SIN FASE" : fase.toUpperCase();
+            return faseVisible + "  ·  PARTIDO "
+                    + (numero == null ? "?" : numero);
+        }
+
         private CrucePropuestoTorneo crearCruce() {
             return new CrucePropuestoTorneo(instancia.getValue(),
                     ronda.getValue(), orden.getValue(),

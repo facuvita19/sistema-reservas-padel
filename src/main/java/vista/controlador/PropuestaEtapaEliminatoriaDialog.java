@@ -1,27 +1,33 @@
 package vista.controlador;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-import javafx.collections.FXCollections;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import negocio.CrucePropuestoTorneo;
+import negocio.PropuestaEtapaEliminatoria;
 import negocio.TorneoInscripcion;
 import negocio.TorneoInscripcionJugador;
-import dao.TorneoInscripcionDAO;
-import dao.TorneoInscripcionDAOMySQL;
-import negocio.PropuestaEtapaEliminatoria;
 import servicio.ConfirmacionPropuestaEliminatoriaService;
 import servicio.PropuestaEtapaEliminatoriaService;
 import vista.Dialogos;
@@ -30,7 +36,7 @@ import vista.Navegacion;
 public class PropuestaEtapaEliminatoriaDialog {
     private final TorneoInscripcionDAO inscripcionDAO =
             new TorneoInscripcionDAOMySQL();
-    private final java.util.Map<String, String> nombresPorReferencia =
+    private final Map<String, String> nombresPorReferencia =
             new java.util.HashMap<>();
     private final PropuestaEtapaEliminatoriaService service =
             new PropuestaEtapaEliminatoriaService();
@@ -39,12 +45,23 @@ public class PropuestaEtapaEliminatoriaDialog {
     private final PropuestaEtapaEliminatoria propuesta;
     private final PropuestaEtapaEliminatoria automaticaOriginal;
     private final Dialog<PropuestaEtapaEliminatoria> dialogo = new Dialog<>();
-    private final VBox contenedorCruces = new VBox(8);
-    private final Label estado = etiqueta("", "#d7e4e9", 13, true);
-    private final VBox tarjetaAdvertencias = new VBox(8);
-    private final VBox listaAdvertencias = new VBox(5);
-    private List<String> advertenciasActuales = List.of();
+    private final HBox selectorFases = new HBox(7);
+    private final ToggleGroup grupoFases = new ToggleGroup();
+    private final GridPane grillaCruces = new GridPane();
+    private ScrollPane scrollCruces;
+    private final VBox listaAdvertencias = new VBox(4);
+    private final VBox tarjetaAdvertencias = new VBox(7);
+    private final Label estado = new Label();
+    private final Label metricaClasificados = new Label();
+    private final Label metricaPartidos = new Label();
+    private final Label metricaPases = new Label();
+    private final Label metricaAdvertencias = new Label();
+    private final Label explicacion = new Label();
+    private final Label pases = new Label();
     private final long categoriaId;
+    private List<String> advertenciasActuales = List.of();
+    private String faseSeleccionada;
+    private int columnasActuales = 2;
     private javafx.scene.Node botonConfirmar;
 
     public PropuestaEtapaEliminatoriaDialog(long categoriaId) {
@@ -60,242 +77,229 @@ public class PropuestaEtapaEliminatoriaDialog {
     }
 
     private void construir() {
+        // proposal-review-redesign-v1
         dialogo.setTitle("Propuesta de etapa eliminatoria");
-        dialogo.setHeaderText("Revisa la estructura antes de generar partidos");
+        dialogo.setHeaderText("Revisar propuesta eliminatoria");
         ButtonType continuar = new ButtonType("CONFIRMAR Y GENERAR",
                 ButtonBar.ButtonData.OK_DONE);
         ButtonType cerrar = new ButtonType("CERRAR",
                 ButtonBar.ButtonData.CANCEL_CLOSE);
         dialogo.getDialogPane().getButtonTypes().setAll(continuar, cerrar);
 
-        Label introduccion = etiqueta(
-                "Generacion automatica de los cruces basada en terminos "
-                + "deportivos preestablecidos, de no estar de acuerdo "
-                + "configurarlo manualmente.", "#eaf4f8", 14, true);
-        introduccion.setStyle(introduccion.getStyle() + "-fx-font-weight:800;");
-        Label resumen = etiqueta(resumen(), "#91b3c3", 13, false);
-        Label explicacion = etiqueta(propuesta.getExplicacion(),
-                "#d7e4e9", 13, true);
-        Label pases = etiqueta(propuesta.getPases().isEmpty()
-                ? "Inicio directo en el cuadro principal."
-                : "Pases: " + propuesta.getPases().stream()
-                    .map(c -> c.referencia()).reduce((a,b) -> a + " · " + b)
-                    .orElse(""), "#d7e4e9", 13, true);
+        // proposal-review-final-polish-v1
+        Label tituloContexto = new Label("PROPUESTA AUTOMÁTICA");
+        tituloContexto.getStyleClass().add("proposal-eyebrow");
+        Label ayuda = new Label("Los cruces fueron organizados con criterios "
+                + "deportivos preestablecidos. Podés revisar o editar cualquier "
+                + "cruce antes de generar los partidos.");
+        ayuda.setWrapText(true);
+        ayuda.getStyleClass().add("proposal-intro-copy");
+        explicacion.setWrapText(true);
+        explicacion.getStyleClass().add("proposal-detail-copy");
+        pases.setWrapText(true);
+        pases.getStyleClass().add("proposal-passes");
+        VBox contexto = new VBox(3, tituloContexto, ayuda, pases);
+        contexto.getStyleClass().add("proposal-intro-card");
 
-        Button intercambiar = new Button("INTERCAMBIAR RIVALES DE ACCESO");
-        Button rotar = new Button("ROTAR CABEZAS DE SERIE");
-        Button manual = new Button("EDITAR ENFRENTAMIENTOS");
-        Button estructura = new Button("CONFIGURAR ESTRUCTURA MANUAL");
-        Button restaurar = new Button("RESTAURAR AUTOMATICA");
-        intercambiar.setOnAction(e -> {
-            service.intercambiarRivalesAcceso(propuesta); validarYActualizar();
-        });
-        rotar.setOnAction(e -> {
-            service.rotarPrimeros(propuesta); validarYActualizar();
-        });
-        manual.setOnAction(e -> abrirEditorManual());
-        estructura.setOnAction(e -> abrirEditorEstructural());
-        restaurar.setOnAction(e -> {
-            service.restaurarPropuesta(propuesta, automaticaOriginal);
-            validarYActualizar();
-        });
-        FlowPane acciones = new FlowPane(10, 8,
-                intercambiar, rotar, manual, estructura, restaurar);
+        // proposal-preview-readonly-v1
+        for (Label metrica : new Label[] { metricaClasificados,
+                metricaPartidos, metricaPases, metricaAdvertencias }) {
+            metrica.getStyleClass().add("proposal-metric");
+        }
+        Label separadorMetrica1 = new Label("·");
+        Label separadorMetrica2 = new Label("·");
+        Label separadorMetrica3 = new Label("·");
+        for (Label separador : new Label[] { separadorMetrica1,
+                separadorMetrica2, separadorMetrica3 }) {
+            separador.getStyleClass().add("proposal-metric-separator");
+        }
+        HBox metricas = new HBox(9, metricaClasificados, separadorMetrica1,
+                metricaPartidos, separadorMetrica2, metricaPases,
+                separadorMetrica3, metricaAdvertencias);
+        metricas.setAlignment(Pos.CENTER_LEFT);
+        metricas.getStyleClass().add("proposal-metrics");
 
-        Label tituloAdvertencias = etiqueta(
-                "⚠  ADVERTENCIAS DEPORTIVAS", "#ffd58a", 13, false);
-        tituloAdvertencias.setStyle(tituloAdvertencias.getStyle()
-                + "-fx-font-weight:900;");
-        Label ayudaAdvertencias = etiqueta(
-                "La propuesta puede confirmarse, pero se recomienda "
-                        + "revisar estos cruces.", "#f1d6a3", 12, true);
-        Button revisarAdvertencias = new Button("REVISAR CRUCES");
-        revisarAdvertencias.setOnAction(e -> abrirEditorManual());
-        tarjetaAdvertencias.getChildren().setAll(tituloAdvertencias,
-                listaAdvertencias, ayudaAdvertencias, revisarAdvertencias);
-        tarjetaAdvertencias.setPadding(new Insets(12));
-        tarjetaAdvertencias.setStyle(
-                "-fx-background-color:#3a2b16;"
-                + "-fx-border-color:#b98232;"
-                + "-fx-border-radius:10;"
-                + "-fx-background-radius:10;");
+        Label tituloAdvertencias = new Label("ADVERTENCIAS DEPORTIVAS");
+        tituloAdvertencias.getStyleClass().add("proposal-warning-title");
+        Label cantidadAdvertencias = new Label();
+        cantidadAdvertencias.textProperty().bind(
+                javafx.beans.binding.Bindings.createStringBinding(() -> {
+                    int cantidad = listaAdvertencias.getChildren().size();
+                    return cantidad + (cantidad == 1
+                            ? " DETECTADA" : " DETECTADAS");
+                }, listaAdvertencias.getChildren()));
+        cantidadAdvertencias.getStyleClass().add("proposal-warning-count");
+        Region espacioAdvertencia = new Region();
+        HBox.setHgrow(espacioAdvertencia, Priority.ALWAYS);
+        HBox encabezadoAdvertencias = new HBox(10, tituloAdvertencias,
+                espacioAdvertencia, cantidadAdvertencias);
+        encabezadoAdvertencias.setAlignment(Pos.CENTER_LEFT);
+        tarjetaAdvertencias.getChildren().setAll(encabezadoAdvertencias,
+                listaAdvertencias);
+        tarjetaAdvertencias.getStyleClass().add("proposal-warning-card");
         tarjetaAdvertencias.setVisible(false);
         tarjetaAdvertencias.setManaged(false);
 
-        contenedorCruces.setFillWidth(true);
-        VBox contenido = new VBox(12, introduccion, resumen, explicacion,
-                etiqueta("ESTRUCTURA PROPUESTA", "#91b3c3", 12, false),
-                pases, contenedorCruces, acciones,
-                tarjetaAdvertencias, estado);
-        contenido.setPadding(new Insets(8));
-        contenido.setPrefWidth(760);
-        ScrollPane scroll = new ScrollPane(contenido);
-        scroll.setFitToWidth(true);
-        scroll.setPrefViewportHeight(560);
-        scroll.setStyle("-fx-background:#0b1821;-fx-background-color:#0b1821;");
-        dialogo.getDialogPane().setContent(scroll);
+        Label tituloFases = new Label("PARTIDOS POR FASE");
+        tituloFases.getStyleClass().add("proposal-section-title");
+        selectorFases.setAlignment(Pos.CENTER_LEFT);
+        selectorFases.getStyleClass().add("proposal-phase-tabs");
+        VBox navegacionFases = new VBox(6, tituloFases, selectorFases);
+
+        grillaCruces.setHgap(10);
+        grillaCruces.setVgap(10);
+        grillaCruces.getStyleClass().add("proposal-match-grid");
+        scrollCruces = new ScrollPane(grillaCruces);
+        scrollCruces.setFitToWidth(true);
+        scrollCruces.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollCruces.getStyleClass().add("proposal-matches-scroll");
+        scrollCruces.setPrefViewportHeight(250);
+        scrollCruces.setMinViewportHeight(150);
+        VBox.setVgrow(scrollCruces, Priority.ALWAYS);
+        scrollCruces.setMaxHeight(Double.MAX_VALUE);
+        scrollCruces.viewportBoundsProperty().addListener((obs, anterior, actual) -> {
+            int nuevasColumnas = actual.getWidth() >= 1320 ? 3
+                    : actual.getWidth() >= 760 ? 2 : 1;
+            if (nuevasColumnas != columnasActuales) {
+                columnasActuales = nuevasColumnas;
+                renderizarCruces();
+            }
+        });
+
+        estado.getStyleClass().add("proposal-status-badge");
+        Button editar = new Button("REVISAR Y EDITAR CUADRO");
+        editar.getStyleClass().add("proposal-edit-button");
+        editar.setStyle("-fx-background-color:#342d3d;"
+                + "-fx-border-color:#78638d;"
+                + "-fx-text-fill:#eee3f6;"
+                + "-fx-border-radius:8;-fx-background-radius:8;"
+                + "-fx-font-size:9.5px;-fx-font-weight:900;"
+                + "-fx-padding:8 14;-fx-cursor:hand;");
+        editar.setOnAction(e -> abrirEditorUnificado());
+        Button vistaPreliminar = new Button("VISTA PRELIMINAR");
+        vistaPreliminar.getStyleClass().add("proposal-preview-button");
+        vistaPreliminar.setOnAction(e -> abrirVistaPreliminar());
+        Button restaurar = new Button("RESTAURAR PROPUESTA");
+        restaurar.getStyleClass().add("proposal-restore-button");
+        restaurar.setOnAction(e -> restaurarPropuesta());
+        Region separadorAcciones = new Region();
+        HBox.setHgrow(separadorAcciones, Priority.ALWAYS);
+        HBox acciones = new HBox(9, editar, vistaPreliminar, restaurar,
+                separadorAcciones, estado);
+        acciones.setAlignment(Pos.CENTER_LEFT);
+        acciones.getStyleClass().add("proposal-local-actions");
+
+        VBox superior = new VBox(8, contexto, metricas,
+                tarjetaAdvertencias, navegacionFases);
+        superior.getStyleClass().add("proposal-fixed-summary");
+
+        VBox raiz = new VBox(9, superior, scrollCruces, acciones);
+        raiz.setPadding(new Insets(14, 18, 12, 18));
+        raiz.getStyleClass().add("proposal-review-root");
+        // proposal-actions-anchored-v1
+        VBox.setVgrow(scrollCruces, Priority.ALWAYS);
+        dialogo.getDialogPane().setContent(raiz);
+
         Dialogos.preparar(dialogo, "dialog-tournament-bracket-proposal");
+        dialogo.getDialogPane().getStyleClass().add("proposal-review-dialog");
         vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                 Navegacion.getConfiguracionActual());
-        dialogo.getDialogPane().setPrefSize(840, 700);
+        dialogo.getDialogPane().setPrefSize(1100, 720);
+        dialogo.getDialogPane().setMinSize(900, 650);
         dialogo.setResizable(true);
+
         botonConfirmar = dialogo.getDialogPane().lookupButton(continuar);
         botonConfirmar.addEventFilter(javafx.event.ActionEvent.ACTION,
-                evento -> confirmar(evento));
+                this::confirmar);
         dialogo.setResultConverter(tipo ->
                 tipo == continuar && propuesta.isValida() ? propuesta : null);
         validarYActualizar();
     }
 
-    private void abrirEditorEstructural() {
-        List<CrucePropuestoTorneo> nuevos =
-                new EstructuraManualTorneoDialog(propuesta,
-                        nombresPorReferencia).mostrar();
-        if (nuevos == null) return;
-        propuesta.setCruces(nuevos);
-        propuesta.setPases(List.of());
-        propuesta.setExplicacion("Estructura configurada manualmente por el administrador.");
+    private void abrirVistaPreliminar() {
+        Dialog<Void> dialogoVista = new Dialog<>();
+        dialogoVista.setTitle("Vista preliminar del cuadro");
+        dialogoVista.setHeaderText("Vista preliminar de la llave");
+        ButtonType cerrarVista = new ButtonType("CERRAR",
+                ButtonBar.ButtonData.CANCEL_CLOSE);
+        dialogoVista.getDialogPane().getButtonTypes().setAll(cerrarVista);
+        Label soloLectura = new Label("SOLO LECTURA");
+        soloLectura.getStyleClass().add("proposal-preview-readonly-badge");
+        Label estadoEstructural = new Label(
+                "Vista sin edición · Los colores indican validez estructural");
+        estadoEstructural.getStyleClass().add("proposal-preview-structural-note");
+        Region espacioCabecera = new Region();
+        HBox.setHgrow(espacioCabecera, Priority.ALWAYS);
+        HBox cabeceraVista = new HBox(10, soloLectura,
+                espacioCabecera, estadoEstructural);
+        cabeceraVista.setAlignment(Pos.CENTER_LEFT);
+        cabeceraVista.getStyleClass().add("proposal-preview-info-bar");
+
+        // preview-clipping-fix-v1
+        HBox avisoDeportivo = new HBox(10);
+        avisoDeportivo.setAlignment(Pos.CENTER_LEFT);
+        avisoDeportivo.getStyleClass().add("proposal-preview-warning-card");
+        avisoDeportivo.setVisible(!advertenciasActuales.isEmpty());
+        avisoDeportivo.setManaged(!advertenciasActuales.isEmpty());
+        if (!advertenciasActuales.isEmpty()) {
+            Label tituloAviso = new Label(advertenciasActuales.size()
+                    + (advertenciasActuales.size() == 1
+                            ? " ADVERTENCIA DEPORTIVA" : " ADVERTENCIAS DEPORTIVAS"));
+            tituloAviso.getStyleClass().add("proposal-preview-warning-title");
+            Label detalleAviso = new Label(String.join("  ·  ", advertenciasActuales));
+            detalleAviso.setWrapText(false);
+            detalleAviso.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(detalleAviso, Priority.ALWAYS);
+            detalleAviso.getStyleClass().add("proposal-preview-warning-item");
+            avisoDeportivo.getChildren().setAll(tituloAviso, detalleAviso);
+        }
+
+        javafx.scene.Node llave = new LlaveGraficaTorneoView(
+                propuesta, nombresPorReferencia, null, null,
+                null, null, null, true).crear();
+        VBox contenido = new VBox(8, cabeceraVista, avisoDeportivo, llave);
+        contenido.setPadding(new Insets(10, 12, 10, 12));
+        contenido.getStyleClass().add("proposal-preview-root");
+        VBox.setVgrow(llave, Priority.ALWAYS);
+        dialogoVista.getDialogPane().setContent(contenido);
+        Dialogos.preparar(dialogoVista, "structural-editor-dialog");
+        dialogoVista.getDialogPane().getStyleClass().add(
+                "proposal-preview-dialog");
+        vista.TemaDinamico.aplicar(dialogoVista.getDialogPane(),
+                Navegacion.getConfiguracionActual());
+        if (dialogo.getDialogPane().getScene() != null) {
+            dialogoVista.initOwner(
+                    dialogo.getDialogPane().getScene().getWindow());
+        }
+        dialogoVista.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        dialogoVista.getDialogPane().setPrefSize(1280, 700);
+        dialogoVista.getDialogPane().setMinSize(920, 600);
+        dialogoVista.setResizable(true);
+        dialogoVista.showAndWait();
+    }
+
+    private void restaurarPropuesta() {
+        if (!Dialogos.confirmar("Restaurar propuesta",
+                "Se descartarán los cambios realizados y se recuperará "
+                + "la distribución automática. ¿Querés continuar?")) return;
+        service.restaurarPropuesta(propuesta, automaticaOriginal);
         validarYActualizar();
     }
 
-    private void abrirEditorManual() {
-        Dialog<Boolean> editor = new Dialog<>();
-        editor.setTitle("Configuracion manual de cruces");
-        editor.setHeaderText(null);
-        ButtonType aplicar = new ButtonType("APLICAR CAMBIOS",
-                ButtonBar.ButtonData.OK_DONE);
-        editor.getDialogPane().getButtonTypes().setAll(aplicar,
-                new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
-        List<String> referencias = propuesta.getClasificados().stream()
-                .map(c -> c.referencia()).toList();
-        Label tituloEditor = etiqueta(
-                "CONFIGURACION MANUAL DE CRUCES", "#91b3c3", 12, false);
-        tituloEditor.setStyle(tituloEditor.getStyle()
-                + "-fx-font-weight:900;");
-        Label subtituloEditor = etiqueta(
-                "Asigna cada clasificado a una posicion inicial. "
-                        + "Las conexiones entre ganadores permanecen protegidas.",
-                "#d7e4e9", 14, true);
-        GridPane grilla = new GridPane();
-        grilla.getStyleClass().add("manual-editor-grid");
-        grilla.setHgap(14);
-        grilla.setVgap(10);
-        grilla.setPadding(new Insets(14));
-        grilla.setStyle("-fx-background-color:#10212b;"
-                + "-fx-border-color:#294351;"
-                + "-fx-border-radius:10;"
-                + "-fx-background-radius:10;");
-        List<Edicion> ediciones = new ArrayList<>();
-        int fila = 0;
-        for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
-            if (!esGanador(cruce.getParticipante1())) {
-                fila = agregarEditor(grilla, ediciones, referencias,
-                        cruce, true, fila);
-            }
-            if (!esGanador(cruce.getParticipante2())) {
-                fila = agregarEditor(grilla, ediciones, referencias,
-                        cruce, false, fila);
-            }
-        }
-        ScrollPane scroll = new ScrollPane(grilla);
-        scroll.setFitToWidth(true);
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        int posicionesEditables = ediciones.size();
-        double altoLista = Math.min(390,
-                Math.max(150, posicionesEditables * 48 + 32));
-        scroll.setPrefViewportHeight(altoLista);
-        scroll.setMaxHeight(altoLista + 8);
-        scroll.setStyle("-fx-background:#0b1821;"
-                + "-fx-background-color:#0b1821;"
-                + "-fx-border-color:transparent;");
-        VBox contenidoEditor = new VBox(12,
-                tituloEditor, subtituloEditor, scroll);
-        contenidoEditor.getStyleClass().add("manual-editor-root");
-        contenidoEditor.setPadding(new Insets(16));
-        contenidoEditor.setStyle("-fx-background-color:#0b1821;");
-        editor.getDialogPane().setContent(contenidoEditor);
-        editor.getDialogPane().setPrefSize(760,
-                Math.min(680, altoLista + 210));
-        editor.setResizable(true);
-        Dialogos.preparar(editor, "dialog-tournament-bracket-manual");
-        editor.getDialogPane().setStyle("-fx-background-color:#0b1821;"
-                + "-fx-border-color:#315f79;"
-                + "-fx-border-width:1;");
-        vista.TemaDinamico.aplicar(editor.getDialogPane(),
-                Navegacion.getConfiguracionActual());
-        editor.getDialogPane().lookupButton(aplicar).addEventFilter(
-                javafx.event.ActionEvent.ACTION, evento -> {
-                    for (Edicion edicion : ediciones) edicion.aplicar();
-                    List<String> errores = service.validarEdicionManual(propuesta);
-                    if (!errores.isEmpty()) {
-                        evento.consume();
-                        Dialogos.error("Configuracion no valida",
-                                mensajeConVinetas("Se encontraron "
-                                        + errores.size() + " problemas:",
-                                        errores));
-                    }
-                });
-        if (editor.showAndWait().isPresent()) validarYActualizar();
-    }
-
-    private int agregarEditor(GridPane grilla, List<Edicion> ediciones,
-            List<String> referencias, CrucePropuestoTorneo cruce,
-            boolean primero, int fila) {
-        String lado = primero ? "Pareja 1" : "Pareja 2";
-        String actual = primero ? cruce.getParticipante1()
-                : cruce.getParticipante2();
-        ComboBox<String> combo = new ComboBox<>(
-                FXCollections.observableArrayList(referencias));
-        combo.setValue(actual);
-        combo.setMaxWidth(Double.MAX_VALUE);
-        combo.setPrefWidth(480);
-        combo.setStyle("-fx-background-color:#071018;"
-                + "-fx-border-color:#315f79;"
-                + "-fx-border-radius:7;"
-                + "-fx-background-radius:7;"
-                + "-fx-mark-color:#91b3c3;"
-                + "-fx-text-fill:#eaf4f8;"
-                + "-fx-prompt-text-fill:#91b3c3;");
-        combo.setCellFactory(lista -> new javafx.scene.control.ListCell<>() {
-            @Override
-            protected void updateItem(String valor, boolean vacia) {
-                super.updateItem(valor, vacia);
-                setText(vacia || valor == null ? null
-                        : mostrarReferencia(valor));
-                setTextFill(javafx.scene.paint.Color.web("#eaf4f8"));
-                setStyle(manualComboCellStyle(isSelected()));
-            }
-        });
-        combo.setButtonCell(new javafx.scene.control.ListCell<>() {
-            @Override
-            protected void updateItem(String valor, boolean vacia) {
-                super.updateItem(valor, vacia);
-                setText(vacia || valor == null ? null
-                        : mostrarReferencia(valor));
-                setTextFill(javafx.scene.paint.Color.web("#eaf4f8"));
-                setStyle("-fx-background-color:#071018;"
-                        + "-fx-text-fill:#eaf4f8;"
-                        + "-fx-padding:6 10;");
-            }
-        });
-        GridPane.setHgrow(combo, Priority.ALWAYS);
-        Label etiquetaPosicion = etiqueta(
-                cruce.getInstancia() + " #" + cruce.getOrden()
-                        + " · " + lado,
-                "#b9ced8", 13, false);
-        etiquetaPosicion.setStyle(etiquetaPosicion.getStyle()
-                + "-fx-font-weight:800;");
-        grilla.add(etiquetaPosicion, 0, fila);
-        grilla.add(combo, 1, fila);
-        ediciones.add(new Edicion(cruce, primero, combo));
-        return fila + 1;
+    private void abrirEditorUnificado() {
+        PropuestaEtapaEliminatoria cambios = new EditorCuadroTorneoDialog(
+                propuesta, automaticaOriginal, nombresPorReferencia).mostrar();
+        if (cambios == null) return;
+        service.restaurarPropuesta(propuesta, cambios);
+        propuesta.setExplicacion("Propuesta revisada por el administrador.");
+        validarYActualizar();
     }
 
     private void confirmar(javafx.event.ActionEvent evento) {
         List<String> errores = service.validarEdicionManual(propuesta);
         if (!errores.isEmpty()) {
             evento.consume();
-            Dialogos.error("Propuesta no valida",
+            Dialogos.error("Propuesta no válida",
                     mensajeConVinetas("Revisa los siguientes problemas:",
                             errores));
             validarYActualizar();
@@ -305,16 +309,14 @@ public class PropuestaEtapaEliminatoriaDialog {
                 ? "Confirmar cuadro"
                 : "Confirmar propuesta con advertencias";
         String textoConfirmacion = advertenciasActuales.isEmpty()
-                ? "Se crearan los partidos de la propuesta. "
-                        + "¿Queres continuar?"
-                : mensajeConVinetas(
-                        "La estructura es valida, pero contiene "
-                                + advertenciasActuales.size()
-                                + " advertencias deportivas. "
-                                + "¿Queres generar el cuadro igualmente?",
-                        advertenciasActuales);
+                ? "Se crearan los partidos de la propuesta. Queres continuar?"
+                : mensajeConVinetas("La estructura es válida, pero contiene "
+                        + advertenciasActuales.size()
+                        + " advertencias deportivas. ¿Querés generar el cuadro "
+                        + "igualmente?", advertenciasActuales);
         if (!Dialogos.confirmar(tituloConfirmacion, textoConfirmacion)) {
-            evento.consume(); return;
+            evento.consume();
+            return;
         }
         try {
             confirmacionService.confirmar(categoriaId, propuesta);
@@ -322,97 +324,195 @@ public class PropuestaEtapaEliminatoriaDialog {
             evento.consume();
             Dialogos.error("No se pudo generar el cuadro",
                     exception.getMessage() == null
-                            ? "Revisa la propuesta." : exception.getMessage());
+                            ? "Revisá la propuesta." : exception.getMessage());
         }
     }
 
     private void validarYActualizar() {
         service.validarEdicionManual(propuesta);
-        contenedorCruces.getChildren().clear();
-        for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
-            String faseVisible = nombreVisibleInstancia(cruce);
-            Label titulo = etiqueta(faseVisible.toUpperCase()
-                    + "  ·  PARTIDO " + cruce.getOrden(),
-                    "#ffffff", 13, false);
-            titulo.setMaxWidth(Double.MAX_VALUE);
-            titulo.setPadding(new Insets(8, 12, 8, 12));
-            titulo.setStyle(estiloEncabezadoFase(faseVisible));
-            VBox cuerpoTarjeta = new VBox(4,
-                    etiqueta(mostrarReferencia(cruce.getParticipante1()),
-                            "#eaf4f8", 14, true),
-                    etiqueta("VS", "#6f93a5", 11, false),
-                    etiqueta(mostrarReferencia(cruce.getParticipante2()),
-                            "#eaf4f8", 14, true));
-            cuerpoTarjeta.setPadding(new Insets(10, 12, 12, 12));
-            VBox tarjeta = new VBox(0, titulo, cuerpoTarjeta);
-            tarjeta.setMaxWidth(Double.MAX_VALUE);
-            tarjeta.setStyle("-fx-background-color:#10212b;"
-                    + "-fx-border-color:#294351;-fx-border-radius:9;"
-                    + "-fx-background-radius:9;");
-            contenedorCruces.getChildren().add(tarjeta);
-        }
         advertenciasActuales = service.advertenciasDeportivas(propuesta);
-        listaAdvertencias.getChildren().clear();
-        for (String aviso : advertenciasActuales) {
-            listaAdvertencias.getChildren().add(
-                    etiqueta("• " + aviso, "#ffe2ab", 12, true));
+        actualizarResumen();
+        actualizarAdvertencias();
+        actualizarFases();
+        renderizarCruces();
+        actualizarEstado();
+        if (botonConfirmar != null) {
+            botonConfirmar.setDisable(!propuesta.isValida());
         }
-        boolean hayAdvertencias = !advertenciasActuales.isEmpty();
-        tarjetaAdvertencias.setVisible(hayAdvertencias);
-        tarjetaAdvertencias.setManaged(hayAdvertencias);
-        if (!propuesta.isValida()) {
-            estado.setText("PROPUSESTA NO VALIDA: " + propuesta.getError());
-            estado.setStyle("-fx-text-fill:#ff8f8f;-fx-font-size:13px;"
-                    + "-fx-font-weight:800;");
-        } else if (hayAdvertencias) {
-            estado.setText("PROPUESTA VALIDA CON ADVERTENCIAS");
-            estado.setStyle("-fx-text-fill:#ffd58a;-fx-font-size:13px;"
-                    + "-fx-font-weight:800;");
-        } else {
-            estado.setText("PROPUESTA VALIDA · LISTA PARA CONFIRMAR");
-            estado.setStyle("-fx-text-fill:#86e0ad;-fx-font-size:13px;"
-                    + "-fx-font-weight:800;");
-        }
-        if (botonConfirmar != null) botonConfirmar.setDisable(!propuesta.isValida());
     }
 
-    private String estiloEncabezadoFase(String fase) {
-        String normalizada = fase == null ? "" : fase.toLowerCase();
-        String fondo;
-        String borde;
-        if (normalizada.contains("final")
-                && !normalizada.contains("semi")
-                && !normalizada.contains("cuartos")
-                && !normalizada.contains("octavos")
-                && !normalizada.contains("dieciseisavos")) {
-            fondo = "#80651f";
-            borde = "#d8b84d";
-        } else if (normalizada.contains("semifinal")) {
-            fondo = "#563c78";
-            borde = "#8f70b7";
-        } else if (normalizada.contains("cuartos")) {
-            fondo = "#245875";
-            borde = "#4d88a8";
-        } else if (normalizada.contains("octavos")) {
-            fondo = "#23656a";
-            borde = "#4b9297";
-        } else if (normalizada.contains("dieciseisavos")) {
-            fondo = "#2d6260";
-            borde = "#57918e";
-        } else if (normalizada.contains("clasificacion")) {
-            fondo = "#7a4f28";
-            borde = "#b77c43";
-        } else {
-            fondo = "#344f60";
-            borde = "#5f8091";
+    private void actualizarResumen() {
+        metricaClasificados.setText(propuesta.getClasificados().size()
+                + "  CLASIFICADOS");
+        metricaPartidos.setText(propuesta.getCruces().size() + "  PARTIDOS");
+        metricaPases.setText(propuesta.getPases().size() + "  PASES DIRECTOS");
+        metricaAdvertencias.setText(advertenciasActuales.size()
+                + (advertenciasActuales.size() == 1
+                        ? "  ADVERTENCIA" : "  ADVERTENCIAS"));
+        metricaAdvertencias.getStyleClass().removeAll(
+                "proposal-metric-warning", "proposal-metric-ok");
+        metricaAdvertencias.getStyleClass().add(advertenciasActuales.isEmpty()
+                ? "proposal-metric-ok" : "proposal-metric-warning");
+        String textoExplicacion = propuesta.getExplicacion();
+        if (textoExplicacion == null || textoExplicacion.isBlank()
+                || textoExplicacion.toLowerCase().contains(
+                        "generacion automatica de los cruces")) {
+            textoExplicacion = "Distribución calculada automáticamente con "
+                    + "criterios deportivos.";
         }
-        return "-fx-background-color:" + fondo + ";"
-                + "-fx-border-color:" + borde + ";"
-                + "-fx-border-width:0 0 1 0;"
-                + "-fx-background-radius:8 8 0 0;"
-                + "-fx-font-weight:900;"
-                + "-fx-letter-spacing:0.4px;"
-                + "-fx-text-fill:#ffffff;";
+        explicacion.setText(textoExplicacion);
+        pases.setText(propuesta.getPases().isEmpty()
+                ? "Sin pases directos: todos ingresan en la primera fase."
+                : "Pases directos: " + propuesta.getPases().stream()
+                    .map(c -> c.referencia())
+                    .reduce((a, b) -> a + "  |  " + b).orElse(""));
+    }
+
+    private void actualizarAdvertencias() {
+        listaAdvertencias.getChildren().clear();
+        for (String aviso : advertenciasActuales) {
+            Label item = new Label("\u2022  " + aviso);
+            item.setWrapText(true);
+            item.getStyleClass().add("proposal-warning-item");
+            listaAdvertencias.getChildren().add(item);
+        }
+        boolean mostrar = !advertenciasActuales.isEmpty();
+        tarjetaAdvertencias.setVisible(mostrar);
+        tarjetaAdvertencias.setManaged(mostrar);
+    }
+
+    private void actualizarFases() {
+        Map<String, Long> fases = fasesConCantidad();
+        if (faseSeleccionada == null || !fases.containsKey(faseSeleccionada)) {
+            faseSeleccionada = fases.keySet().stream().findFirst().orElse(null);
+        }
+        selectorFases.getChildren().clear();
+        grupoFases.getToggles().clear();
+        for (Map.Entry<String, Long> entrada : fases.entrySet()) {
+            ToggleButton boton = new ToggleButton(
+                    entrada.getKey().toUpperCase() + "  " + entrada.getValue());
+            boton.setToggleGroup(grupoFases);
+            boton.getStyleClass().addAll("proposal-phase-tab",
+                    claseFase(entrada.getKey()));
+            boton.setSelected(entrada.getKey().equals(faseSeleccionada));
+            boton.setOnAction(e -> {
+                if (!boton.isSelected()) {
+                    boton.setSelected(true);
+                    return;
+                }
+                faseSeleccionada = entrada.getKey();
+                renderizarCruces();
+            });
+            selectorFases.getChildren().add(boton);
+        }
+    }
+
+    private Map<String, Long> fasesConCantidad() {
+        Map<String, Long> fases = new LinkedHashMap<>();
+        propuesta.getCruces().stream()
+                .sorted(Comparator.comparingInt(CrucePropuestoTorneo::getRonda)
+                        .thenComparingInt(CrucePropuestoTorneo::getOrden))
+                .forEach(cruce -> fases.merge(nombreVisibleInstancia(cruce),
+                        1L, Long::sum));
+        return fases;
+    }
+
+    private void renderizarCruces() {
+        grillaCruces.getChildren().clear();
+        grillaCruces.getColumnConstraints().clear();
+        grillaCruces.getRowConstraints().clear();
+        if (faseSeleccionada == null) return;
+        List<CrucePropuestoTorneo> cruces = propuesta.getCruces().stream()
+                .filter(c -> faseSeleccionada.equals(nombreVisibleInstancia(c)))
+                .sorted(Comparator.comparingInt(CrucePropuestoTorneo::getOrden))
+                .toList();
+        int columnasUsadas = Math.max(1,
+                Math.min(columnasActuales, cruces.size()));
+        grillaCruces.setAlignment(cruces.size() == 1
+                ? Pos.TOP_LEFT : Pos.TOP_CENTER);
+        int indice = 0;
+        for (CrucePropuestoTorneo cruce : cruces) {
+            VBox tarjeta = crearTarjeta(cruce);
+            if (cruces.size() == 1) tarjeta.setMaxWidth(700);
+            int columna = indice % columnasUsadas;
+            int fila = indice / columnasUsadas;
+            grillaCruces.add(tarjeta, columna, fila);
+            GridPane.setHgrow(tarjeta, Priority.ALWAYS);
+            GridPane.setFillWidth(tarjeta, true);
+            indice++;
+        }
+        for (int i = 0; i < columnasUsadas; i++) {
+            javafx.scene.layout.ColumnConstraints columna =
+                    new javafx.scene.layout.ColumnConstraints();
+            columna.setPercentWidth(100.0 / columnasUsadas);
+            columna.setHgrow(Priority.ALWAYS);
+            grillaCruces.getColumnConstraints().add(columna);
+        }
+    }
+
+    private VBox crearTarjeta(CrucePropuestoTorneo cruce) {
+        String fase = nombreVisibleInstancia(cruce);
+        Label faseLabel = new Label(fase.toUpperCase());
+        faseLabel.getStyleClass().addAll("proposal-match-phase", claseFase(fase));
+        Label numero = new Label("PARTIDO " + cruce.getOrden());
+        numero.getStyleClass().add("proposal-match-number");
+        Region separador = new Region();
+        HBox.setHgrow(separador, Priority.ALWAYS);
+        HBox cabecera = new HBox(7, faseLabel, separador, numero);
+        cabecera.setAlignment(Pos.CENTER_LEFT);
+        cabecera.getStyleClass().add("proposal-match-header");
+
+        Label primero = new Label(mostrarReferencia(cruce.getParticipante1()));
+        primero.setWrapText(true);
+        primero.setMinHeight(30);
+        primero.getStyleClass().add("proposal-participant");
+        Label vs = new Label("VS");
+        vs.getStyleClass().add("proposal-versus");
+        Label segundo = new Label(mostrarReferencia(cruce.getParticipante2()));
+        segundo.setWrapText(true);
+        segundo.setMinHeight(30);
+        segundo.getStyleClass().add("proposal-participant");
+        VBox cuerpo = new VBox(5, primero, vs, segundo);
+        cuerpo.getStyleClass().add("proposal-match-body");
+
+        VBox tarjeta = new VBox(0, cabecera, cuerpo);
+        tarjeta.setMinHeight(118);
+        tarjeta.setMaxWidth(Double.MAX_VALUE);
+        tarjeta.getStyleClass().addAll("proposal-match-card", claseFase(fase));
+        return tarjeta;
+    }
+
+    private void actualizarEstado() {
+        estado.getStyleClass().removeAll("valid", "warning", "invalid");
+        if (!propuesta.isValida()) {
+            estado.setText("PROPUESTA NO VÁLIDA");
+            estado.getStyleClass().add("invalid");
+            estado.setTooltip(new javafx.scene.control.Tooltip(
+                    propuesta.getError() == null ? "Revisá la propuesta."
+                            : propuesta.getError()));
+        } else if (!advertenciasActuales.isEmpty()) {
+            estado.setText("VÁLIDA CON ADVERTENCIAS");
+            estado.getStyleClass().add("warning");
+            estado.setTooltip(new javafx.scene.control.Tooltip(
+                    String.join("\n", advertenciasActuales)));
+        } else {
+            estado.setText("LISTA PARA GENERAR");
+            estado.getStyleClass().add("valid");
+            estado.setTooltip(null);
+        }
+    }
+
+    private String claseFase(String fase) {
+        String valor = fase == null ? "" : fase.toLowerCase();
+        if (valor.contains("semifinal")) return "phase-semifinal";
+        if (valor.contains("cuartos")) return "phase-quarter";
+        if (valor.contains("octavos")) return "phase-round16";
+        if (valor.contains("dieciseisavos")) return "phase-round32";
+        if (valor.contains("final")) return "phase-final";
+        if (valor.contains("clasificacion") || valor.contains("fase previa")) {
+            return "phase-qualifying";
+        }
+        return "phase-generic";
     }
 
     private String nombreVisibleInstancia(CrucePropuestoTorneo cruce) {
@@ -424,14 +524,14 @@ public class PropuestaEtapaEliminatoriaDialog {
                 .mapToInt(CrucePropuestoTorneo::getRonda)
                 .max().orElse(cruce.getRonda());
         if (cruce.getRonda() < ultimaRondaPrevia) {
-            return "Fase previa · Ronda " + cruce.getRonda();
+            return "Fase previa - Ronda " + cruce.getRonda();
         }
         String destino = propuesta.getCruces().stream()
                 .filter(c -> c.getRonda() > cruce.getRonda())
                 .map(CrucePropuestoTorneo::getInstancia)
                 .filter(i -> !i.startsWith("Acceso R"))
                 .findFirst().orElse("cuadro principal");
-        return "Clasificacion a " + nombreDestino(destino);
+        return "Clasificación a " + nombreDestino(destino);
     }
 
     private String nombreDestino(String instancia) {
@@ -445,29 +545,19 @@ public class PropuestaEtapaEliminatoriaDialog {
         };
     }
 
-    private String manualComboCellStyle(boolean seleccionada) {
-        return seleccionada
-                ? "-fx-background-color:#315f79;"
-                    + "-fx-text-fill:#ffffff;"
-                    + "-fx-padding:7 10;"
-                : "-fx-background-color:#0d1b24;"
-                    + "-fx-text-fill:#eaf4f8;"
-                    + "-fx-padding:7 10;";
-    }
-
     private void cargarNombres() {
         nombresPorReferencia.clear();
         for (var clasificado : propuesta.getClasificados()) {
             TorneoInscripcion inscripcion = inscripcionDAO.buscar(
                     clasificado.inscripcionId());
             String nombre = inscripcion == null
-                    ? "Inscripcion #" + clasificado.inscripcionId()
+                    ? "Inscripción #" + clasificado.inscripcionId()
                     : inscripcion.getJugadores().stream()
-                        .sorted(java.util.Comparator.comparingInt(
+                        .sorted(Comparator.comparingInt(
                                 TorneoInscripcionJugador::getOrdenIntegrante))
                         .map(j -> j.getNombre() + " " + j.getApellido())
                         .reduce((a, b) -> a + " / " + b)
-                        .orElse("Inscripcion #" + clasificado.inscripcionId());
+                        .orElse("Inscripción #" + clasificado.inscripcionId());
             nombresPorReferencia.put(clasificado.referencia(), nombre);
         }
     }
@@ -475,43 +565,15 @@ public class PropuestaEtapaEliminatoriaDialog {
     private String mostrarReferencia(String referencia) {
         if (referencia == null) return "Sin asignar";
         String nombre = nombresPorReferencia.get(referencia);
-        return nombre == null ? referencia : referencia + "  ·  " + nombre;
+        return nombre == null ? referencia : referencia + "  -  " + nombre;
     }
 
     private String mensajeConVinetas(String encabezado,
             List<String> mensajes) {
         StringBuilder texto = new StringBuilder(encabezado);
         for (String mensaje : mensajes) {
-            texto.append("\n\n• ").append(mensaje);
+            texto.append("\n\n\u2022 ").append(mensaje);
         }
         return texto.toString();
-    }
-
-    private String resumen() {
-        long primeros = contar(1), segundos = contar(2), terceros = contar(3);
-        return "Clasificados: " + propuesta.getClasificados().size()
-                + " | Primeros: " + primeros + " | Segundos: " + segundos
-                + " | Terceros: " + terceros;
-    }
-    private long contar(int posicion) {
-        return propuesta.getClasificados().stream()
-                .filter(c -> c.posicionGrupo() == posicion).count();
-    }
-    private boolean esGanador(String valor) {
-        return valor != null && valor.startsWith("Ganador ");
-    }
-    private static Label etiqueta(String texto, String color,
-            int tamano, boolean wrap) {
-        Label label = new Label(texto); label.setWrapText(wrap);
-        label.setMaxWidth(Double.MAX_VALUE);
-        label.setStyle("-fx-text-fill:" + color + ";-fx-font-size:"
-                + tamano + "px;"); return label;
-    }
-    private record Edicion(CrucePropuestoTorneo cruce, boolean primero,
-            ComboBox<String> combo) {
-        private void aplicar() {
-            if (primero) cruce.setParticipante1(combo.getValue());
-            else cruce.setParticipante2(combo.getValue());
-        }
     }
 }

@@ -163,3 +163,306 @@
     -fx-border-color: #3d5f70;
     -fx-text-fill: #e0ebef;
 }
+
+/* modernizar-dialogos-resultado-torneo-v1 */
+.dialog-tournament-result {
+    -fx-background-color: #11181c;
+}
+.dialog-tournament-result .header-panel {
+    -fx-background-color: #151d22;
+    -fx-padding: 15 20 13 20;
+}
+.dialog-tournament-result .header-panel .label {
+    -fx-font-size: 19px;
+}
+.dialog-tournament-result > .content {
+    -fx-padding: 12 16 14 16;
+}
+.dialog-tournament-result .result-helper-text {
+    -fx-text-fill: #91a4ad;
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+}
+.dialog-tournament-result .result-sets-grid {
+    -fx-background-color: #151f24;
+    -fx-background-radius: 10;
+    -fx-border-color: #354750;
+    -fx-border-radius: 10;
+    -fx-padding: 12 14;
+}
+.dialog-tournament-result .result-grid-header {
+    -fx-text-fill: #7f939c;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.dialog-tournament-result .result-set-label {
+    -fx-text-fill: #d5e0e4;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.dialog-tournament-result .result-score-combo {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+}
+.dialog-tournament-result .result-field-title {
+    -fx-text-fill: #8fa2ab;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-padding: 3 0 0 0;
+}
+.dialog-tournament-result .result-notes-area {
+    -fx-pref-height: 72;
+    -fx-min-height: 68;
+}
+.dialog-tournament-result .check-box:hover {
+    -fx-text-fill: white;
+}
+.dialog-tournament-result .check-box:hover .box {
+    -fx-border-color: -color-principal-hover;
+}
+.dialog-tournament-result .button-bar {
+    -fx-padding: 12 16;
+}
+.dialog-tournament-result .button-bar .button {
+    -fx-min-width: 180;
+    -fx-min-height: 40;
+}
+.dialog-tournament-result .button-bar .button:pressed {
+    -fx-translate-y: 1px;
+}
+.dialog-tournament-result .button-bar .button:cancel:hover {
+    -fx-background-color: #223b48;
+    -fx-border-color: #5d8192;
+    -fx-text-fill: white;
+}
+
+/* pulir-dialogos-resultado-torneo-v1 */
+.dialog-tournament-result .result-sets-grid {
+    -fx-max-width: Infinity;
+}
+.dialog-tournament-result .result-score-combo {
+    -fx-max-width: Infinity;
+}
+.dialog-tournament-result .result-score-combo .list-cell {
+    -fx-alignment: center;
+    -fx-font-weight: 800;
+}
+.dialog-tournament-result .result-grid-header {
+    -fx-alignment: center-left;
+}
+.dialog-tournament-result .text-area {
+    -fx-padding: 0;
+}
+.dialog-tournament-result .text-area .scroll-pane {
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+}
+.dialog-tournament-result .text-area .content {
+    -fx-padding: 9 11;
+    -fx-background-insets: 0;
+}
+.dialog-tournament-result .result-notes-area {
+    -fx-pref-height: 66;
+    -fx-min-height: 62;
+}
+.dialog-tournament-result .button-bar .button {
+    -fx-pref-width: 210;
+    -fx-max-width: 240;
+}
+.dialog-tournament-result .button-bar .button:default:focused,
+.dialog-tournament-result .button-bar .button:cancel:focused {
+    -fx-border-width: 1.5px;
+}
+
+/* neutralizar-fondo-dialogos-resultado-v1 */
+/* Paleta neutra alineada con el cuadro de torneo. */
+.dialog-tournament-result,
+.dialog-tournament-result > .content,
+.dialog-tournament-result .content.label {
+    -fx-background-color: #11171b;
+}
+.dialog-tournament-result .header-panel {
+    -fx-background-color: #171d21;
+    -fx-border-color: transparent transparent #343e44 transparent;
+}
+.dialog-tournament-result .result-sets-grid {
+    -fx-background-color: #151b1f;
+    -fx-border-color: #39444a;
+}
+.dialog-tournament-result .combo-box-base {
+    -fx-background-color: #10161a;
+    -fx-border-color: #414d53;
+}
+.dialog-tournament-result .combo-box-base:hover,
+.dialog-tournament-result .combo-box-base:focused,
+.dialog-tournament-result .combo-box-base:showing {
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian,
+            -color-principal-transparente, 8, .10, 0, 1);
+}
+.dialog-tournament-result .combo-box .list-cell {
+    -fx-background-color: #10161a;
+    -fx-text-fill: #eef2f3;
+}
+.dialog-tournament-result .combo-box .arrow-button {
+    -fx-background-color: #252d32;
+}
+.dialog-tournament-result .combo-box .arrow {
+    -fx-background-color: #b9c4c8;
+}
+.dialog-tournament-result .text-area {
+    -fx-background-color: #10161a;
+    -fx-border-color: #414d53;
+    -fx-text-fill: #e8edef;
+    -fx-prompt-text-fill: #77878e;
+}
+.dialog-tournament-result .text-area .scroll-pane,
+.dialog-tournament-result .text-area .scroll-pane .viewport,
+.dialog-tournament-result .text-area .content {
+    -fx-background-color: #10161a;
+}
+.dialog-tournament-result .check-box .box {
+    -fx-background-color: #151b1f;
+    -fx-border-color: #4a5960;
+}
+.dialog-tournament-result .button-bar {
+    -fx-background-color: #0f1518;
+    -fx-border-color: #343e44 transparent transparent transparent;
+}
+.dialog-tournament-result .button-bar .button:cancel {
+    -fx-background-color: #20282d;
+    -fx-border-color: #46545b;
+    -fx-text-fill: #dce3e6;
+}
+.dialog-tournament-result .button-bar .button:cancel:hover {
+    -fx-background-color: #2a343a;
+    -fx-border-color: #66767e;
+    -fx-text-fill: white;
+}
+.dialog-tournament-result .button-bar .button:cancel:pressed {
+    -fx-background-color: #171e22;
+    -fx-border-color: #596970;
+}
+
+/* El popup se neutraliza solo cuando pertenece a estos marcadores. */
+.combo-box-popup .list-view {
+    -fx-background-color: #11171b;
+    -fx-border-color: #414d53;
+}
+.combo-box-popup .list-cell {
+    -fx-background-color: #11171b;
+    -fx-text-fill: #e8edef;
+}
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: #293238;
+    -fx-text-fill: white;
+}
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: -color-principal;
+    -fx-text-fill: white;
+}
+.combo-box-popup .scroll-bar:vertical {
+    -fx-background-color: #11171b;
+}
+.combo-box-popup .scroll-bar:vertical .thumb {
+    -fx-background-color: #4a565c;
+    -fx-background-radius: 8;
+}
+
+/* mostrar-parejas-compactar-marcadores-v1 */
+.dialog-tournament-result .result-team-header {
+    -fx-text-fill: #dce4e7;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-line-spacing: 1px;
+    -fx-padding: 0 4 4 4;
+}
+.dialog-tournament-result .result-score-combo {
+    -fx-min-width: 92;
+    -fx-pref-width: 104;
+    -fx-max-width: 112;
+}
+.dialog-tournament-result .result-score-combo .list-cell {
+    -fx-alignment: center;
+    -fx-padding: 7 8;
+}
+.dialog-tournament-result .result-score-combo .arrow-button {
+    -fx-pref-width: 30;
+}
+
+/* separar-parejas-centrar-marcadores-v1 */
+.dialog-tournament-result .result-matchup-strip {
+    -fx-background-color: #151b1f;
+    -fx-background-radius: 9;
+    -fx-border-color: #39444a;
+    -fx-border-radius: 9;
+    -fx-padding: 8 10;
+}
+.dialog-tournament-result .result-team-card {
+    -fx-text-fill: #e1e7e9;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-line-spacing: 1px;
+    -fx-min-height: 42;
+    -fx-padding: 4 7;
+}
+.dialog-tournament-result .result-versus {
+    -fx-text-fill: #7f9097;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-min-width: 28;
+    -fx-alignment: center;
+}
+.dialog-tournament-result .result-sets-grid {
+    -fx-max-width: 390;
+    -fx-alignment: center;
+    -fx-padding: 11 14;
+}
+.dialog-tournament-result .result-grid-header {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+.dialog-tournament-result .result-set-label {
+    -fx-min-width: 58;
+}
+.dialog-tournament-result .result-score-combo {
+    -fx-min-width: 92;
+    -fx-pref-width: 104;
+    -fx-max-width: 112;
+}
+
+/* resultado-dialog-scroll-botones-v1 */
+.dialog-tournament-result .result-dialog-scroll {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-border-color: transparent;
+}
+.dialog-tournament-result .result-dialog-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+.dialog-tournament-result .result-dialog-scroll .scroll-bar:vertical {
+    -fx-pref-width: 9;
+    -fx-background-color: transparent;
+}
+.dialog-tournament-result .result-dialog-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #171d20;
+    -fx-background-radius: 5;
+}
+.dialog-tournament-result .result-dialog-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4a555a;
+    -fx-background-radius: 5;
+}
+.dialog-tournament-result .result-dialog-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #657278;
+}
+.dialog-tournament-result .result-dialog-scroll .increment-button,
+.dialog-tournament-result .result-dialog-scroll .decrement-button {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+}
