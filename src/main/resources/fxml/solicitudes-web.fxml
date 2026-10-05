@@ -5,6 +5,8 @@
 
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.SolicitudesWebController" styleClass="web-root-v2">
+ <!-- solicitudes-web-cierre-administrativo-v1 -->
+ <!-- solicitudes-web-inconsistencias-v2 -->
  <top>
   <HBox alignment="CENTER_LEFT" spacing="14" styleClass="web-header-v2">
    <padding><Insets top="16" right="22" bottom="16" left="22"/></padding>
@@ -12,7 +14,7 @@
    <VBox spacing="2"><Label text="Solicitudes web" styleClass="web-page-title"/><Label text="Seguimiento de solicitudes, señas y vencimientos del canal web." styleClass="web-page-subtitle"/></VBox>
    <Region HBox.hgrow="ALWAYS"/>
    <VBox alignment="CENTER_RIGHT" spacing="1"><Label fx:id="etiquetaActualizacion" text="Sin actualizar" styleClass="web-updated"/><Label fx:id="etiquetaEstadoCarga" text="" styleClass="web-load-status"/></VBox>
-   <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarSolicitudes" styleClass="primary-button"/>
+   <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarSolicitudes" styleClass="web-refresh-button"/>
   </HBox>
  </top>
  <center>
@@ -20,10 +22,10 @@
    <VBox spacing="13" HBox.hgrow="ALWAYS" styleClass="web-list-pane">
     <padding><Insets top="16" right="16" bottom="18" left="22"/></padding>
     <HBox spacing="10">
-     <Button maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarTodas" styleClass="web-metric-button"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="SOLICITUDES WEB" styleClass="web-metric-label"/><Label fx:id="etiquetaTotal" text="0" styleClass="web-metric-value"/><Label text="Total registrado" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarVigentes" styleClass="web-metric-button"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="VIGENTES" styleClass="web-metric-label"/><Label fx:id="etiquetaVigentes" text="0" styleClass="web-metric-value"/><Label text="Esperando acreditación" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button fx:id="tarjetaProximas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarProximas" styleClass="web-metric-button"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="PRÓXIMAS A VENCER" styleClass="web-metric-label"/><Label fx:id="etiquetaProximas" text="0" styleClass="web-metric-value"/><Label text="Dentro de 5 minutos" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarExpiradas" styleClass="web-metric-button"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="EXPIRADAS" styleClass="web-metric-label"/><Label fx:id="etiquetaExpiradas" text="0" styleClass="web-metric-value"/><Label text="Turnos liberados" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaTotal" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarTodas" styleClass="web-metric-button,web-metric-total"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="SOLICITUDES WEB" styleClass="web-metric-label"/><Label fx:id="etiquetaTotal" text="0" styleClass="web-metric-value"/><Label text="Total registrado" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaVigentes" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarVigentes" styleClass="web-metric-button,web-metric-active"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="VIGENTES" styleClass="web-metric-label"/><Label fx:id="etiquetaVigentes" text="0" styleClass="web-metric-value"/><Label text="Esperando acreditación" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaProximas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarProximas" styleClass="web-metric-button,web-metric-upcoming"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="PRÓXIMAS A VENCER" styleClass="web-metric-label"/><Label fx:id="etiquetaProximas" text="0" styleClass="web-metric-value"/><Label text="Dentro de 5 minutos" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaExpiradas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarExpiradas" styleClass="web-metric-button,web-metric-expired"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="EXPIRADAS" styleClass="web-metric-label"/><Label fx:id="etiquetaExpiradas" text="0" styleClass="web-metric-value"/><Label text="Turnos liberados" styleClass="web-metric-detail"/></VBox></graphic></Button>
     </HBox>
     <HBox spacing="9">
      <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha, estado o número" HBox.hgrow="ALWAYS" styleClass="modern-field web-search"/>
@@ -60,7 +62,7 @@
      <VBox spacing="4"><Label text="SITUACIÓN DEL TURNO" styleClass="web-detail-label"/><Label fx:id="detalleVencimiento" text="-" styleClass="web-detail-main"/><Label fx:id="detalleAyudaSituacion" wrapText="true" styleClass="web-detail-note"/></VBox>
      <Region prefHeight="18" minHeight="18"/>
      <Button fx:id="botonReserva" text="ABRIR RESERVA" onAction="#abrirReserva" maxWidth="Infinity" styleClass="web-action-primary"/>
-     <HBox spacing="9"><Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="web-action-secondary"/><Button fx:id="botonWhatsApp" text="WHATSAPP" onAction="#abrirWhatsApp" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="web-action-whatsapp"/></HBox>
+     <HBox fx:id="panelAccionesSecundarias" alignment="CENTER_RIGHT" spacing="9" styleClass="web-secondary-actions"><Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="web-action-secondary"/><Button fx:id="botonWhatsApp" text="WHATSAPP" onAction="#abrirWhatsApp" minWidth="150" prefWidth="170" maxWidth="190" styleClass="web-action-whatsapp"/></HBox>
     </VBox>
    </StackPane>
   </HBox>

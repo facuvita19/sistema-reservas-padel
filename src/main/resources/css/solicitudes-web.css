@@ -460,3 +460,214 @@
 .web-metric-detail {
     -fx-font-size: 8px;
 }
+
+/* solicitudes-web-cierre-administrativo-v1 */
+/* Cabecera y Actualizar como accion secundaria. */
+.web-header-v2 {
+    -fx-min-height: 88;
+}
+.web-refresh-button {
+    -fx-min-width: 126;
+    -fx-pref-width: 126;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-background-color: #293136;
+    -fx-background-radius: 9;
+    -fx-border-color: #566168;
+    -fx-border-radius: 9;
+    -fx-text-fill: #e8ecee;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+}
+.web-refresh-button:hover {
+    -fx-background-color: #3a4449;
+    -fx-border-color: #76838a;
+    -fx-effect: dropshadow(gaussian, rgba(151,165,173,.24), 11, .20, 0, 2);
+}
+.web-refresh-button:disabled { -fx-opacity: .45; -fx-effect: none; }
+
+/* Indicadores informativos compactos y semanticamente diferenciados. */
+.web-metric-button {
+    -fx-min-height: 60;
+    -fx-pref-height: 60;
+    -fx-max-height: 60;
+    -fx-padding: 6 12;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-width: 1 1 1 4;
+}
+.web-metric-button > .graphic .vbox { -fx-spacing: 0; }
+.web-metric-label { -fx-font-size: 8px; }
+.web-metric-value { -fx-font-size: 19px; }
+.web-metric-detail { -fx-font-size: 8px; }
+.web-metric-total {
+    -fx-background-color: #181d21;
+    -fx-border-color: #465d69 #354047 #354047 #587889;
+}
+.web-metric-total .web-metric-label,
+.web-metric-total .web-metric-value { -fx-text-fill: #9ebbc9; }
+.web-metric-active {
+    -fx-background-color: #171e1b;
+    -fx-border-color: #39775d #33483f #33483f #49a277;
+}
+.web-metric-active .web-metric-label,
+.web-metric-active .web-metric-value { -fx-text-fill: #76caa0; }
+.web-metric-upcoming,
+.web-metric-upcoming.web-metric-warning {
+    -fx-background-color: #211b15;
+    -fx-border-color: #a76828 #55402c #55402c #df8b31;
+}
+.web-metric-upcoming .web-metric-label,
+.web-metric-upcoming .web-metric-value { -fx-text-fill: #efac50; }
+.web-metric-expired {
+    -fx-background-color: #20191b;
+    -fx-border-color: #824650 #4a3539 #4a3539 #ad5966;
+}
+.web-metric-expired .web-metric-label,
+.web-metric-expired .web-metric-value { -fx-text-fill: #dc8490; }
+.web-metric-button:hover { -fx-translate-y: -1; }
+.web-metric-total:hover { -fx-background-color: #20282d; -fx-border-color: #698694; }
+.web-metric-active:hover { -fx-background-color: #1e2a24; -fx-border-color: #58b287; }
+.web-metric-upcoming:hover { -fx-background-color: #2c2318; -fx-border-color: #e2a14c; }
+.web-metric-expired:hover { -fx-background-color: #2c2023; -fx-border-color: #c66c79; }
+
+/* Busqueda y filtros de 36 px para recuperar espacio. */
+.web-root-v2 .web-search,
+.web-root-v2 .web-state-filter,
+.web-filter-clear {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.web-root-v2 .web-search { -fx-padding: 0 11; -fx-font-size: 12px; }
+.web-root-v2 .web-state-filter { -fx-font-size: 10px; }
+.web-root-v2 .web-state-filter .arrow-button {
+    -fx-min-width: 30; -fx-pref-width: 30; -fx-max-width: 30;
+}
+.web-root-v2 .web-state-filter .list-cell { -fx-padding: 0 9; }
+.web-filter-clear {
+    -fx-min-width: 78; -fx-pref-width: 78; -fx-max-width: 78;
+    -fx-padding: 0 10;
+    -fx-background-color: #262e32;
+    -fx-border-color: #505b61;
+}
+.web-filter-clear:hover {
+    -fx-background-color: #374146;
+    -fx-border-color: #758188;
+    -fx-effect: dropshadow(gaussian, rgba(145,158,166,.22), 10, .18, 0, 2);
+}
+.web-result-count { -fx-font-size: 9.5px; }
+.web-table-help { -fx-font-size: 8.5px; }
+
+/* Cliente queda a la izquierda; el resto, centrado. */
+.web-root-v2 .web-table-v2 .column-header .label,
+.web-root-v2 .web-table-v2 .table-cell { -fx-alignment: center; }
+.web-root-v2 .web-table-v2 .web-col-cliente .label,
+.web-root-v2 .web-table-v2 .web-col-cliente { -fx-alignment: center-left; }
+
+/* Los colores semanticos sobreviven a la seleccion. */
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-pending,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-pending { -fx-text-fill:#e0b75e; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-confirmed,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-confirmed { -fx-text-fill:#82c5aa; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-expired,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-expired { -fx-text-fill:#df7d88; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-cancelled,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-cancelled { -fx-text-fill:#d9828d; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-completed,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-completed { -fx-text-fill:#71b9a0; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-state-absent,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-state-absent { -fx-text-fill:#de9f69; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-time-ok,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-time-ok { -fx-text-fill:#8fbed1; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-time-warning,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-time-warning { -fx-text-fill:#efbc60; }
+.web-root-v2 .web-table-v2 .table-row-cell .table-cell.web-time-expired,
+.web-root-v2 .web-table-v2 .table-row-cell:selected .table-cell.web-time-expired { -fx-text-fill:#df7d88; }
+
+/* Panel derecho y jerarquia de acciones. */
+.web-origin {
+    -fx-background-color: #293238;
+    -fx-text-fill: #c1cbd0;
+}
+.web-action-primary {
+    -fx-background-color: #3d906b;
+    -fx-border-color: #59aa82;
+}
+.web-action-primary:hover {
+    -fx-background-color: #4aa47b;
+    -fx-border-color: #75be98;
+    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.34), 12, .22, 0, 2);
+}
+.web-action-secondary {
+    -fx-background-color: #293136;
+    -fx-border-color: #566168;
+    -fx-text-fill: #e0e6e8;
+}
+.web-action-secondary:hover {
+    -fx-background-color: #3a4449;
+    -fx-border-color: #758188;
+    -fx-effect: dropshadow(gaussian, rgba(145,158,166,.22), 10, .18, 0, 2);
+}
+.web-action-whatsapp {
+    -fx-background-color: #205c43;
+    -fx-border-color: #367d5c;
+    -fx-text-fill: #e5f8ed;
+}
+.web-action-whatsapp:hover {
+    -fx-background-color: #2b7455;
+    -fx-border-color: #4a9a73;
+    -fx-effect: dropshadow(gaussian, rgba(59,157,111,.30), 11, .20, 0, 2);
+}
+.web-animated-button:hover { -fx-translate-y: -1; }
+.web-animated-button:pressed { -fx-translate-y: 1; }
+.web-animated-button:disabled { -fx-effect:none; -fx-translate-y:0; }
+
+/* solicitudes-web-inconsistencias-v2 */
+/* WhatsApp conserva jerarquia secundaria aunque Abrir pagos este oculto. */
+.web-secondary-actions {
+    -fx-alignment: center-right;
+}
+.web-secondary-actions .web-action-whatsapp {
+    -fx-min-width: 150;
+    -fx-pref-width: 170;
+    -fx-max-width: 190;
+}
+
+/* La situacion solo aparece como badge si aporta informacion distinta al estado. */
+.web-situation-badge {
+    -fx-border-color: #465158;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+
+/* solicitudes-web-acciones-diferenciadas-v1 */
+/* Abrir reserva usa violeta grafito para diferenciarse claramente de WhatsApp. */
+.web-action-primary,
+.web-action-primary:focused {
+    -fx-background-color: #5d4d82;
+    -fx-border-color: #7b68a3;
+    -fx-text-fill: #ffffff;
+}
+.web-action-primary:hover {
+    -fx-background-color: #705d98;
+    -fx-border-color: #9882c2;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(143,116,190,.34), 13, .24, 0, 2);
+}
+.web-action-primary:pressed {
+    -fx-background-color: #4e406d;
+    -fx-border-color: #6c5a91;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 5, .10, 0, 1);
+}
+
+/* WhatsApp conserva verde de comunicacion; centrado cuando es la unica accion secundaria. */
+.web-secondary-actions {
+    -fx-alignment: center-right;
+}
+.web-secondary-actions .web-action-whatsapp {
+    -fx-min-width: 150;
+    -fx-pref-width: 170;
+    -fx-max-width: 190;
+}

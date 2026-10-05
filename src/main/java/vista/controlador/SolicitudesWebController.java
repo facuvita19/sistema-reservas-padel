@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -29,6 +30,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import negocio.Cliente;
 import negocio.EstadoReserva;
@@ -43,6 +45,10 @@ import util.FormateadorMoneda;
 import vista.Navegacion;
 
 public class SolicitudesWebController {
+    // solicitudes-web-acciones-diferenciadas-v1
+    // solicitudes-web-regex-escape-v1
+    // solicitudes-web-inconsistencias-v2
+    // solicitudes-web-cierre-administrativo-v1
     private static final DateTimeFormatter FECHA=DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FECHA_HORA=DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private static final DateTimeFormatter HORA=DateTimeFormatter.ofPattern("HH:mm");
@@ -65,10 +71,35 @@ public class SolicitudesWebController {
     @FXML private TableColumn<Reserva,LocalDateTime> columnaVencimiento;
     @FXML private TableColumn<Reserva,Reserva> columnaTiempo;
     @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo;
-    @FXML private Button botonReserva,botonPagos,botonWhatsApp,botonLimpiar,botonActualizar,tarjetaProximas;
+    @FXML private Button botonReserva,botonPagos,botonWhatsApp,botonLimpiar,botonActualizar,tarjetaTotal,tarjetaVigentes,tarjetaProximas,tarjetaExpiradas;
     @FXML private VBox panelDetalle,panelDetalleVacio;
+    @FXML private HBox panelAccionesSecundarias;
 
-    @FXML private void initialize(){configurarTabla();configurarFiltros();mostrarDetalleVacio();cargarSolicitudes();iniciarReloj();Platform.runLater(this::configurarDeseleccion);}
+    @FXML private void initialize(){configurarTabla();configurarFiltros();configurarAnimaciones();mostrarDetalleVacio();cargarSolicitudes();iniciarReloj();Platform.runLater(this::configurarDeseleccion);}
+
+    private void configurarAnimaciones(){
+        for(Button boton:java.util.List.of(
+                botonActualizar,botonLimpiar,botonReserva,
+                botonPagos,botonWhatsApp,tarjetaTotal,tarjetaVigentes,
+                tarjetaProximas,tarjetaExpiradas)){
+            animarBoton(boton);
+        }
+    }
+    private void animarBoton(Button boton){
+        boton.getStyleClass().add("web-animated-button");
+        boton.setOnMouseEntered(e->{if(!boton.isDisabled())animarEscala(boton,1.015,105);});
+        boton.setOnMouseExited(e->animarEscala(boton,1.0,125));
+        boton.setOnMousePressed(e->{if(!boton.isDisabled())animarEscala(boton,.978,65);});
+        boton.setOnMouseReleased(e->{if(!boton.isDisabled())animarEscala(boton,boton.isHover()?1.015:1.0,90);});
+        boton.disabledProperty().addListener((o,a,deshabilitado)->{
+            if(deshabilitado){boton.setScaleX(1);boton.setScaleY(1);}
+        });
+    }
+    private void animarEscala(Button boton,double escala,double milisegundos){
+        ScaleTransition animacion=new ScaleTransition(
+                javafx.util.Duration.millis(milisegundos),boton);
+        animacion.setToX(escala);animacion.setToY(escala);animacion.play();
+    }
 
     private void configurarTabla(){
         columnaId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -146,9 +177,39 @@ public class SolicitudesWebController {
     private String colorEstado(EstadoReserva e){return switch(e){case PENDIENTE->"#e0b75e";case CONFIRMADA->"#82c5aa";case EXPIRADA->"#d9828d";case CANCELADA->"#e0777f";case COMPLETADA->"#71b9a0";case AUSENTE->"#de9f69";};}
     private String colorSituacion(Reserva r){String s=textoSituacion(r);if("Expirada".equals(s))return "#d9828d";if("Venciendo...".equals(s)||s.matches("\\d{2}:\\d{2}"))return proximaAVencer(r)?"#efbc60":"#82c5aa";if("En curso".equals(s))return "#82c5aa";if("Próxima".equals(s))return "#8fbed1";return "#aebbc1";}
 
-    private void mostrarDetalle(Reserva r){seleccionada=r;Cliente c=clienteService.buscar(r.getClienteId());panelDetalleVacio.setVisible(false);panelDetalleVacio.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Solicitud web #"+r.getId());detalleCliente.setText(r.getNombreCliente());detalleTelefono.setText(c==null||c.getTelefono()==null||c.getTelefono().isBlank()?"Sin teléfono registrado":c.getTelefono());detalleTurno.setText(r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA)+" a "+r.getHoraFin().format(HORA));detalleCancha.setText(r.getNombreCancha());detalleEstado.setText(nombreEstado(r.getEstado()));detalleEstado.getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");detalleEstado.getStyleClass().add(claseEstado(r.getEstado()));detalleEstado.setStyle("-fx-text-fill:"+colorEstado(r.getEstado())+";-fx-font-weight:900;");detalleOrigen.setText(r.getOrigen().toString());BigDecimal acreditado=pagoService.totalAcreditado(r.getId()),saldo=pagoService.calcularSaldo(r.getId());detallePrecio.setText(moneda(r.getPrecioTotal()));detalleAcreditado.setText(moneda(acreditado));detalleSaldo.setText(moneda(saldo));actualizarSituacionDetalle();botonReserva.setVisible(true);botonReserva.setManaged(true);configurarBoton(botonPagos,r.getEstado()==EstadoReserva.PENDIENTE||r.getEstado()==EstadoReserva.CONFIRMADA||r.getEstado()==EstadoReserva.COMPLETADA);configurarBoton(botonWhatsApp,c!=null&&c.getTelefono()!=null&&!c.getTelefono().isBlank());}
-    private void actualizarSituacionDetalle(){if(seleccionada==null)return;String situacion=textoSituacion(seleccionada);detalleSituacion.setText(situacion);detalleSituacion.setStyle("-fx-text-fill:"+colorSituacion(seleccionada)+";-fx-font-weight:900;");detalleVencimiento.setText(situacion);detalleVencimiento.setStyle("-fx-text-fill:"+colorSituacion(seleccionada)+";-fx-font-weight:900;");detalleAyudaSituacion.setText(ayudaSituacion(seleccionada,situacion));}
-    private String ayudaSituacion(Reserva r,String s){if(r.getEstado()==EstadoReserva.PENDIENTE)return s.matches("\\d{2}:\\d{2}")?"Tiempo restante para acreditar la seña.":"La solicitud está alcanzando su vencimiento.";if("Finalizada".equals(s)&&r.getEstado()==EstadoReserva.CONFIRMADA)return "El turno terminó y puede requerir cierre como completado o ausente.";if("Próxima".equals(s))return "El turno todavía no comenzó.";if("En curso".equals(s))return "El turno se encuentra dentro de su horario reservado.";return "Situación temporal del turno seleccionado.";}
+    private void mostrarDetalle(Reserva r){seleccionada=r;Cliente c=clienteService.buscar(r.getClienteId());panelDetalleVacio.setVisible(false);panelDetalleVacio.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Solicitud web #"+r.getId());detalleCliente.setText(r.getNombreCliente());detalleTelefono.setText(c==null||c.getTelefono()==null||c.getTelefono().isBlank()?"Sin teléfono registrado":c.getTelefono());detalleTurno.setText(r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA)+" a "+r.getHoraFin().format(HORA));detalleCancha.setText(r.getNombreCancha());detalleEstado.setText(nombreEstado(r.getEstado()));detalleEstado.getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");detalleEstado.getStyleClass().add(claseEstado(r.getEstado()));detalleEstado.setStyle("-fx-text-fill:"+colorEstado(r.getEstado())+";-fx-font-weight:900;");detalleOrigen.setText(r.getOrigen().toString());BigDecimal acreditado=pagoService.totalAcreditado(r.getId()),saldo=pagoService.calcularSaldo(r.getId());detallePrecio.setText(moneda(r.getPrecioTotal()));detalleAcreditado.setText(moneda(acreditado));detalleSaldo.setText(moneda(saldo));actualizarSituacionDetalle();botonReserva.setVisible(true);botonReserva.setManaged(true);configurarBoton(botonPagos,r.getEstado()==EstadoReserva.PENDIENTE||r.getEstado()==EstadoReserva.CONFIRMADA||r.getEstado()==EstadoReserva.COMPLETADA);configurarBoton(botonWhatsApp,c!=null&&c.getTelefono()!=null&&!c.getTelefono().isBlank());actualizarAlineacionAccionesSecundarias();}
+    private void actualizarSituacionDetalle(){
+        if(seleccionada==null)return;
+        String situacion=textoSituacion(seleccionada);
+        boolean repetida=nombreEstado(seleccionada.getEstado())
+                .equalsIgnoreCase(situacion);
+        detalleSituacion.setVisible(!repetida);
+        detalleSituacion.setManaged(!repetida);
+        detalleSituacion.setText(situacion);
+        detalleSituacion.setStyle("-fx-text-fill:"
+                +colorSituacion(seleccionada)+";-fx-font-weight:900;");
+        detalleVencimiento.setText(situacion);
+        detalleVencimiento.setStyle("-fx-text-fill:"
+                +colorSituacion(seleccionada)+";-fx-font-weight:900;");
+        detalleAyudaSituacion.setText(
+                ayudaSituacion(seleccionada,situacion));
+    }
+    private String ayudaSituacion(Reserva r,String s){
+        if(r.getEstado()==EstadoReserva.EXPIRADA)
+            return "La solicitud venció y el turno fue liberado por falta de acreditación.";
+        if(r.getEstado()==EstadoReserva.CANCELADA)
+            return "La solicitud fue cancelada y el turno quedó liberado.";
+        if(r.getEstado()==EstadoReserva.PENDIENTE)
+            return s.matches("\\d{2}:\\d{2}")
+                    ? "Tiempo restante para acreditar la seña."
+                    : "La solicitud está alcanzando su vencimiento.";
+        if("Finalizada".equals(s)&&r.getEstado()==EstadoReserva.CONFIRMADA)
+            return "El turno terminó y puede requerir cierre como completado o ausente.";
+        if("Próxima".equals(s))return "El turno todavía no comenzó.";
+        if("En curso".equals(s))
+            return "El turno se encuentra dentro de su horario reservado.";
+        return "Situación temporal del turno seleccionado.";
+    }
     private void mostrarDetalleVacio(){seleccionada=null;panelDetalle.setVisible(false);panelDetalle.setManaged(false);panelDetalleVacio.setVisible(true);panelDetalleVacio.setManaged(true);}
 
     private void configurarDeseleccion(){
@@ -175,6 +236,12 @@ public class SolicitudesWebController {
 
     private String nombreEstado(EstadoReserva e){return switch(e){case PENDIENTE->"Esperando seña";case CONFIRMADA->"Confirmada";case EXPIRADA->"Expirada";case CANCELADA->"Cancelada";case COMPLETADA->"Completada";case AUSENTE->"Ausente";};}
     private String moneda(BigDecimal v){return FormateadorMoneda.pesos(v);}
+    private void actualizarAlineacionAccionesSecundarias(){
+        if(panelAccionesSecundarias==null)return;
+        boolean pagosVisible=botonPagos.isManaged()&&botonPagos.isVisible();
+        panelAccionesSecundarias.setAlignment(
+                pagosVisible?Pos.CENTER_RIGHT:Pos.CENTER);
+    }
     private void configurarBoton(Button b,boolean visible){b.setVisible(visible);b.setManaged(visible);}
     @FXML private void abrirReserva(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarReservaDesdeAgenda(seleccionada.getId());}}
     @FXML private void abrirPagos(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarPagosDeReserva(seleccionada.getId());}}
