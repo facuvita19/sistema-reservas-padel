@@ -4,40 +4,34 @@
 
 Este documento registra el estado real, la arquitectura, las decisiones funcionales, la metodología de trabajo y las próximas etapas del sistema de reservas para un complejo de pádel.
 
-Su objetivo es permitir que el desarrollo continúe de forma ordenada y segura, incluso cuando sea necesario cambiar de conversación, entorno de trabajo o equipo. Debe actualizarse después de completar cada bloque funcional importante.
+Su objetivo es permitir que el desarrollo continúe de forma ordenada y segura aunque cambie la conversación, el entorno o el equipo. Debe actualizarse después de cada bloque funcional importante.
 
-## 2. Objetivo general del sistema
+> Este documento resume el estado general. Antes de modificar una función deben revisarse los archivos actuales del repositorio. No se debe preparar un cambio únicamente a partir de este plan.
 
-Desarrollar una solución integral para administrar un complejo de pádel mediante componentes conectados a una misma lógica de negocio y una misma base de datos:
+## 2. Objetivo general
 
-1. Aplicación administrativa de escritorio desarrollada en Java y JavaFX.
-2. API pública para compartir funciones con la web y futuros clientes.
-3. Web pública para registro, autenticación, reservas, torneos y autogestión de clientes.
+Desarrollar una solución integral para administrar un complejo de pádel mediante componentes conectados a la misma lógica de negocio y base de datos:
+
+1. Aplicación administrativa de escritorio en Java y JavaFX.
+2. API pública para la web y futuros clientes.
+3. Web pública para registro, autenticación, reservas, torneos y autogestión.
 4. Futura aplicación móvil conectada al mismo backend.
 
-El sistema centraliza la gestión de canchas, clientes, reservas, pagos, caja, usuarios, solicitudes web, estadísticas, torneos e inscripciones.
+El sistema centraliza canchas, clientes, reservas, pagos, caja, usuarios, solicitudes web, estadísticas, torneos, inscripciones, grupos, cuadros eliminatorios, partidos y resultados.
 
 ## 3. Tecnologías y herramientas
 
-- Java
-- JavaFX
-- Maven
-- FXML
-- CSS
-- MySQL
-- JDBC
-- JUnit y pruebas automatizadas
-- API HTTP pública en Java
-- Astro
-- TypeScript
-- Tailwind CSS
-- HTML, CSS y JavaScript
-- Docker y Docker Compose
-- Nginx
-- Gmail SMTP con contraseña de aplicación
-- Git y GitHub
-- PowerShell
-- Eclipse y Visual Studio Code
+- Java, JavaFX, Maven, FXML y CSS.
+- MySQL, JDBC, DAO y servicios transaccionales.
+- JUnit y pruebas automatizadas.
+- API HTTP pública en Java.
+- Astro, TypeScript, Tailwind CSS, HTML, CSS y JavaScript.
+- Docker, Docker Compose y Nginx.
+- Gmail SMTP con contraseña de aplicación.
+- Git y GitHub.
+- PowerShell.
+- Node.js para aplicadores controlados de cambios.
+- Eclipse y Visual Studio Code.
 
 ## 4. Arquitectura actual
 
@@ -55,43 +49,40 @@ src/main/resources/css
 Módulos disponibles:
 
 - Inicio de sesión administrativo.
-- Dashboard.
-- Agenda.
-- Reservas.
-- Canchas.
-- Bloqueos de canchas.
-- Clientes.
-- Pagos.
-- Caja y cierre diario.
+- Dashboard adaptado por rol.
+- Agenda y reservas.
+- Canchas y bloqueos.
+- Clientes e historial.
+- Pagos, caja y cierre diario.
 - Estadísticas.
 - Solicitudes web.
-- Usuarios.
-- Configuración del complejo.
-- Administración de torneos y categorías.
-- Bandeja y gestión de inscripciones a torneos.
-- Vinculación automática y manual de jugadores con clientes.
+- Usuarios y configuración.
+- Torneos y categorías.
+- Inscripciones administrativas y web.
+- Vinculación de jugadores con clientes.
+- Fase de grupos.
+- Cuadro eliminatorio.
+- Programación y resultados.
+- Exportación del cuadro y PDF.
 
 ### 4.2 API pública
 
-Ubicación principal:
+Ubicación:
 
 ```text
 src/main/java/api/publica
 ```
 
-Responsabilidades actuales:
+Responsabilidades:
 
 - Configuración pública del complejo.
-- Consulta de canchas y disponibilidad.
-- Creación y seguimiento de solicitudes de reserva.
+- Canchas y disponibilidad.
+- Solicitudes de reserva y seguimiento.
 - Autenticación y sesiones de clientes.
-- Registro y cierre de sesión.
-- Perfil e historial de reservas.
-- Actualización de datos personales.
-- Cambio de contraseña.
-- Recuperación de contraseña por correo.
-- Consulta pública de torneos y categorías.
-- Inscripción pública de parejas.
+- Registro, perfil e historial.
+- Actualización de datos y contraseña.
+- Recuperación de acceso por correo.
+- Torneos, categorías e inscripciones públicas.
 
 ### 4.3 Servicios, negocio y persistencia
 
@@ -104,16 +95,7 @@ src/main/java/dao
 src/main/java/config
 ```
 
-La aplicación utiliza:
-
-- Entidades de negocio para clientes, reservas, pagos, caja, usuarios y torneos.
-- Servicios para reglas de negocio y transacciones.
-- DAO e implementaciones MySQL.
-- Configuración mediante variables de entorno y propiedades.
-- Sesiones de clientes almacenadas en base de datos.
-- Contraseñas protegidas.
-- Procesamiento automático de vencimientos.
-- Correo SMTP para recuperación de acceso.
+La solución utiliza entidades de negocio, servicios, DAO MySQL, configuración externa, sesiones persistidas, contraseñas protegidas, vencimientos automáticos y correo SMTP.
 
 ### 4.4 Web pública definitiva
 
@@ -129,7 +111,7 @@ Tecnología:
 Astro + TypeScript + Tailwind CSS + Nginx
 ```
 
-Dirección definitiva local:
+Dirección local:
 
 ```text
 http://localhost:5173
@@ -146,41 +128,30 @@ Páginas principales:
 /restablecer
 ```
 
-Funciones completadas:
+Funciones terminadas:
 
-- Portada pública adaptable.
-- Consulta de canchas.
-- Consulta de disponibilidad.
-- Creación de solicitudes de reserva.
-- Seguimiento por código.
-- Datos de transferencia y acceso a WhatsApp.
-- Registro de clientes.
-- Inicio y cierre de sesión.
-- Persistencia de sesión mediante cookie.
-- Historial de reservas próximas y anteriores.
-- Perfil del cliente.
-- Cambio de nombre, apellido, teléfono y correo.
-- Documento visible pero no editable.
-- Posición preferida opcional: `DRIVE`, `REVES` o sin preferencia.
-- Cambio de contraseña.
-- Recuperación de contraseña por Gmail.
-- Consulta pública de torneos, categorías, ramas y cupos.
-- Inscripción pública de parejas con o sin sesión.
-- Precarga de datos del cliente autenticado.
-- Navegación directa y recarga de rutas mediante Nginx.
-- Despliegue Docker de producción local.
+- Portada adaptable.
+- Canchas y disponibilidad.
+- Creación y seguimiento de solicitudes.
+- Transferencia y WhatsApp.
+- Registro, inicio y cierre de sesión.
+- Cookie de sesión.
+- Reservas próximas y anteriores.
+- Perfil y actualización de datos.
+- Documento no editable.
+- Posición preferida `DRIVE`, `REVES` o sin preferencia.
+- Cambio y recuperación de contraseña.
+- Torneos, categorías, ramas y cupos.
+- Inscripción de parejas con o sin sesión.
+- Precarga de datos autenticados.
+- Rutas directas mediante Nginx.
+- Despliegue Docker local.
 
-La carpeta anterior:
-
-```text
-web-publica
-```
-
-se conserva temporalmente como referencia histórica, pero la web activa y definitiva es `web-publica-v2`.
+`web-publica` se conserva como referencia histórica. La web activa es `web-publica-v2`.
 
 ### 4.5 Docker
 
-Servicios definitivos:
+Servicios:
 
 ```text
 padel-mysql
@@ -188,31 +159,24 @@ padel-api
 padel-web
 ```
 
-Puertos locales:
+Puertos:
 
 ```text
-Web pública: http://localhost:5173
-API pública: http://localhost:8080
-MySQL:       localhost:3307
+Web:   http://localhost:5173
+API:   http://localhost:8080
+MySQL: localhost:3307
 ```
 
-La web se construye desde:
+Archivos principales:
 
 ```text
 web-publica-v2/Dockerfile
-```
-
-Nginx utiliza:
-
-```text
 web-publica-v2/nginx.conf
 ```
 
-Nginx sirve los archivos estáticos de Astro y redirige `/api/` al servicio `api` dentro de Docker.
-
 ### 4.6 Base de datos
 
-Migraciones principales:
+Migraciones base documentadas:
 
 ```text
 database/02_configuracion_complejo.sql
@@ -233,17 +197,9 @@ database/16_torneos_inscripciones.sql
 database/17_posicion_preferida_clientes.sql
 ```
 
-La migración 17 agrega al cliente:
+La migración 17 incorpora `posicion_preferida` con valores `DRIVE`, `REVES` o `NULL`.
 
-```text
-posicion_preferida: DRIVE, REVES o NULL
-```
-
-Las copias para inicialización de Docker se encuentran en:
-
-```text
-database/docker-init
-```
+El proyecto agregó después estructuras de grupos, partidos y cuadro. Antes de crear otra migración debe revisarse el listado real de `database` y `database/docker-init`, sin inferir el siguiente número desde este documento.
 
 ## 5. Estado actual confirmado
 
@@ -255,91 +211,84 @@ Rama:
 master
 ```
 
-Último commit confirmado y publicado:
-
-```text
-7af6b88 Agregar nueva web pública, cuentas de clientes y mejoras de torneos
-```
-
-Sincronización:
-
-```text
-HEAD = master = origin/master
-```
-
-Estado del directorio de trabajo al cerrar el último bloque:
-
-```text
-limpio, sin cambios pendientes
-```
-
-Repositorio remoto:
+Repositorio:
 
 ```text
 https://github.com/facuvita19/sistema-reservas-padel.git
 ```
 
-### 5.2 Validaciones completadas
+La modernización administrativa, Inscripciones y Solicitudes web fueron compiladas, confirmadas y publicadas en `origin/master`.
 
-- `mvn clean test` correcto.
-- `npm run build` correcto en `web-publica-v2`.
-- `docker compose config` correcto.
-- API, MySQL y web activos en Docker.
-- Rutas públicas respondiendo correctamente.
-- Inicio y cierre de sesión validados.
-- Reserva pública validada.
-- Historial y seguimiento validados.
-- Perfil y posición preferida validados.
-- Cambio de contraseña validado.
-- Recuperación por correo Gmail validada.
-- Enlace de recuperación y token de un solo uso validados.
+El hash actual debe consultarse al retomar:
+
+```powershell
+git status -sb
+git log -1 --oneline
+git rev-parse HEAD
+git rev-parse origin/master
+```
+
+Estado esperado:
+
+```text
+HEAD = master = origin/master
+Directorio de trabajo limpio
+```
+
+Commit relevante confirmado:
+
+```text
+cc7e3de Mejorar torneos, cuadro eliminatorio, resultados y exportación PDF
+```
+
+También se publicaron commits descriptivos para Inscripciones y Solicitudes web. El hash exacto debe obtenerse desde Git.
+
+### 5.2 Validaciones realizadas
+
+- `mvn clean test` correcto al cerrar los bloques.
+- `npm run build` correcto en los bloques que afectaron la web.
+- Docker y sus rutas validados en los bloques correspondientes.
+- Registro, sesión, reserva, historial y perfil validados.
+- Cambio y recuperación de contraseña validados.
 - Torneos e inscripciones validados desde web y JavaFX.
-- Administración de torneos y categorías validada.
+- Grupos, cuadro eliminatorio y resultados probados.
+- Exportación y PDF del cuadro revisados.
+- Modernización visual administrativa terminada.
 
 ## 6. Funciones completadas
 
 ### 6.1 Reservas y operación
 
-- Consulta de disponibilidad.
-- Solicitudes de reserva pública.
-- Reservas administrativas.
+- Disponibilidad.
+- Solicitudes web y reservas administrativas.
 - Vencimientos automáticos.
 - Pagos y señas.
 - Seguimiento público.
-- Estados de reserva.
-- Agenda y reprogramaciones.
-- Bloqueos de canchas.
-- Auditoría.
+- Estados, agenda y reprogramaciones.
+- Bloqueos y auditoría.
 - Caja y cierre diario.
+- WhatsApp.
 
 ### 6.2 Cuentas de clientes
 
-- Registro.
-- Inicio y cierre de sesión.
+- Registro y autenticación.
 - Cookies de sesión.
-- Perfil.
-- Historial de reservas.
+- Perfil e historial.
 - Vinculación de reservas.
 - Actualización de datos.
-- Posición preferida Drive o Revés.
-- Cambio de contraseña.
-- Recuperación de contraseña.
-- Envío de correo por Gmail SMTP.
+- Posición preferida.
+- Cambio y recuperación de contraseña.
+- Correo Gmail SMTP.
 
 ### 6.3 Torneos e inscripciones
 
-#### Administración de torneos
+#### Administración
 
-- Creación en estado `BORRADOR`.
-- Edición de datos generales.
-- Período de inscripción.
-- Reglamento.
-- Conservación del usuario creador.
-- Gestión de categorías.
-- Rama, cupos y precio informativo.
-- Cálculo de parejas confirmadas y cupos disponibles.
-- Protección contra cupos inválidos.
-- Desactivación controlada de categorías.
+- Creación en `BORRADOR`.
+- Edición general, inscripción y reglamento.
+- Categorías, ramas, cupos y precio informativo.
+- Parejas confirmadas y cupos disponibles.
+- Protección de cupos y desactivación de categorías.
 
 #### Ciclo de vida
 
@@ -355,56 +304,171 @@ Estados no finales -> CANCELADO
 #### Inscripciones
 
 - Inscripción pública con o sin cuenta.
-- Responsable autenticado precargado.
+- Datos autenticados precargados.
 - Registro de ambos integrantes.
-- Solicitudes en estado `PENDIENTE` y origen `WEB`.
-- Bandeja administrativa.
-- Búsqueda y filtros.
-- Confirmación, rechazo, cancelación y lista de espera.
-- Control de cupos.
-- Prevención de duplicados.
-- Observaciones administrativas.
-- Acceso a WhatsApp.
+- Origen web y estado pendiente.
+- Bandeja administrativa, búsqueda y filtros.
+- Confirmación, rechazo, cancelación y espera.
+- Control de cupos y duplicados.
+- Observaciones sin cambio de estado.
+- Alta administrativa.
+- Selección de clientes registrados.
+- Carga manual alternativa.
 
-#### Vinculación con clientes
+#### Vinculación
 
 - Normalización de teléfonos.
-- Vinculación automática ante coincidencia única.
-- Revisión ante coincidencias ambiguas.
-- Vinculación manual.
+- Vinculación automática y manual.
 - Cambio y desvinculación.
 - Prevención del mismo cliente en ambos integrantes.
-- Prevención de participación duplicada en una categoría.
+- Prevención de participación duplicada.
 
-#### Regla definitiva de pagos
+#### Pagos de torneos
 
-El módulo de torneos no gestiona señas ni pagos.
-
-Se eliminaron:
+El módulo no gestiona señas ni pagos. Se eliminaron:
 
 ```text
 importe_senia
 PENDIENTE_PAGO
 ```
 
-`precio_inscripcion` se conserva solamente como valor informativo.
+`precio_inscripcion` es informativo.
 
-## 7. Decisiones técnicas y operativas importantes
+### 6.4 Fase de grupos
 
-### 7.1 Sesiones en localhost
+- Generación por categoría.
+- Un cabeza de serie por grupo.
+- Distribución aleatoria del resto.
+- Configuración completamente manual.
+- Rotación de primeros y rivales.
+- Restauración automática.
+- Tabla de posiciones y resultados.
+- Clasificados en verde y eliminados en rojo suave.
+- Parejas centradas y controles uniformes.
 
-Las cookies se comparten por dominio y no por puerto. Durante pruebas entre `4321`, `4173` y `5173` pueden quedar sesiones inconsistentes.
+### 6.5 Cuadro eliminatorio, partidos y resultados
 
-Ante una sesión visualmente incorrecta:
+El bloque que figuraba como próximo módulo ya fue desarrollado:
 
-1. Borrar datos de `localhost` en el navegador.
-2. Cerrar pestañas de todos los puertos anteriores.
-3. Abrir únicamente `http://localhost:5173`.
-4. Iniciar sesión nuevamente.
+- Propuesta eliminatoria.
+- Generación automática y manual.
+- Editor de cuadro.
+- Llave gráfica.
+- Plazas y participantes.
+- Fecha, hora y cancha.
+- Registro y corrección de resultados.
+- Avance de ganadores.
+- Historial de correcciones.
+- Alta, eliminación y cambio de participantes.
+- Vista previa y detallada.
+- Campeón y fases.
+- Exportación y PDF mural.
+- Guardado seguro del PDF.
 
-### 7.2 Correo Gmail
+Controlador relevante:
 
-Variables SMTP necesarias:
+```text
+src/main/java/vista/controlador/EditorCuadroTorneoDialog.java
+```
+
+## 7. Modernización administrativa terminada
+
+### 7.1 Módulos modernizados
+
+- Login.
+- Inicio y navegación.
+- Agenda y reservas.
+- Clientes.
+- Canchas, horarios, ocupación y precios.
+- Pagos y caja.
+- Estadísticas.
+- Solicitudes web.
+- Torneos, grupos, cuadro y resultados.
+- Inscripciones.
+- Alta y búsqueda de clientes.
+- Diálogos y acciones contextuales.
+
+### 7.2 Identidad visual
+
+- Gris grafito como base.
+- Eliminación de azules antiguos no semánticos.
+- Verde para éxito y comunicación.
+- Gris para acciones secundarias.
+- Ámbar o naranja para advertencias.
+- Rojo apagado para cancelación, rechazo y expiración.
+- Violeta grafito para acciones principales que deben distinguirse de WhatsApp.
+- Títulos alineados a la izquierda.
+- Métricas informativas compactas.
+- Campos y filtros de menor altura.
+- Tablas densas, tooltips y selección clara.
+- Colores de estado visibles aun en filas seleccionadas.
+
+### 7.3 Interacciones
+
+- Escala leve en hover.
+- Elevación de un píxel.
+- Iluminación contextual.
+- Reducción al presionar.
+- Retorno suave.
+- Sin efectos en controles deshabilitados.
+
+### 7.4 Roles
+
+Para `OPERADOR`:
+
+- Ocultar Estadísticas.
+- Ocultar resúmenes financieros restringidos.
+- Adaptar Inicio y navegación.
+- No exponer acciones o datos financieros no autorizados.
+
+La aplicación administrativa abre maximizada después del login. El login conserva cabecera oscura con controles de ventana.
+
+## 8. Últimos cierres visuales
+
+### 8.1 Inscripciones
+
+- Título `Inscripciones` a la izquierda.
+- Total, Pendientes, Confirmadas, En espera y Finalizadas.
+- Estados por color.
+- Búsqueda y filtros compactos.
+- Tabla con tooltips y selección inicial.
+- Panel derecho y acciones según estado.
+- Responsable y Segundo integrante.
+- Vincular, cambiar y desvincular.
+- WhatsApp por integrante.
+- Comentario de solo lectura.
+- Observación interna editable.
+- Texto visible `En espera`, manteniendo `LISTA_ESPERA` internamente.
+- Agregar inscripción maximizado.
+- Buscar o cambiar cliente en ventana normal.
+- Buscar cliente verde y Quitar selección rojo grafito.
+
+### 8.2 Solicitudes web
+
+- Métricas compactas y clickeables.
+- Total gris azulado, Vigentes verde, Próximas naranja y Expiradas rojo.
+- Buscar, Estado y Limpiar compactos.
+- Actualizar gris.
+- Cliente alineado a la izquierda y resto centrado.
+- Colores persistentes al seleccionar.
+- Sin badges duplicados.
+- Mensajes específicos para expiradas y canceladas.
+- Abrir reserva violeta.
+- Abrir pagos gris.
+- WhatsApp verde y centrado cuando es la única acción secundaria.
+
+## 9. Decisiones operativas
+
+### 9.1 Sesiones localhost
+
+Las cookies se comparten por dominio. Si hay conflicto entre puertos `4321`, `4173` y `5173`:
+
+1. Borrar datos de `localhost`.
+2. Cerrar pestañas anteriores.
+3. Abrir solo `http://localhost:5173`.
+4. Iniciar sesión otra vez.
+
+### 9.2 Gmail SMTP
 
 ```text
 SMTP_HOST=smtp.gmail.com
@@ -416,260 +480,116 @@ SMTP_FROM_NAME=Padel Reservas
 SMTP_STARTTLS=true
 SMTP_SSL=false
 SMTP_TIMEOUT_MS=10000
-```
-
-La URL pública local definitiva es:
-
-```text
 API_WEB_PUBLICA_URL=http://localhost:5173/
 ```
 
-La contraseña de aplicación y las demás credenciales deben permanecer fuera de Git.
+Los secretos deben quedar fuera de Git.
 
-### 7.3 Configuración de base para JavaFX
+### 9.3 Base JavaFX
 
-Para conectar la administración a MySQL Docker:
+Docker:
 
 ```powershell
 .\usar-base-docker.ps1
 .\ver-base-configurada.ps1
 ```
 
-Resultado esperado:
-
-```text
-Destino: MySQL Docker
-Puerto: 3307
-```
-
-Para volver a la base local habitual:
+Local:
 
 ```powershell
 .\usar-base-local.ps1
 .\ver-base-configurada.ps1
 ```
 
-Siempre se debe cerrar la aplicación administrativa antes de cambiar de base.
+Cerrar JavaFX antes de cambiar de base.
 
-## 8. Próximo módulo aprobado: cuadros y partidos de torneos
+## 10. Metodología segura
 
-### 8.1 Objetivo
-
-Incorporar la programación y gestión deportiva de los torneos después del cierre de inscripciones.
-
-El módulo abarcará:
-
-1. Modelo y migración de partidos.
-2. Generación del cuadro por categoría.
-3. Sorteo manual o aleatorio de parejas.
-4. Manejo de lugares libres mediante `BYE`.
-5. Programación de fecha, hora y cancha.
-6. Registro de resultados por sets.
-7. Determinación y avance automático de ganadores.
-8. Administración desde JavaFX.
-9. Consulta pública del cuadro desde la web.
-10. Pruebas automatizadas y manuales.
-
-### 8.2 Primera versión funcional
-
-La primera versión usará eliminación directa.
-
-Fases previstas:
-
-```text
-DIECISEISAVOS
-OCTAVOS
-CUARTOS
-SEMIFINAL
-FINAL
-```
-
-Estados previstos:
-
-```text
-PENDIENTE
-PROGRAMADO
-EN_CURSO
-FINALIZADO
-CANCELADO
-```
-
-Cada partido debería registrar como mínimo:
-
-```text
-Torneo
-Categoría
-Fase
-Número u orden del partido
-Pareja 1
-Pareja 2
-Fecha
-Hora
-Cancha
-Estado
-Pareja ganadora
-Partido siguiente
-Posición en el partido siguiente
-```
-
-### 8.3 Resultados por sets
-
-El resultado no debe guardarse como texto libre.
-
-Ejemplo:
-
-```text
-Set 1: 6-4
-Set 2: 3-6
-Set 3: 10-7
-```
-
-La estructura deberá permitir:
-
-- Validar el ganador.
-- Admitir partidos a dos sets con un tercer set o super tie-break configurable.
-- Mostrar resultados claramente.
-- Avanzar automáticamente a la pareja ganadora.
-- Calcular estadísticas en una etapa posterior.
-
-### 8.4 Funciones posteriores
-
-Después de estabilizar eliminación directa se podrán incorporar:
-
-- Fase de grupos.
-- Cabezas de serie.
-- Ranking.
-- Reprogramaciones.
-- Estadísticas deportivas.
-- Notificaciones.
-- Configuración de formato por categoría.
-
-### 8.5 Primer paso técnico exacto
-
-Antes de crear la migración 18:
-
-1. Buscar clases existentes relacionadas con partidos, cuadros, encuentros o resultados.
-2. Revisar entidades actuales de torneo, categoría e inscripción.
-3. Revisar la migración 16.
-4. Confirmar nombres de tablas, claves y estados actuales.
-5. Definir el diseño del cuadro sin duplicar estructuras.
-6. Crear la migración 18 y sus pruebas en un bloque controlado.
-
-## 9. Etapas futuras
-
-### Etapa A: cuadros y partidos
-
-- Modelo de partidos.
-- Cuadro de eliminación directa.
-- Programación.
-- Resultados.
-- Avance automático.
-- JavaFX.
-- Web pública.
-- Pruebas.
-
-### Etapa B: pulido visual
-
-- Modernizar diálogos JavaFX.
-- Mejorar buscadores.
-- Mejorar estados vacíos.
-- Mejorar selector de tema e iconos.
-- Revisar accesibilidad y navegación por teclado.
-- Unificar mensajes de éxito, advertencia y error.
-
-### Etapa C: estabilización general
-
-- Revisar consola de JavaFX.
-- Revisar consola y red del navegador.
-- Probar todos los flujos con y sin sesión.
-- Probar reservas simultáneas.
-- Verificar estados vacíos y errores controlados.
-- Ampliar cobertura automatizada.
-
-### Etapa D: seguridad
-
-- Revisar autenticación y autorización administrativa.
-- Revisar sesiones de clientes.
-- Revisar expiración y revocación.
-- Proteger endpoints por rol y contexto.
-- Mantener secretos fuera del repositorio.
-- Revisar auditoría de operaciones críticas.
-- Preparar HTTPS y cookies seguras para producción.
-
-### Etapa E: despliegue
-
-- Separar configuración de desarrollo y producción.
-- Versionar todas las migraciones.
-- Definir copias de seguridad y restauración.
-- Publicar API y web.
-- Configurar dominio y HTTPS.
-- Configurar correo de producción.
-- Incorporar monitoreo y registros.
-- Documentar actualización y recuperación.
-
-### Etapa F: aplicación móvil
-
-- Definir tecnología.
-- Reutilizar API y reglas de negocio.
-- Registro e inicio de sesión.
-- Disponibilidad y reservas.
-- Historial y perfil.
-- Torneos, cuadros y resultados.
-- Notificaciones cuando exista infraestructura.
-
-## 10. Metodología segura de trabajo
-
-Cada cambio debe seguir este orden:
-
-1. Describir el problema u objetivo.
+1. Describir el objetivo.
 2. Reproducir el estado actual.
 3. Revisar Git.
-4. Identificar archivos involucrados.
-5. Evitar modificar archivos basándose en suposiciones.
-6. Aplicar un cambio pequeño y controlado.
-7. Crear copia de seguridad cuando corresponda.
-8. Verificar el contenido modificado.
-9. Compilar.
-10. Ejecutar pruebas automatizadas.
-11. Probar manualmente.
-12. Revisar consola y registros.
-13. Confirmar que no se rompieron funciones anteriores.
-14. Limpiar archivos temporales.
-15. Crear un commit simple y descriptivo.
-16. Actualizar este documento.
-17. Publicar en GitHub únicamente después de revisar el commit.
+4. Localizar archivos.
+5. Pedir y revisar el contenido actual.
+6. No modificar por suposición.
+7. Aplicar un cambio pequeño.
+8. Crear respaldo.
+9. Verificar contenido.
+10. Compilar.
+11. Ejecutar pruebas.
+12. Probar manualmente.
+13. Revisar consola y registros.
+14. Confirmar regresiones.
+15. Limpiar temporales.
+16. Crear commit descriptivo.
+17. Actualizar este documento.
+18. Hacer push después de revisar el commit.
+
+### 10.1 Aplicadores Node
+
+Los aplicadores `.mjs` se entregan dentro de un ZIP listo para extraer en la raíz.
+
+Deben:
+
+- Validar precondiciones.
+- Identificar versión.
+- Evitar doble aplicación.
+- Crear y restaurar respaldos.
+- No escribir si falla una validación.
+- Mostrar Node, error y traza.
+- Evitar reemplazos literales frágiles.
+- Delimitar métodos Java por firma y llaves.
+- Ser independientes de CRLF o LF.
+- Validar el resultado antes de escribir.
+
+Formato recomendado:
+
+```text
+Aplicador: nombre y versión
+Node.js: vXX.XX.X
+ERROR: descripción
+Traza:
+...
+No se modificó ningún archivo.
+```
+
+Evitar:
+
+- Anclas genéricas con varias coincidencias.
+- Dependencia de espacios o saltos exactos.
+- Marcadores verificados en el archivo incorrecto.
+- Escapes Java incorrectos como `"\d"` en vez de `"\\d"`.
+- Capturar y ocultar la traza real.
 
 ## 11. Criterios de finalización
 
-Una tarea se considera terminada cuando:
+Una tarea termina cuando:
 
-- El código compila.
+- Compila.
 - Las pruebas pasan.
-- La función fue probada manualmente.
-- No aparecen errores inesperados.
-- No se rompieron flujos existentes.
-- La base de datos quedó en el estado esperado.
-- Docker funciona si el cambio afecta el despliegue.
-- Los archivos temporales fueron revisados.
-- Los cambios quedaron respaldados en Git.
+- Fue probada manualmente.
+- No hay errores inesperados.
+- No rompe flujos anteriores.
+- La base queda consistente.
+- Docker funciona si corresponde.
+- No quedan temporales.
+- Hay commit revisado.
+- Se realizó el push acordado.
 - El estado quedó documentado.
 
-## 12. Convenciones de Git
+## 12. Convenciones Git
 
-### Mensajes
-
-Usar mensajes simples y descriptivos, sin prefijos innecesarios.
+Mensajes simples, sin prefijos como `feat:`.
 
 Ejemplos:
 
 ```text
-Agregar cuadros y partidos de torneos
-Agregar programación y resultados de partidos
-Publicar cuadros de torneos en la web
-Corregir avance automático de ganadores
+Agregar WhatsApp, historial de clientes y mejoras del dashboard
+Mejorar torneos, cuadro eliminatorio, resultados y exportación PDF
+Modernizar inscripciones y gestión de participantes
+Completar modernización de solicitudes web e inscripciones
 ```
 
-### Antes de cada commit
+Antes del commit:
 
 ```powershell
 git status -sb
@@ -693,55 +613,113 @@ docker compose config --quiet
 docker compose ps
 ```
 
-### Publicación
+Limpieza de temporales:
 
 ```powershell
-git push origin HEAD
+Get-ChildItem -Path "." -File -Filter "*.mjs" | Remove-Item -Force
+Get-ChildItem -Path ".\src" -Recurse -File |
+    Where-Object { $_.Name -like "*.bak-*" } |
+    Remove-Item -Force
 ```
 
-No ejecutar el push automáticamente como parte de una corrección. Primero revisar el commit y el estado del repositorio.
+Commit y publicación:
 
-## 13. Resumen de continuidad
+```powershell
+git add ".\src\main\java"
+git add ".\src\main\resources"
+git status --short
+git diff --cached --stat
+git diff --cached --check
+git commit -m "Mensaje simple y descriptivo"
+git push origin master
+git status
+git log -1 --oneline
+```
 
-### Último cambio confirmado
+El push no se ejecuta dentro de un aplicador. Se realiza después de revisar el commit.
 
-Nueva web pública en Astro, cuentas de clientes, recuperación por Gmail, posición Drive o Revés, mejoras administrativas y torneos integrados.
+## 13. Próximas etapas
 
-### Estado Git
+La modernización visual y el bloque deportivo de torneos ya están terminados.
+
+### Etapa A: revisión funcional integral
+
+- Recorrer módulos administrativos.
+- Verificar acciones por estado.
+- Revisar reservas, pagos, caja y WhatsApp.
+- Revisar altas, ediciones y cancelaciones.
+- Verificar torneos, grupos, cuadro y resultados.
+- Buscar regresiones posteriores a la modernización.
+
+### Etapa B: permisos
+
+- Probar ADMIN y OPERADOR.
+- Confirmar restricciones de Estadísticas y finanzas.
+- Revisar navegación y endpoints por rol.
+
+### Etapa C: limpieza técnica
+
+- Consolidar CSS duplicado.
+- Unificar colores, botones, tablas, campos y cabeceras.
+- Evaluar componentes JavaFX reutilizables.
+- Eliminar marcadores o históricos innecesarios.
+- Trabajar siempre en bloques pequeños.
+
+### Etapa D: estabilización
+
+- Ampliar pruebas.
+- Probar reservas simultáneas.
+- Probar vencimientos y acreditaciones.
+- Probar concurrencia de cupos.
+- Probar cuadros con tamaños y BYE diferentes.
+- Revisar consola JavaFX, navegador y red.
+
+### Etapa E: seguridad
+
+- Revisar autenticación y autorización.
+- Revisar sesiones, expiración y revocación.
+- Proteger endpoints por rol.
+- Mantener secretos fuera del repositorio.
+- Preparar HTTPS y cookies seguras.
+
+### Etapa F: despliegue
+
+- Separar desarrollo y producción.
+- Verificar migraciones.
+- Definir backups y restauración.
+- Publicar API y web.
+- Configurar dominio, HTTPS, correo y monitoreo.
+
+### Etapa G: aplicación móvil
+
+- Elegir tecnología.
+- Reutilizar API.
+- Registro, reservas, historial y perfil.
+- Torneos, cuadros y resultados.
+- Notificaciones.
+
+## 14. Resumen de continuidad
+
+Estado general:
+
+- Web pública operativa.
+- API operativa.
+- Aplicación administrativa modernizada.
+- Inscripciones y vinculación terminadas.
+- Solicitudes web terminadas.
+- Torneos, grupos, cuadro, resultados y PDF desarrollados.
+- Cambios confirmados y publicados al cerrar el bloque.
+
+Primer paso al retomar:
+
+```powershell
+git status -sb
+git log -1 --oneline
+mvn clean test
+```
+
+Próximo bloque recomendado:
 
 ```text
-Rama: master
-Commit: 7af6b88
-Remoto: origin/master
-Directorio de trabajo: limpio
+Revisión funcional integral y limpieza técnica posterior a la modernización administrativa
 ```
-
-### Servicios definitivos
-
-```text
-Web:  http://localhost:5173
-API:  http://localhost:8080
-MySQL: localhost:3307
-```
-
-### Próximo bloque
-
-```text
-Cuadros, partidos, programación y resultados de torneos
-```
-
-### Primer paso al retomar
-
-Ejecutar búsquedas de clases, tablas y referencias existentes relacionadas con:
-
-```text
-Partido
-Cuadro
-Resultado
-Encuentro
-Clasificado
-Semifinal
-Final
-```
-
-Luego revisar `Torneo`, `TorneoCategoria`, las inscripciones confirmadas y la migración 16 antes de diseñar la migración 18.
