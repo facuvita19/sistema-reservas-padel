@@ -7,7 +7,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import dao.ClienteDAOMySQL;
+import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
+import javafx.util.Duration;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -19,6 +21,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
 import servicio.ConsultaInscripcionTorneoService;
@@ -32,6 +35,11 @@ import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneosInscripcionesController {
+    // inscripciones-texto-en-espera-v2
+    // inscripciones-animaciones-panel-v1
+    // inscripciones-principal-pulido-final-v1
+    // inscripciones-estado-inicial-v2
+    // inscripciones-principal-moderna-v3
     private static final DateTimeFormatter FECHA_HORA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -62,6 +70,7 @@ public class TorneosInscripcionesController {
     @FXML private Label etiquetaPendientes;
     @FXML private Label etiquetaConfirmadas;
     @FXML private Label etiquetaEspera;
+    @FXML private Label etiquetaFinalizadas;
     @FXML private Label etiquetaMensaje;
     @FXML private Label detalleTitulo;
     @FXML private Label detalleTorneo;
@@ -88,12 +97,63 @@ public class TorneosInscripcionesController {
     @FXML private Button botonListaEspera;
     @FXML private Button botonRechazar;
     @FXML private Button botonCancelar;
+    @FXML private Button botonGuardarObservacion;
+    private String observacionOriginal = "";
 
     @FXML
     private void initialize() {
         configurarTabla();
         configurarFiltros();
+        configurarAnimacionesPanel();
+        detalleObservaciones.textProperty().addListener((o, a, actual) -> actualizarBotonObservacion());
         cargarInscripciones();
+    }
+
+    private void configurarAnimacionesPanel() {
+        for (Button boton : java.util.List.of(
+                botonWhatsappResponsable, botonWhatsappPareja,
+                botonVincularResponsable, botonVincularPareja,
+                botonDesvincularResponsable, botonDesvincularPareja,
+                botonGuardarObservacion, botonConfirmar,
+                botonListaEspera, botonRechazar, botonCancelar)) {
+            animarBotonPanel(boton);
+        }
+    }
+
+    private void animarBotonPanel(Button boton) {
+        boton.getStyleClass().add("inscription-animated-button");
+        boton.setOnMouseEntered(evento -> {
+            if (!boton.isDisabled()) {
+                animarEscala(boton, 1.018, 115);
+            }
+        });
+        boton.setOnMouseExited(evento ->
+                animarEscala(boton, 1.0, 130));
+        boton.setOnMousePressed(evento -> {
+            if (!boton.isDisabled()) {
+                animarEscala(boton, 0.975, 70);
+            }
+        });
+        boton.setOnMouseReleased(evento -> {
+            if (!boton.isDisabled()) {
+                animarEscala(boton, boton.isHover() ? 1.018 : 1.0, 95);
+            }
+        });
+        boton.disabledProperty().addListener((obs, anterior, deshabilitado) -> {
+            if (deshabilitado) {
+                boton.setScaleX(1.0);
+                boton.setScaleY(1.0);
+            }
+        });
+    }
+
+    private void animarEscala(
+            Button boton, double escala, double milisegundos) {
+        ScaleTransition animacion = new ScaleTransition(
+                Duration.millis(milisegundos), boton);
+        animacion.setToX(escala);
+        animacion.setToY(escala);
+        animacion.play();
     }
 
     private void configurarTabla() {
@@ -121,10 +181,47 @@ public class TorneosInscripcionesController {
                 setText(vacia || valor == null ? null : valor.format(FECHA_HORA));
             }
         });
+        configurarCeldaTexto(columnaTorneo);
+        configurarCeldaTexto(columnaCategoria);
+        configurarCeldaTexto(columnaResponsable);
+        configurarCeldaTexto(columnaPareja);
+        columnaEstado.setCellFactory(columna -> new TableCell<>() {
+            @Override
+            protected void updateItem(
+                    EstadoInscripcionTorneo estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                setText(vacia || estado == null ? null : textoEstado(estado));
+                getStyleClass().removeAll(
+                        "state-pending", "state-confirmed", "state-wait",
+                        "state-rejected", "state-cancelled");
+                if (!vacia && estado != null) {
+                    getStyleClass().add(switch (estado) {
+                        case PENDIENTE -> "state-pending";
+                        case CONFIRMADA -> "state-confirmed";
+                        case LISTA_ESPERA -> "state-wait";
+                        case RECHAZADA -> "state-rejected";
+                        case CANCELADA -> "state-cancelled";
+                    });
+                }
+            }
+        });
         tablaInscripciones.getSelectionModel().selectedItemProperty()
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) mostrarDetalle(actual);
                 });
+    }
+
+    private void configurarCeldaTexto(
+            TableColumn<InscripcionResumen, String> columna) {
+        columna.setCellFactory(valor -> new TableCell<>() {
+            @Override
+            protected void updateItem(String texto, boolean vacia) {
+                super.updateItem(texto, vacia);
+                setText(vacia ? null : texto);
+                setTooltip(vacia || texto == null || texto.isBlank()
+                        ? null : new Tooltip(texto));
+            }
+        });
     }
 
     private void configurarFiltros() {
@@ -142,7 +239,12 @@ public class TorneosInscripcionesController {
             aplicarFiltros();
             actualizarMetricas();
             etiquetaMensaje.setText(inscripciones.size() + " inscripcion(es) cargada(s).");
-            if (seleccionada != null) seleccionarPorId(seleccionada.id());
+            if (seleccionada != null) {
+                seleccionarPorId(seleccionada.id());
+            } else if (!filtradas.isEmpty()) {
+                tablaInscripciones.getSelectionModel().selectFirst();
+                tablaInscripciones.scrollTo(0);
+            }
         } catch (RuntimeException exception) {
             etiquetaMensaje.setText(exception.getMessage());
         }
@@ -189,6 +291,9 @@ public class TorneosInscripcionesController {
         etiquetaPendientes.setText(String.valueOf(contar(EstadoInscripcionTorneo.PENDIENTE)));
         etiquetaConfirmadas.setText(String.valueOf(contar(EstadoInscripcionTorneo.CONFIRMADA)));
         etiquetaEspera.setText(String.valueOf(contar(EstadoInscripcionTorneo.LISTA_ESPERA)));
+        etiquetaFinalizadas.setText(String.valueOf(
+                contar(EstadoInscripcionTorneo.RECHAZADA)
+                + contar(EstadoInscripcionTorneo.CANCELADA)));
     }
 
     private long contar(EstadoInscripcionTorneo estado) {
@@ -200,7 +305,8 @@ public class TorneosInscripcionesController {
         detalleTitulo.setText("Inscripcion #" + valor.id());
         detalleTorneo.setText(valor.torneo());
         detalleCategoria.setText(valor.categoriaCompleta());
-        detalleEstado.setText(valor.estado().toString());
+        detalleEstado.setText(textoEstado(valor.estado()));
+        aplicarEstiloEstadoDetalle(valor.estado());
         detalleOrigen.setText(valor.origen());
         detalleFecha.setText(valor.fechaSolicitud() == null ? "-" : valor.fechaSolicitud().format(FECHA_HORA));
         detallePrecio.setText(FormateadorMoneda.pesos(valor.precioInscripcion()));
@@ -211,8 +317,31 @@ public class TorneosInscripcionesController {
                 parejaVinculacion, botonWhatsappPareja,
                 botonVincularPareja, botonDesvincularPareja);
         detalleComentarios.setText(valor.comentarios() == null ? "" : valor.comentarios());
-        detalleObservaciones.setText(valor.observacionesAdministrativas() == null ? "" : valor.observacionesAdministrativas());
+        observacionOriginal = valor.observacionesAdministrativas() == null ? "" : valor.observacionesAdministrativas();
+        detalleObservaciones.setText(observacionOriginal);
         actualizarAcciones(valor.estado());
+    }
+
+    private String textoEstado(EstadoInscripcionTorneo estado) {
+        if (estado == null) return "";
+        return estado == EstadoInscripcionTorneo.LISTA_ESPERA
+                ? "En espera" : estado.toString();
+    }
+
+    private void aplicarEstiloEstadoDetalle(
+            EstadoInscripcionTorneo estado) {
+        detalleEstado.getStyleClass().removeAll(
+                "detail-state-pending", "detail-state-confirmed",
+                "detail-state-wait", "detail-state-rejected",
+                "detail-state-cancelled");
+        if (estado == null) return;
+        detalleEstado.getStyleClass().add(switch (estado) {
+            case PENDIENTE -> "detail-state-pending";
+            case CONFIRMADA -> "detail-state-confirmed";
+            case LISTA_ESPERA -> "detail-state-wait";
+            case RECHAZADA -> "detail-state-rejected";
+            case CANCELADA -> "detail-state-cancelled";
+        });
     }
 
     private void cargarJugador(JugadorResumen jugador, Label nombre, Label telefono,
@@ -239,12 +368,42 @@ public class TorneosInscripcionesController {
         boolean espera = estado == EstadoInscripcionTorneo.LISTA_ESPERA;
         boolean confirmada = estado == EstadoInscripcionTorneo.CONFIRMADA;
         boolean gestionable = pendiente || espera || confirmada;
-
-        botonConfirmar.setDisable(!(pendiente || espera));
-        botonListaEspera.setDisable(!pendiente);
-        botonRechazar.setDisable(!(pendiente || espera));
-        botonCancelar.setDisable(!gestionable);
+        mostrarAccion(botonConfirmar, pendiente || espera);
+        mostrarAccion(botonListaEspera, pendiente);
+        mostrarAccion(botonRechazar, pendiente || espera);
+        mostrarAccion(botonCancelar, gestionable);
         detalleObservaciones.setEditable(gestionable);
+        actualizarBotonObservacion();
+    }
+
+    private void mostrarAccion(Button boton, boolean visible) {
+        boton.setVisible(visible);
+        boton.setManaged(visible);
+        boton.setDisable(!visible);
+    }
+
+    private void actualizarBotonObservacion() {
+        if (botonGuardarObservacion == null) return;
+        String actual = detalleObservaciones.getText() == null ? "" : detalleObservaciones.getText();
+        botonGuardarObservacion.setDisable(seleccionada == null
+                || !detalleObservaciones.isEditable()
+                || actual.equals(observacionOriginal));
+    }
+
+    @FXML
+    private void guardarObservacion() {
+        if (seleccionada == null || Navegacion.getUsuarioActual() == null) return;
+        try {
+            gestionService.guardarObservaciones(seleccionada.id(),
+                    Navegacion.getUsuarioActual().getId(),
+                    detalleObservaciones.getText());
+            observacionOriginal = detalleObservaciones.getText() == null
+                    ? "" : detalleObservaciones.getText().trim();
+            actualizarBotonObservacion();
+            etiquetaMensaje.setText("Observación interna guardada correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception, "No se pudo guardar la observación.");
+        }
     }
 
     @FXML private void confirmarInscripcion() {

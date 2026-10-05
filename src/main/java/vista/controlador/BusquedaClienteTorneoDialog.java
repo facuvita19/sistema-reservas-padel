@@ -18,10 +18,13 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import negocio.Cliente;
 import vista.Dialogos;
 
 public class BusquedaClienteTorneoDialog {
+    // buscador-clientes-ventana-normal-v1
+    // dialogos-inscripciones-cierre-visual-v1
     private final Dialog<Cliente> dialogo = new Dialog<>();
     private final TableView<Cliente> tabla = new TableView<>();
     private final FilteredList<Cliente> filtrados;
@@ -52,7 +55,7 @@ public class BusquedaClienteTorneoDialog {
                 textoAccion, ButtonBar.ButtonData.OK_DONE);
         dialogo.getDialogPane().getButtonTypes().addAll(
                 seleccionar,
-                new ButtonType("VOLVER", ButtonBar.ButtonData.CANCEL_CLOSE));
+                new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
         Dialogos.preparar(dialogo, "dialog-client-search");
 
         TextField buscar = new TextField();
@@ -65,7 +68,8 @@ public class BusquedaClienteTorneoDialog {
         configurarTabla();
         tabla.setItems(filtrados);
         tabla.setPlaceholder(new Label("No hay clientes para mostrar."));
-        tabla.setPrefSize(760, 420);
+        tabla.setPrefSize(860, 470);
+        tabla.setFixedCellSize(48);
         tabla.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
 
@@ -73,7 +77,17 @@ public class BusquedaClienteTorneoDialog {
         contenido.setPadding(new Insets(8));
         VBox.setVgrow(tabla, Priority.ALWAYS);
         dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefSize(800, 540);
+        dialogo.getDialogPane().setPrefSize(920, 620);
+        dialogo.setResizable(true);
+        dialogo.setOnShown(evento -> {
+            Stage ventana = (Stage) dialogo.getDialogPane()
+                    .getScene().getWindow();
+            ventana.setMaximized(false);
+            ventana.setFullScreen(false);
+            ventana.setWidth(920);
+            ventana.setHeight(620);
+            ventana.centerOnScreen();
+        });
 
         javafx.scene.Node botonSeleccionar =
                 dialogo.getDialogPane().lookupButton(seleccionar);

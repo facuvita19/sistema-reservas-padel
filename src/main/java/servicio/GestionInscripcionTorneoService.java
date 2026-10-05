@@ -140,6 +140,32 @@ public class GestionInscripcionTorneoService {
         }
     }
 
+    public TorneoInscripcion guardarObservaciones(
+            long inscripcionId, long usuarioGestionId, String observaciones) {
+        if (inscripcionId <= 0 || usuarioGestionId <= 0) {
+            throw new IllegalArgumentException("La inscripción y el usuario son obligatorios.");
+        }
+        try (Connection conexion = proveedorConexion.obtener()) {
+            conexion.setAutoCommit(false);
+            try {
+                TorneoInscripcion inscripcion = inscripcionDAO.buscar(conexion, inscripcionId);
+                if (inscripcion == null) throw new IllegalArgumentException("La inscripción al torneo no existe.");
+                inscripcion.setObservacionesAdministrativas(limpiarObservaciones(observaciones));
+                inscripcion.setUsuarioGestionId(usuarioGestionId);
+                inscripcionDAO.guardar(conexion, inscripcion);
+                conexion.commit();
+                return inscripcion;
+            } catch (SQLException | RuntimeException exception) {
+                rollbackSeguro(conexion, exception);
+                throw exception;
+            } finally {
+                restaurarAutoCommit(conexion);
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException("No se pudo guardar la observación interna.", exception);
+        }
+    }
+
     private void validarConfirmacion(
             Connection conexion,
             TorneoInscripcion inscripcion) {

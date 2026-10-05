@@ -3644,3 +3644,153 @@
     -fx-min-height: 46;
     -fx-pref-height: 46;
 }
+
+/* dialogos-inscripciones-cierre-visual-v1 */
+.dialog-client-search.dialog-pane {
+    -fx-background-color: #11171b;
+    -fx-border-color: #3b454b;
+    -fx-border-width: 1;
+    -fx-pref-width: 920;
+}
+.dialog-client-search > .header-panel {
+    -fx-background-color: #151b1f;
+    -fx-padding: 20 24 18 24;
+    -fx-border-color: transparent transparent #3b454b transparent;
+}
+.dialog-client-search > .header-panel .label {
+    -fx-text-fill: #f1f4f5;
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+}
+.dialog-client-search > .content {
+    -fx-background-color: #11171b;
+    -fx-padding: 16 20 18 20;
+}
+.dialog-client-search .dialog-field {
+    -fx-background-color: #171d21;
+    -fx-text-fill: #edf1f2;
+    -fx-prompt-text-fill: #79878d;
+    -fx-border-color: #3b464c;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-pref-height: 40;
+    -fx-padding: 8 12;
+}
+.dialog-client-search .dialog-field:focused {
+    -fx-border-color: #4d9f77;
+    -fx-effect: dropshadow(gaussian, rgba(69,157,113,.24), 8, .18, 0, 0);
+}
+.dialog-client-search .table-view {
+    -fx-background-color: #12181c;
+    -fx-control-inner-background: #151b1f;
+    -fx-border-color: #3b464c;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-table-cell-border-color: #30393e;
+    -fx-selection-bar: #284c3d;
+    -fx-selection-bar-non-focused: #223e34;
+}
+.dialog-client-search .table-view .column-header-background,
+.dialog-client-search .table-view .column-header,
+.dialog-client-search .table-view .filler {
+    -fx-background-color: #1b2226;
+}
+.dialog-client-search .table-view .column-header-background {
+    -fx-background-radius: 9 9 0 0;
+    -fx-border-color: transparent transparent #3b464c transparent;
+}
+.dialog-client-search .table-view .column-header,
+.dialog-client-search .table-view .filler {
+    -fx-border-color: transparent #354047 transparent transparent;
+    -fx-pref-height: 42;
+}
+.dialog-client-search .table-view .column-header .label {
+    -fx-text-fill: #aeb9be;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+.dialog-client-search .table-view .table-row-cell,
+.dialog-client-search .table-view .table-row-cell:odd {
+    -fx-background-color: #151b1f;
+    -fx-border-color: transparent transparent #30393e transparent;
+    -fx-table-cell-border-color: #30393e;
+}
+.dialog-client-search .table-view .table-row-cell:odd {
+    -fx-background-color: #171e22;
+}
+.dialog-client-search .table-view .table-row-cell:hover {
+    -fx-background-color: #202b27;
+}
+.dialog-client-search .table-view .table-row-cell:selected,
+.dialog-client-search .table-view .table-row-cell:selected:hover {
+    -fx-background-color: #284c3d;
+    -fx-border-color: transparent transparent transparent #55aa7f;
+    -fx-border-width: 0 0 0 3;
+}
+.dialog-client-search .table-view .table-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e1e7e9;
+    -fx-font-size: 12px;
+    -fx-alignment: center;
+    -fx-padding: 0 10;
+    -fx-border-color: transparent #30393e transparent transparent;
+}
+.dialog-client-search .table-view .table-row-cell:selected .table-cell {
+    -fx-text-fill: #f2f7f4;
+    -fx-font-weight: 700;
+}
+.dialog-client-search .table-view .placeholder .label {
+    -fx-text-fill: #819096;
+}
+.dialog-client-search .table-view .scroll-bar,
+.dialog-client-search .table-view .scroll-bar .track,
+.dialog-client-search .table-view .corner {
+    -fx-background-color: #12181c;
+}
+.dialog-client-search .table-view .scroll-bar .thumb {
+    -fx-background-color: #4c585e;
+    -fx-background-radius: 7;
+}
+.dialog-client-search .table-view .scroll-bar .thumb:hover {
+    -fx-background-color: #68767d;
+}
+.dialog-client-search > .button-bar > .container {
+    -fx-background-color: #141a1e;
+    -fx-border-color: #3b454b transparent transparent transparent;
+    -fx-padding: 13 22 16 22;
+}
+.dialog-client-search .button {
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-font-weight: 900;
+    -fx-padding: 9 24;
+    -fx-cursor: hand;
+}
+.dialog-client-search .button:default {
+    -fx-background-color: #3b8d68;
+    -fx-border-color: #59aa82;
+    -fx-text-fill: #ffffff;
+}
+.dialog-client-search .button:default:hover {
+    -fx-background-color: #49a279;
+    -fx-border-color: #73bd97;
+    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.32), 12, .22, 0, 2);
+}
+.dialog-client-search .button:default:disabled {
+    -fx-background-color: #294c3c;
+    -fx-border-color: #3d6b55;
+    -fx-text-fill: #82998d;
+    -fx-opacity: .68;
+}
+.dialog-client-search .button:cancel {
+    -fx-background-color: #2a3135;
+    -fx-border-color: #545f65;
+    -fx-text-fill: #e5e9eb;
+}
+.dialog-client-search .button:cancel:hover {
+    -fx-background-color: #3a4348;
+    -fx-border-color: #77838a;
+    -fx-effect: dropshadow(gaussian, rgba(143,157,165,.22), 10, .18, 0, 2);
+}

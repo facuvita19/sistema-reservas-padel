@@ -7,8 +7,12 @@ import dao.TorneoCategoriaDAO;
 import dao.TorneoCategoriaDAOMySQL;
 import dao.TorneoDAO;
 import dao.TorneoDAOMySQL;
+import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
+import javafx.util.Duration;
+import javafx.stage.Stage;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -17,10 +21,12 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
@@ -34,6 +40,9 @@ import vista.Dialogos;
 import vista.Navegacion;
 
 public class AltaAdministrativaInscripcionTorneoDialog {
+        // dialogos-inscripciones-cierre-visual-v1
+        // alta-inscripcion-verde-maximizada-v1
+        // alta-inscripcion-moderna-v1
         private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
         private final TorneoCategoriaDAO categoriaDAO = new TorneoCategoriaDAOMySQL();
         private final ClienteDAOMySQL clienteDAO = new ClienteDAOMySQL();
@@ -63,10 +72,10 @@ public class AltaAdministrativaInscripcionTorneoDialog {
         }
 
         private void construir() {
-                dialogo.setTitle("Agregar pareja al torneo");
-                dialogo.setHeaderText("Alta administrativa de inscripcion");
+                dialogo.setTitle("Agregar inscripción");
+                dialogo.setHeaderText("Nueva inscripción administrativa");
                 ButtonType guardar = new ButtonType(
-                                "AGREGAR PAREJA", ButtonBar.ButtonData.OK_DONE);
+                                "AGREGAR INSCRIPCIÓN", ButtonBar.ButtonData.OK_DONE);
                 ButtonType cancelar = new ButtonType(
                                 "CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE);
                 dialogo.getDialogPane().getButtonTypes().setAll(guardar, cancelar);
@@ -81,7 +90,12 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                                 Navegacion.getConfiguracionActual());
                 dialogo.setResizable(true);
-                dialogo.getDialogPane().setPrefSize(920, 760);
+                dialogo.getDialogPane().setPrefSize(980, 760);
+                dialogo.setOnShown(evento -> {
+                        Stage ventana = (Stage) dialogo.getDialogPane()
+                                        .getScene().getWindow();
+                        ventana.setMaximized(true);
+                });
 
                 List<Torneo> administrables = torneoDAO.listarActivos().stream()
                                 .filter(valor -> valor.getEstado() == EstadoTorneo.PUBLICADO
@@ -149,7 +163,7 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                                 creadaId = creada.getId();
                         } catch (RuntimeException exception) {
                                 evento.consume();
-                                Dialogos.error("No se pudo agregar la pareja",
+                                Dialogos.error("No se pudo agregar la inscripción",
                                                 exception.getMessage());
                         }
                 });
@@ -158,32 +172,61 @@ public class AltaAdministrativaInscripcionTorneoDialog {
 
         private ScrollPane contenido() {
                 prepararControles();
-                VBox tarjetaTorneo = tarjeta("TORNEO Y CATEGORIA",
-                                campo("Torneo", torneo), campo("Categoria", categoria),
-                                campo("Estado inicial", estado));
+
+                VBox tarjetaTorneo = tarjeta("TORNEO Y CATEGORÍA",
+                                camposTorneo());
                 VBox responsable = seleccionResponsable.tarjeta();
                 VBox segundo = seleccionPareja.tarjeta();
-                HBox jugadores = new HBox(14, responsable, segundo);
+                HBox jugadores = new HBox(12, responsable, segundo);
+                jugadores.setAlignment(Pos.TOP_CENTER);
                 HBox.setHgrow(responsable, Priority.ALWAYS);
                 HBox.setHgrow(segundo, Priority.ALWAYS);
-                VBox adicional = tarjeta("INFORMACION ADICIONAL",
-                                campo("Comentarios", comentarios),
-                                campo("Observaciones administrativas", observaciones));
+
+                VBox adicional = tarjeta("INFORMACIÓN ADICIONAL",
+                                camposAdicionales());
                 Label intro = new Label(
-                                "Podes seleccionar clientes registrados o completar los "
-                                                + "datos manualmente. La carga manual conserva la "
-                                                + "vinculacion automatica por telefono.");
+                                "Seleccioná clientes registrados o completá "
+                                                + "los datos manualmente. No es necesario volver "
+                                                + "a cargar la información de clientes existentes.");
                 intro.getStyleClass().add("admin-registration-intro");
                 intro.setWrapText(true);
-                VBox cuerpo = new VBox(14, intro, tarjetaTorneo, jugadores, adicional);
+
+                VBox cuerpo = new VBox(12, intro, tarjetaTorneo,
+                                jugadores, adicional);
                 cuerpo.getStyleClass().add("admin-registration-root");
                 ScrollPane scroll = new ScrollPane(cuerpo);
                 scroll.setFitToWidth(true);
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 scroll.getStyleClass().add("admin-registration-scroll");
-                scroll.setPrefViewportHeight(640);
+                scroll.setPrefViewportHeight(630);
                 return scroll;
+        }
+
+        private HBox camposTorneo() {
+                VBox campoTorneo = campo("Torneo", torneo);
+                VBox campoCategoria = campo("Categoría", categoria);
+                VBox campoEstado = campo("Estado inicial", estado);
+                HBox fila = new HBox(10,
+                                campoTorneo, campoCategoria, campoEstado);
+                HBox.setHgrow(campoTorneo, Priority.ALWAYS);
+                HBox.setHgrow(campoCategoria, Priority.ALWAYS);
+                campoTorneo.setMaxWidth(Double.MAX_VALUE);
+                campoCategoria.setMaxWidth(Double.MAX_VALUE);
+                campoEstado.setPrefWidth(205);
+                return fila;
+        }
+
+        private HBox camposAdicionales() {
+                VBox campoComentarios = campo("Comentarios", comentarios);
+                VBox campoObservaciones = campo(
+                                "Observación interna", observaciones);
+                HBox fila = new HBox(12, campoComentarios, campoObservaciones);
+                HBox.setHgrow(campoComentarios, Priority.ALWAYS);
+                HBox.setHgrow(campoObservaciones, Priority.ALWAYS);
+                campoComentarios.setMaxWidth(Double.MAX_VALUE);
+                campoObservaciones.setMaxWidth(Double.MAX_VALUE);
+                return fila;
         }
 
         private void prepararControles() {
@@ -207,13 +250,13 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 t2.setPromptText("Telefono");
                 comentarios.setPromptText("Comentarios opcionales");
                 observaciones.setPromptText(
-                                "Observaciones administrativas opcionales");
+                                "Información interna opcional");
         }
 
         private VBox tarjeta(String titulo, javafx.scene.Node... contenido) {
                 Label encabezado = new Label(titulo);
                 encabezado.getStyleClass().add("admin-registration-section-title");
-                VBox caja = new VBox(10);
+                VBox caja = new VBox(9);
                 caja.getChildren().add(encabezado);
                 caja.getChildren().addAll(contenido);
                 caja.getStyleClass().add("admin-registration-card");
@@ -225,6 +268,24 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 texto.getStyleClass().add("admin-registration-field-label");
                 control.setMaxWidth(Double.MAX_VALUE);
                 return new VBox(5, texto, control);
+        }
+
+        private void animarBoton(Button boton) {
+                boton.getStyleClass().add("admin-registration-animated-button");
+                boton.setOnMouseEntered(evento -> animarEscala(boton, 1.018, 110));
+                boton.setOnMouseExited(evento -> animarEscala(boton, 1.0, 125));
+                boton.setOnMousePressed(evento -> animarEscala(boton, .975, 70));
+                boton.setOnMouseReleased(evento -> animarEscala(
+                                boton, boton.isHover() ? 1.018 : 1.0, 90));
+        }
+
+        private void animarEscala(
+                        Button boton, double escala, double milisegundos) {
+                ScaleTransition transicion = new ScaleTransition(
+                                Duration.millis(milisegundos), boton);
+                transicion.setToX(escala);
+                transicion.setToY(escala);
+                transicion.play();
         }
 
         private final class SeleccionJugador {
@@ -250,10 +311,11 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 private VBox tarjeta() {
                         buscar.getStyleClass().add("admin-registration-search-button");
                         quitar.getStyleClass().add("admin-registration-clear-button");
-                        buscar.setMaxWidth(Double.MAX_VALUE);
-                        quitar.setMaxWidth(Double.MAX_VALUE);
+                        quitar.getStyleClass().add("admin-registration-remove-selection");
                         buscar.setOnAction(evento -> buscarCliente());
                         quitar.setOnAction(evento -> seleccionar(null));
+                        animarBoton(buscar);
+                        animarBoton(quitar);
 
                         clienteNombre.getStyleClass().add(
                                         "admin-registration-selected-name");
@@ -270,14 +332,28 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                         Label alternativa = new Label(
                                         "O completa los datos manualmente");
                         alternativa.getStyleClass().add("admin-registration-hint");
+                        Region lineaIzquierda = new Region();
+                        Region lineaDerecha = new Region();
+                        lineaIzquierda.getStyleClass().add(
+                                        "admin-registration-divider-line");
+                        lineaDerecha.getStyleClass().add(
+                                        "admin-registration-divider-line");
+                        HBox.setHgrow(lineaIzquierda, Priority.ALWAYS);
+                        HBox.setHgrow(lineaDerecha, Priority.ALWAYS);
+                        HBox divisor = new HBox(8,
+                                        lineaIzquierda, alternativa, lineaDerecha);
+                        divisor.setAlignment(Pos.CENTER);
+
+                        HBox accionesCliente = new HBox(8, buscar);
+                        accionesCliente.setAlignment(Pos.CENTER_LEFT);
                         VBox caja = AltaAdministrativaInscripcionTorneoDialog.this.tarjeta(
                                         titulo,
-                                        buscar,
+                                        accionesCliente,
                                         resumenCliente,
-                                        alternativa,
+                                        divisor,
                                         campo("Nombre", nombre),
                                         campo("Apellido", apellido),
-                                        campo("Telefono", telefono));
+                                        campo("Teléfono", telefono));
                         caja.setMaxWidth(Double.MAX_VALUE);
                         caja.setPrefWidth(420);
                         return caja;
