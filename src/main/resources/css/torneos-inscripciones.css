@@ -1,9 +1,155 @@
-.tournaments-root,.tournaments-content{-fx-background-color:#0d1216}.inscriptions-refresh-button,.inscriptions-clear-button{-fx-background-color:#242b2f;-fx-border-color:#465158;-fx-text-fill:#e3e8ea;-fx-font-weight:800;-fx-background-radius:9;-fx-border-radius:9;-fx-padding:11 16;-fx-cursor:hand}.inscriptions-refresh-button:hover,.inscriptions-clear-button:hover{-fx-background-color:#30383d;-fx-border-color:#647078}.tournament-metric{-fx-background-color:#171d21;-fx-background-radius:10;-fx-border-color:#343e44;-fx-border-radius:10;-fx-padding:9 12}.tournament-metric-pending{-fx-border-color:#8d6b31}.tournament-metric-confirmed{-fx-border-color:#39775d}.tournament-metric-wait{-fx-border-color:#78602e}.tournament-metric-final{-fx-border-color:#65434a}.tournament-metric-value{-fx-text-fill:#edf1f2;-fx-font-size:20px;-fx-font-weight:900}.inscriptions-table{-fx-fixed-cell-size:56}.inscription-detail-shell{-fx-background-color:#11171b;-fx-border-color:#384249 transparent transparent #384249;-fx-border-width:0 0 0 1}.inscription-detail-header{-fx-background-color:#151b1f;-fx-border-color:transparent transparent #384249 transparent}.inscription-tournament-title{-fx-text-fill:#edf1f2;-fx-font-size:15px;-fx-font-weight:900}.inscription-category{-fx-text-fill:#a6b1b6;-fx-font-size:12px;-fx-font-weight:700}.inscription-meta{-fx-text-fill:#87959b;-fx-font-size:11px}.inscription-price{-fx-text-fill:#86c4a5;-fx-font-size:12px;-fx-font-weight:900}.tournament-detail-scroll,.tournament-detail-scroll>.viewport,.tournament-detail{-fx-background-color:#11171b}.tournament-state{-fx-background-color:#293238;-fx-background-radius:10;-fx-text-fill:#e1e7e9;-fx-font-size:10px;-fx-font-weight:900;-fx-padding:4 8}.player-card{-fx-background-color:#181f23;-fx-background-radius:10;-fx-border-color:#3a454b;-fx-border-radius:10;-fx-padding:12}.player-name{-fx-text-fill:#edf1f2;-fx-font-size:14px;-fx-font-weight:900}.tournament-detail-value{-fx-text-fill:#aeb9be;-fx-font-size:11px;-fx-font-weight:700}.link-status{-fx-text-fill:#7fbd9f;-fx-font-size:10px;-fx-font-weight:800}.tournament-link-button,.tournament-unlink-button,.whatsapp-button{-fx-cursor:hand;-fx-font-size:10px;-fx-font-weight:900;-fx-padding:8 10;-fx-background-radius:8;-fx-border-radius:8}.tournament-link-button{-fx-background-color:#285b46;-fx-border-color:#3e8264;-fx-text-fill:#fff}.tournament-link-button:hover{-fx-background-color:#347356}.tournament-unlink-button{-fx-background-color:#302a2c;-fx-border-color:#685057;-fx-text-fill:#e8dadd}.whatsapp-button{-fx-background-color:#205c43;-fx-border-color:#36825f;-fx-text-fill:#e8fff4}.inscription-readonly-area{-fx-opacity:1;-fx-background-color:#161c20}.management-actions-fixed{-fx-background-color:#141a1e;-fx-border-color:#384249 transparent transparent transparent}.inscription-save-note,.tournament-action-confirm,.tournament-action-wait,.tournament-action-reject,.tournament-action-cancel{-fx-cursor:hand;-fx-font-size:11px;-fx-font-weight:900;-fx-padding:10 12;-fx-background-radius:8;-fx-border-radius:8}.inscription-save-note{-fx-background-color:#2a3338;-fx-border-color:#546169;-fx-text-fill:#e6ecee}.inscription-save-note:hover{-fx-background-color:#374248}.tournament-action-confirm{-fx-background-color:#286c50;-fx-text-fill:#fff;-fx-border-color:#3e8d68}.tournament-action-wait{-fx-background-color:#655021;-fx-text-fill:#fff2c9;-fx-border-color:#96742d}.tournament-action-reject{-fx-background-color:#673039;-fx-text-fill:#fff;-fx-border-color:#914650}.tournament-action-cancel{-fx-background-color:#2b3034;-fx-text-fill:#e2e6e8;-fx-border-color:#515a60}.inscription-save-note:disabled,.tournament-action-confirm:disabled,.tournament-action-wait:disabled,.tournament-action-reject:disabled,.tournament-action-cancel:disabled{-fx-opacity:.34;-fx-cursor:default}.tournament-detail-scroll .scroll-bar:vertical{-fx-pref-width:9;-fx-background-color:transparent}.tournament-detail-scroll .scroll-bar:vertical .track{-fx-background-color:#141a1e}.tournament-detail-scroll .scroll-bar:vertical .thumb{-fx-background-color:#4b565c;-fx-background-radius:6}
+/* Inscripciones de torneos - estilos consolidados */
 
-/* inscripciones-estado-inicial-v2 */
-.inscriptions-table .table-cell {
+/* Estructura general */
+.tournaments-root,
+.tournaments-content {
+    -fx-background-color: #0d1216;
+}
+
+.inscriptions-title-left {
     -fx-alignment: center-left;
 }
+
+.inscriptions-title-left .page-title,
+.inscriptions-title-left .page-subtitle {
+    -fx-alignment: center-left;
+    -fx-text-alignment: left;
+}
+
+/* Acciones de cabecera y filtros */
+.inscriptions-refresh-button,
+.inscriptions-clear-button {
+    -fx-background-color: #242b2f;
+    -fx-border-color: #465158;
+    -fx-text-fill: #e3e8ea;
+    -fx-font-weight: 800;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-cursor: hand;
+}
+
+.inscriptions-refresh-button {
+    -fx-padding: 11 16;
+}
+
+.inscriptions-clear-button {
+    -fx-padding: 7 15;
+    -fx-font-size: 11px;
+}
+
+.inscriptions-refresh-button:hover,
+.inscriptions-clear-button:hover {
+    -fx-background-color: #30383d;
+    -fx-border-color: #647078;
+}
+
+.tournaments-content .modern-field,
+.tournaments-content .modern-combo,
+.tournaments-content .inscriptions-clear-button {
+    -fx-pref-height: 38;
+    -fx-min-height: 38;
+    -fx-max-height: 38;
+}
+
+.tournaments-content .modern-field {
+    -fx-padding: 7 12;
+    -fx-font-size: 12.5px;
+}
+
+.tournaments-content .modern-combo {
+    -fx-padding: 0 0 0 2;
+    -fx-font-size: 12px;
+}
+
+.tournaments-content .modern-combo .list-cell {
+    -fx-padding: 6 10;
+    -fx-font-size: 12px;
+}
+
+.tournaments-content .small-caption {
+    -fx-min-height: 15;
+    -fx-pref-height: 15;
+    -fx-font-size: 10.5px;
+}
+
+/* Indicadores */
+.tournament-metric {
+    -fx-pref-height: 58;
+    -fx-min-height: 58;
+    -fx-max-height: 58;
+    -fx-spacing: 0;
+    -fx-padding: 6 11 6 12;
+    -fx-background-color: #171d21;
+    -fx-background-radius: 10;
+    -fx-border-color: #425a67 #343e44 #343e44 #425a67;
+    -fx-border-radius: 10;
+    -fx-border-width: 1 1 1 4;
+    -fx-effect: none;
+}
+
+.tournament-metric .metric-label {
+    -fx-text-fill: #8fa8b5;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+}
+
+.tournament-metric-value {
+    -fx-text-fill: #dce8ed;
+    -fx-font-size: 20px;
+    -fx-font-weight: 900;
+}
+
+.tournament-metric-pending {
+    -fx-background-color: #211b15;
+    -fx-border-color: #b66c22 #55402c #55402c #e08a2e;
+}
+
+.tournament-metric-pending .metric-label,
+.tournament-metric-pending .tournament-metric-value {
+    -fx-text-fill: #f0a13b;
+}
+
+.tournament-metric-confirmed {
+    -fx-background-color: #171e1b;
+    -fx-border-color: #347758 #33483f #33483f #3f9a70;
+}
+
+.tournament-metric-confirmed .metric-label,
+.tournament-metric-confirmed .tournament-metric-value {
+    -fx-text-fill: #72c59a;
+}
+
+.tournament-metric-wait {
+    -fx-background-color: #1e1825;
+    -fx-border-color: #7c5aa0 #46374f #46374f #a77bd2;
+}
+
+.tournament-metric-wait .metric-label,
+.tournament-metric-wait .tournament-metric-value {
+    -fx-text-fill: #c7a1f2;
+}
+
+.tournament-metric-final {
+    -fx-background-color: #20191b;
+    -fx-border-color: #7e4650 #4a3539 #4a3539 #a85663;
+}
+
+.tournament-metric-final .metric-label,
+.tournament-metric-final .tournament-metric-value {
+    -fx-text-fill: #d9828d;
+}
+
+/* Tabla */
+.inscriptions-table {
+    -fx-fixed-cell-size: 56;
+}
+
+.inscriptions-table .column-header .label,
+.inscriptions-table .table-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
 .inscriptions-table .state-pending,
 .inscriptions-table .state-confirmed,
 .inscriptions-table .state-wait,
@@ -11,72 +157,218 @@
 .inscriptions-table .state-cancelled {
     -fx-font-weight: 900;
 }
-.inscriptions-table .state-pending { -fx-text-fill: #d8b45d; }
-.inscriptions-table .state-confirmed { -fx-text-fill: #78c49e; }
-.inscriptions-table .state-wait { -fx-text-fill: #d4ad59; }
-.inscriptions-table .state-rejected { -fx-text-fill: #d78289; }
-.inscriptions-table .state-cancelled { -fx-text-fill: #a6afb3; }
+
 .inscriptions-table .table-row-cell:selected {
     -fx-background-color: #26342e;
     -fx-border-color: transparent transparent transparent #4b9a72;
     -fx-border-width: 0 0 0 3;
 }
-.inscriptions-table .table-row-cell:selected .table-cell {
-    -fx-text-fill: #f2f5f4;
+
+.inscriptions-table .table-row-cell .table-cell.state-pending,
+.inscriptions-table .table-row-cell:selected .table-cell.state-pending {
+    -fx-text-fill: #f0a13b;
 }
 
-/* inscripciones-principal-pulido-final-v1 */
-/* Metricas compactas con acento lateral, sin apariencia de campo. */
-.tournament-metric {
-    -fx-padding: 8 12 8 13;
-    -fx-border-width: 1 1 1 3;
-}
-.tournament-metric .metric-label {
-    -fx-font-size: 10px;
-}
-.tournament-metric-value {
-    -fx-font-size: 22px;
+.inscriptions-table .table-row-cell .table-cell.state-confirmed,
+.inscriptions-table .table-row-cell:selected .table-cell.state-confirmed {
+    -fx-text-fill: #64d39a;
 }
 
-/* Estado principal consistente con el estado mostrado en la tabla. */
+.inscriptions-table .table-row-cell .table-cell.state-wait,
+.inscriptions-table .table-row-cell:selected .table-cell.state-wait {
+    -fx-text-fill: #c7a1f2;
+}
+
+.inscriptions-table .table-row-cell .table-cell.state-rejected,
+.inscriptions-table .table-row-cell:selected .table-cell.state-rejected {
+    -fx-text-fill: #ef7f8c;
+}
+
+.inscriptions-table .table-row-cell .table-cell.state-cancelled,
+.inscriptions-table .table-row-cell:selected .table-cell.state-cancelled {
+    -fx-text-fill: #aab4b9;
+}
+
+/* Panel de detalle */
+.inscription-detail-shell {
+    -fx-background-color: #11171b;
+    -fx-border-color: #384249 transparent transparent #384249;
+    -fx-border-width: 0 0 0 1;
+}
+
+.inscription-detail-header {
+    -fx-background-color: #151b1f;
+    -fx-border-color: transparent transparent #384249 transparent;
+}
+
+.inscription-tournament-title {
+    -fx-text-fill: #edf1f2;
+    -fx-font-size: 15px;
+    -fx-font-weight: 900;
+}
+
+.inscription-category {
+    -fx-text-fill: #a6b1b6;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.inscription-meta {
+    -fx-text-fill: #87959b;
+    -fx-font-size: 11px;
+}
+
+.inscription-price {
+    -fx-text-fill: #86c4a5;
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+}
+
+.tournament-detail-scroll,
+.tournament-detail-scroll > .viewport,
+.tournament-detail-scroll .viewport,
+.tournament-detail {
+    -fx-background-color: #11171b;
+}
+
+.tournament-detail-scroll .scroll-bar:vertical {
+    -fx-pref-width: 9;
+    -fx-background-color: transparent;
+}
+
+.tournament-detail-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #141a1e;
+}
+
+.tournament-detail-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4b565c;
+    -fx-background-radius: 6;
+}
+
+/* Estado del detalle */
 .tournament-state {
     -fx-background-color: #293238;
+    -fx-background-radius: 10;
     -fx-border-color: #465158;
     -fx-border-radius: 10;
     -fx-border-width: 1;
+    -fx-text-fill: #e1e7e9;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 4 8;
 }
+
 .tournament-state.detail-state-pending {
-    -fx-background-color: #493d22;
-    -fx-border-color: #8d6b31;
-    -fx-text-fill: #e5c16a;
+    -fx-background-color: #4b3218;
+    -fx-border-color: #aa6a24;
+    -fx-text-fill: #f0b252;
 }
+
 .tournament-state.detail-state-confirmed {
     -fx-background-color: #203d31;
     -fx-border-color: #39775d;
     -fx-text-fill: #87d0aa;
 }
+
 .tournament-state.detail-state-wait {
-    -fx-background-color: #493c20;
-    -fx-border-color: #78602e;
-    -fx-text-fill: #dfbd68;
+    -fx-background-color: #392848;
+    -fx-border-color: #7c5aa0;
+    -fx-text-fill: #d1b0f5;
 }
+
 .tournament-state.detail-state-rejected {
     -fx-background-color: #472a30;
     -fx-border-color: #75414a;
     -fx-text-fill: #e19299;
 }
+
 .tournament-state.detail-state-cancelled {
     -fx-background-color: #292f33;
     -fx-border-color: #525d63;
     -fx-text-fill: #b1b9bd;
 }
 
-/* Comentario recibido: tarjeta informativa, no campo editable. */
+/* Integrantes */
+.player-card {
+    -fx-background-color: #181f23;
+    -fx-background-radius: 10;
+    -fx-border-color: #3a454b;
+    -fx-border-radius: 10;
+    -fx-padding: 12;
+}
+
+.player-name {
+    -fx-text-fill: #edf1f2;
+    -fx-font-size: 14px;
+    -fx-font-weight: 900;
+}
+
+.tournament-detail-value {
+    -fx-text-fill: #aeb9be;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+
+.link-status {
+    -fx-text-fill: #7fbd9f;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.tournament-link-button,
+.tournament-unlink-button,
+.whatsapp-button {
+    -fx-cursor: hand;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.tournament-link-button {
+    -fx-background-color: #337d5d;
+    -fx-border-color: #4b9874;
+    -fx-text-fill: #ffffff;
+}
+
+.tournament-link-button:hover {
+    -fx-background-color: #40906c;
+}
+
+.tournament-unlink-button {
+    -fx-background-color: #302a2c;
+    -fx-border-color: #685057;
+    -fx-text-fill: #e8dadd;
+}
+
+.tournament-unlink-button:hover {
+    -fx-background-color: #49373c;
+    -fx-border-color: #98616c;
+    -fx-text-fill: #ffe8ec;
+    -fx-effect: dropshadow(gaussian, rgba(176,91,106,.32), 12, .22, 0, 2);
+}
+
+.whatsapp-button {
+    -fx-background-color: #1d4937;
+    -fx-border-color: #327257;
+    -fx-text-fill: #dff7e9;
+    -fx-padding: 8 11;
+}
+
+.whatsapp-button:hover {
+    -fx-background-color: #285c46;
+    -fx-border-color: #428568;
+}
+
+/* Comentarios y observaciones */
 .inscription-readonly-area,
 .inscription-readonly-area .content {
     -fx-background-color: #151b1f;
 }
+
 .inscription-readonly-area {
+    -fx-opacity: 1;
     -fx-border-color: #303a40;
     -fx-border-width: 1;
     -fx-border-radius: 8;
@@ -84,52 +376,124 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
 .inscription-readonly-area:focused {
     -fx-border-color: #303a40;
     -fx-effect: none;
 }
 
-/* WhatsApp queda como acceso auxiliar y Vincular conserva la jerarquia. */
-.whatsapp-button {
-    -fx-background-color: #1d4937;
-    -fx-border-color: #327257;
-    -fx-text-fill: #dff7e9;
-    -fx-padding: 8 11;
-}
-.whatsapp-button:hover {
-    -fx-background-color: #285c46;
-    -fx-border-color: #428568;
-}
-.tournament-link-button {
-    -fx-background-color: #337d5d;
-    -fx-border-color: #4b9874;
-}
-.tournament-link-button:hover {
-    -fx-background-color: #40906c;
-}
-
-/* Evita que la observacion termine visualmente debajo de las acciones fijas. */
-.tournament-detail-scroll .viewport {
-    -fx-background-color: #11171b;
-}
+/* Acciones fijas */
 .management-actions-fixed {
+    -fx-background-color: #141a1e;
+    -fx-border-color: #384249 transparent transparent transparent;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 12, .12, 0, -3);
 }
 
-/* inscripciones-animaciones-panel-v1 */
+.inscription-save-note,
+.tournament-action-confirm,
+.tournament-action-wait,
+.tournament-action-reject,
+.tournament-action-cancel {
+    -fx-cursor: hand;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-padding: 10 12;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.inscription-save-note {
+    -fx-background-color: #2a3338;
+    -fx-border-color: #546169;
+    -fx-text-fill: #e6ecee;
+}
+
+.inscription-save-note:hover {
+    -fx-background-color: #414d53;
+    -fx-border-color: #78868d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(160,177,185,.24), 12, .20, 0, 2);
+}
+
+.tournament-action-confirm {
+    -fx-background-color: #286c50;
+    -fx-border-color: #3e8d68;
+    -fx-text-fill: #ffffff;
+}
+
+.tournament-action-confirm:hover {
+    -fx-background-color: #368763;
+    -fx-border-color: #63b88d;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.34), 13, .24, 0, 2);
+}
+
+.tournament-action-wait {
+    -fx-background-color: #655021;
+    -fx-border-color: #96742d;
+    -fx-text-fill: #fff2c9;
+}
+
+.tournament-action-wait:hover {
+    -fx-background-color: #826924;
+    -fx-border-color: #c49a3a;
+    -fx-text-fill: #fff8df;
+    -fx-effect: dropshadow(gaussian, rgba(207,158,52,.32), 13, .24, 0, 2);
+}
+
+.tournament-action-reject {
+    -fx-background-color: #673039;
+    -fx-border-color: #914650;
+    -fx-text-fill: #ffffff;
+}
+
+.tournament-action-reject:hover {
+    -fx-background-color: #85404b;
+    -fx-border-color: #c0616e;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(201,82,98,.34), 13, .24, 0, 2);
+}
+
+.tournament-action-cancel {
+    -fx-background-color: #2b3034;
+    -fx-border-color: #515a60;
+    -fx-text-fill: #e2e6e8;
+}
+
+.tournament-action-cancel:hover {
+    -fx-background-color: #3b4348;
+    -fx-border-color: #758188;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(145,158,166,.25), 12, .20, 0, 2);
+}
+
+.inscription-save-note:disabled,
+.tournament-action-confirm:disabled,
+.tournament-action-wait:disabled,
+.tournament-action-reject:disabled,
+.tournament-action-cancel:disabled {
+    -fx-opacity: .34;
+    -fx-cursor: default;
+}
+
+/* Animaciones */
 .inscription-animated-button {
     -fx-cursor: hand;
 }
+
 .inscription-animated-button:hover {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .34), 12, .18, 0, 4);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.34), 12, .18, 0, 4);
 }
+
 .inscription-animated-button:pressed {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .20), 5, .10, 0, 1);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 5, .10, 0, 1);
 }
+
 .inscription-animated-button:disabled {
     -fx-cursor: default;
     -fx-effect: none;
 }
+
 .tournament-link-button:hover,
 .whatsapp-button:hover,
 .tournament-unlink-button:hover,
@@ -140,6 +504,7 @@
 .tournament-action-cancel:hover {
     -fx-translate-y: -1;
 }
+
 .tournament-link-button:pressed,
 .whatsapp-button:pressed,
 .tournament-unlink-button:pressed,
@@ -149,271 +514,14 @@
 .tournament-action-reject:pressed,
 .tournament-action-cancel:pressed {
     -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 5, .10, 0, 1);
 }
 
-/* inscripciones-iluminacion-hover-acciones-v1 */
-/* Iluminacion contextual para las acciones del panel derecho. */
-.tournament-unlink-button:hover {
-    -fx-background-color: #49373c;
-    -fx-border-color: #98616c;
-    -fx-text-fill: #ffe8ec;
-    -fx-effect: dropshadow(gaussian, rgba(176, 91, 106, .32), 12, .22, 0, 2);
-}
-
-.inscription-save-note:hover {
-    -fx-background-color: #414d53;
-    -fx-border-color: #78868d;
-    -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(160, 177, 185, .24), 12, .20, 0, 2);
-}
-
-.tournament-action-confirm:hover {
-    -fx-background-color: #368763;
-    -fx-border-color: #63b88d;
-    -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(71, 181, 132, .34), 13, .24, 0, 2);
-}
-
-.tournament-action-wait:hover {
-    -fx-background-color: #826924;
-    -fx-border-color: #c49a3a;
-    -fx-text-fill: #fff8df;
-    -fx-effect: dropshadow(gaussian, rgba(207, 158, 52, .32), 13, .24, 0, 2);
-}
-
-.tournament-action-reject:hover {
-    -fx-background-color: #85404b;
-    -fx-border-color: #c0616e;
-    -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(201, 82, 98, .34), 13, .24, 0, 2);
-}
-
-.tournament-action-cancel:hover {
-    -fx-background-color: #3b4348;
-    -fx-border-color: #758188;
-    -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(145, 158, 166, .25), 12, .20, 0, 2);
-}
-
-/* Al presionar se reduce la iluminacion para reforzar el clic. */
-.tournament-unlink-button:pressed,
-.inscription-save-note:pressed,
-.tournament-action-confirm:pressed,
-.tournament-action-wait:pressed,
-.tournament-action-reject:pressed,
-.tournament-action-cancel:pressed {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .22), 5, .10, 0, 1);
-}
-
-/* Los deshabilitados nunca deben iluminarse. */
 .inscription-save-note:disabled:hover,
 .tournament-action-confirm:disabled:hover,
 .tournament-action-wait:disabled:hover,
 .tournament-action-reject:disabled:hover,
 .tournament-action-cancel:disabled:hover {
+    -fx-translate-y: 0;
     -fx-effect: none;
-}
-
-/* inscripciones-metricas-filtros-compactos-v1 */
-/* Indicadores superiores compactos y con identidad propia. */
-.tournament-metric {
-    -fx-pref-height: 58;
-    -fx-min-height: 58;
-    -fx-max-height: 58;
-    -fx-padding: 6 11 6 12;
-    -fx-spacing: 0;
-    -fx-background-color: #171d21;
-    -fx-border-width: 1 1 1 4;
-    -fx-effect: none;
-}
-.tournament-metric .metric-label {
-    -fx-font-size: 9.5px;
-    -fx-font-weight: 900;
-}
-.tournament-metric-value {
-    -fx-font-size: 20px;
-    -fx-font-weight: 900;
-}
-
-/* Total: gris azulado. */
-.tournament-metric {
-    -fx-border-color: #425a67 #343e44 #343e44 #425a67;
-}
-.tournament-metric .metric-label {
-    -fx-text-fill: #8fa8b5;
-}
-.tournament-metric-value {
-    -fx-text-fill: #dce8ed;
-}
-
-/* Pendientes: naranja. */
-.tournament-metric-pending {
-    -fx-border-color: #9a672c #4d402e #4d402e #c47b2e;
-    -fx-background-color: #1e1c19;
-}
-.tournament-metric-pending .metric-label,
-.tournament-metric-pending .tournament-metric-value {
-    -fx-text-fill: #e5a653;
-}
-
-/* Confirmadas: verde. */
-.tournament-metric-confirmed {
-    -fx-border-color: #347758 #33483f #33483f #3f9a70;
-    -fx-background-color: #171e1b;
-}
-.tournament-metric-confirmed .metric-label,
-.tournament-metric-confirmed .tournament-metric-value {
-    -fx-text-fill: #72c59a;
-}
-
-/* En espera: violeta suave, claramente distinto de Pendientes. */
-.tournament-metric-wait {
-    -fx-border-color: #765d96 #42394d #42394d #9270ba;
-    -fx-background-color: #1c1920;
-}
-.tournament-metric-wait .metric-label,
-.tournament-metric-wait .tournament-metric-value {
-    -fx-text-fill: #b89adc;
-}
-
-/* Finalizadas: rojo apagado. */
-.tournament-metric-final {
-    -fx-border-color: #7e4650 #4a3539 #4a3539 #a85663;
-    -fx-background-color: #20191b;
-}
-.tournament-metric-final .metric-label,
-.tournament-metric-final .tournament-metric-value {
-    -fx-text-fill: #d9828d;
-}
-
-/* Estados de la planilla con los mismos colores semanticos. */
-.inscriptions-table .state-pending {
-    -fx-text-fill: #e5a653;
-}
-.inscriptions-table .state-confirmed {
-    -fx-text-fill: #72c59a;
-}
-.inscriptions-table .state-wait {
-    -fx-text-fill: #b89adc;
-}
-.inscriptions-table .state-rejected {
-    -fx-text-fill: #df7d88;
-}
-.inscriptions-table .state-cancelled {
-    -fx-text-fill: #a5afb4;
-}
-
-/* Filtros mas bajos para ganar espacio y conservar buena pulsacion. */
-.tournaments-content .modern-field,
-.tournaments-content .modern-combo,
-.tournaments-content .inscriptions-clear-button {
-    -fx-pref-height: 38;
-    -fx-min-height: 38;
-    -fx-max-height: 38;
-}
-.tournaments-content .modern-field {
-    -fx-padding: 7 12;
-    -fx-font-size: 12.5px;
-}
-.tournaments-content .modern-combo {
-    -fx-padding: 0 0 0 2;
-    -fx-font-size: 12px;
-}
-.tournaments-content .modern-combo .list-cell {
-    -fx-padding: 6 10;
-    -fx-font-size: 12px;
-}
-.tournaments-content .inscriptions-clear-button {
-    -fx-padding: 7 15;
-    -fx-font-size: 11px;
-}
-
-/* La leyenda ocupa menos espacio sin perder legibilidad. */
-.tournaments-content .small-caption {
-    -fx-min-height: 15;
-    -fx-pref-height: 15;
-    -fx-font-size: 10.5px;
-}
-
-/* inscripciones-centrado-colores-v1 */
-/* Titulo principal centrado de forma independiente a las acciones laterales. */
-.inscriptions-title-block {
-    -fx-alignment: center;
-}
-.inscriptions-title-block .page-title,
-.inscriptions-title-block .page-subtitle {
-    -fx-alignment: center;
-    -fx-text-alignment: center;
-}
-
-/* Encabezados y contenido de la planilla centrados. */
-.inscriptions-table .column-header .label {
-    -fx-alignment: center;
-    -fx-text-alignment: center;
-}
-.inscriptions-table .table-cell {
-    -fx-alignment: center;
-    -fx-text-alignment: center;
-}
-
-/* Colores semanticos con mayor especificidad para que sobrevivan a la seleccion. */
-.inscriptions-table .table-row-cell .table-cell.state-pending,
-.inscriptions-table .table-row-cell:selected .table-cell.state-pending {
-    -fx-text-fill: #f0a13b;
-}
-.inscriptions-table .table-row-cell .table-cell.state-confirmed,
-.inscriptions-table .table-row-cell:selected .table-cell.state-confirmed {
-    -fx-text-fill: #64d39a;
-}
-.inscriptions-table .table-row-cell .table-cell.state-wait,
-.inscriptions-table .table-row-cell:selected .table-cell.state-wait {
-    -fx-text-fill: #c7a1f2;
-}
-.inscriptions-table .table-row-cell .table-cell.state-rejected,
-.inscriptions-table .table-row-cell:selected .table-cell.state-rejected {
-    -fx-text-fill: #ef7f8c;
-}
-.inscriptions-table .table-row-cell .table-cell.state-cancelled,
-.inscriptions-table .table-row-cell:selected .table-cell.state-cancelled {
-    -fx-text-fill: #aab4b9;
-}
-
-/* Pendiente y espera deliberadamente distintos tambien en el resumen. */
-.tournament-metric-pending {
-    -fx-background-color: #211b15;
-    -fx-border-color: #b66c22 #55402c #55402c #e08a2e;
-}
-.tournament-metric-pending .metric-label,
-.tournament-metric-pending .tournament-metric-value {
-    -fx-text-fill: #f0a13b;
-}
-.tournament-metric-wait {
-    -fx-background-color: #1e1825;
-    -fx-border-color: #7c5aa0 #46374f #46374f #a77bd2;
-}
-.tournament-metric-wait .metric-label,
-.tournament-metric-wait .tournament-metric-value {
-    -fx-text-fill: #c7a1f2;
-}
-
-/* Badges del detalle con la misma separacion cromatica. */
-.tournament-state.detail-state-pending {
-    -fx-background-color: #4b3218;
-    -fx-border-color: #aa6a24;
-    -fx-text-fill: #f0b252;
-}
-.tournament-state.detail-state-wait {
-    -fx-background-color: #392848;
-    -fx-border-color: #7c5aa0;
-    -fx-text-fill: #d1b0f5;
-}
-
-/* inscripciones-titulo-izquierda-v1 */
-.inscriptions-title-left {
-    -fx-alignment: center-left;
-}
-.inscriptions-title-left .page-title,
-.inscriptions-title-left .page-subtitle {
-    -fx-alignment: center-left;
-    -fx-text-alignment: left;
 }
