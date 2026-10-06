@@ -664,3 +664,259 @@
     -fx-font-size: 10px;
     -fx-line-spacing: 1px;
 }
+
+/* gestion-reservas-compacta-v1 */
+/* La tabla es el area principal y el formulario funciona como panel auxiliar. */
+.reservations-root .reservation-filter-stack {
+    -fx-spacing: 8;
+}
+.reservations-root .reservation-list-compact {
+    -fx-background-color: #111417;
+}
+.reservations-root .reservation-search-compact,
+.reservations-root .reservation-state-compact,
+.reservations-root .reservation-clear-compact,
+.reservations-root .reservation-refresh-compact {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.reservations-root .reservation-state-compact {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
+}
+.reservations-root .reservation-clear-compact {
+    -fx-padding: 0 12;
+    -fx-font-size: 10px;
+}
+.reservations-root .reservation-refresh-compact {
+    -fx-padding: 0 11;
+    -fx-font-size: 10px;
+}
+.reservations-root .reservation-date-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-font-size: 17px;
+}
+.reservations-root .reservation-date-label {
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 0 3;
+}
+.reservations-root .reservation-form-compact {
+    -fx-spacing: 10;
+}
+.reservations-root .reservation-detail-header-compact {
+    -fx-padding: 10 12;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+}
+.reservations-root .reservation-detail-header-compact .section-title {
+    -fx-font-size: 17px;
+}
+.reservations-root .modern-combo,
+.reservations-root .modern-date,
+.reservations-root .spinner {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+}
+.reservations-root .reservation-metrics {
+    -fx-padding: 7;
+    -fx-hgap: 7;
+}
+.reservations-root .reservation-metric-block,
+.reservations-root .reservation-player-block {
+    -fx-padding: 7 9;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+.reservations-root .reservation-price,
+.reservations-root .reservation-balance {
+    -fx-font-size: 18px;
+}
+.reservations-root .reservation-area-compact {
+    -fx-min-height: 58;
+    -fx-pref-height: 58;
+    -fx-max-height: 58;
+}
+.reservations-root .form-card > .primary-button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+.reservations-root .modern-table .table-row-cell {
+    -fx-cell-size: 54;
+}
+
+/* gestion-reservas-distribucion-final-v2 */
+/* Barra temporal separada de una barra unificada de busqueda y acciones. */
+.reservations-root .reservation-search-compact {
+    -fx-max-width: Infinity;
+}
+.reservations-root .reservation-search-compact,
+.reservations-root .reservation-state-compact,
+.reservations-root .reservation-clear-compact,
+.reservations-root .reservation-refresh-compact,
+.reservations-root .reservation-date-button {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.reservations-root .reservation-state-compact {
+    -fx-min-width: 148;
+    -fx-pref-width: 148;
+    -fx-max-width: 148;
+}
+.reservations-root .reservation-clear-compact {
+    -fx-min-width: 82;
+    -fx-pref-width: 82;
+    -fx-max-width: 82;
+}
+.reservations-root .reservation-refresh-compact {
+    -fx-min-width: 96;
+    -fx-pref-width: 96;
+    -fx-max-width: 96;
+}
+/* Formulario mas compacto sin comprimir el bloque de jugadores. */
+.reservations-root .reservation-form-compact {
+    -fx-spacing: 8;
+}
+.reservations-root .reservation-form-compact .field-label {
+    -fx-padding: 1 0 0 0;
+}
+.reservations-root .reservation-detail-header-compact {
+    -fx-padding: 9 11;
+}
+.reservations-root .reservation-form-compact .modern-combo,
+.reservations-root .reservation-form-compact .modern-date,
+.reservations-root .reservation-form-compact .spinner {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.reservations-root .reservation-metrics {
+    -fx-padding: 7;
+    -fx-hgap: 6;
+}
+.reservations-root .reservation-metric-block {
+    -fx-padding: 7 8;
+}
+.reservations-root .reservation-player-block {
+    -fx-padding: 7 9;
+    -fx-min-width: 124;
+}
+/* El area sin datos se percibe como superficie continua, no como filas falsas. */
+.reservations-root .modern-table .table-row-cell:empty {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+}
+.reservations-root .modern-table .table-row-cell:empty:hover {
+    -fx-background-color: #151a1e;
+}
+
+/* corregir-imperfecciones-reservas-v1 */
+/* El panel derecho gana ancho util y nunca genera desplazamiento horizontal. */
+.reservations-root .form-scroll,
+.reservations-root .form-scroll > .viewport {
+    -fx-background-color: #111417;
+}
+.reservations-root .reservation-form-compact {
+    -fx-min-width: 0;
+    -fx-pref-width: 0;
+    -fx-max-width: Infinity;
+}
+.reservations-root .reservation-form-compact .modern-combo,
+.reservations-root .reservation-form-compact .modern-date,
+.reservations-root .reservation-form-compact .modern-area {
+    -fx-min-width: 0;
+    -fx-max-width: Infinity;
+}
+/* Las metricas se adaptan al ancho disponible sin recortar Jugadores. */
+.reservations-root .reservation-metrics {
+    -fx-min-width: 0;
+}
+.reservations-root .reservation-metric-block,
+.reservations-root .reservation-player-block {
+    -fx-min-width: 0;
+}
+.reservations-root .reservation-player-block {
+    -fx-padding: 7;
+}
+.reservations-root .reservation-player-block .spinner {
+    -fx-min-width: 82;
+    -fx-pref-width: 92;
+    -fx-max-width: 108;
+}
+
+/* estabilizar-historial-scroll-reservas-v1 */
+/* Historial estable: tarjetas ajustadas, sin desplazamiento horizontal. */
+.reservations-root .audit-list {
+    -fx-min-height: 250;
+    -fx-pref-height: 250;
+    -fx-max-height: 250;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.reservations-root .audit-list:focused,
+.reservations-root .audit-list .list-cell:focused,
+.reservations-root .audit-list .list-cell:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+.reservations-root .audit-list .list-cell,
+.reservations-root .audit-list .audit-card {
+    -fx-max-width: Infinity;
+}
+.reservations-root .audit-list .scroll-bar:horizontal {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
+/* Scrollbars grafito del historial y del formulario completo. */
+.reservations-root .form-scroll > .scroll-bar:vertical,
+.reservations-root .audit-list .scroll-bar:vertical {
+    -fx-min-width: 10;
+    -fx-pref-width: 10;
+    -fx-max-width: 10;
+    -fx-background-color: #151a1e;
+    -fx-background-insets: 0;
+    -fx-padding: 1;
+}
+.reservations-root .form-scroll > .scroll-bar:vertical .track,
+.reservations-root .audit-list .scroll-bar:vertical .track {
+    -fx-background-color: #151a1e;
+    -fx-background-radius: 8;
+    -fx-border-color: transparent;
+}
+.reservations-root .form-scroll > .scroll-bar:vertical .thumb,
+.reservations-root .audit-list .scroll-bar:vertical .thumb {
+    -fx-background-color: #465057;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.reservations-root .form-scroll > .scroll-bar:vertical .thumb:hover,
+.reservations-root .audit-list .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a666d;
+}
+.reservations-root .form-scroll > .scroll-bar:vertical .increment-button,
+.reservations-root .form-scroll > .scroll-bar:vertical .decrement-button,
+.reservations-root .audit-list .scroll-bar:vertical .increment-button,
+.reservations-root .audit-list .scroll-bar:vertical .decrement-button {
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+.reservations-root .form-scroll > .corner,
+.reservations-root .audit-list .corner {
+    -fx-background-color: #151a1e;
+}

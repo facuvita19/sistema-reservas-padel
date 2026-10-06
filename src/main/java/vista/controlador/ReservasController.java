@@ -277,6 +277,7 @@ public class ReservasController {
                         Label estados = new Label(
                                 describirCambioEstado(auditoria));
                         estados.setWrapText(true);
+                        estados.setMaxWidth(Double.MAX_VALUE);
                         estados.getStyleClass().add("audit-card-states");
 
                         Label detalle = new Label(humanizarDetalle(auditoria));
@@ -288,9 +289,17 @@ public class ReservasController {
                                 5, accion, metadatos, estados, detalle);
                         tarjeta.getStyleClass().add("audit-card");
                         tarjeta.setFillWidth(true);
+                        tarjeta.setMaxWidth(Double.MAX_VALUE);
+                        tarjeta.prefWidthProperty().bind(
+                                listaAuditoria.widthProperty().subtract(24));
+                        estados.prefWidthProperty().bind(
+                                tarjeta.widthProperty().subtract(22));
+                        detalle.prefWidthProperty().bind(
+                                tarjeta.widthProperty().subtract(22));
 
                         setText(null);
                         setGraphic(tarjeta);
+                        setMaxWidth(Double.MAX_VALUE); // estabilizar-historial-scroll-reservas-v1
                     }
                 });
     }

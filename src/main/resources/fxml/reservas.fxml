@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- estabilizar-historial-scroll-reservas-v1 -->
+<!-- corregir-imperfecciones-reservas-v1 -->
+<!-- gestion-reservas-distribucion-final-v2 -->
+<!-- corregir-clases-reservas-compactas-v2 -->
+<!-- gestion-reservas-compacta-v1 -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -17,10 +22,10 @@
         </HBox>
     </top>
     <center>
-        <SplitPane dividerPositions="0.64" styleClass="module-split">
-            <VBox spacing="16" styleClass="list-panel">
-                <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
-                <VBox spacing="12">
+        <SplitPane dividerPositions="0.68" styleClass="module-split, reservation-split-compact">
+            <VBox spacing="10" styleClass="list-panel, reservation-list-compact">
+                <padding><Insets top="14" right="14" bottom="14" left="18" /></padding>
+                <VBox spacing="8" styleClass="reservation-filter-stack">
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Button text="‹" onAction="#diaAnterior" styleClass="reservation-date-button" />
                         <Button text="HOY" onAction="#irHoy" styleClass="secondary-button" />
@@ -28,12 +33,12 @@
                         <DatePicker fx:id="filtroFecha" prefWidth="155" styleClass="modern-date" />
                         <Label fx:id="etiquetaFechaSeleccionada" text="Reservas de hoy" styleClass="reservation-date-label" />
                         <Region HBox.hgrow="ALWAYS" />
-                        <Button text="Actualizar" onAction="#cargarReservas" styleClass="secondary-button" />
+
                     </HBox>
                     <HBox spacing="10">
-                        <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha o estado..." HBox.hgrow="ALWAYS" styleClass="modern-field" />
-                        <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="180" styleClass="modern-combo" />
-                        <Button text="Limpiar filtros" onAction="#limpiarFiltros" styleClass="secondary-button" />
+                        <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha o estado..." HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="modern-field, reservation-search-compact" />
+                        <ComboBox fx:id="filtroEstado" promptText="Todos los estados" minWidth="150" prefWidth="150" maxWidth="150" styleClass="modern-combo, reservation-state-compact" />
+                        <Button text="LIMPIAR" minWidth="88" prefWidth="88" onAction="#limpiarFiltros" styleClass="secondary-button, reservation-clear-compact" /><Button text="ACTUALIZAR" minWidth="96" prefWidth="96" onAction="#cargarReservas" styleClass="secondary-button, reservation-refresh-compact" />
                     </HBox>
                 </VBox>
                 <TableView fx:id="tablaReservas" VBox.vgrow="ALWAYS" styleClass="modern-table">
@@ -48,9 +53,9 @@
                     <placeholder><Label text="Todavía no hay reservas registradas." styleClass="empty-state" /></placeholder>
                 </TableView>
             </VBox>
-            <ScrollPane fx:id="scrollFormulario" fitToWidth="true" styleClass="form-scroll">
-                <VBox spacing="14" styleClass="form-card">
-                    <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+            <ScrollPane fx:id="scrollFormulario" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
+                <VBox spacing="10" styleClass="form-card, reservation-form-compact">
+                    <padding><Insets top="14" right="18" bottom="30" left="18" /></padding>
                     <VBox fx:id="avisoModoReprogramacion"
                           visible="false" managed="false" spacing="5"
                           styleClass="reservation-reprogram-banner">
@@ -59,7 +64,7 @@
                         <Label text="Elegí una nueva cancha, fecha y horario. Después pulsá GUARDAR REPROGRAMACIÓN."
                                wrapText="true" styleClass="reservation-reprogram-text" />
                     </VBox>
-                    <VBox spacing="7" styleClass="reservation-detail-header">
+                    <VBox spacing="4" styleClass="reservation-detail-header, reservation-detail-header-compact">
                         <HBox alignment="CENTER_LEFT" spacing="8">
                             <Label fx:id="tituloFormulario" text="Nueva reserva" styleClass="section-title" />
                             <Region HBox.hgrow="ALWAYS" />
@@ -78,18 +83,18 @@
                                styleClass="reservation-expiration-badge" />
                     </VBox>
                     <Label text="Cliente *" styleClass="field-label" />
-                    <ComboBox fx:id="comboCliente" maxWidth="Infinity" promptText="Seleccionar cliente" styleClass="modern-combo" />
+                    <ComboBox fx:id="comboCliente" maxWidth="Infinity" visibleRowCount="7" promptText="Seleccionar cliente" styleClass="modern-combo" />
                     <Label text="Cancha *" styleClass="field-label" />
-                    <ComboBox fx:id="comboCancha" maxWidth="Infinity" promptText="Seleccionar cancha" styleClass="modern-combo" />
+                    <ComboBox fx:id="comboCancha" maxWidth="Infinity" visibleRowCount="6" promptText="Seleccionar cancha" styleClass="modern-combo" />
                     <GridPane hgap="12" vgap="10">
                         <columnConstraints><ColumnConstraints percentWidth="50" hgrow="ALWAYS" /><ColumnConstraints percentWidth="50" hgrow="ALWAYS" /></columnConstraints>
                         <VBox spacing="7" GridPane.columnIndex="0"><Label text="Fecha *" styleClass="field-label" /><DatePicker fx:id="selectorFecha" maxWidth="Infinity" styleClass="modern-date" /></VBox>
-                        <VBox spacing="7" GridPane.columnIndex="1"><Label text="Horario disponible *" styleClass="field-label" /><ComboBox fx:id="comboHorario" maxWidth="Infinity" promptText="Seleccionar" styleClass="modern-combo" /></VBox>
+                        <VBox spacing="7" GridPane.columnIndex="1"><Label text="Horario disponible *" styleClass="field-label" /><ComboBox fx:id="comboHorario" maxWidth="Infinity" visibleRowCount="7" promptText="Seleccionar" styleClass="modern-combo" /></VBox>
                     </GridPane>
                     <GridPane hgap="8" styleClass="price-summary, reservation-metrics">
                         <columnConstraints>
-                            <ColumnConstraints percentWidth="34" hgrow="ALWAYS" />
-                            <ColumnConstraints percentWidth="38" hgrow="ALWAYS" />
+                            <ColumnConstraints percentWidth="36" hgrow="ALWAYS" />
+                            <ColumnConstraints percentWidth="36" hgrow="ALWAYS" />
                             <ColumnConstraints percentWidth="28" hgrow="ALWAYS" />
                         </columnConstraints>
                         <VBox spacing="4" GridPane.columnIndex="0" styleClass="reservation-metric-block">
@@ -106,9 +111,9 @@
                         </VBox>
                     </GridPane>
                     <Label text="Comentarios del cliente" styleClass="field-label" />
-                    <TextArea fx:id="campoComentarios" prefRowCount="2" wrapText="true" promptText="Ejemplo: partido amistoso..." styleClass="modern-area" />
+                    <TextArea fx:id="campoComentarios" prefRowCount="2" prefHeight="58" minHeight="58" maxHeight="58" wrapText="true" promptText="Ejemplo: partido amistoso..." styleClass="modern-area, reservation-area-compact" />
                     <Label text="Observaciones administrativas" styleClass="field-label" />
-                    <TextArea fx:id="campoObservaciones" prefRowCount="2" wrapText="true" promptText="Información privada para el personal..." styleClass="modern-area" />
+                    <TextArea fx:id="campoObservaciones" prefRowCount="2" prefHeight="58" minHeight="58" maxHeight="58" wrapText="true" promptText="Información privada para el personal..." styleClass="modern-area, reservation-area-compact" />
                     <VBox fx:id="contenedorCancelacion" visible="false" managed="false" spacing="6" styleClass="cancellation-detail">
                         <Label text="DETALLE DE CANCELACIÓN" styleClass="metric-label" />
                         <Label fx:id="etiquetaCancelacion" wrapText="true" styleClass="cancellation-detail-text" />
@@ -128,9 +133,9 @@
                                    styleClass="small-caption" />
                         </HBox>
                         <ListView fx:id="listaAuditoria"
-                                  prefHeight="112"
-                                  minHeight="112"
-                                  maxHeight="300"
+                                  prefHeight="250"
+                                  minHeight="250"
+                                  maxHeight="250"
                                   maxWidth="Infinity"
                                   styleClass="audit-list" />
                     </VBox>
