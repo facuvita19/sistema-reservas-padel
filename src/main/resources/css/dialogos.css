@@ -2459,12 +2459,6 @@
 .proposal-review-root {
     -fx-background-color: #151a1e;
 }
-.dialog-pane.proposal-review-dialog {
-    -fx-pref-width: 1180;
-    -fx-pref-height: 820;
-    -fx-min-width: 900;
-    -fx-min-height: 680;
-}
 .dialog-pane.proposal-review-dialog > .header-panel {
     -fx-background-color: #1b2024;
     -fx-border-color: #343d42;
@@ -2502,26 +2496,6 @@
     -fx-font-size: 10.5px;
     -fx-font-weight: 700;
 }
-.proposal-metric {
-    -fx-background-color: #1b2024;
-    -fx-border-color: #3b4449;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #d9dfe1;
-    -fx-font-size: 10px;
-    -fx-font-weight: 900;
-    -fx-alignment: center;
-    -fx-padding: 9 10;
-}
-.proposal-metric.proposal-metric-ok {
-    -fx-border-color: #3f6c56;
-    -fx-text-fill: #8fd1b2;
-}
-.proposal-metric.proposal-metric-warning {
-    -fx-background-color: #29271f;
-    -fx-border-color: #77613c;
-    -fx-text-fill: #d8b36d;
-}
 .proposal-warning-card {
     -fx-background-color: #29271f;
     -fx-border-color: #77613c;
@@ -2538,24 +2512,6 @@
 .proposal-warning-item {
     -fx-text-fill: #dbc89e;
     -fx-font-size: 10.5px;
-}
-.proposal-review-button,
-.proposal-edit-button {
-    -fx-background-color: #342d3d;
-    -fx-border-color: #68577b;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #eee3f6;
-    -fx-font-size: 9.5px;
-    -fx-font-weight: 900;
-    -fx-padding: 8 14;
-    -fx-cursor: hand;
-}
-.proposal-review-button:hover,
-.proposal-edit-button:hover {
-    -fx-background-color: #3d3448;
-    -fx-border-color: #8a72a2;
-    -fx-translate-y: -1;
 }
 .proposal-phase-tabs { -fx-padding: 0; }
 .proposal-phase-tab {
@@ -2726,6 +2682,7 @@
     -fx-scale-y: .62;
 }
 
+/* propuesta-eliminatoria-limpieza-v1 */
 /* proposal-review-final-polish-v1 */
 .dialog-pane.proposal-review-dialog {
     -fx-pref-width: 1100;
@@ -2867,12 +2824,6 @@
 .proposal-preview-root {
     -fx-background-color: #151a1e;
 }
-.dialog-pane.proposal-preview-dialog {
-    -fx-pref-width: 1320;
-    -fx-pref-height: 820;
-    -fx-min-width: 960;
-    -fx-min-height: 650;
-}
 .dialog-pane.proposal-preview-dialog > .header-panel {
     -fx-background-color: #1b2024;
     -fx-border-color: #343d42;
@@ -2885,10 +2836,6 @@
     -fx-font-weight: 900;
 }
 .dialog-pane.proposal-preview-dialog > .content { -fx-padding: 0; }
-.dialog-pane.proposal-preview-dialog .structural-bracket-shell {
-    -fx-min-height: 560;
-    -fx-pref-height: 660;
-}
 .dialog-pane.proposal-preview-dialog > .button-bar {
     -fx-background-color: #171c20;
     -fx-border-color: #343d42;
@@ -2904,6 +2851,37 @@
     -fx-font-weight: 900;
 }
 
+/* editar-propuesta-violeta-v1 */
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button,
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:focused,
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:default {
+    -fx-background-color: linear-gradient(to bottom, #342d3d, #2b2632);
+    -fx-border-color: #78638d;
+    -fx-text-fill: #eee3f6;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 900;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:hover {
+    -fx-background-color: #40364c;
+    -fx-border-color: #967caf;
+    -fx-text-fill: #f5ecfa;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.22), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.dialog-pane.proposal-review-dialog .button.proposal-edit-button:pressed {
+    -fx-background-color: #28232e;
+    -fx-border-color: #594969;
+    -fx-text-fill: #ddd0e8;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
 /* proposal-preview-final-v1 */
 .dialog-pane.proposal-review-dialog .proposal-phase-tab {
     -fx-padding: 6 11;

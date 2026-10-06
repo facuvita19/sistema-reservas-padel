@@ -169,12 +169,7 @@ public class PropuestaEtapaEliminatoriaDialog {
         estado.getStyleClass().add("proposal-status-badge");
         Button editar = new Button("REVISAR Y EDITAR CUADRO");
         editar.getStyleClass().add("proposal-edit-button");
-        editar.setStyle("-fx-background-color:#342d3d;"
-                + "-fx-border-color:#78638d;"
-                + "-fx-text-fill:#eee3f6;"
-                + "-fx-border-radius:8;-fx-background-radius:8;"
-                + "-fx-font-size:9.5px;-fx-font-weight:900;"
-                + "-fx-padding:8 14;-fx-cursor:hand;");
+        // propuesta-eliminatoria-limpieza-v1: la apariencia y las interacciones se controlan desde CSS.
         editar.setOnAction(e -> abrirEditorUnificado());
         Button vistaPreliminar = new Button("VISTA PRELIMINAR");
         vistaPreliminar.getStyleClass().add("proposal-preview-button");
