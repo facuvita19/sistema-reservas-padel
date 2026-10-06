@@ -89,9 +89,10 @@ public class PagosController {
     @FXML private Label etiquetaReservaDetalle, etiquetaMensaje, tituloFormulario;
     @FXML private Label detalleTitulo, detalleReserva, detalleCliente, detalleTurno;
     @FXML private Label detalleEstadoCabecera;
-    @FXML private Label detalleImporte, detalleMetodo, detalleEstado;
+    @FXML private Label detalleImporte, detalleMetodo;
     @FXML private Label detalleRegistrado, detalleAcreditado, detalleReferencia;
-    @FXML private Button botonAcreditar, botonAnular;
+    @FXML private Label etiquetaAccionesPago;
+    @FXML private Button botonAcreditar, botonAnular, botonGuardarMovimiento, botonNuevoMovimiento;
 
     @FXML
     private void initialize() {
@@ -99,8 +100,8 @@ public class PagosController {
         configurarCombos();
         configurarFiltros();
         cargarReservas();
-        cargarPagos();
         mostrarPanelDetalleVacio();
+        cargarPagos();
         Platform.runLater(() -> {
             aplicarSolicitudDeReserva();
             aplicarSolicitudFiltroDashboard();
@@ -119,7 +120,7 @@ public class PagosController {
         });
         columnaTurno.setCellValueFactory(d -> {
             Reserva r = reservasPorId.get(d.getValue().getReservaId());
-            return new javafx.beans.property.SimpleStringProperty(r == null ? "-" : r.getFecha().format(FECHA) + " " + r.getHoraInicio().format(HORA));
+            return new javafx.beans.property.SimpleStringProperty(r == null ? "-" : r.getFecha().format(FECHA) + " · " + r.getHoraInicio().format(HORA));
         });
         columnaImporte.setCellValueFactory(new PropertyValueFactory<>("importe"));
         columnaImporte.setCellFactory(c -> new TableCell<>() {
@@ -164,6 +165,7 @@ public class PagosController {
         columnaFecha.setCellFactory(c -> celdaFecha());
         columnaAcreditado.setCellFactory(c -> celdaFecha());
         columnaReferencia.setCellValueFactory(new PropertyValueFactory<>("referencia"));
+        configurarAnchosProporcionales();
         tablaPagos.getSelectionModel().selectedItemProperty().addListener((o, a, pago) -> {
             if (pago != null) mostrarDetallePago(pago);
         });
@@ -180,15 +182,6 @@ public class PagosController {
                 }
             });
             return fila;
-        });
-        tablaPagos.setOnMouseClicked(evento -> {
-            if (clicEnFondoTabla(evento.getTarget())) limpiarSeleccionPago();
-        });
-        tablaPagos.setOnKeyPressed(evento -> {
-            if (evento.getCode() == javafx.scene.input.KeyCode.ESCAPE) {
-                limpiarSeleccionPago();
-                evento.consume();
-            }
         });
     }
 
@@ -209,6 +202,24 @@ public class PagosController {
         tablaPagos.requestFocus();
     }
 
+    private void configurarAnchosProporcionales() {
+        vincularAncho(columnaReserva, 0.24);
+        vincularAncho(columnaTurno, 0.17);
+        vincularAncho(columnaImporte, 0.12);
+        vincularAncho(columnaMetodo, 0.13);
+        vincularAncho(columnaEstado, 0.14);
+        vincularAncho(columnaFecha, 0.20);
+    }
+
+    private void vincularAncho(
+            TableColumn<Pago, ?> columna,
+            double proporcion) {
+        columna.prefWidthProperty().bind(
+                tablaPagos.widthProperty().subtract(14).multiply(proporcion));
+        columna.setResizable(false);
+        columna.setReorderable(false);
+    }
+
     private TableCell<Pago, LocalDateTime> celdaFecha() {
         return new TableCell<>() { @Override protected void updateItem(LocalDateTime v, boolean vacia) { super.updateItem(v,vacia); setText(vacia || v == null ? "-" : v.format(FECHA_HORA)); } };
     }
@@ -219,6 +230,11 @@ public class PagosController {
         comboReserva.setCellFactory(l -> crearCeldaReserva()); comboReserva.setButtonCell(crearCeldaReserva());
         comboReserva.valueProperty().addListener((o,a,r) -> actualizarResumen(r));
         filtroMetodo.setItems(FXCollections.observableArrayList(MetodoPago.values()));
+        comboReserva.setVisibleRowCount(7);
+        campoImporte.textProperty().addListener((o, a, v) -> actualizarBotonGuardar());
+        comboReserva.valueProperty().addListener((o, a, v) -> actualizarBotonGuardar());
+        comboMetodo.valueProperty().addListener((o, a, v) -> actualizarBotonGuardar());
+        comboEstadoInicial.valueProperty().addListener((o, a, v) -> actualizarBotonGuardar());
     }
 
     private ListCell<Reserva> crearCeldaReserva() {
@@ -251,7 +267,6 @@ public class PagosController {
             recalcularSaldosLocales();
             actualizarContadores();
             aplicarFiltros();
-            mostrarInfo(pagosFiltrados.size() + " movimiento(s) visibles.");
         }
         catch (RuntimeException e) { mostrarError(e.getMessage()); }
     }
@@ -276,7 +291,31 @@ public class PagosController {
                             .signum() > 0);
             return texto && estadoOk && metodoOk && fechaOk && hoyOk && saldoOk;
         });
-        etiquetaCantidad.setText(pagosFiltrados.size()+" de "+pagos.size()+" movimientos");
+        actualizarCantidadVisible();
+        mantenerSeleccionVisible();
+    }
+
+    private void actualizarCantidadVisible() {
+        int visibles = pagosFiltrados == null ? 0 : pagosFiltrados.size();
+        int total = pagos.size();
+        etiquetaCantidad.setText(visibles == total
+                ? visibles + (visibles == 1 ? " movimiento" : " movimientos")
+                : visibles + " de " + total + " movimientos");
+    }
+
+    private void mantenerSeleccionVisible() {
+        if (panelFormulario.isVisible() || pagosFiltrados == null) return;
+        Pago actual = tablaPagos.getSelectionModel().getSelectedItem();
+        if (actual != null && pagosFiltrados.contains(actual)) {
+            mostrarDetallePago(actual);
+            return;
+        }
+        if (pagosFiltrados.isEmpty()) {
+            mostrarPanelDetalleVacio();
+            return;
+        }
+        tablaPagos.getSelectionModel().selectFirst();
+        tablaPagos.scrollTo(0);
     }
 
     private void recalcularSaldosLocales() {
@@ -318,10 +357,10 @@ public class PagosController {
 
     @FXML private void limpiarFiltros(){campoBuscar.clear();filtroMetodo.getSelectionModel().clearSelection();filtroDesde.setValue(null);filtroHasta.setValue(null);checkConSaldo.setSelected(false);verTodos();}
 
-    @FXML private void nuevoPago(){pagoSeleccionado=null;tablaPagos.getSelectionModel().clearSelection();panelDetalle.setVisible(false);panelDetalle.setManaged(false);panelFormulario.setVisible(true);panelFormulario.setManaged(true);tituloFormulario.setText("Nuevo movimiento");comboReserva.getSelectionModel().clearSelection();campoImporte.clear();comboMetodo.setValue(MetodoPago.TRANSFERENCIA);comboEstadoInicial.setValue(EstadoPago.PENDIENTE);campoReferencia.clear();limpiarResumen();}
-    @FXML private void cancelarFormulario(){mostrarPanelDetalleVacio();}
+    @FXML private void nuevoPago(){pagoSeleccionado=null;tablaPagos.getSelectionModel().clearSelection();panelDetalle.setVisible(false);panelDetalle.setManaged(false);panelFormulario.setVisible(true);panelFormulario.setManaged(true);activarModoCreacion(true);tituloFormulario.setText("Nuevo movimiento");comboReserva.getSelectionModel().clearSelection();campoImporte.clear();comboMetodo.setValue(MetodoPago.TRANSFERENCIA);comboEstadoInicial.setValue(EstadoPago.PENDIENTE);campoReferencia.clear();limpiarResumen();actualizarBotonGuardar();Platform.runLater(comboReserva::requestFocus);}
+    @FXML private void cancelarFormulario(){panelFormulario.setVisible(false);panelFormulario.setManaged(false);activarModoCreacion(false);mantenerSeleccionVisible();}
 
-    private void mostrarDetallePago(Pago p){pagoSeleccionado=p;panelFormulario.setVisible(false);panelFormulario.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);Reserva r=reservasPorId.get(p.getReservaId());detalleTitulo.setText("Movimiento #" + p.getId());
+    private void mostrarDetallePago(Pago p){pagoSeleccionado=p;activarModoCreacion(false);panelFormulario.setVisible(false);panelFormulario.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);Reserva r=reservasPorId.get(p.getReservaId());detalleTitulo.setText("Movimiento #" + p.getId());
         detalleEstadoCabecera.setText(p.getEstado().toString().toUpperCase(Locale.ROOT));
         detalleEstadoCabecera.getStyleClass().removeAll(
                 "payment-detail-status-pending", "payment-detail-status-accredited",
@@ -334,17 +373,49 @@ public class PagosController {
         });
         detalleEstadoCabecera.setVisible(true);
         detalleEstadoCabecera.setManaged(true);
-        detalleReserva.setText(r==null?"Reserva #"+p.getReservaId():"#"+r.getId()+" · "+r.getNombreCancha());detalleCliente.setText(r==null?"Sin datos":r.getNombreCliente());detalleTurno.setText(r==null?"-":r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA));detalleImporte.setText(FormateadorMoneda.pesos(p.getImporte()));detalleMetodo.setText(p.getMetodoPago().toString());detalleEstado.setText(p.getEstado().toString());detalleRegistrado.setText(p.getFechaCreacion()==null?"-":p.getFechaCreacion().format(FECHA_HORA));detalleAcreditado.setText(p.getFechaPago()==null?"-":p.getFechaPago().format(FECHA_HORA));detalleReferencia.setText(p.getReferencia()==null||p.getReferencia().isBlank()?"Sin referencia":p.getReferencia());botonAcreditar.setDisable(p.getEstado()!=EstadoPago.PENDIENTE);botonAnular.setDisable(p.getEstado()!=EstadoPago.PENDIENTE);}
+        detalleReserva.setText(r==null?"Reserva #"+p.getReservaId():"#"+r.getId()+" · "+r.getNombreCancha());detalleCliente.setText(r==null?"Sin datos":r.getNombreCliente());detalleTurno.setText(r==null?"-":r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA));detalleImporte.setText(FormateadorMoneda.pesos(p.getImporte()));detalleMetodo.setText(p.getMetodoPago().toString());detalleRegistrado.setText(formatearFechaDetalle(p.getFechaCreacion()));detalleAcreditado.setText(formatearFechaDetalle(p.getFechaPago()));detalleReferencia.setText(p.getReferencia()==null||p.getReferencia().isBlank()?"Sin referencia":p.getReferencia());boolean pendiente=p.getEstado()==EstadoPago.PENDIENTE;botonAcreditar.setDisable(!pendiente);botonAnular.setDisable(!pendiente);etiquetaAccionesPago.setText(pendiente?"":"Este movimiento ya no admite acreditación ni anulación.");etiquetaAccionesPago.setVisible(!pendiente);etiquetaAccionesPago.setManaged(!pendiente);}
     private void mostrarPanelDetalleVacio(){pagoSeleccionado=null;panelFormulario.setVisible(false);panelFormulario.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Seleccioná un movimiento");
         detalleEstadoCabecera.setVisible(false);
         detalleEstadoCabecera.setManaged(false);
-        detalleReserva.setText("-");detalleCliente.setText("-");detalleTurno.setText("-");detalleImporte.setText("-");detalleMetodo.setText("-");detalleEstado.setText("-");detalleRegistrado.setText("-");detalleAcreditado.setText("-");detalleReferencia.setText("-");botonAcreditar.setDisable(true);botonAnular.setDisable(true);}
+        detalleReserva.setText("-");detalleCliente.setText("-");detalleTurno.setText("-");detalleImporte.setText("-");detalleMetodo.setText("-");detalleRegistrado.setText("-");detalleAcreditado.setText("-");detalleReferencia.setText("-");etiquetaAccionesPago.setVisible(false);etiquetaAccionesPago.setManaged(false);botonAcreditar.setDisable(true);botonAnular.setDisable(true);}
 
     private void aplicarSolicitudFiltroDashboard(){SolicitudFiltroPagos s=Navegacion.consumirSolicitudFiltroPagos();if(s!=null&&s.filtro()==FiltroPagos.PENDIENTES_ACREDITACION){verPendientes();mostrarInfo(pagosFiltrados.size()+" pago(s) pendientes de acreditar.");}}
     private void aplicarSolicitudDeReserva(){SolicitudPagoReserva s=Navegacion.consumirSolicitudPagoReserva();if(s==null)return;Reserva r=reservasPorId.get(s.reservaId());if(r==null){mostrarError("La reserva seleccionada no está disponible para pagos.");return;}nuevoPago();comboReserva.setValue(r);actualizarResumen(r);campoImporte.requestFocus();}
 
     private void actualizarResumen(Reserva r){if(r==null){limpiarResumen();return;}BigDecimal saldo=pagoService.calcularSaldo(r.getId());BigDecimal acreditado=r.getPrecioTotal().subtract(saldo);etiquetaPrecioTotal.setText(FormateadorMoneda.pesos(r.getPrecioTotal()));etiquetaTotalAcreditado.setText(FormateadorMoneda.pesos(acreditado));etiquetaSaldo.setText(FormateadorMoneda.pesos(saldo));etiquetaReservaDetalle.setText(reservaExtendida(r));if(pagoSeleccionado==null){BigDecimal s=configuracionService.calcularSenia(r.getPrecioTotal());campoImporte.setText(saldo.min(s).toPlainString());}}
     private void limpiarResumen(){etiquetaPrecioTotal.setText("ARS 0");etiquetaTotalAcreditado.setText("ARS 0");etiquetaSaldo.setText("ARS 0");etiquetaReservaDetalle.setText("Seleccioná una reserva para ver el saldo.");}
+
+    private void activarModoCreacion(boolean activo) {
+        if (botonNuevoMovimiento == null) return;
+        botonNuevoMovimiento.setDisable(activo);
+        botonNuevoMovimiento.setText(
+                activo ? "MOVIMIENTO EN EDICIÓN" : "NUEVO MOVIMIENTO");
+        botonNuevoMovimiento.getStyleClass().remove(
+                "payment-new-button-active");
+        if (activo) {
+            botonNuevoMovimiento.getStyleClass().add(
+                    "payment-new-button-active");
+        }
+    }
+
+    private String formatearFechaDetalle(LocalDateTime fecha) {
+        return fecha == null ? "-" : fecha.format(FECHA) + " · " + fecha.format(HORA);
+    }
+
+    private void actualizarBotonGuardar() {
+        if (botonGuardarMovimiento == null) return;
+        boolean importeValido = false;
+        try {
+            importeValido = parsearImporte(campoImporte.getText()).signum() > 0;
+        } catch (RuntimeException ignored) {
+            importeValido = false;
+        }
+        botonGuardarMovimiento.setDisable(
+                comboReserva.getValue() == null
+                || comboMetodo.getValue() == null
+                || comboEstadoInicial.getValue() == null
+                || !importeValido);
+    }
 
     @FXML private void guardar(){try{if(comboReserva.getValue()==null)throw new IllegalArgumentException("Seleccioná una reserva.");Pago p=new Pago();p.setReservaId(comboReserva.getValue().getId());p.setImporte(parsearImporte(campoImporte.getText()));p.setMetodoPago(comboMetodo.getValue());p.setEstado(comboEstadoInicial.getValue());p.setReferencia(campoReferencia.getText());pagoService.guardar(p);cargarPagos();mostrarDetallePago(p);mostrarInfo("El movimiento se guardó correctamente.");}catch(RuntimeException e){mostrarError(e.getMessage());}}
     private BigDecimal parsearImporte(String v){if(v==null||v.isBlank())throw new IllegalArgumentException("Ingresá el importe.");try{return new BigDecimal(v.trim().replace("ARS","").replace("$","").replace(" ","").replace(",","."));}catch(NumberFormatException e){throw new IllegalArgumentException("El importe debe ser un número válido.");}}
@@ -375,9 +446,12 @@ public class PagosController {
         }
     }
 
-    private String reservaBreve(Reserva r){return "#"+r.getId()+" · "+r.getNombreCliente();}
+    private String reservaBreve(Reserva r){return "#"+r.getId()+" · "+r.getNombreCliente()+" · "+r.getNombreCancha();}
     private String reservaExtendida(Reserva r){return "#"+r.getId()+" · "+r.getNombreCliente()+" · "+r.getNombreCancha()+" · "+r.getFecha().format(FECHA)+" "+r.getHoraInicio().format(HORA);}
     @FXML private void volver(){Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());}
     private void mostrarError(String m){etiquetaMensaje.setText(m==null?"Ocurrió un error.":m);etiquetaMensaje.getStyleClass().remove("mensaje-exito");if(!etiquetaMensaje.getStyleClass().contains("mensaje-error"))etiquetaMensaje.getStyleClass().add("mensaje-error");}
     private void mostrarInfo(String m){etiquetaMensaje.setText(m);etiquetaMensaje.getStyleClass().remove("mensaje-error");if(!etiquetaMensaje.getStyleClass().contains("mensaje-exito"))etiquetaMensaje.getStyleClass().add("mensaje-exito");}
+    // gestion-pagos-integral-v1
+    // gestion-pagos-carga-fix-v1
+    // gestion-pagos-modo-creacion-v1
 }

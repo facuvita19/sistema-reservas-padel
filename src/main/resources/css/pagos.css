@@ -185,3 +185,97 @@
     -fx-border-color: -color-principal;
     -fx-text-fill: -color-principal-hover;
 }
+
+/* gestion-pagos-integral-v1 */
+.payments-root .payments-list-compact { -fx-background-color:#101518; }
+.payments-root .modern-field, .payments-root .modern-combo, .payments-root .modern-date, .payments-root .payments-filter-action { -fx-min-height:36; -fx-pref-height:36; -fx-max-height:36; }
+.payments-root .payments-result-count { -fx-font-size:10px; -fx-text-fill:#748a95; -fx-alignment:CENTER_LEFT; }
+.payments-root .payment-check { -fx-text-fill:#aeb8bd; -fx-font-size:10px; }
+.payments-root .payment-check .box { -fx-background-color:#1b2125; -fx-border-color:#4a555b; -fx-border-radius:3; -fx-background-radius:3; }
+.payments-root .payment-check:selected .mark { -fx-background-color:-color-principal; }
+.payments-root .payment-check:focused .box { -fx-border-color:-color-principal; -fx-effect:none; }
+.payments-root .payments-table { -fx-fixed-cell-size:54; }
+.payments-root .payments-table .table-row-cell:empty { -fx-background-color:#151a1e; -fx-border-color:transparent; }
+.payments-root .payments-table .table-row-cell:empty:hover { -fx-background-color:#151a1e; }
+.payments-root .payments-table .scroll-bar:horizontal { -fx-min-height:0; -fx-pref-height:0; -fx-max-height:0; -fx-opacity:0; -fx-padding:0; }
+.payments-root .payments-table .scroll-bar:vertical { -fx-pref-width:10; -fx-background-color:#151a1e; -fx-padding:1; }
+.payments-root .payments-table .scroll-bar:vertical .track { -fx-background-color:#151a1e; -fx-background-radius:8; }
+.payments-root .payments-table .scroll-bar:vertical .thumb { -fx-background-color:#465057; -fx-background-insets:2; -fx-background-radius:8; }
+.payments-root .payments-table .scroll-bar:vertical .thumb:hover { -fx-background-color:#5a666d; }
+.payments-root .payments-table .scroll-bar .increment-button, .payments-root .payments-table .scroll-bar .decrement-button { -fx-min-height:0; -fx-pref-height:0; -fx-max-height:0; -fx-padding:0; }
+.payments-root .form-scroll .scroll-bar:vertical { -fx-pref-width:10; -fx-background-color:#151a1e; -fx-padding:1; }
+.payments-root .form-scroll .scroll-bar:vertical .track { -fx-background-color:#151a1e; }
+.payments-root .form-scroll .scroll-bar:vertical .thumb { -fx-background-color:#465057; -fx-background-insets:2; -fx-background-radius:8; }
+.payments-root .form-scroll .scroll-bar:vertical .thumb:hover { -fx-background-color:#5a666d; }
+.payments-root .form-scroll .scroll-bar:vertical .increment-button, .payments-root .form-scroll .scroll-bar:vertical .decrement-button { -fx-min-height:0; -fx-pref-height:0; -fx-max-height:0; -fx-padding:0; }
+.payments-root .payment-info-card { -fx-background-color:#181e22; -fx-background-radius:10; -fx-border-color:#374148; -fx-border-radius:10; -fx-padding:12 13; }
+.payments-root .payment-card-title { -fx-text-fill:-color-principal-hover; -fx-font-size:9px; -fx-font-weight:900; }
+.payments-root .payment-detail-primary { -fx-text-fill:#f0f3f4; -fx-font-size:14px; -fx-font-weight:900; }
+.payments-root .payment-action-help { -fx-background-color:#20262a; -fx-background-radius:8; -fx-border-color:#3b454b; -fx-border-radius:8; -fx-padding:9 11; -fx-text-fill:#8f9da3; -fx-font-size:10px; }
+.payments-root .payment-detail-actions .button { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.payments-root .payment-form-card { -fx-padding:12 13; }
+.payments-root .payment-summary-card { -fx-min-height:62; -fx-pref-height:62; -fx-padding:10 11; }
+.payments-root .payment-summary-card .metric-label { -fx-font-size:8px; }
+.payments-root .payment-summary-value, .payments-root .payment-balance-value { -fx-font-size:14px; }
+.payments-root .payment-cancel-form { -fx-min-height:38; -fx-pref-height:38; -fx-max-height:38; }
+.payments-root .payment-save-button { -fx-min-height:44; -fx-pref-height:44; -fx-max-height:44; }
+.payments-root .payment-save-button:disabled { -fx-background-color:#1b2521; -fx-border-color:#30453a; -fx-text-fill:#60756a; -fx-opacity:1; }
+.payments-root .payment-detail-money { -fx-text-fill:#9fc8e2; }
+
+/* gestion-pagos-modo-creacion-v1 */
+.payments-root .payment-creation-mode { -fx-background-color:#101a16; -fx-border-color:-color-principal transparent transparent -color-principal; -fx-border-width:3 0 0 4; }
+.payments-root .payment-creation-mode .payment-info-card { -fx-background-color:#17211d; -fx-border-color:#385a49; }
+.payments-root .payment-creation-badge { -fx-background-color:-color-principal-transparente; -fx-background-radius:10; -fx-border-color:-color-principal; -fx-border-radius:10; -fx-text-fill:-color-principal-hover; -fx-font-size:9px; -fx-font-weight:900; -fx-padding:4 8; }
+.payments-root .payment-creation-title { -fx-text-fill:#f3fff8; }
+.payments-root .payment-new-button-active, .payments-root .payment-new-button-active:disabled { -fx-background-color:#1d3329; -fx-border-color:-color-principal; -fx-text-fill:-color-principal-hover; -fx-opacity:1; }
+.payments-root .payment-creation-mode .payment-save-button:not(:disabled) { -fx-effect:dropshadow(gaussian, rgba(67,170,122,.26), 12, .18, 0, 2); }
+
+/* pagos-combos-formulario-estables-v1 */
+/* Metodo y Estado inicial conservan exactamente la misma geometria al enfocarse y abrirse. */
+.payments-root .payment-form-combo,
+.payments-root .payment-form-combo:hover,
+.payments-root .payment-form-combo:focused,
+.payments-root .payment-form-combo:showing {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+    -fx-effect: none;
+}
+.payments-root .payment-form-combo:focused,
+.payments-root .payment-form-combo:showing {
+    -fx-border-width: 1;
+}
+.payments-root .payment-form-combo .list-cell,
+.payments-root .payment-form-combo .button-cell,
+.payments-root .payment-form-combo .button-cell:selected,
+.payments-root .payment-form-combo .button-cell:focused {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 0 10;
+}
+.payments-root .payment-form-combo .arrow-button,
+.payments-root .payment-form-combo:hover .arrow-button,
+.payments-root .payment-form-combo:focused .arrow-button,
+.payments-root .payment-form-combo:showing .arrow-button {
+    -fx-min-width: 34;
+    -fx-pref-width: 34;
+    -fx-max-width: 34;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-background-insets: 0;
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 0;
+}
+.payments-root .payment-form-combo .arrow {
+    -fx-padding: 3.5 4.5;
+}
