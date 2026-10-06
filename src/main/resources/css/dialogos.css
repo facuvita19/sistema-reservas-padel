@@ -1372,16 +1372,6 @@
     -fx-padding: 9 16;
     -fx-cursor: hand;
 }
-.structural-editor-tab:hover {
-    -fx-background-color: #292f34;
-    -fx-border-color: #68577b;
-    -fx-text-fill: #ddd0e8;
-}
-.structural-editor-tab:selected {
-    -fx-background-color: #302a38;
-    -fx-border-color: #78638d;
-    -fx-text-fill: #eee3f6;
-}
 .structural-bracket-shell {
     -fx-background-color: #171c20;
     -fx-border-color: #343d42;
@@ -1528,12 +1518,8 @@
     -fx-padding: 9 15;
     -fx-cursor: hand;
 }
-.structural-editor-button:hover {
-    -fx-background-color: #3d3448;
-    -fx-border-color: #8a72a2;
-    -fx-text-fill: #f0e5f8;
-}
 
+/* editor-estructural-duplicados-limpiados-v1 */
 /* structural-editor-shell-polish-v1-1 */
 /* Refuerzo de especificidad frente a los estilos generales del tema. */
 .dialog-pane.structural-editor-dialog .structural-editor-intro {
@@ -1801,10 +1787,6 @@
     -fx-border-radius: 7;
     -fx-background-radius: 7;
     -fx-mark-color: #b6a1cc;
-}
-.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:hover,
-.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:focused {
-    -fx-border-color: #68577b;
 }
 .structural-add-previous {
     -fx-text-fill: #c3cbce;
