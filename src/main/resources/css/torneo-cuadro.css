@@ -185,3 +185,111 @@
     -fx-text-fill: #e5a0a8;
     -fx-font-size: 9px;
 }
+
+/* acciones-programacion-cuadro-v1 */
+/* Jerarquia: programacion primaria, resultado secundario, quitar/corregir sensibles. */
+.bracket-action-primary,
+.bracket-action-result-secondary,
+.bracket-action-danger-outline {
+    -fx-cursor: hand;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.bracket-action-primary:hover {
+    -fx-border-color: -color-principal-hover;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 9, .12, 0, 2);
+    -fx-translate-y: -1;
+}
+.bracket-action-primary:pressed {
+    -fx-background-color: -color-principal-presionado;
+    -fx-border-color: -color-principal-presionado;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+.bracket-action-result-secondary:hover {
+    -fx-effect: dropshadow(gaussian, rgba(75,145,171,.22), 8, .10, 0, 2);
+    -fx-translate-y: -1;
+}
+.bracket-action-result-secondary:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+.bracket-action-danger-outline:hover {
+    -fx-background-color: #352329;
+    -fx-border-color: #a05260;
+    -fx-text-fill: #ffc4cb;
+    -fx-effect: dropshadow(gaussian, rgba(160,82,96,.18), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.bracket-action-danger-outline:pressed {
+    -fx-background-color: #1d171a;
+    -fx-border-color: #743d47;
+    -fx-text-fill: #e8aab2;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+.bracket-action-primary:disabled,
+.bracket-action-result-secondary:disabled,
+.bracket-action-danger-outline:disabled {
+    -fx-cursor: default;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Los selectores de horario conservan geometria en normal, foco y desplegado. */
+.bracket-input-v2.combo-box {
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-max-height: 46;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+.bracket-input-v2.combo-box:hover,
+.bracket-input-v2.combo-box:focused,
+.bracket-input-v2.combo-box:showing {
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-max-height: 46;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-effect: none;
+}
+.bracket-input-v2.combo-box:focused,
+.bracket-input-v2.combo-box:showing {
+    -fx-border-color: -color-principal;
+}
+.bracket-input-v2.combo-box > .list-cell {
+    -fx-padding: 0 10;
+    -fx-alignment: center-left;
+}
+.bracket-input-v2.combo-box > .arrow-button {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1;
+}
+.bracket-input-v2.combo-box:focused > .arrow-button,
+.bracket-input-v2.combo-box:showing > .arrow-button {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1;
+}
