@@ -577,3 +577,43 @@
     -fx-border-color: -color-principal;
     -fx-border-width: 1.5;
 }
+
+/* corregir-boton-agregar-grupo-v2 */
+/* Accion secundaria para mover una pareja disponible al grupo seleccionado. */
+.groups-root-v2 .groups-add-action,
+.groups-root-v2 .groups-add-action:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #1d2925;
+    -fx-background-radius: 9;
+    -fx-border-color: #3e765e;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-text-fill: #a8dbc3;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+.groups-root-v2 .groups-add-action:hover {
+    -fx-background-color: #28684d;
+    -fx-border-color: #4b9472;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(65,139,103,.22), 9, .16, 0, 2);
+}
+.groups-root-v2 .groups-add-action:pressed {
+    -fx-background-color: #20563f;
+    -fx-border-color: #39785a;
+    -fx-translate-y: 1;
+    -fx-effect: none;
+}
+.groups-root-v2 .groups-add-action:disabled {
+    -fx-background-color: #171d1b;
+    -fx-border-color: #2a3731;
+    -fx-text-fill: #53665d;
+    -fx-cursor: default;
+    -fx-opacity: 1;
+    -fx-translate-y: 0;
+    -fx-effect: none;
+}

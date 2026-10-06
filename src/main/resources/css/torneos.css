@@ -27,3 +27,141 @@
 .tournaments-mini-value {
     -fx-line-spacing: 2px;
 }
+
+/* torneos-distribucion-compacta-v2 */
+/* Proporcion, filtros y listado mas densos. */
+.tournaments-root-v2 .tournaments-list-pane-compact {
+    -fx-spacing: 10;
+}
+.tournaments-root-v2 .tournaments-search-v2,
+.tournaments-root-v2 .tournaments-filter-v2,
+.tournaments-root-v2 .tournaments-clear-v2 {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.tournaments-root-v2 .tournaments-filter-v2 {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
+}
+.tournaments-root-v2 .tournaments-clear-v2 {
+    -fx-min-width: 82;
+    -fx-pref-width: 82;
+    -fx-max-width: 82;
+}
+.tournaments-root-v2 .tournaments-list-v2 .table-row-cell {
+    -fx-cell-size: 52;
+}
+.tournaments-root-v2 .tournaments-table-v2 .table-row-cell:empty {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+}
+.tournaments-root-v2 .tournaments-table-v2 .table-row-cell:empty:hover {
+    -fx-background-color: #151a1e;
+}
+/* Detalle compacto y metricas equilibradas. */
+.tournaments-root-v2 .tournaments-detail-compact {
+    -fx-spacing: 10;
+}
+.tournaments-root-v2 .tournaments-summary-compact,
+.tournaments-root-v2 .tournaments-next-compact,
+.tournaments-root-v2 .tournaments-categories-compact {
+    -fx-padding: 12 14;
+}
+.tournaments-root-v2 .tournaments-summary-compact {
+    -fx-spacing: 9;
+}
+.tournaments-root-v2 .tournaments-metrics-compact {
+    -fx-spacing: 8;
+}
+.tournaments-root-v2 .tournaments-mini-v2 {
+    -fx-min-height: 62;
+    -fx-pref-height: 62;
+    -fx-padding: 8 10;
+}
+.tournaments-root-v2 .tournaments-mini-wide {
+    -fx-min-width: 220;
+}
+.tournaments-root-v2 .tournaments-next-compact {
+    -fx-min-height: 82;
+}
+.tournaments-root-v2 .tournaments-categories-table-v2 {
+    -fx-min-height: 170;
+    -fx-pref-height: 180;
+    -fx-max-height: 180;
+}
+/* Barra contextual reserva su espacio y no altera el alto al seleccionar. */
+.tournaments-root-v2 .tournaments-category-actions-stable {
+    -fx-min-height: 52;
+    -fx-pref-height: 52;
+    -fx-max-height: 52;
+    -fx-padding: 7 9;
+}
+.tournaments-root-v2 .tournaments-category-actions-stable:disabled {
+    -fx-opacity: 1;
+}
+.tournaments-root-v2 .tournaments-category-navigation {
+    -fx-background-color: #20292e;
+    -fx-border-color: #526168;
+}
+.tournaments-root-v2 .tournaments-category-navigation:hover {
+    -fx-background-color: #29343a;
+    -fx-border-color: -color-principal;
+}
+/* Scroll global grafito y discreto. */
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical {
+    -fx-min-width: 10;
+    -fx-pref-width: 10;
+    -fx-max-width: 10;
+    -fx-background-color: #151a1e;
+    -fx-padding: 1;
+}
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical .track {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical .thumb {
+    -fx-background-color: #465057;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a666d;
+}
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical .increment-button,
+.tournaments-root-v2 .tournaments-detail-scroll-v2 > .scroll-bar:vertical .decrement-button {
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+
+/* resaltar-boton-cuadro-torneos-v1 */
+/* CUADRO se distingue como acceso competitivo sin competir con FINALIZAR TORNEO. */
+.tournaments-root-v2 .tournaments-category-bracket,
+.tournaments-root-v2 .tournaments-category-bracket:focused {
+    -fx-background-color: #28684d;
+    -fx-border-color: #438a69;
+    -fx-text-fill: #f1fff8;
+    -fx-effect: none;
+}
+.tournaments-root-v2 .tournaments-category-bracket:hover {
+    -fx-background-color: #337e5e;
+    -fx-border-color: #5ca27f;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(65,139,103,.22), 9, .16, 0, 2);
+}
+.tournaments-root-v2 .tournaments-category-bracket:pressed {
+    -fx-background-color: #20563f;
+    -fx-border-color: #39785a;
+    -fx-effect: none;
+}
+.tournaments-root-v2 .tournaments-category-bracket:disabled {
+    -fx-background-color: #1b2a23;
+    -fx-border-color: #30483b;
+    -fx-text-fill: #687d72;
+    -fx-opacity: 1;
+}

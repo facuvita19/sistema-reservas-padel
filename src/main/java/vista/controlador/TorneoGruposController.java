@@ -193,6 +193,10 @@ public class TorneoGruposController {
             if (e.getClickCount() == 2 && integrantes.getSelectionModel().getSelectedItem() != null) quitar();
         });
         modo.valueProperty().addListener((o, a, actual) -> actualizarModo());
+        sinAsignar.getSelectionModel().selectedItemProperty()
+                .addListener((o, anterior, actual) -> actualizarBotonAgregar());
+        listaGrupos.getSelectionModel().selectedItemProperty()
+                .addListener((o, anterior, actual) -> actualizarBotonAgregar());
     }
 
     @FXML private void mostrarArmado() { mostrarEtapa(panelArmado, pestanaArmado); actualizarMensajeEtapa(true); }
@@ -491,6 +495,7 @@ public class TorneoGruposController {
             panelConfirmado.setVisible(cerrado); panelConfirmado.setManaged(cerrado);
             accionesIntegrantes.setVisible(!cerrado); accionesIntegrantes.setManaged(!cerrado);
             botonAgregar.setVisible(!cerrado); botonAgregar.setManaged(!cerrado);
+            actualizarBotonAgregar();
             etiquetaEstadoGrupos.setText(cerrado ? "CONFIRMADOS" : "EN EDICIÓN");
             etiquetaDisponibles.setText(String.valueOf(libres.size()));
             actualizarModo();
@@ -644,6 +649,15 @@ public class TorneoGruposController {
         selectorFecha.setValue(partido.getFecha());
         comboInicio.setValue(partido.getHoraInicio());
         comboFin.setValue(partido.getHoraFin());
+    }
+
+    private void actualizarBotonAgregar() {
+        if (botonAgregar == null) return;
+        boolean seleccionCompleta = sinAsignar != null
+                && sinAsignar.getSelectionModel().getSelectedItem() != null
+                && listaGrupos != null
+                && listaGrupos.getSelectionModel().getSelectedItem() != null;
+        botonAgregar.setDisable(!seleccionCompleta || !botonAgregar.isVisible());
     }
 
     @FXML
@@ -1001,4 +1015,5 @@ public class TorneoGruposController {
     private void volver() {
         Navegacion.mostrarTorneos();
     }
+    // corregir-boton-agregar-grupo-v2
 }

@@ -313,6 +313,10 @@ public class TorneosController {
         EstadoTorneo e = hay ? seleccionado.getEstado() : null;
         botonEditar.setDisable(!hay || e.esFinal());
         botonNuevaCategoria.setDisable(!hay || e.esFinal() || e == EstadoTorneo.EN_CURSO);
+        botonNuevaCategoria.setTooltip(botonNuevaCategoria.isDisabled() && hay
+                ? new javafx.scene.control.Tooltip(
+                        "Las categorías no pueden modificarse en este estado del torneo.")
+                : null);
         botonPublicar.setDisable(e != EstadoTorneo.BORRADOR);
         botonAbrir.setDisable(e != EstadoTorneo.PUBLICADO);
         botonCerrar.setDisable(e != EstadoTorneo.INSCRIPCION_ABIERTA);
@@ -335,8 +339,10 @@ public class TorneosController {
                 || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
                 || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
         panelAccionesCategoria.setVisible(c != null);
-        panelAccionesCategoria.setManaged(c != null);
-        etiquetaCategoriaSeleccionada.setText(c == null ? "" : c.getNombre());
+        panelAccionesCategoria.setManaged(true);
+        etiquetaCategoriaSeleccionada.setText(
+                c == null ? "ACCIONES DE CATEGORÍA"
+                        : "ACCIONES PARA: " + c.getNombre());
         botonGestionarGrupos.setVisible(c != null && c.usaFaseGrupos());
         botonGestionarGrupos.setManaged(botonGestionarGrupos.isVisible());
         botonGestionarCuadro.setDisable(c == null || seleccionado == null
@@ -509,4 +515,5 @@ public class TorneosController {
         etiquetaMensaje.setText(mensaje);
         Dialogos.exito("Operación completada", mensaje);
     }
+    // torneos-distribucion-compacta-v2
 }

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- corregir-boton-agregar-grupo-v2 -->
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -9,7 +10,7 @@
   <StackPane VBox.vgrow="ALWAYS">
    <VBox fx:id="panelArmado" spacing="12">
     <HBox spacing="12" VBox.vgrow="ALWAYS">
-     <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="PAREJAS DISPONIBLES" styleClass="groups-section-v2"/><Label text="Doble clic para agregar al grupo seleccionado" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaDisponibles" text="0" styleClass="groups-count-v2"/></HBox><ListView fx:id="sinAsignar" fixedCellSize="46" VBox.vgrow="ALWAYS"/><Button fx:id="botonAgregar" text="AGREGAR AL GRUPO" onAction="#agregar" maxWidth="Infinity" styleClass="groups-action-primary groups-add-action"/></VBox>
+     <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="PAREJAS DISPONIBLES" styleClass="groups-section-v2"/><Label text="Doble clic para agregar al grupo seleccionado" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaDisponibles" text="0" styleClass="groups-count-v2"/></HBox><ListView fx:id="sinAsignar" fixedCellSize="46" VBox.vgrow="ALWAYS"/><Button fx:id="botonAgregar" text="AGREGAR AL GRUPO" onAction="#agregar" maxWidth="Infinity" styleClass="groups-action-secondary, groups-add-action"/></VBox>
      <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="GRUPOS" styleClass="groups-section-v2"/><Label text="Seleccioná un grupo para administrar sus parejas" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaEstadoGrupos" text="EN EDICIÓN" styleClass="groups-state-v2"/></HBox><ListView fx:id="listaGrupos" fixedCellSize="48" VBox.vgrow="ALWAYS"/></VBox>
      <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="groups-card-v2"><HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label fx:id="tituloIntegrantes" text="INTEGRANTES" styleClass="groups-section-v2"/><Label text="★ identifica a la cabeza de serie" styleClass="groups-help-v2"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaOcupacion" text="0/0" styleClass="groups-count-v2"/></HBox><ListView fx:id="integrantes" fixedCellSize="46" VBox.vgrow="ALWAYS"/><HBox fx:id="accionesIntegrantes" spacing="8"><Button fx:id="botonCabeza" text="MARCAR CABEZA" onAction="#agregarCabezaSeleccionada" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-action-primary"/><Button fx:id="botonQuitar" text="QUITAR" onAction="#quitar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="groups-action-danger-outline"/></HBox></VBox>
     </HBox>
