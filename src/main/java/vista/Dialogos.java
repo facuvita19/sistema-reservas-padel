@@ -76,7 +76,12 @@ public final class Dialogos {
             return false;
         }
 
+        // corregir-dialogos-torneos-v2
         DialogPane panel = dialogo.getDialogPane();
+        boolean formularioAcotado = panel.getStyleClass().stream()
+                .anyMatch(clase -> clase.equals("tournament-editor-dialog")
+                        || clase.equals("category-editor-dialog"));
+        if (formularioAcotado) return false;
 
         // Las vistas operativas conocidas se maximizan aunque su tamano
         // preferido todavia no haya sido calculado por JavaFX.

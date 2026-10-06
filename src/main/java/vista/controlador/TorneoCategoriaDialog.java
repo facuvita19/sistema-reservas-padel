@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -39,6 +40,7 @@ public class TorneoCategoriaDialog {
     private final Label error = new Label();
     private final long torneoId;
     private final TorneoCategoria original;
+    private TorneoCategoria resultadoValidado;
     private final ButtonType guardar = new ButtonType(
             "GUARDAR CATEGORÍA", ButtonBar.ButtonData.OK_DONE);
 
@@ -50,19 +52,14 @@ public class TorneoCategoriaDialog {
         actualizarFormato();
     }
 
+    // validacion-categoria-calendario-v1
     public Optional<TorneoCategoria> mostrar() {
-        while (true) {
-            Optional<ButtonType> resultado = dialogo.showAndWait();
-            if (resultado.isEmpty() || resultado.get() != guardar) {
-                return Optional.empty();
-            }
-            try {
-                error.setText("");
-                return Optional.of(construir());
-            } catch (IllegalArgumentException exception) {
-                error.setText(exception.getMessage());
-            }
+        resultadoValidado = null;
+        Optional<ButtonType> resultado = dialogo.showAndWait();
+        if (resultado.isEmpty() || resultado.get() != guardar) {
+            return Optional.empty();
         }
+        return Optional.ofNullable(resultadoValidado);
     }
 
     private void configurar() {
@@ -108,7 +105,8 @@ public class TorneoCategoriaDialog {
         agregar(grupos, 1, "Grupos de 4 equipos", gruposCuatro);
         Label reglaTres = ayuda("Grupos de 3: todos contra todos, clasifican 1° y 2°.");
         Label reglaCuatro = ayuda("Grupos de 4: dos cruces y definiciones; clasifican 1°, 2° y 3°.");
-        resumenGrupos.getStyleClass().add("dialog-validation-error");
+        // indicadores-categoria-v1
+        resumenGrupos.getStyleClass().add("category-groups-summary");
         resumenGrupos.setWrapText(true);
         panelGrupos.getChildren().addAll(titulo("CONFIGURACIÓN DE GRUPOS"),
                 grupos, reglaTres, reglaCuatro, resumenGrupos);
@@ -121,12 +119,39 @@ public class TorneoCategoriaDialog {
         Label ayudaPremios = ayuda("Los premios son opcionales e independientes.");
         error.getStyleClass().add("dialog-validation-error");
         error.setWrapText(true);
+        error.setVisible(false);
+        error.setManaged(false);
         VBox contenido = new VBox(14, titulo("DATOS DE LA CATEGORÍA"),
                 datos, panelGrupos, titulo("PREMIOS OPCIONALES"), premios,
                 ayudaPremios, error);
-        contenido.setPadding(new Insets(5, 2, 2, 2));
-        dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefSize(760, 790);
+        // corregir-dialogos-torneos-v2
+        contenido.setPadding(new Insets(5, 8, 8, 2));
+        ScrollPane desplazamiento = new ScrollPane(contenido);
+        desplazamiento.setFitToWidth(true);
+        desplazamiento.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        desplazamiento.setPrefViewportWidth(710);
+        desplazamiento.setPrefViewportHeight(590);
+        desplazamiento.getStyleClass().add("category-editor-scroll");
+        dialogo.getDialogPane().setContent(desplazamiento);
+        dialogo.getDialogPane().setPrefSize(760, 760);
+
+        javafx.scene.Node botonGuardar = dialogo.getDialogPane()
+                .lookupButton(guardar);
+        botonGuardar.addEventFilter(javafx.event.ActionEvent.ACTION, evento -> {
+            try {
+                error.setText("");
+                error.setVisible(false);
+                error.setManaged(false);
+                resultadoValidado = construir();
+            } catch (IllegalArgumentException exception) {
+                resultadoValidado = null;
+                error.setText(exception.getMessage());
+                error.setVisible(true);
+                error.setManaged(true);
+                desplazamiento.setVvalue(1.0);
+                evento.consume();
+            }
+        });
 
         formato.valueProperty().addListener((o, a, n) -> actualizarFormato());
         gruposTres.valueProperty().addListener((o, a, n) -> actualizarProyeccion());
