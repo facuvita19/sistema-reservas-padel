@@ -1,32 +1,59 @@
-/* alta-inscripcion-moderna-v1 */
+/* Alta administrativa de inscripcion - estilos consolidados */
+
+/* Dialogo */
 .dialog-tournament-registration.dialog-pane {
     -fx-background-color: #11171b;
     -fx-border-color: #3a444a;
     -fx-border-width: 1;
-    -fx-pref-width: 980;
+    -fx-pref-width: 1180;
 }
+
 .dialog-tournament-registration > .header-panel {
     -fx-background-color: #151b1f;
     -fx-padding: 18 24 16 24;
     -fx-border-color: transparent transparent #3a444a transparent;
 }
+
 .dialog-tournament-registration > .header-panel .label {
     -fx-text-fill: #f2f4f5;
     -fx-font-size: 22px;
     -fx-font-weight: 900;
 }
+
+/* Contenido y desplazamiento */
 .admin-registration-scroll,
 .admin-registration-scroll > .viewport {
     -fx-background-color: transparent;
 }
+
 .admin-registration-scroll {
     -fx-border-color: transparent;
     -fx-padding: 0;
 }
+
+.admin-registration-scroll .corner {
+    -fx-background-color: #11171b;
+}
+
+.admin-registration-scroll .scroll-bar:vertical {
+    -fx-pref-width: 9;
+    -fx-background-color: transparent;
+}
+
+.admin-registration-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #151b1f;
+}
+
+.admin-registration-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4c575d;
+    -fx-background-radius: 5;
+}
+
 .admin-registration-root {
     -fx-background-color: #11171b;
-    -fx-padding: 16 18 18 18;
+    -fx-padding: 18 26 20 26;
 }
+
 .admin-registration-intro {
     -fx-background-color: #181f23;
     -fx-border-color: #39444a;
@@ -36,23 +63,42 @@
     -fx-text-fill: #aab5ba;
     -fx-font-size: 12px;
 }
+
+/* Tarjetas y rotulos */
 .admin-registration-card {
     -fx-background-color: #181f23;
     -fx-border-color: #3a454b;
     -fx-border-radius: 11;
     -fx-background-radius: 11;
     -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.16), 10, .10, 0, 3);
 }
+
 .admin-registration-section-title {
     -fx-text-fill: #dce4e7;
     -fx-font-size: 11px;
     -fx-font-weight: 900;
 }
+
 .admin-registration-field-label {
     -fx-text-fill: #8f9ca2;
     -fx-font-size: 10px;
     -fx-font-weight: 900;
 }
+
+.admin-registration-hint {
+    -fx-text-fill: #718087;
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+}
+
+.admin-registration-divider-line {
+    -fx-background-color: #3a444a;
+    -fx-pref-height: 1;
+    -fx-max-height: 1;
+}
+
+/* Campos */
 .admin-registration-field,
 .admin-registration-combo,
 .admin-registration-area {
@@ -64,57 +110,73 @@
     -fx-background-radius: 8;
     -fx-font-size: 12px;
 }
+
 .admin-registration-field {
     -fx-padding: 8 11;
     -fx-pref-height: 36;
 }
+
 .admin-registration-field:disabled {
     -fx-opacity: 1;
     -fx-background-color: #1d2529;
     -fx-text-fill: #cbd4d7;
 }
-.admin-registration-combo { -fx-pref-height: 36; }
+
+.admin-registration-combo {
+    -fx-pref-height: 36;
+}
+
 .admin-registration-combo .list-cell {
     -fx-background-color: #13191d;
     -fx-text-fill: #edf1f2;
     -fx-padding: 7 10;
 }
-.admin-registration-combo .arrow-button { -fx-background-color: transparent; }
-.admin-registration-combo .arrow { -fx-background-color: #89989f; }
-.admin-registration-area { -fx-padding: 3; }
-.admin-registration-area .content { -fx-background-color: #13191d; }
+
+.admin-registration-combo .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.admin-registration-combo .arrow {
+    -fx-background-color: #89989f;
+}
+
+.admin-registration-area {
+    -fx-padding: 3;
+}
+
+.admin-registration-area .content {
+    -fx-background-color: #13191d;
+}
+
 .admin-registration-field:focused,
 .admin-registration-combo:focused,
 .admin-registration-area:focused {
     -fx-border-color: #4c9d76;
-    -fx-effect: dropshadow(gaussian, rgba(68,153,111,.24), 8, .2, 0, 0);
+    -fx-effect: dropshadow(gaussian, rgba(68,153,111,.24), 8, .20, 0, 0);
 }
-.admin-registration-hint {
-    -fx-text-fill: #718087;
-    -fx-font-size: 10px;
-    -fx-font-weight: 800;
-}
-.admin-registration-divider-line {
-    -fx-background-color: #3a444a;
-    -fx-pref-height: 1;
-    -fx-max-height: 1;
-}
+
+/* Cliente seleccionado */
 .admin-registration-selected-card {
-    -fx-background-color: #182821;
-    -fx-border-color: #3e7d60;
+    -fx-background-color: #17231e;
+    -fx-border-color: #39795b;
+    -fx-border-width: 1;
     -fx-border-radius: 9;
     -fx-background-radius: 9;
     -fx-padding: 10 11;
 }
+
 .admin-registration-selected-name {
     -fx-text-fill: #e4f6ec;
     -fx-font-size: 14px;
     -fx-font-weight: 900;
 }
+
 .admin-registration-selected-detail {
     -fx-text-fill: #92b8a5;
     -fx-font-size: 10px;
 }
+
+/* Buscar cliente y quitar seleccion */
 .admin-registration-search-button,
 .admin-registration-clear-button {
     -fx-font-size: 10px;
@@ -124,73 +186,7 @@
     -fx-border-radius: 8;
     -fx-cursor: hand;
 }
-.admin-registration-search-button {
-    -fx-background-color: #337d5d;
-    -fx-border-color: #4b9874;
-    -fx-text-fill: white;
-}
-.admin-registration-search-button:hover {
-    -fx-background-color: #40906c;
-    -fx-border-color: #63ad88;
-    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.30), 11, .2, 0, 2);
-}
-.admin-registration-clear-button {
-    -fx-background-color: #302a2c;
-    -fx-border-color: #76505a;
-    -fx-text-fill: #f0dce1;
-}
-.admin-registration-clear-button:hover {
-    -fx-background-color: #49373c;
-    -fx-border-color: #98616c;
-    -fx-effect: dropshadow(gaussian, rgba(176,91,106,.28), 10, .18, 0, 2);
-}
-.admin-registration-animated-button:hover { -fx-translate-y: -1; }
-.admin-registration-animated-button:pressed { -fx-translate-y: 1; }
-.admin-registration-scroll .scroll-bar:vertical {
-    -fx-pref-width: 9;
-    -fx-background-color: transparent;
-}
-.admin-registration-scroll .scroll-bar:vertical .track {
-    -fx-background-color: #151b1f;
-}
-.admin-registration-scroll .scroll-bar:vertical .thumb {
-    -fx-background-color: #4c575d;
-    -fx-background-radius: 5;
-}
-.dialog-tournament-registration > .button-bar > .container {
-    -fx-background-color: #141a1e;
-    -fx-border-color: #3a444a transparent transparent transparent;
-    -fx-padding: 12 20 15 20;
-}
-.dialog-tournament-registration .button {
-    -fx-background-radius: 9;
-    -fx-border-radius: 9;
-    -fx-font-weight: 900;
-    -fx-padding: 9 20;
-    -fx-cursor: hand;
-}
-.dialog-tournament-registration .button:default {
-    -fx-background-color: #3d906b;
-    -fx-text-fill: white;
-    -fx-border-color: #58aa82;
-}
-.dialog-tournament-registration .button:default:hover {
-    -fx-background-color: #4aa47b;
-    -fx-border-color: #72bd96;
-    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.30), 12, .22, 0, 2);
-}
-.dialog-tournament-registration .button:cancel {
-    -fx-background-color: #282f33;
-    -fx-text-fill: #e1e6e8;
-    -fx-border-color: #515c62;
-}
-.dialog-tournament-registration .button:cancel:hover {
-    -fx-background-color: #374046;
-    -fx-border-color: #727e85;
-}
 
-/* alta-inscripcion-verde-maximizada-v1 */
-/* Mayor especificidad para evitar que los estilos globales vuelvan azul Buscar cliente. */
 .dialog-tournament-registration .admin-registration-search-button,
 .dialog-tournament-registration .admin-registration-search-button:focused {
     -fx-background-color: #337d5d;
@@ -199,31 +195,20 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
 .dialog-tournament-registration .admin-registration-search-button:hover {
     -fx-background-color: #40906c;
     -fx-border-color: #69b48e;
     -fx-text-fill: #ffffff;
     -fx-effect: dropshadow(gaussian, rgba(71,181,132,.34), 12, .22, 0, 2);
 }
+
 .dialog-tournament-registration .admin-registration-search-button:pressed {
     -fx-background-color: #2a694e;
     -fx-border-color: #438363;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 5, .10, 0, 1);
 }
 
-/* El contenido aprovecha la pantalla completa sin estirar excesivamente las tarjetas. */
-.dialog-tournament-registration.dialog-pane {
-    -fx-pref-width: 1180;
-}
-.admin-registration-root {
-    -fx-padding: 18 26 20 26;
-}
-.admin-registration-scroll {
-    -fx-fit-to-width: true;
-}
-
-/* dialogos-inscripciones-cierre-visual-v1 */
-/* Quitar seleccion: elimina definitivamente la herencia azul global. */
 .dialog-tournament-registration .admin-registration-remove-selection,
 .dialog-tournament-registration .admin-registration-remove-selection:focused {
     -fx-background-color: #352a2e;
@@ -232,26 +217,61 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
 .dialog-tournament-registration .admin-registration-remove-selection:hover {
     -fx-background-color: #51363c;
     -fx-border-color: #ad6875;
     -fx-text-fill: #ffffff;
-    -fx-effect: dropshadow(gaussian, rgba(190, 86, 105, .34), 12, .22, 0, 2);
+    -fx-effect: dropshadow(gaussian, rgba(190,86,105,.34), 12, .22, 0, 2);
 }
+
 .dialog-tournament-registration .admin-registration-remove-selection:pressed {
     -fx-background-color: #2b2225;
     -fx-border-color: #71434d;
 }
 
-/* Tarjetas mas actuales y menos pesadas visualmente. */
-.dialog-tournament-registration .admin-registration-selected-card {
-    -fx-background-color: #17231e;
-    -fx-border-color: #39795b;
-    -fx-border-width: 1;
+.admin-registration-animated-button:hover {
+    -fx-translate-y: -1;
 }
-.dialog-tournament-registration .admin-registration-card {
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.16), 10, .10, 0, 3);
+
+.admin-registration-animated-button:pressed {
+    -fx-translate-y: 1;
 }
-.dialog-tournament-registration .admin-registration-scroll .corner {
-    -fx-background-color: #11171b;
+
+/* Barra de acciones */
+.dialog-tournament-registration > .button-bar > .container {
+    -fx-background-color: #141a1e;
+    -fx-border-color: #3a444a transparent transparent transparent;
+    -fx-padding: 12 20 15 20;
+}
+
+.dialog-tournament-registration .button {
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-font-weight: 900;
+    -fx-padding: 9 20;
+    -fx-cursor: hand;
+}
+
+.dialog-tournament-registration .button:default {
+    -fx-background-color: #3d906b;
+    -fx-border-color: #58aa82;
+    -fx-text-fill: #ffffff;
+}
+
+.dialog-tournament-registration .button:default:hover {
+    -fx-background-color: #4aa47b;
+    -fx-border-color: #72bd96;
+    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.30), 12, .22, 0, 2);
+}
+
+.dialog-tournament-registration .button:cancel {
+    -fx-background-color: #282f33;
+    -fx-border-color: #515c62;
+    -fx-text-fill: #e1e6e8;
+}
+
+.dialog-tournament-registration .button:cancel:hover {
+    -fx-background-color: #374046;
+    -fx-border-color: #727e85;
 }

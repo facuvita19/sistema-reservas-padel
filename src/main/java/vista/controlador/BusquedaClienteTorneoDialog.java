@@ -23,6 +23,7 @@ import negocio.Cliente;
 import vista.Dialogos;
 
 public class BusquedaClienteTorneoDialog {
+    // busqueda-cliente-css-separado-v1
     // buscador-clientes-ventana-normal-v1
     // dialogos-inscripciones-cierre-visual-v1
     private final Dialog<Cliente> dialogo = new Dialog<>();
@@ -57,6 +58,14 @@ public class BusquedaClienteTorneoDialog {
                 seleccionar,
                 new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
         Dialogos.preparar(dialogo, "dialog-client-search");
+        java.net.URL cssBuscador = BusquedaClienteTorneoDialog.class
+                .getResource("/css/busqueda-cliente-torneo.css");
+        if (cssBuscador != null) {
+            String externo = cssBuscador.toExternalForm();
+            if (!dialogo.getDialogPane().getStylesheets().contains(externo)) {
+                dialogo.getDialogPane().getStylesheets().add(externo);
+            }
+        }
 
         TextField buscar = new TextField();
         buscar.setPromptText(
