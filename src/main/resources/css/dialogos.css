@@ -617,10 +617,6 @@
     -fx-border-color: #c46d78;
 }
 
-/* bracket-editor-unified-v1 */
-.dialog-bracket-editor-new{-fx-pref-width:1120;-fx-pref-height:760}.bracket-editor-root{-fx-background-color:#171c20}.bracket-editor-navigation{-fx-padding:0 0 4 0}.bracket-editor-tab{-fx-background-color:#242a2e;-fx-border-color:#3c454b;-fx-background-radius:9;-fx-border-radius:9;-fx-text-fill:#cfd6d8;-fx-font-size:11px;-fx-font-weight:900;-fx-padding:9 15}.bracket-editor-tab:hover{-fx-border-color:-color-principal}.bracket-editor-tab:selected{-fx-background-color:-color-principal-transparente;-fx-border-color:-color-principal;-fx-text-fill:-color-principal-hover}.bracket-editor-mode{-fx-background-color:#171c20}.bracket-editor-help{-fx-text-fill:#9da9ae;-fx-font-size:12px;-fx-line-spacing:2px}.bracket-editor-tools{-fx-padding:2 0 5 0}.bracket-editor-scroll,.bracket-editor-scroll>.viewport{-fx-background-color:transparent}.bracket-editor-match{-fx-background-color:#1b2024;-fx-border-color:#343d42;-fx-background-radius:10;-fx-border-radius:10}.bracket-editor-match-title{-fx-text-fill:#8fd1b2;-fx-font-size:12px;-fx-font-weight:900}.bracket-editor-field-label{-fx-text-fill:#89979d;-fx-font-size:9px;-fx-font-weight:900}.bracket-editor-protected{-fx-background-color:#20262a;-fx-border-color:#3a4349;-fx-background-radius:8;-fx-border-radius:8;-fx-text-fill:#a9b4b8;-fx-padding:10 12}.bracket-editor-combo{-fx-pref-height:39}.bracket-editor-section{-fx-text-fill:#8fd1b2;-fx-font-size:13px;-fx-font-weight:900}.bracket-editor-advanced{-fx-border-color:#343d42;-fx-border-radius:10;-fx-background-radius:10}.bracket-editor-status{-fx-background-color:#20262a;-fx-background-radius:9;-fx-padding:9 12;-fx-font-size:10px;-fx-font-weight:900}.bracket-editor-status.valid{-fx-text-fill:#7bd4ae}.bracket-editor-status.warning{-fx-text-fill:#deb86a}.bracket-action-primary{-fx-background-color:#3f936f;-fx-border-color:#69b18f;-fx-text-fill:white}.bracket-action-secondary{-fx-background-color:#242a2e;-fx-border-color:#525d63;-fx-text-fill:#e0e5e6}
-
-
 /* bracket-editor-visual-v2 */
 .dialog-pane.dialog-bracket-editor-new {
     -fx-pref-width: 1240;
@@ -1312,146 +1308,6 @@
     -fx-min-width: 238;
     -fx-pref-width: 238;
     -fx-max-width: 238;
-}
-
-/* bracket-quick-actions-corrected-v8 */
-/* Selectores compatibles con JavaFX CSS. Sin :not(), para que las reglas no sean descartadas. */
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
-    -fx-min-width: 238;
-    -fx-pref-width: 238;
-    -fx-max-width: 238;
-    -fx-min-height: 42;
-    -fx-pref-height: 42;
-    -fx-max-height: 42;
-    -fx-padding: 0 14;
-    -fx-alignment: CENTER;
-    -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
-    -fx-border-color: #77613c;
-    -fx-border-width: 1;
-    -fx-background-radius: 9;
-    -fx-border-radius: 9;
-    -fx-text-fill: #dec08a;
-    -fx-font-size: 10px;
-    -fx-font-weight: 900;
-    -fx-effect: none;
-}
-
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:hover {
-    -fx-background-color: #403a2b;
-    -fx-border-color: #a6844c;
-    -fx-text-fill: #f0d29b;
-    -fx-effect: dropshadow(gaussian, rgba(166,132,76,.18), 7, .08, 0, 2);
-    -fx-translate-y: -1;
-}
-
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:pressed {
-    -fx-background-color: #27241e;
-    -fx-border-color: #685535;
-    -fx-text-fill: #d0b47f;
-    -fx-effect: none;
-    -fx-translate-y: 0;
-    -fx-scale-x: .98;
-    -fx-scale-y: .98;
-}
-
-/* bracket-quick-actions-compact-v9 */
-/* Tres acciones iguales y compactas; Restaurar conserva su posicion apartada. */
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
-    -fx-min-width: 220;
-    -fx-pref-width: 220;
-    -fx-max-width: 220;
-    -fx-min-height: 38;
-    -fx-pref-height: 38;
-    -fx-max-height: 38;
-    -fx-padding: 0 11;
-    -fx-alignment: CENTER;
-    -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
-    -fx-border-color: #77613c;
-    -fx-border-width: 1;
-    -fx-background-radius: 9;
-    -fx-border-radius: 9;
-    -fx-text-fill: #dec08a;
-    -fx-font-size: 9.5px;
-    -fx-font-weight: 900;
-    -fx-effect: none;
-}
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:hover {
-    -fx-background-color: #403a2b;
-    -fx-border-color: #a6844c;
-    -fx-text-fill: #f0d29b;
-    -fx-effect: dropshadow(gaussian, rgba(166,132,76,.18), 7, .08, 0, 2);
-    -fx-translate-y: -1;
-}
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:pressed {
-    -fx-background-color: #27241e;
-    -fx-border-color: #685535;
-    -fx-text-fill: #d0b47f;
-    -fx-effect: none;
-    -fx-translate-y: 0;
-    -fx-scale-x: .98;
-    -fx-scale-y: .98;
-}
-
-/* bracket-secondary-rotation-buttons-v10 */
-/* Rotar es secundario: menor ancho, altura, tipografia y presencia visual. */
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button {
-    -fx-min-width: 180;
-    -fx-pref-width: 180;
-    -fx-max-width: 180;
-    -fx-min-height: 34;
-    -fx-pref-height: 34;
-    -fx-max-height: 34;
-    -fx-padding: 0 10;
-    -fx-font-size: 9px;
-    -fx-background-color: linear-gradient(to bottom, #302e26, #282720);
-    -fx-border-color: #685737;
-    -fx-text-fill: #d2b77f;
-    -fx-effect: none;
-}
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button:hover {
-    -fx-background-color: #393529;
-    -fx-border-color: #927442;
-    -fx-text-fill: #e8ca91;
-    -fx-effect: dropshadow(gaussian, rgba(146,116,66,.14), 6, .06, 0, 1);
-    -fx-translate-y: -1;
-}
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotation-button:pressed {
-    -fx-background-color: #25231e;
-    -fx-border-color: #5e4e34;
-    -fx-text-fill: #c7aa74;
-    -fx-effect: none;
-    -fx-translate-y: 0;
-    -fx-scale-x: .98;
-    -fx-scale-y: .98;
-}
-
-/* bracket-restore-compact-v11 */
-/* Restaurar iguala las dimensiones compactas de las rotaciones sin cambiar de posicion. */
-.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button {
-    -fx-min-width: 180;
-    -fx-pref-width: 180;
-    -fx-max-width: 180;
-    -fx-min-height: 34;
-    -fx-pref-height: 34;
-    -fx-max-height: 34;
-    -fx-padding: 0 10;
-    -fx-font-size: 9px;
-}
-
-/* bracket-advanced-open-interaction-v12 */
-/* El color acompana la animacion JavaFX de elevacion y escala. */
-.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:hover {
-    -fx-background-color: linear-gradient(to bottom, #443850, #382f42);
-    -fx-border-color: #9278aa;
-    -fx-text-fill: #f4eafa;
-    -fx-effect: dropshadow(gaussian, rgba(128, 94, 155, .30), 10, .12, 0, 3);
-    -fx-cursor: hand;
-}
-.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:pressed {
-    -fx-background-color: #2a2430;
-    -fx-border-color: #665475;
-    -fx-text-fill: #ddd0e8;
-    -fx-effect: none;
 }
 
 /* structural-editor-shell-v1 */
@@ -2512,6 +2368,7 @@
     -fx-padding: 10 16 12 16;
 }
 
+/* editor-cuadro-duplicados-limpiados-v1 */
 /* bracket-editor-final-review-v1 */
 .dialog-pane.dialog-bracket-editor-new .bracket-editor-tools {
     -fx-padding: 0 0 4 0;
@@ -2546,6 +2403,26 @@
     -fx-pref-width: 270;
     -fx-max-width: 270;
     -fx-text-overrun: clip;
+}
+
+/* interaccion-restaurar-cuadro-v1 */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button {
+    -fx-cursor: hand;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:hover {
+    -fx-background-color: #393142;
+    -fx-border-color: #846d9a;
+    -fx-text-fill: #eee3f6;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.20), 7, .08, 0, 2);
+    -fx-translate-y: -1;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:pressed {
+    -fx-background-color: #25212b;
+    -fx-border-color: #584966;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
 }
 .dialog-pane.dialog-bracket-editor-new .bracket-editor-scroll {
     -fx-padding: 9 5 5 10;
