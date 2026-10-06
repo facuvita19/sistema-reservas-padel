@@ -9,11 +9,6 @@
 .modern-date { -fx-pref-height: 46; -fx-background-color: #1a2531; -fx-background-radius: 10; -fx-border-color: #2d3d4c; -fx-border-radius: 10; }
 .modern-date .text-field { -fx-background-color: transparent; -fx-text-fill: #eef2f6; -fx-prompt-text-fill: #697b89; }
 .modern-date:focused { -fx-border-color: #587c98; }
-.date-picker-popup { -fx-background-color: #18232e; -fx-border-color: #30414f; }
-.date-picker-popup .month-year-pane { -fx-background-color: #14202a; }
-.date-picker-popup .day-cell { -fx-background-color: #18232e; -fx-text-fill: #dce4ea; }
-.date-picker-popup .day-cell:hover { -fx-background-color: #294052; }
-.date-picker-popup .selected { -fx-background-color: #587c98; }
 .status-confirm-button { -fx-pref-height: 44; -fx-background-color: #1f3a31; -fx-background-radius: 10; -fx-border-color: #3e6658; -fx-border-radius: 10; -fx-text-fill: #8eceb6; -fx-font-weight: 800; -fx-cursor: hand; }
 .status-confirm-button:hover { -fx-background-color: #284b3f; -fx-border-color: #57927d; }
 .spinner { -fx-background-color: #1a2531; -fx-background-radius: 8; -fx-border-color: #2d3d4c; -fx-border-radius: 8; }
@@ -302,22 +297,6 @@
 .reservations-root .modern-area .prompt-text {
     -fx-fill: #737e84;
 }
-.combo-box-popup .list-view {
-    -fx-background-color: #1b2024;
-    -fx-border-color: #3a4349;
-}
-.combo-box-popup .list-cell {
-    -fx-background-color: #1b2024;
-    -fx-text-fill: #dfe3e5;
-}
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: #252c31;
-}
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: -color-principal-transparente;
-    -fx-text-fill: #ffffff;
-}
-
 /* reservas-dropdowns-price-fix-v3 */
 /* Precio alineado a la derecha y separado visualmente del estado. */
 .reservations-root .modern-table .reservation-price-column .label {
@@ -388,48 +367,7 @@
     -fx-background-color: #1b2024;
     -fx-background-insets: 0;
 }
-/* El popup vive fuera de reservations-root, por eso se estiliza globalmente. */
-.combo-box-popup > .list-view {
-    -fx-background-color: #181d21;
-    -fx-border-color: #3b444a;
-    -fx-background-insets: 0;
-    -fx-padding: 3;
-}
-.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell,
-.combo-box-popup .list-cell {
-    -fx-background-color: #181d21;
-    -fx-text-fill: #dde2e4;
-    -fx-padding: 8 11;
-}
-.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:hover,
-.combo-box-popup .list-cell:hover {
-    -fx-background-color: #252c31;
-    -fx-text-fill: #ffffff;
-}
-.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:selected,
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: -color-principal-transparente;
-    -fx-text-fill: #ffffff;
-}
-.date-picker-popup,
-.date-picker-popup > .month-year-pane,
-.date-picker-popup .calendar-grid {
-    -fx-background-color: #181d21;
-    -fx-border-color: #3b444a;
-}
-.date-picker-popup .day-cell {
-    -fx-background-color: #181d21;
-    -fx-text-fill: #dde2e4;
-}
-.date-picker-popup .day-cell:hover {
-    -fx-background-color: #252c31;
-}
-.date-picker-popup .day-cell:selected,
-.date-picker-popup .selected {
-    -fx-background-color: -color-principal;
-    -fx-text-fill: white;
-}
-
+/* aislar-estilos-especificos-modulos-v1 */
 /* controles-grafito-unificados-v1 */
 /* Estas reglas finales neutralizan estilos historicos azul petroleo. */
 .modern-field,

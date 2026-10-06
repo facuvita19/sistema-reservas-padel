@@ -19,11 +19,12 @@ public final class Navegacion {
 
 	private static final String CSS_GLOBAL = "/css/tema-padel.css";
 
-	private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/reservas.css",
+	// aislar-estilos-especificos-modulos-v1: los CSS de dialogos exclusivos se cargan localmente.
+        private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/reservas.css",
 			"/css/bloqueos.css", "/css/pagos.css", "/css/dashboard.css", "/css/estadisticas.css",
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
 			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css",
-							"/css/torneo-cuadro.css", "/css/torneo-resultado.css", "/css/torneo-grupos.css",
+							"/css/torneo-cuadro.css", "/css/torneo-grupos.css",
                                                         "/css/interfaz-unificada.css" };
 
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();

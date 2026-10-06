@@ -108,22 +108,6 @@
     -fx-padding: 0 12;
 }
 
-.combo-box-popup .list-view {
-    -fx-background-color: #18232e;
-    -fx-border-color: #30414f;
-}
-
-.combo-box-popup .list-cell {
-    -fx-background-color: #18232e;
-    -fx-text-fill: #dce4ea;
-    -fx-padding: 9 12;
-}
-
-.combo-box-popup .list-cell:hover,
-.combo-box-popup .list-cell:selected {
-    -fx-background-color: #294052;
-}
-
 .modern-area {
     -fx-background-color: #1a2531;
     -fx-background-radius: 10;
@@ -191,6 +175,7 @@
     -fx-border-color: #91525f;
 }
 
+/* aislar-estilos-especificos-modulos-v1 */
 /* controles-grafito-unificados-v1 */
 /* Estas reglas finales neutralizan estilos historicos azul petroleo. */
 .modern-field,
