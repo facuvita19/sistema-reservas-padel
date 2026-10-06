@@ -997,13 +997,16 @@ public class TorneoCuadroController {
         comboFin.getSelectionModel().clearSelection();
     }
 
+    // corregir-cuadro-torneo-v2
     private void mostrarError(RuntimeException exception) {
-        exception.printStackTrace(System.err);
         String mensaje = exception.getMessage() == null
                 ? "No se pudo completar la operacion."
                 : exception.getMessage();
         etiquetaMensaje.setText(mensaje);
         Dialogos.error("No se pudo completar la operacion", mensaje);
+        if (!(exception instanceof IllegalArgumentException)) {
+            exception.printStackTrace(System.err);
+        }
     }
 
     @FXML

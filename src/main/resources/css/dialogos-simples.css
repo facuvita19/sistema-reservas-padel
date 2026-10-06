@@ -1,0 +1,202 @@
+/* Dialogos simples compartidos */
+
+/* Mensajes cortos y largos */
+.dialog-message-label {
+    -fx-text-fill: #eaf4f8;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 4 8 4 4;
+}
+
+.dialog-message-scroll,
+.dialog-message-scroll > .viewport {
+    -fx-background-color: #151a1e;
+}
+
+.dialog-message-scroll {
+    -fx-border-color: #343c42;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 4;
+}
+
+.dialog-message-scroll .scroll-bar:vertical {
+    -fx-pref-width: 10;
+    -fx-background-color: #151a1e;
+}
+
+.dialog-message-scroll .scroll-bar:vertical .track {
+    -fx-background-color: #171c20;
+    -fx-background-radius: 8;
+}
+
+.dialog-message-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4b565c;
+    -fx-background-radius: 8;
+}
+
+.dialog-message-scroll .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #68767d;
+}
+
+.dialog-message-scroll .corner {
+    -fx-background-color: #151a1e;
+}
+
+/* Acciones semanticas compartidas */
+.admin-dialog .dialog-action-primary,
+.admin-dialog .dialog-action-primary:focused {
+    -fx-background-color: #3d8b68;
+    -fx-border-color: #65a98a;
+    -fx-text-fill: #ffffff;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.admin-dialog .dialog-action-primary:hover {
+    -fx-background-color: #4a9a77;
+    -fx-border-color: #82bea3;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(61,139,104,.24), 8, .10, 0, 2);
+}
+
+.admin-dialog .dialog-action-primary:pressed {
+    -fx-background-color: #327557;
+    -fx-border-color: #579578;
+    -fx-effect: none;
+}
+
+.admin-dialog .dialog-action-alternative,
+.admin-dialog .dialog-action-alternative:focused {
+    -fx-background-color: #30383d;
+    -fx-border-color: #626e75;
+    -fx-text-fill: #eef2f3;
+}
+
+.admin-dialog .dialog-action-alternative:hover {
+    -fx-background-color: #3b454a;
+    -fx-border-color: #7c898f;
+    -fx-text-fill: #ffffff;
+}
+
+.admin-dialog .dialog-action-danger,
+.admin-dialog .dialog-action-danger:focused {
+    -fx-background-color: #7a3540;
+    -fx-border-color: #b05261;
+    -fx-text-fill: #ffffff;
+}
+
+.admin-dialog .dialog-action-danger:hover {
+    -fx-background-color: #91424e;
+    -fx-border-color: #c46d78;
+    -fx-text-fill: #ffffff;
+}
+
+.admin-dialog .dialog-action-danger:pressed {
+    -fx-background-color: #652d36;
+    -fx-border-color: #914550;
+    -fx-effect: none;
+}
+
+/* Seleccion entre acciones */
+.dialog-choice {
+    -fx-pref-width: 840;
+    -fx-min-width: 760;
+}
+
+.dialog-choice > .content.label {
+    -fx-background-color: #171c20;
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 22 26 20 26;
+    -fx-min-width: 700;
+    -fx-pref-width: 760;
+    -fx-max-width: 760;
+    -fx-wrap-text: true;
+}
+
+.dialog-choice .button-bar {
+    -fx-padding: 14 24 18 24;
+}
+
+.dialog-choice .button-bar > .container {
+    -fx-alignment: center;
+    -fx-spacing: 12;
+}
+
+.dialog-choice .button-bar .button {
+    -fx-min-width: 230;
+    -fx-pref-width: 230;
+    -fx-max-width: 230;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 12px;
+    -fx-padding: 0 16;
+    -fx-alignment: center;
+    -fx-text-overrun: clip;
+}
+
+/* Confirmaciones */
+.dialog-confirm .button-bar > .container,
+.dialog-danger .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 12;
+}
+
+.dialog-confirm .button-bar .button,
+.dialog-danger .button-bar .button {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 12px;
+    -fx-padding: 0 16;
+    -fx-alignment: center;
+}
+
+/* Accion personalizada */
+.dialog-custom-action {
+    -fx-pref-width: 620;
+    -fx-min-width: 560;
+}
+
+.dialog-custom-action > .content,
+.dialog-custom-action > .content.label {
+    -fx-background-color: #171c20;
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 22 26 20 26;
+    -fx-min-width: 500;
+    -fx-pref-width: 540;
+    -fx-wrap-text: true;
+}
+
+.dialog-custom-action .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 12;
+}
+
+.dialog-custom-action .button-bar .button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 12px;
+    -fx-padding: 0 16;
+    -fx-alignment: center;
+}
+
+.dialog-custom-action .dialog-action-primary {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+}
+
+.dialog-custom-action .button:cancel {
+    -fx-min-width: 140;
+    -fx-pref-width: 140;
+    -fx-max-width: 140;
+}

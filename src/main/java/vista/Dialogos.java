@@ -17,10 +17,13 @@ import javafx.stage.Stage;
 
 public final class Dialogos {
 
+    // dialogos-simples-css-v1
+
     // modernizar-dialogos-resultado-torneo-v1
 
     private static final String CSS = "/css/dialogos.css";
     private static final String CSS_INTERFAZ = "/css/interfaz-unificada.css";
+    private static final String CSS_SIMPLES = "/css/dialogos-simples.css";
 
     private Dialogos() {
     }
@@ -30,6 +33,7 @@ public final class Dialogos {
         DialogPane panel = dialogo.getDialogPane();
         agregarEstilo(panel, CSS);
         agregarEstilo(panel, CSS_INTERFAZ);
+        agregarEstilo(panel, CSS_SIMPLES);
         panel.getStyleClass().add("admin-dialog");
         if (clase != null && !clase.isBlank()) panel.getStyleClass().add(clase);
         TemaDinamico.aplicar(panel, Navegacion.getConfiguracionActual());
@@ -249,9 +253,7 @@ public final class Dialogos {
         contenido.setWrapText(true);
         contenido.setMaxWidth(Double.MAX_VALUE);
         contenido.setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
-        contenido.setStyle("-fx-text-fill:#eaf4f8;"
-                + "-fx-font-size:13px;-fx-line-spacing:3px;"
-                + "-fx-padding:4 8 4 4;");
+
 
         int cantidadLineas = mensaje == null || mensaje.isBlank()
                 ? 1 : mensaje.split("\\R", -1).length;
