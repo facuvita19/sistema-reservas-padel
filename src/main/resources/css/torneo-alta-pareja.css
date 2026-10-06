@@ -275,3 +275,18 @@
     -fx-background-color: #374046;
     -fx-border-color: #727e85;
 }
+
+/* inscripciones-torneos-integral-v3 */
+.dialog-tournament-registration .admin-registration-root { -fx-spacing: 10; -fx-padding: 12 16 18 16; }
+.dialog-tournament-registration .admin-registration-intro { -fx-max-width: Infinity; -fx-padding: 10 12; }
+.dialog-tournament-registration .admin-registration-card { -fx-spacing: 7; -fx-padding: 12 14; }
+.dialog-tournament-registration .admin-registration-field, .dialog-tournament-registration .admin-registration-combo { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; }
+.dialog-tournament-registration .admin-registration-area { -fx-min-height: 70; -fx-pref-height: 70; -fx-max-height: 82; }
+.dialog-tournament-registration .admin-registration-selected-card { -fx-padding: 10 12; }
+.dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical { -fx-min-width: 10; -fx-pref-width: 10; -fx-max-width: 10; -fx-background-color: #151a1e; -fx-padding: 1; }
+.dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .track { -fx-background-color: #151a1e; -fx-border-color: transparent; }
+.dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .thumb { -fx-background-color: #465057; -fx-background-radius: 8; -fx-background-insets: 2; }
+.dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .thumb:hover { -fx-background-color: #5a666d; }
+.dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .increment-button, .dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .decrement-button { -fx-min-height: 0; -fx-pref-height: 0; -fx-max-height: 0; -fx-padding: 0; -fx-opacity: 0; }
+.dialog-tournament-registration > .button-bar > .container { -fx-padding: 10 18 12 18; }
+.dialog-tournament-registration > .button-bar .button { -fx-min-height: 46; -fx-pref-height: 46; }

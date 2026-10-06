@@ -185,6 +185,7 @@ public class TorneosInscripcionesController {
         configurarCeldaTexto(columnaCategoria);
         configurarCeldaTexto(columnaResponsable);
         configurarCeldaTexto(columnaPareja);
+        configurarAnchosProporcionales();
         columnaEstado.setCellFactory(columna -> new TableCell<>() {
             @Override
             protected void updateItem(
@@ -209,6 +210,27 @@ public class TorneosInscripcionesController {
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) mostrarDetalle(actual);
                 });
+    }
+
+    private void configurarAnchosProporcionales() {
+        vincularAncho(columnaId, 0.04);
+        vincularAncho(columnaTorneo, 0.15);
+        vincularAncho(columnaCategoria, 0.14);
+        vincularAncho(columnaResponsable, 0.20);
+        vincularAncho(columnaPareja, 0.21);
+        vincularAncho(columnaEstado, 0.11);
+        vincularAncho(columnaFecha, 0.15);
+    }
+
+    private void vincularAncho(
+            TableColumn<InscripcionResumen, ?> columna,
+            double proporcion) {
+        columna.prefWidthProperty().bind(
+                tablaInscripciones.widthProperty()
+                        .subtract(14)
+                        .multiply(proporcion));
+        columna.setResizable(false);
+        columna.setReorderable(false);
     }
 
     private void configurarCeldaTexto(
@@ -238,7 +260,10 @@ public class TorneosInscripcionesController {
             inscripciones.setAll(consultaService.listar());
             aplicarFiltros();
             actualizarMetricas();
-            etiquetaMensaje.setText(inscripciones.size() + " inscripcion(es) cargada(s).");
+            etiquetaMensaje.setText(inscripciones.size()
+                    + (inscripciones.size() == 1
+                            ? " inscripción encontrada"
+                            : " inscripciones encontradas"));
             if (seleccionada != null) {
                 seleccionarPorId(seleccionada.id());
             } else if (!filtradas.isEmpty()) {
@@ -264,6 +289,25 @@ public class TorneosInscripcionesController {
                 || contiene(valor.parejaNombre(), texto)
                 || contiene(valor.responsable().telefono(), texto)
                 || contiene(valor.pareja().telefono(), texto)));
+        mantenerSeleccionVisible();
+        etiquetaMensaje.setText(filtradas.size()
+                + (filtradas.size() == 1
+                        ? " inscripción encontrada"
+                        : " inscripciones encontradas"));
+    }
+
+    private void mantenerSeleccionVisible() {
+        if (filtradas == null || tablaInscripciones == null) return;
+        if (filtradas.isEmpty()) {
+            tablaInscripciones.getSelectionModel().clearSelection();
+            return;
+        }
+        if (seleccionada != null && filtradas.contains(seleccionada)) {
+            tablaInscripciones.getSelectionModel().select(seleccionada);
+            return;
+        }
+        tablaInscripciones.getSelectionModel().selectFirst();
+        tablaInscripciones.scrollTo(0);
     }
 
     private boolean contiene(String valor, String filtro) {
@@ -348,10 +392,13 @@ public class TorneosInscripcionesController {
             Label vinculacion, Button whatsapp, Button vincular, Button desvincular) {
         nombre.setText(jugador.nombreCompleto());
         telefono.setText(jugador.telefono());
-        vinculacion.setText(jugador.estadoVinculacion());
+        vinculacion.setText(jugador.vinculado()
+                ? "Cliente registrado #" + jugador.clienteId()
+                : jugador.estadoVinculacion());
         whatsapp.setVisible(jugador.telefono() != null && !jugador.telefono().isBlank());
         whatsapp.setManaged(whatsapp.isVisible());
-        vincular.setText(jugador.vinculado() ? "CAMBIAR VINCULACION" : "VINCULAR CLIENTE");
+        vincular.setText(jugador.vinculado()
+                ? "CAMBIAR VINCULACIÓN" : "VINCULAR CLIENTE");
         desvincular.setVisible(jugador.vinculado());
         desvincular.setManaged(jugador.vinculado());
     }
@@ -571,4 +618,6 @@ public class TorneosInscripcionesController {
     @FXML private void volver() {
         Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
     }
+    // inscripciones-torneos-integral-v3
+    // inscripciones-tabla-proporcional-v1
 }

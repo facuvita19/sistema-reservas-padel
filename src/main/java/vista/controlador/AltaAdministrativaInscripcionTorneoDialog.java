@@ -191,7 +191,7 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 intro.getStyleClass().add("admin-registration-intro");
                 intro.setWrapText(true);
 
-                VBox cuerpo = new VBox(12, intro, tarjetaTorneo,
+                VBox cuerpo = new VBox(10, intro, tarjetaTorneo,
                                 jugadores, adicional);
                 cuerpo.getStyleClass().add("admin-registration-root");
                 ScrollPane scroll = new ScrollPane(cuerpo);
@@ -213,7 +213,9 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 HBox.setHgrow(campoCategoria, Priority.ALWAYS);
                 campoTorneo.setMaxWidth(Double.MAX_VALUE);
                 campoCategoria.setMaxWidth(Double.MAX_VALUE);
+                campoEstado.setMinWidth(190);
                 campoEstado.setPrefWidth(205);
+                campoEstado.setMaxWidth(220);
                 return fila;
         }
 
@@ -240,7 +242,8 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 for (TextArea area : List.of(comentarios, observaciones)) {
                         area.getStyleClass().add("admin-registration-area");
                         area.setWrapText(true);
-                        area.setPrefRowCount(3);
+                        area.setPrefRowCount(2);
+                        area.setPrefHeight(70);
                 }
                 n1.setPromptText("Nombre");
                 a1.setPromptText("Apellido");
@@ -256,7 +259,7 @@ public class AltaAdministrativaInscripcionTorneoDialog {
         private VBox tarjeta(String titulo, javafx.scene.Node... contenido) {
                 Label encabezado = new Label(titulo);
                 encabezado.getStyleClass().add("admin-registration-section-title");
-                VBox caja = new VBox(9);
+                VBox caja = new VBox(7);
                 caja.getChildren().add(encabezado);
                 caja.getChildren().addAll(contenido);
                 caja.getStyleClass().add("admin-registration-card");
@@ -267,7 +270,7 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 Label texto = new Label(etiqueta.toUpperCase());
                 texto.getStyleClass().add("admin-registration-field-label");
                 control.setMaxWidth(Double.MAX_VALUE);
-                return new VBox(5, texto, control);
+                return new VBox(4, texto, control);
         }
 
         private void animarBoton(Button boton) {
@@ -297,7 +300,9 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 private final Label clienteDetalle = new Label();
                 private final VBox resumenCliente = new VBox(4);
                 private final Button buscar = new Button("BUSCAR CLIENTE");
-                private final Button quitar = new Button("QUITAR SELECCION");
+                private final Button quitar = new Button("USAR DATOS MANUALES");
+                private VBox bloqueManual;
+                private HBox divisorManual;
                 private Cliente cliente;
 
                 private SeleccionJugador(String titulo, TextField nombre,
@@ -340,9 +345,13 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                                         "admin-registration-divider-line");
                         HBox.setHgrow(lineaIzquierda, Priority.ALWAYS);
                         HBox.setHgrow(lineaDerecha, Priority.ALWAYS);
-                        HBox divisor = new HBox(8,
+                        divisorManual = new HBox(8,
                                         lineaIzquierda, alternativa, lineaDerecha);
-                        divisor.setAlignment(Pos.CENTER);
+                        divisorManual.setAlignment(Pos.CENTER);
+                        bloqueManual = new VBox(8,
+                                        campo("Nombre", nombre),
+                                        campo("Apellido", apellido),
+                                        campo("Teléfono", telefono));
 
                         HBox accionesCliente = new HBox(8, buscar);
                         accionesCliente.setAlignment(Pos.CENTER_LEFT);
@@ -350,10 +359,8 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                                         titulo,
                                         accionesCliente,
                                         resumenCliente,
-                                        divisor,
-                                        campo("Nombre", nombre),
-                                        campo("Apellido", apellido),
-                                        campo("Teléfono", telefono));
+                                        divisorManual,
+                                        bloqueManual);
                         caja.setMaxWidth(Double.MAX_VALUE);
                         caja.setPrefWidth(420);
                         return caja;
@@ -397,11 +404,15 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                                 clienteDetalle.setText("");
                                 buscar.setText("BUSCAR CLIENTE");
                         }
-                        nombre.setDisable(seleccionado);
-                        apellido.setDisable(seleccionado);
-                        telefono.setDisable(seleccionado);
+                        nombre.setDisable(false);
+                        apellido.setDisable(false);
+                        telefono.setDisable(false);
                         resumenCliente.setVisible(seleccionado);
                         resumenCliente.setManaged(seleccionado);
+                        divisorManual.setVisible(!seleccionado);
+                        divisorManual.setManaged(!seleccionado);
+                        bloqueManual.setVisible(!seleccionado);
+                        bloqueManual.setManaged(!seleccionado);
                 }
 
                 private DatosJugador datos() {
@@ -414,4 +425,5 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                         return valor == null || valor.isBlank() ? "-" : valor;
                 }
         }
+        // inscripciones-torneos-integral-v3
 }
