@@ -607,3 +607,131 @@
     -fx-effect: none;
     -fx-translate-y: 0;
 }
+
+/* solicitudes-web-ajuste-final-v1 */
+/* Densidad general y metricas superiores. */
+.web-root-v2 .web-list-pane-compact {
+    -fx-spacing: 10;
+}
+.web-root-v2 .web-metrics-row-compact {
+    -fx-spacing: 8;
+}
+.web-root-v2 .web-metric-button {
+    -fx-min-height: 56;
+    -fx-pref-height: 56;
+    -fx-max-height: 56;
+    -fx-padding: 5 10;
+}
+.web-root-v2 .web-metric-value {
+    -fx-font-size: 18px;
+}
+/* Filtros alineados con el componente global. */
+.web-root-v2 .web-search,
+.web-root-v2 .web-state-filter,
+.web-root-v2 .web-filter-clear {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+}
+.web-root-v2 .web-state-filter {
+    -fx-min-width: 168;
+    -fx-pref-width: 168;
+    -fx-max-width: 168;
+    -fx-background-color: #1b2024;
+    -fx-border-color: #363e44;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-font-size: 10px;
+    -fx-effect: none;
+}
+.web-root-v2 .web-state-filter:hover {
+    -fx-background-color: #20262a;
+    -fx-border-color: #465158;
+}
+.web-root-v2 .web-state-filter:focused,
+.web-root-v2 .web-state-filter:showing {
+    -fx-background-color: #1d2327;
+    -fx-border-color: -color-principal;
+    -fx-effect: none;
+}
+.web-root-v2 .web-state-filter > .arrow-button {
+    -fx-background-color: #23292e;
+    -fx-border-color: transparent transparent transparent #363e44;
+}
+.web-root-v2 .web-results-strip {
+    -fx-min-height: 24;
+    -fx-pref-height: 24;
+    -fx-max-height: 24;
+}
+/* Tabla mas limpia y scrollbar grafito. */
+.web-root-v2 .web-table-v2 .table-row-cell {
+    -fx-border-color: transparent transparent #252d31 transparent;
+}
+.web-root-v2 .web-table-v2 .table-row-cell:empty {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+}
+.web-root-v2 .web-table-v2 .scroll-bar:vertical {
+    -fx-min-width: 10;
+    -fx-pref-width: 10;
+    -fx-max-width: 10;
+    -fx-background-color: #151a1e;
+    -fx-padding: 1;
+}
+.web-root-v2 .web-table-v2 .scroll-bar:vertical .track {
+    -fx-background-color: #151a1e;
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+}
+.web-root-v2 .web-table-v2 .scroll-bar:vertical .thumb {
+    -fx-background-color: #465057;
+    -fx-background-insets: 2;
+    -fx-background-radius: 8;
+}
+.web-root-v2 .web-table-v2 .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a666d;
+}
+.web-root-v2 .web-table-v2 .scroll-bar:vertical .increment-button,
+.web-root-v2 .web-table-v2 .scroll-bar:vertical .decrement-button {
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+/* Panel de detalle mas compacto. */
+.web-root-v2 .web-detail-shell-compact {
+    -fx-min-width: 320;
+    -fx-pref-width: 340;
+    -fx-max-width: 350;
+}
+.web-root-v2 .web-detail-compact {
+    -fx-spacing: 10;
+}
+.web-root-v2 .web-detail-compact .separator {
+    -fx-padding: 2 0 1 0;
+}
+.web-root-v2 .web-client-block {
+    -fx-spacing: 4;
+}
+.web-root-v2 .web-detail-group,
+.web-root-v2 .web-finance-v2 {
+    -fx-padding: 10;
+}
+/* Accion principal alineada con el color principal de la aplicacion. */
+.web-root-v2 .web-action-primary,
+.web-root-v2 .web-action-primary:focused {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+    -fx-text-fill: white;
+}
+.web-root-v2 .web-action-primary:hover {
+    -fx-background-color: -color-principal-hover;
+    -fx-border-color: #76b697;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 11, .18, 0, 2);
+}
+.web-root-v2 .web-action-primary:pressed {
+    -fx-background-color: #326f52;
+    -fx-border-color: #4d8e6f;
+    -fx-effect: none;
+}

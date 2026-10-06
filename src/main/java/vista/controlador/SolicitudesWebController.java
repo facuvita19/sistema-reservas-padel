@@ -125,7 +125,7 @@ public class SolicitudesWebController {
         columnaTurno.setCellFactory(c->celdaTextoCentrada());
         columnaVencimiento.setStyle("-fx-alignment: CENTER;");
         columnaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechaVencimiento"));
-        columnaVencimiento.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(LocalDateTime f,boolean vacia){super.updateItem(f,vacia);setAlignment(Pos.CENTER);setText(vacia||f==null?"-":f.format(FECHA_HORA));}});
+        columnaVencimiento.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(LocalDateTime f,boolean vacia){super.updateItem(f,vacia);setAlignment(Pos.CENTER);setText(vacia||f==null?null:f.format(FECHA_HORA));}});
         columnaTiempo.setStyle("-fx-alignment: CENTER;");
         columnaTiempo.setCellValueFactory(d->new javafx.beans.property.SimpleObjectProperty<>(d.getValue()));
         columnaTiempo.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(Reserva r,boolean vacia){super.updateItem(r,vacia);setAlignment(Pos.CENTER);setText(vacia||r==null?null:textoSituacion(r));getStyleClass().removeAll("web-time-ok","web-time-warning","web-time-expired");setStyle("");if(!vacia&&r!=null){getStyleClass().add(claseTiempo(r));setStyle("-fx-text-fill:"+colorSituacion(r)+";-fx-font-weight:900;");}}});
@@ -247,4 +247,5 @@ public class SolicitudesWebController {
     @FXML private void abrirPagos(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarPagosDeReserva(seleccionada.getId());}}
     @FXML private void abrirWhatsApp(){if(seleccionada==null)return;try{Cliente c=clienteService.buscar(seleccionada.getClienteId());if(c==null||c.getTelefono()==null||c.getTelefono().isBlank())throw new IllegalArgumentException("El cliente no tiene un teléfono registrado.");BigDecimal saldo=pagoService.calcularSaldo(seleccionada.getId());String m=switch(seleccionada.getEstado()){case PENDIENTE->mensajeService.crearSolicitudSenia(c,seleccionada,saldo.max(BigDecimal.ZERO));case CONFIRMADA->saldo.signum()>0?mensajeService.crearAvisoSaldo(c,seleccionada,saldo):mensajeService.crearRecordatorio(c,seleccionada);case CANCELADA,EXPIRADA->mensajeService.crearAvisoCancelacion(c,seleccionada);case COMPLETADA,AUSENTE->mensajeService.crearRecordatorio(c,seleccionada);};whatsAppService.abrirConversacion(c.getTelefono(),m);}catch(RuntimeException e){etiquetaEstadoCarga.setText(e.getMessage());}}
     @FXML private void volver(){detenerReloj();Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());}
+    // solicitudes-web-ajuste-final-v1
 }
