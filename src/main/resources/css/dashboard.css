@@ -154,3 +154,167 @@
     -fx-padding: 0;
 }
 
+/* iconos-declarativos-inicio-v2 */
+.app-icon-v2, .module-icon-v2 {
+    -fx-fill: transparent;
+    -fx-stroke: #87979e;
+    -fx-stroke-width: 1.45;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+.icon-slot-v2 { -fx-alignment: CENTER; -fx-padding: 0; }
+.dashboard-nav-button, .dashboard-logout {
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 10;
+}
+.dashboard-nav-button .app-icon-v2 { -fx-stroke: #82949d; }
+.dashboard-nav-button:hover .app-icon-v2 { -fx-stroke: #ffffff; }
+.dashboard-nav-active .app-icon-v2 { -fx-stroke: -color-principal-hover; }
+.dashboard-logout .app-icon-v2 { -fx-stroke: #c89296; }
+.dashboard-quick-primary, .dashboard-quick-button,
+.dashboard-quick-web-v3, .dashboard-cash-button {
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+.dashboard-quick-primary .app-icon-v2 { -fx-stroke: #ffffff; }
+.dashboard-quick-button .app-icon-v2 { -fx-stroke: #afbec4; }
+.dashboard-quick-web-v3 .app-icon-v2 { -fx-stroke: #cfc8ef; }
+.dashboard-cash-button .app-icon-v2 { -fx-stroke: #dfcb73; }
+.module-icon-shell-v2 {
+    -fx-background-color: #18231f;
+    -fx-background-radius: 10;
+    -fx-border-color: #304b41;
+    -fx-border-radius: 10;
+}
+.module-icon-v2 {
+    -fx-stroke: #78c39f;
+    -fx-stroke-width: 1.5;
+    -fx-scale-x: .75;
+    -fx-scale-y: .75;
+}
+
+/* refinamiento-iconografico-inicio-v3 */
+/* Navegacion: columna grafica fija y un unico eje de texto. */
+.dashboard-nav-list-v3 { -fx-spacing: 2; }
+.dashboard-nav-button {
+    -fx-min-height: 33;
+    -fx-pref-height: 33;
+    -fx-max-height: 33;
+    -fx-padding: 0 10;
+    -fx-alignment: CENTER-LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+.dashboard-nav-group { -fx-padding: 12 8 3 8; }
+.nav-icon-slot-v7 {
+    -fx-min-width: 22;
+    -fx-pref-width: 22;
+    -fx-max-width: 22;
+    -fx-min-height: 18;
+    -fx-pref-height: 18;
+    -fx-max-height: 18;
+    -fx-alignment: CENTER;
+}
+/* Compensaciones opticas: mismo contenedor, distinta masa visual. */
+.icon-home-v7 { -fx-scale-x: .72; -fx-scale-y: .72; }
+.icon-calendar-v7 { -fx-scale-x: .72; -fx-scale-y: .72; }
+.icon-calendar-add-v7 { -fx-scale-x: .70; -fx-scale-y: .70; }
+.icon-clock-v7 { -fx-scale-x: .70; -fx-scale-y: .70; }
+.icon-inbox-v7 { -fx-scale-x: .70; -fx-scale-y: .70; }
+.icon-trophy-v7 { -fx-scale-x: .66; -fx-scale-y: .66; }
+.icon-list-v7 { -fx-scale-x: .72; -fx-scale-y: .72; }
+.icon-users-v7, .icon-user-add-v7 { -fx-scale-x: .64; -fx-scale-y: .64; }
+.icon-court-v7 { -fx-scale-x: .68; -fx-scale-y: .68; }
+.icon-lock-v7 { -fx-scale-x: .68; -fx-scale-y: .68; }
+.icon-card-v7 { -fx-scale-x: .72; -fx-scale-y: .72; -fx-translate-y: -1; }
+.icon-cash-v7 { -fx-scale-x: .68; -fx-scale-y: .68; }
+.icon-chart-v7 { -fx-scale-x: .68; -fx-scale-y: .68; }
+.icon-settings-v7 { -fx-scale-x: .64; -fx-scale-y: .64; }
+.icon-logout-v7 { -fx-scale-x: .68; -fx-scale-y: .68; }
+/* Cabecera: icono compacto y bloque textual compensado. */
+.module-icon-shell-v2 {
+    -fx-background-color: #17201d;
+    -fx-border-color: #2d443b;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.module-icon-shell-v2 .module-icon-v2 {
+    -fx-scale-x: .80;
+    -fx-scale-y: .80;
+}
+.dashboard-title-block-v7 { -fx-translate-y: 1; }
+/* Acciones rapidas: columnas internas fijas, no grupos centrados variables. */
+.dashboard-quick-grid-v4 .button {
+    -fx-alignment: CENTER-LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 9;
+    -fx-padding: 0 20 0 22;
+}
+.quick-icon-slot-v7 {
+    -fx-min-width: 20;
+    -fx-pref-width: 20;
+    -fx-max-width: 20;
+    -fx-alignment: CENTER;
+}
+.dashboard-cash-button {
+    -fx-alignment: CENTER-LEFT;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 9;
+    -fx-padding: 0 20 0 22;
+}
+/* Salida separada del menu, centrada pero mas compacta. */
+.dashboard-logout { -fx-graphic-text-gap: 8; }
+
+/* ajuste-optico-iconos-inicio-v4 */
+/* Inicio activo: compensar el centro optico de la casa respecto del texto. */
+.dashboard-nav-active {
+    -fx-graphic-text-gap: 9;
+}
+.dashboard-nav-active .icon-home-v7 {
+    -fx-translate-y: -1;
+}
+
+/* Cabecera: el nuevo tamano interior ya no necesita desplazar el texto. */
+.dashboard-title-block-v7 {
+    -fx-translate-y: 0;
+}
+
+/* Acciones de media anchura: correcciones verticales puntuales. */
+.dashboard-quick-grid-v4 .icon-card-v7 {
+    -fx-translate-y: 0;
+}
+.dashboard-quick-grid-v4 .icon-lock-v7 {
+    -fx-translate-y: -1;
+}
+.dashboard-quick-grid-v4 .icon-calendar-add-v7 {
+    -fx-translate-y: -1;
+}
+
+/* Cierre de caja ocupa toda la fila: centrar icono y texto como una unidad. */
+.dashboard-quick-grid-v4 .dashboard-cash-button,
+.dashboard-cash-button {
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 9;
+    -fx-padding: 0 20;
+}
+.dashboard-cash-button .icon-cash-v7 {
+    -fx-translate-y: -1;
+}
+
+/* Cerrar sesion es una accion independiente: centro optico y espacio compacto. */
+.dashboard-logout {
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 7;
+}
+.dashboard-logout .icon-logout-v7 {
+    -fx-translate-x: 1;
+    -fx-translate-y: -1;
+}
+
+/* alineacion-final-cabecera-inicio-v5 */
+.dashboard-title-block-v7 {
+    -fx-alignment: CENTER-LEFT;
+    -fx-translate-y: 8;
+}
