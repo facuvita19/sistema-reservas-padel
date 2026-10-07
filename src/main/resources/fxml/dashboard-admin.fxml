@@ -5,20 +5,21 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="vista.controlador.DashboardAdminController" styleClass="dashboard-root-v2">
+            fx:controller="vista.controlador.DashboardAdminController"
+            styleClass="dashboard-root-v3">
  <left>
-  <VBox prefWidth="228" minWidth="228" maxWidth="228" styleClass="dashboard-sidebar-v2">
-   <padding><Insets top="18" right="13" bottom="16" left="13"/></padding>
-   <HBox alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-brand-block">
-    <StackPane prefWidth="38" prefHeight="38" minWidth="38" minHeight="38" styleClass="dashboard-brand-logo">
-     <ImageView fx:id="logoComplejo" fitWidth="30" fitHeight="30" preserveRatio="true" smooth="true"/>
+  <VBox prefWidth="238" minWidth="238" maxWidth="238" styleClass="dashboard-sidebar-v3">
+   <padding><Insets top="18" right="14" bottom="16" left="14"/></padding>
+   <HBox alignment="CENTER_LEFT" spacing="11" styleClass="dashboard-brand-v3">
+    <StackPane prefWidth="42" prefHeight="42" minWidth="42" minHeight="42" styleClass="dashboard-brand-logo">
+     <ImageView fx:id="logoComplejo" fitWidth="32" fitHeight="32" preserveRatio="true" smooth="true"/>
      <Label fx:id="logoFallback" text="P" styleClass="dashboard-brand-fallback"/>
     </StackPane>
-    <VBox spacing="1"><Label fx:id="etiquetaNombreComplejo" text="Padel Reservas" wrapText="true" styleClass="dashboard-brand-name"/><Label text="Administración" styleClass="dashboard-brand-caption"/></VBox>
+    <VBox spacing="2"><Label fx:id="etiquetaNombreComplejo" text="Padel Reservas" wrapText="true" styleClass="dashboard-brand-name"/><Label fx:id="etiquetaRolLateral" text="Administración" styleClass="dashboard-brand-caption"/></VBox>
    </HBox>
-   <Region prefHeight="15"/>
-   <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="dashboard-nav-scroll">
-    <VBox spacing="2" styleClass="dashboard-nav-list">
+   <Region prefHeight="14"/>
+   <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" styleClass="dashboard-nav-scroll, dashboard-scrollbar-v3">
+    <VBox spacing="3" styleClass="dashboard-nav-list-v3">
      <Label text="OPERACIÓN" styleClass="dashboard-nav-group"/>
      <Button text="Inicio" maxWidth="Infinity" styleClass="dashboard-nav-button, dashboard-nav-active"/>
      <Button text="Agenda" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="dashboard-nav-button"/>
@@ -31,74 +32,80 @@
      <Button text="Clientes" maxWidth="Infinity" onAction="#abrirClientes" styleClass="dashboard-nav-button"/>
      <Button fx:id="botonCanchas" text="Canchas" maxWidth="Infinity" onAction="#abrirCanchas" styleClass="dashboard-nav-button"/>
      <Button fx:id="botonBloqueos" text="Bloqueos" maxWidth="Infinity" onAction="#abrirBloqueos" styleClass="dashboard-nav-button"/>
-     <Label text="FINANZAS" styleClass="dashboard-nav-group"/>
-     <Button text="Pagos" maxWidth="Infinity" onAction="#abrirPagos" styleClass="dashboard-nav-button"/>
-     <Button text="Cierre de caja" maxWidth="Infinity" onAction="#abrirCierreCaja" styleClass="dashboard-nav-button"/>
-     <VBox fx:id="grupoAnalisis" spacing="2"><Label text="ANÁLISIS" styleClass="dashboard-nav-group"/><Button fx:id="botonEstadisticas" text="Estadísticas" maxWidth="Infinity" onAction="#abrirEstadisticas" styleClass="dashboard-nav-button"/></VBox>
-     <VBox fx:id="grupoSistema" spacing="2"><Label text="SISTEMA" styleClass="dashboard-nav-group"/><Button fx:id="botonConfiguracion" text="Configuración" maxWidth="Infinity" onAction="#abrirConfiguracion" styleClass="dashboard-nav-button"/><Button fx:id="botonUsuarios" text="Usuarios" maxWidth="Infinity" onAction="#abrirUsuarios" styleClass="dashboard-nav-button"/></VBox>
+     <VBox fx:id="grupoFinanzas" spacing="3"><Label text="FINANZAS" styleClass="dashboard-nav-group"/><Button fx:id="botonPagosMenu" text="Pagos" maxWidth="Infinity" onAction="#abrirPagos" styleClass="dashboard-nav-button"/><Button fx:id="botonCajaMenu" text="Cierre de caja" maxWidth="Infinity" onAction="#abrirCierreCaja" styleClass="dashboard-nav-button"/></VBox>
+     <VBox fx:id="grupoAnalisis" spacing="3"><Label text="ANÁLISIS" styleClass="dashboard-nav-group"/><Button fx:id="botonEstadisticas" text="Estadísticas" maxWidth="Infinity" onAction="#abrirEstadisticas" styleClass="dashboard-nav-button"/></VBox>
+     <VBox fx:id="grupoSistema" spacing="3"><Label text="SISTEMA" styleClass="dashboard-nav-group"/><Button fx:id="botonConfiguracion" text="Configuración" maxWidth="Infinity" onAction="#abrirConfiguracion" styleClass="dashboard-nav-button"/><Button fx:id="botonUsuarios" text="Usuarios" maxWidth="Infinity" onAction="#abrirUsuarios" styleClass="dashboard-nav-button"/></VBox>
     </VBox>
    </ScrollPane>
    <Button text="Cerrar sesión" maxWidth="Infinity" onAction="#cerrarSesion" styleClass="dashboard-logout"/>
   </VBox>
  </left>
  <center>
-  <BorderPane styleClass="dashboard-main-v2">
+  <BorderPane styleClass="dashboard-main-v3">
    <top>
-    <HBox alignment="CENTER_LEFT" spacing="14" styleClass="dashboard-topbar">
-     <VBox spacing="1"><Label text="Inicio" styleClass="dashboard-page-title"/><Label fx:id="etiquetaFecha" styleClass="dashboard-page-subtitle"/></VBox>
+    <HBox alignment="CENTER_LEFT" spacing="14" styleClass="dashboard-topbar-v3">
+     <VBox spacing="2"><Label text="Inicio" styleClass="dashboard-page-title"/><Label fx:id="etiquetaFecha" styleClass="dashboard-page-subtitle"/></VBox>
      <Region HBox.hgrow="ALWAYS"/>
-     <VBox alignment="CENTER_RIGHT" spacing="0"><Label text="Sesión activa" styleClass="dashboard-user-caption"/><Label fx:id="etiquetaUsuario" styleClass="dashboard-user-name"/></VBox>
+     <ProgressIndicator fx:id="indicadorCarga" visible="false" managed="false" maxWidth="16" maxHeight="16"/>
+     <VBox alignment="CENTER_RIGHT" spacing="1"><Label fx:id="etiquetaEstadoCarga" text="Preparando inicio..." styleClass="dashboard-status"/><Label fx:id="etiquetaUltimaActualizacion" text="Sin actualizar" styleClass="dashboard-updated"/></VBox>
+     <Region prefWidth="8"/>
+     <VBox alignment="CENTER_RIGHT" spacing="1"><Label fx:id="etiquetaRolUsuario" text="ADMINISTRADOR" styleClass="dashboard-user-caption"/><Label fx:id="etiquetaUsuario" text="Personal" styleClass="dashboard-user-name"/></VBox>
      <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#actualizarDashboard" styleClass="dashboard-refresh"/>
     </HBox>
    </top>
    <center>
-    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="dashboard-scroll-v2">
-     <VBox spacing="14" styleClass="dashboard-content-v2">
-      <padding><Insets top="16" right="22" bottom="24" left="22"/></padding>
-      <HBox alignment="CENTER_LEFT" spacing="8" minHeight="20"><ProgressIndicator fx:id="indicadorCarga" visible="false" maxWidth="15" maxHeight="15"/><Label fx:id="etiquetaEstadoCarga" text="Preparando inicio..." styleClass="dashboard-status"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaUltimaActualizacion" styleClass="dashboard-updated"/></HBox>
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="dashboard-scroll-v3, dashboard-scrollbar-v3">
+     <VBox spacing="12" styleClass="dashboard-content-v3">
+      <padding><Insets top="14" right="22" bottom="24" left="22"/></padding>
 
-      <HBox spacing="12">
-       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi"><Label text="RESERVAS DE HOY" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaReservasHoy" text="0" styleClass="dashboard-kpi-value"/><Label text="Turnos activos del día" styleClass="dashboard-kpi-detail"/></VBox>
-       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi"><Label text="PRÓXIMO TURNO" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaProximoTurno" text="Sin turnos" styleClass="dashboard-kpi-value dashboard-kpi-time"/><Label fx:id="etiquetaDetalleProximoTurno" text="No hay reservas próximas" styleClass="dashboard-kpi-detail"/></VBox>
-       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi"><Label text="INGRESOS DE HOY" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaIngresosDia" text="\$ 0,00" styleClass="dashboard-kpi-value dashboard-kpi-money"/><Label text="Pagos acreditados" styleClass="dashboard-kpi-detail"/></VBox>
-       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi dashboard-kpi-attention"><Label text="PENDIENTES OPERATIVOS" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaPendientesOperativos" text="0" styleClass="dashboard-kpi-value"/><Label fx:id="etiquetaDetallePendientes" text="Sin acciones pendientes" styleClass="dashboard-kpi-detail"/></VBox>
+      <HBox spacing="12" styleClass="dashboard-kpi-row-v3">
+       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi, dashboard-kpi-primary-v3"><Label text="RESERVAS DE HOY" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaReservasHoy" text="0" styleClass="dashboard-kpi-value"/><Label text="Turnos activos del día" styleClass="dashboard-kpi-detail"/></VBox>
+       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi, dashboard-kpi-next-v3"><Label text="PRÓXIMO TURNO" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaProximoTurno" text="Sin turnos" styleClass="dashboard-kpi-value, dashboard-kpi-time"/><Label fx:id="etiquetaDetalleProximoTurno" text="No hay reservas próximas" wrapText="true" styleClass="dashboard-kpi-detail"/></VBox>
+       <StackPane HBox.hgrow="ALWAYS">
+        <VBox fx:id="tarjetaIngresosDia" styleClass="dashboard-kpi, dashboard-kpi-money-v3"><Label text="INGRESOS DE HOY" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaIngresosDia" text="\$ 0,00" styleClass="dashboard-kpi-value, dashboard-kpi-money"/><Label text="Pagos acreditados" styleClass="dashboard-kpi-detail"/></VBox>
+        <VBox fx:id="tarjetaCanchasOperador" visible="false" managed="false" styleClass="dashboard-kpi, dashboard-kpi-operator-v3"><Label text="SOLICITUDES POR VENCER" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaSolicitudesKpiOperador" text="0" styleClass="dashboard-kpi-value"/><Label text="Próximos cinco minutos" styleClass="dashboard-kpi-detail"/></VBox>
+       </StackPane>
+       <VBox HBox.hgrow="ALWAYS" styleClass="dashboard-kpi, dashboard-kpi-attention-v3"><Label text="PENDIENTES OPERATIVOS" styleClass="dashboard-kpi-label"/><Label fx:id="etiquetaPendientesOperativos" text="0" styleClass="dashboard-kpi-value"/><Label fx:id="etiquetaDetallePendientes" text="Sin acciones pendientes" wrapText="true" styleClass="dashboard-kpi-detail"/></VBox>
       </HBox>
 
-      <VBox fx:id="panelAlertas" spacing="9" styleClass="dashboard-attention-panel">
-       <HBox alignment="CENTER_LEFT"><VBox spacing="1"><Label text="Atención requerida" styleClass="dashboard-section-title"/><Label fx:id="etiquetaResumenAlertas" text="Acciones operativas pendientes" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaCantidadAlertas" text="0 pendientes" styleClass="dashboard-alert-count"/></HBox>
-       <HBox fx:id="filaAlertaSenias" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-alert-row"><Label text="AVISO" styleClass="dashboard-alert-symbol dashboard-alert-warning"/><Label fx:id="alertaSenias" HBox.hgrow="ALWAYS" styleClass="dashboard-alert-text"/><Button text="REVISAR" onAction="#verEsperandoSenia" styleClass="dashboard-alert-action"/></HBox>
-       <HBox fx:id="filaAlertaVencimientos" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-alert-row dashboard-alert-critical-row"><Label text="AVISO" styleClass="dashboard-alert-symbol dashboard-alert-critical"/><Label fx:id="alertaVencimientos" HBox.hgrow="ALWAYS" styleClass="dashboard-alert-text"/><Button text="REVISAR" onAction="#abrirSolicitudesWeb" styleClass="dashboard-alert-action"/></HBox>
-       <HBox fx:id="filaAlertaPagos" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-alert-row"><Label text="AVISO" styleClass="dashboard-alert-symbol dashboard-alert-warning"/><Label fx:id="alertaPagos" HBox.hgrow="ALWAYS" styleClass="dashboard-alert-text"/><Button text="REVISAR" onAction="#verPagosPendientes" styleClass="dashboard-alert-action"/></HBox>
-       <HBox fx:id="filaAlertaTurnos" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-alert-row"><Label text="AVISO" styleClass="dashboard-alert-symbol dashboard-alert-warning"/><Label fx:id="alertaTurnos" HBox.hgrow="ALWAYS" styleClass="dashboard-alert-text"/><Button text="REVISAR" onAction="#verTurnosPendientes" styleClass="dashboard-alert-action"/></HBox>
-       <HBox fx:id="filaAlertaCaja" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-alert-row"><Label text="AVISO" styleClass="dashboard-alert-symbol dashboard-alert-warning"/><Label fx:id="alertaCaja" HBox.hgrow="ALWAYS" styleClass="dashboard-alert-text"/><Button text="ABRIR CAJA" onAction="#abrirCierreCaja" styleClass="dashboard-alert-action"/></HBox>
+      <VBox fx:id="panelAlertas" spacing="10" styleClass="dashboard-attention-panel-v3">
+       <HBox alignment="CENTER_LEFT"><VBox spacing="2"><Label text="Atención requerida" styleClass="dashboard-section-title"/><Label fx:id="etiquetaResumenAlertas" text="Acciones operativas pendientes" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaCantidadAlertas" text="0 pendientes" styleClass="dashboard-alert-count"/></HBox>
+       <GridPane fx:id="contenedorTarjetasAlertas" hgap="10" vgap="10" maxWidth="Infinity" styleClass="dashboard-alert-grid-v5">
+        <VBox fx:id="filaAlertaSenias" prefWidth="270" styleClass="dashboard-alert-card-v3, dashboard-alert-warning-v3"><Label text="SEÑAS PENDIENTES" styleClass="dashboard-alert-type-v3"/><Label fx:id="alertaSenias" wrapText="true" styleClass="dashboard-alert-text-v3"/><Region VBox.vgrow="ALWAYS"/><Button text="REVISAR RESERVAS" onAction="#verEsperandoSenia" styleClass="dashboard-alert-action-v3"/></VBox>
+        <VBox fx:id="filaAlertaVencimientos" prefWidth="270" styleClass="dashboard-alert-card-v3, dashboard-alert-critical-v3"><Label text="SOLICITUDES WEB" styleClass="dashboard-alert-type-v3"/><Label fx:id="alertaVencimientos" wrapText="true" styleClass="dashboard-alert-text-v3"/><Region VBox.vgrow="ALWAYS"/><Button text="ABRIR SOLICITUDES" onAction="#abrirSolicitudesWeb" styleClass="dashboard-alert-action-v3"/></VBox>
+        <VBox fx:id="filaAlertaPagos" prefWidth="270" styleClass="dashboard-alert-card-v3, dashboard-alert-payment-v3"><Label text="PAGOS PENDIENTES" styleClass="dashboard-alert-type-v3"/><Label fx:id="alertaPagos" wrapText="true" styleClass="dashboard-alert-text-v3"/><Region VBox.vgrow="ALWAYS"/><Button text="REVISAR PAGOS" onAction="#verPagosPendientes" styleClass="dashboard-alert-action-v3"/></VBox>
+        <VBox fx:id="filaAlertaTurnos" prefWidth="270" styleClass="dashboard-alert-card-v3, dashboard-alert-turn-v3"><Label text="TURNOS SIN CERRAR" styleClass="dashboard-alert-type-v3"/><Label fx:id="alertaTurnos" wrapText="true" styleClass="dashboard-alert-text-v3"/><Region VBox.vgrow="ALWAYS"/><Button text="REVISAR TURNOS" onAction="#verTurnosPendientes" styleClass="dashboard-alert-action-v3"/></VBox>
+        <VBox fx:id="filaAlertaCaja" prefWidth="270" styleClass="dashboard-alert-card-v3, dashboard-alert-cash-v3"><Label text="CIERRE DE CAJA" styleClass="dashboard-alert-type-v3"/><Label fx:id="alertaCaja" wrapText="true" styleClass="dashboard-alert-text-v3"/><Region VBox.vgrow="ALWAYS"/><Button text="ABRIR CAJA" onAction="#abrirCierreCaja" styleClass="dashboard-alert-action-v3"/></VBox>
+       </GridPane>
        <HBox fx:id="filaSinAlertas" alignment="CENTER_LEFT" spacing="10" styleClass="dashboard-all-good"><Label text="✓" styleClass="dashboard-ok-symbol"/><VBox><Label text="Operación al día" styleClass="dashboard-ok-title"/><Label text="No existen acciones urgentes pendientes." styleClass="dashboard-ok-copy"/></VBox></HBox>
       </VBox>
 
-      <HBox spacing="14" alignment="TOP_LEFT">
-       <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="dashboard-card-v2">
-        <HBox alignment="CENTER_LEFT"><VBox spacing="1"><Label text="Próximas reservas" styleClass="dashboard-section-title"/><Label text="Turnos pendientes y confirmados" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="VER AGENDA" onAction="#abrirAgenda" styleClass="dashboard-link-button"/></HBox>
-        <TableView fx:id="tablaProximasReservas" focusTraversable="false" prefHeight="250" minHeight="220" styleClass="modern-table dashboard-table-v2">
-         <columns><TableColumn fx:id="columnaFecha" text="FECHA" prefWidth="100"/><TableColumn fx:id="columnaHora" text="HORA" prefWidth="74"/><TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="125"/><TableColumn fx:id="columnaCliente" text="CLIENTE" prefWidth="185"/><TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="130"/></columns>
-         <placeholder><Label text="No hay próximas reservas pendientes o confirmadas." styleClass="empty-state"/></placeholder>
-        </TableView>
-       </VBox>
-       <VBox minWidth="300" prefWidth="320" maxWidth="340" spacing="10" styleClass="dashboard-card-v2">
-        <VBox spacing="1"><Label text="Acciones rápidas" styleClass="dashboard-section-title"/><Label text="Accesos frecuentes" styleClass="dashboard-section-copy"/></VBox>
-        <GridPane hgap="9" vgap="9"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
-         <Button text="Nueva reserva" maxWidth="Infinity" onAction="#abrirReservas" styleClass="dashboard-quick-primary"/>
-         <Button GridPane.columnIndex="1" text="Registrar pago" maxWidth="Infinity" onAction="#abrirPagos" styleClass="dashboard-quick-button"/>
-         <Button GridPane.rowIndex="1" text="Ver agenda" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="dashboard-quick-button"/>
-         <Button GridPane.rowIndex="1" GridPane.columnIndex="1" text="Nuevo cliente" maxWidth="Infinity" onAction="#abrirClientes" styleClass="dashboard-quick-button"/>
-         <Button fx:id="accesoRapidoCanchas" GridPane.rowIndex="2" text="Nueva cancha" maxWidth="Infinity" onAction="#abrirCanchas" styleClass="dashboard-quick-button"/>
-         <Button GridPane.rowIndex="2" GridPane.columnIndex="1" text="Crear bloqueo" maxWidth="Infinity" onAction="#abrirBloqueos" styleClass="dashboard-quick-button"/>
-        </GridPane>
-        <Button text="Abrir cierre de caja" maxWidth="Infinity" onAction="#abrirCierreCaja" styleClass="dashboard-cash-button"/>
-       </VBox>
-      </HBox>
+      <VBox fx:id="panelRendimientoAdministrador" spacing="9" styleClass="dashboard-summary-panel-v3"><HBox alignment="CENTER_LEFT"><VBox spacing="1"><Label text="Rendimiento del mes" styleClass="dashboard-section-title"/><Label text="Vista ejecutiva de la operación financiera" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="VER ESTADÍSTICAS" onAction="#abrirEstadisticas" styleClass="dashboard-link-button"/></HBox><HBox spacing="10"><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat, dashboard-mini-money-v3"><Label text="INGRESOS ACREDITADOS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaIngresosMes" text="\$ 0,00" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat, dashboard-mini-warning-v3"><Label text="PAGOS PENDIENTES" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaPagosPendientes" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="CANCHAS ACTIVAS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaCanchasActivas" text="0" styleClass="dashboard-mini-value"/></VBox></HBox></VBox>
+      <VBox fx:id="panelEstadoOperador" visible="false" managed="false" spacing="9" styleClass="dashboard-summary-panel-v3"><VBox spacing="1"><Label text="Estado operativo del día" styleClass="dashboard-section-title"/><Label text="Información necesaria para la operación cotidiana" styleClass="dashboard-section-copy"/></VBox><HBox spacing="10"><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="CANCHAS ACTIVAS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaCanchasActivasOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="ESPERANDO SEÑA" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaSeniasOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="TURNOS POR CERRAR" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaTurnosOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="SOLICITUDES POR VENCER" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaSolicitudesOperador" text="0" styleClass="dashboard-mini-value"/></VBox></HBox></VBox>
 
-      <HBox spacing="14">
-       <VBox fx:id="panelRendimientoAdministrador" HBox.hgrow="ALWAYS" spacing="10" styleClass="dashboard-summary-panel"><HBox alignment="CENTER_LEFT"><VBox><Label text="Rendimiento del mes" styleClass="dashboard-section-title"/><Label text="Vista ejecutiva para administración" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Button text="VER ESTADÍSTICAS" onAction="#abrirEstadisticas" styleClass="dashboard-link-button"/></HBox><HBox spacing="12"><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="INGRESOS ACREDITADOS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaIngresosMes" text="\$ 0,00" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="PAGOS PENDIENTES" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaPagosPendientes" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="CANCHAS ACTIVAS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaCanchasActivas" text="0" styleClass="dashboard-mini-value"/></VBox></HBox></VBox>
-       <VBox fx:id="panelEstadoOperador" HBox.hgrow="ALWAYS" spacing="10" styleClass="dashboard-summary-panel"><VBox><Label text="Estado operativo del día" styleClass="dashboard-section-title"/><Label text="Información necesaria para la operación cotidiana" styleClass="dashboard-section-copy"/></VBox><HBox spacing="12"><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="CANCHAS ACTIVAS" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaCanchasActivasOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="ESPERANDO SEÑA" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaSeniasOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="TURNOS POR CERRAR" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaTurnosOperador" text="0" styleClass="dashboard-mini-value"/></VBox><VBox HBox.hgrow="ALWAYS" styleClass="dashboard-mini-stat"><Label text="ESTADO DE CAJA" styleClass="dashboard-mini-label"/><Label fx:id="etiquetaCajaOperador" text="Pendiente" styleClass="dashboard-mini-value dashboard-mini-text"/></VBox></HBox></VBox>
+      <HBox spacing="14" alignment="TOP_LEFT">
+       <VBox spacing="9" HBox.hgrow="ALWAYS" styleClass="dashboard-card-v3"><HBox alignment="CENTER_LEFT"><VBox spacing="1"><Label text="Próximas reservas" styleClass="dashboard-section-title"/><Label text="Cinco turnos pendientes o confirmados" styleClass="dashboard-section-copy"/></VBox><Region HBox.hgrow="ALWAYS"/><Label text="Doble clic para abrir" styleClass="dashboard-table-hint-v3"/><Button text="VER AGENDA" onAction="#abrirAgenda" styleClass="dashboard-link-button"/></HBox>
+        <TableView fx:id="tablaProximasReservas" focusTraversable="false" prefHeight="248" minHeight="248" maxHeight="248" styleClass="modern-table, dashboard-table-v3"><columns><TableColumn fx:id="columnaFecha" text="FECHA" styleClass="dashboard-centered-column-v5"/><TableColumn fx:id="columnaHora" text="HORA" styleClass="dashboard-centered-column-v5"/><TableColumn fx:id="columnaCancha" text="CANCHA" styleClass="dashboard-centered-column-v5"/><TableColumn fx:id="columnaCliente" text="CLIENTE" styleClass="dashboard-client-column-v4, dashboard-left-column-v5"/><TableColumn fx:id="columnaEstado" text="ESTADO" styleClass="dashboard-centered-column-v5, dashboard-state-column-v5"/></columns><placeholder><Label text="No hay próximas reservas pendientes o confirmadas." styleClass="empty-state"/></placeholder></TableView>
+       </VBox>
+       <VBox minWidth="370" prefWidth="390" maxWidth="420" spacing="10" styleClass="dashboard-card-v3, dashboard-quick-card-v4"><VBox spacing="1"><Label text="Acciones rápidas" styleClass="dashboard-section-title"/><Label text="Accesos frecuentes de la operación" styleClass="dashboard-section-copy"/></VBox>
+        <GridPane fx:id="accionesRapidasAdmin" hgap="9" vgap="9" styleClass="dashboard-quick-grid-v4"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+         <Button text="Nueva reserva" maxWidth="Infinity" onAction="#abrirReservas" styleClass="dashboard-quick-primary"/>
+         <Button fx:id="accesoRapidoPagos" GridPane.columnIndex="1" text="Registrar pago" maxWidth="Infinity" onAction="#abrirPagos" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="1" text="Ver agenda" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="1" GridPane.columnIndex="1" text="Solicitudes web" maxWidth="Infinity" onAction="#abrirSolicitudesWeb" styleClass="dashboard-quick-web-v3"/>
+         <Button GridPane.rowIndex="2" text="Nuevo cliente" maxWidth="Infinity" onAction="#abrirClientes" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="2" GridPane.columnIndex="1" text="Crear bloqueo" maxWidth="Infinity" onAction="#abrirBloqueos" styleClass="dashboard-quick-button"/>
+         <Button fx:id="accesoRapidoCierreCaja" GridPane.rowIndex="3" GridPane.columnSpan="2" text="Abrir cierre de caja" maxWidth="Infinity" onAction="#abrirCierreCaja" styleClass="dashboard-cash-button"/>
+        </GridPane>
+        <GridPane fx:id="accionesRapidasOperador" visible="false" managed="false" hgap="9" vgap="9" styleClass="dashboard-quick-grid-v4"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+         <Button text="Nueva reserva" maxWidth="Infinity" onAction="#abrirReservas" styleClass="dashboard-quick-primary"/>
+         <Button GridPane.columnIndex="1" text="Ver agenda" maxWidth="Infinity" onAction="#abrirAgenda" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="1" text="Solicitudes web" maxWidth="Infinity" onAction="#abrirSolicitudesWeb" styleClass="dashboard-quick-web-v3"/>
+         <Button GridPane.rowIndex="1" GridPane.columnIndex="1" text="Nuevo cliente" maxWidth="Infinity" onAction="#abrirClientes" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="2" text="Crear bloqueo" maxWidth="Infinity" onAction="#abrirBloqueos" styleClass="dashboard-quick-button"/>
+         <Button GridPane.rowIndex="2" GridPane.columnIndex="1" text="Torneos" maxWidth="Infinity" onAction="#abrirTorneos" styleClass="dashboard-quick-button"/>
+        </GridPane>
+       </VBox>
       </HBox>
      </VBox>
     </ScrollPane>
