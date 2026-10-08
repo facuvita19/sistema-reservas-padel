@@ -3,6 +3,8 @@ package vista;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javafx.application.Platform;
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -11,14 +13,18 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public final class AyudaEstadisticasDialogo {
+    // corregir-ayuda-actualizar-estadisticas-v5
+    // corregir-boton-ayuda-estadisticas-v6
+    // eliminar-franja-dialogo-estadisticas-v7
     private static final Map<String, Seccion> SECCIONES = crearSecciones();
 
     private AyudaEstadisticasDialogo() { }
@@ -68,20 +74,25 @@ public final class AyudaEstadisticasDialogo {
         }
         cargar(cuerpo, SECCIONES.get(inicial));
 
-        ScrollPane scroll = new ScrollPane(cuerpo);
-        scroll.setFitToWidth(true);
-        scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        scroll.setPrefViewportWidth(900);
-        scroll.setPrefViewportHeight(560);
-        scroll.getStyleClass().add("stats-help-scroll");
-        VBox.setVgrow(scroll, Priority.ALWAYS);
-        contenido.getChildren().addAll(introduccion, navegacion, scroll);
+        contenido.getChildren().addAll(introduccion, navegacion, cuerpo);
 
         dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefSize(980, 700);
+        dialogo.getDialogPane().setPrefSize(980, 680);
+        dialogo.getDialogPane().setMinSize(980, 680);
+        dialogo.getDialogPane().setMaxSize(980, 680);
         Dialogos.preparar(dialogo, "stats-help-dialog");
         Node cerrar = dialogo.getDialogPane().lookupButton(entendido);
         cerrar.getStyleClass().add("dialog-action-primary");
+        dialogo.setOnShown(evento -> Platform.runLater(() -> {
+            if (dialogo.getDialogPane().getScene().getWindow() instanceof Stage ventana) {
+                ventana.setFullScreen(false);
+                ventana.setMaximized(false);
+                ventana.setResizable(false);
+                ventana.sizeToScene();
+                ventana.centerOnScreen();
+                cerrar.requestFocus();
+            }
+        }));
         dialogo.showAndWait();
     }
 
@@ -92,9 +103,21 @@ public final class AyudaEstadisticasDialogo {
         Label fecha = new Label(seccion.fecha());
         fecha.setWrapText(true);
         fecha.getStyleClass().add("stats-help-period");
-        cuerpo.getChildren().addAll(titulo, fecha);
+
+        GridPane grilla = new GridPane();
+        grilla.setHgap(10);
+        grilla.setVgap(10);
+        grilla.getStyleClass().add("stats-help-grid-v5");
+        ColumnConstraints izquierda = new ColumnConstraints();
+        izquierda.setPercentWidth(50);
+        ColumnConstraints derecha = new ColumnConstraints();
+        derecha.setPercentWidth(50);
+        grilla.getColumnConstraints().addAll(izquierda, derecha);
+
+        int indice = 0;
         for (Bloque bloque : seccion.bloques()) {
-            VBox tarjeta = new VBox(5);
+            VBox tarjeta = new VBox(4);
+            tarjeta.setMaxWidth(Double.MAX_VALUE);
             tarjeta.getStyleClass().add("stats-help-card");
             Label nombre = new Label(bloque.nombre());
             nombre.getStyleClass().add("stats-help-card-title");
@@ -102,8 +125,10 @@ public final class AyudaEstadisticasDialogo {
             texto.setWrapText(true);
             texto.getStyleClass().add("stats-help-card-copy");
             tarjeta.getChildren().addAll(nombre, texto);
-            cuerpo.getChildren().add(tarjeta);
+            grilla.add(tarjeta, indice % 2, indice / 2);
+            indice++;
         }
+        cuerpo.getChildren().addAll(titulo, fecha, grilla);
     }
 
     private static Map<String, Seccion> crearSecciones() {

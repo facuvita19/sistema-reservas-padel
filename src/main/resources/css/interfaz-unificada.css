@@ -781,3 +781,114 @@
     -fx-alignment: CENTER_LEFT;
     -fx-translate-y: 0;
 }
+
+/* corregir-ayuda-actualizar-estadisticas-v5 */
+.dialog-pane.stats-help-dialog {
+    -fx-pref-width: 980;
+    -fx-pref-height: 680;
+    -fx-min-width: 980;
+    -fx-min-height: 680;
+    -fx-max-width: 980;
+    -fx-max-height: 680;
+}
+.stats-help-root {
+    -fx-background-color: #171c20;
+    -fx-spacing: 10;
+    -fx-padding: 2 4 0 4;
+}
+.stats-help-navigation { -fx-padding: 2 0 4 0; }
+.stats-help-body { -fx-padding: 0; -fx-spacing: 9; }
+.stats-help-grid-v5 { -fx-padding: 0; }
+.stats-help-title { -fx-font-size: 19px; }
+.stats-help-period { -fx-padding: 9 12; -fx-font-size: 10.5px; }
+.stats-help-card {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 96;
+    -fx-padding: 10 12;
+}
+.stats-help-card-title { -fx-font-size: 12px; }
+.stats-help-card-copy { -fx-font-size: 10.5px; -fx-line-spacing: 1px; }
+.dialog-pane.stats-help-dialog > .button-bar > .container {
+    -fx-padding: 10 16 12 16;
+}
+.dialog-pane.stats-help-dialog .dialog-action-primary {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+}
+
+/* corregir-boton-ayuda-estadisticas-v6 */
+.dialog-pane.stats-help-dialog {
+    -fx-pref-width: 980;
+    -fx-pref-height: 650;
+    -fx-min-width: 980;
+    -fx-min-height: 650;
+    -fx-max-width: 980;
+    -fx-max-height: 650;
+}
+.dialog-pane.stats-help-dialog > .content.label,
+.dialog-pane.stats-help-dialog > .content {
+    -fx-padding: 8 16 6 16;
+}
+.stats-help-root {
+    -fx-spacing: 8;
+    -fx-padding: 0;
+}
+.stats-help-intro { -fx-font-size: 11px; }
+.stats-help-navigation { -fx-padding: 0 0 2 0; }
+.stats-help-tab {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0 12;
+}
+.stats-help-body { -fx-spacing: 7; }
+.stats-help-title { -fx-font-size: 18px; }
+.stats-help-period {
+    -fx-padding: 8 11;
+    -fx-font-size: 10px;
+}
+.stats-help-grid-v5 {
+    -fx-hgap: 10;
+    -fx-vgap: 8;
+}
+.stats-help-card {
+    -fx-min-height: 72;
+    -fx-pref-height: 72;
+    -fx-max-height: 82;
+    -fx-padding: 8 11;
+}
+.stats-help-card-title { -fx-font-size: 11.5px; }
+.stats-help-card-copy { -fx-font-size: 10px; -fx-line-spacing: 0; }
+.dialog-pane.stats-help-dialog > .button-bar {
+    -fx-min-height: 66;
+    -fx-pref-height: 66;
+    -fx-max-height: 66;
+}
+.dialog-pane.stats-help-dialog > .button-bar > .container {
+    -fx-padding: 10 16 12 16;
+}
+.dialog-pane.stats-help-dialog .dialog-action-primary,
+.dialog-pane.stats-help-dialog .dialog-action-primary:focused {
+    -fx-min-width: 210;
+    -fx-pref-width: 210;
+    -fx-max-width: 210;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+
+/* eliminar-franja-dialogo-estadisticas-v7 */
+.dialog-pane.stats-help-dialog,
+.dialog-pane.stats-help-dialog > .content,
+.dialog-pane.stats-help-dialog > .button-bar,
+.dialog-pane.stats-help-dialog > .button-bar > .container {
+    -fx-background-color: #171c20;
+}
+.dialog-pane.stats-help-dialog > .button-bar {
+    -fx-border-color: #343d42 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}

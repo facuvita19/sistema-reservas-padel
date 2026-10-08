@@ -74,3 +74,159 @@
 
 /* guia-pdf-estadisticas-v1 */
 .stats-guide-button{-fx-min-height:38;-fx-pref-height:38;-fx-background-color:#20272c;-fx-background-radius:10;-fx-border-color:#4a5961;-fx-border-radius:10;-fx-text-fill:#c4d1d6;-fx-font-size:10px;-fx-font-weight:900;-fx-padding:0 14;-fx-cursor:hand}.stats-guide-button:hover{-fx-background-color:#293238;-fx-border-color:#78909c;-fx-text-fill:white;-fx-translate-y:-1}.stats-guide-button:pressed{-fx-background-color:#1a2024;-fx-translate-y:0}
+
+/* cerrar-estadisticas-estructural-v1 */
+.stats-root .stats-module-header-v1 { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; }
+.stats-back-button-v1 { -fx-min-width:42; -fx-pref-width:42; -fx-max-width:42; -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-padding:0; -fx-content-display:GRAPHIC_ONLY; -fx-alignment:CENTER; -fx-background-color:#20272b; -fx-border-color:#465158; -fx-background-radius:10; -fx-border-radius:10; -fx-cursor:hand; }
+.stats-back-button-v1:hover { -fx-background-color:#26342f; -fx-border-color:-color-principal; }
+.stats-back-button-v1:pressed { -fx-background-color:#1a211e; -fx-scale-x:.97; -fx-scale-y:.97; }
+.stats-back-icon-v1 { -fx-fill:transparent; -fx-stroke:#b7c3c8; -fx-stroke-width:1.5; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; -fx-scale-x:.78; -fx-scale-y:.78; }
+.stats-module-icon-shell-v1 { -fx-background-color:#1b2926; -fx-border-color:#3d6b5b; -fx-background-radius:11; -fx-border-radius:11; }
+.stats-module-icon-v1 { -fx-fill:transparent; -fx-stroke:#89c8ab; -fx-stroke-width:1.5; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; -fx-scale-x:.72; -fx-scale-y:.72; }
+.stats-title-block-v1 { -fx-alignment:CENTER_LEFT; }
+.stats-title-block-v1 .page-title { -fx-font-family:"Segoe UI"; -fx-font-size:24px; -fx-font-weight:900; }
+.stats-title-block-v1 .page-subtitle { -fx-font-family:"Segoe UI"; -fx-font-size:11px; }
+.stats-header-action-icon-v1 { -fx-fill:transparent; -fx-stroke:#c4d1d6; -fx-stroke-width:1.5; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; -fx-scale-x:.68; -fx-scale-y:.68; }
+.stats-help-button,.stats-guide-button { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-content-display:LEFT; -fx-graphic-text-gap:8; -fx-translate-y:0; }
+.stats-help-button:hover,.stats-guide-button:hover { -fx-translate-y:0; }
+.stats-filter-bar { -fx-min-height:82; }
+.stats-filter-bar .modern-date { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.stats-filter-bar .primary-button { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; }
+.stats-section-bar { -fx-min-height:62; }
+.stats-section-button { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; -fx-padding:0 16; }
+.stats-content { -fx-spacing:14; }
+.stats-hero-card { -fx-min-height:108; -fx-padding:14 16; }
+.stats-metric-card,.stats-finance-card,.stats-client-card { -fx-min-height:90; -fx-padding:11 13; }
+.stats-chart-card { -fx-padding:12 15; }
+.stats-closures-table-v1 { -fx-min-height:210; -fx-pref-height:230; }
+.stats-summary-note-v1 { -fx-background-color:#181d21; -fx-border-color:#343d42; -fx-background-radius:11; -fx-border-radius:11; -fx-padding:12 15; }
+
+/* corregir-carga-estadisticas-v2 */
+.stats-help-button .stats-header-action-icon-v1 { -fx-stroke:#9fd2bb; }
+.stats-help-button:hover .stats-header-action-icon-v1 { -fx-stroke:#dcf2e8; }
+.stats-guide-button .stats-header-action-icon-v1 { -fx-stroke:#c4d1d6; }
+.stats-guide-button:hover .stats-header-action-icon-v1 { -fx-stroke:#ffffff; }
+
+/* cerrar-estadisticas-graficos-v3 */
+.stats-chart-empty-v3 {
+    -fx-pref-height: 150;
+    -fx-min-height: 150;
+    -fx-opacity: .92;
+}
+.stats-chart-empty-v3 .chart-plot-background {
+    -fx-background-color: #151a1e;
+    -fx-background-radius: 9;
+    -fx-border-color: #2f383d;
+    -fx-border-radius: 9;
+    -fx-border-style: segments(5, 5);
+}
+.stats-chart-empty-v3 .chart-title {
+    -fx-text-fill: #7f8d93;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+.stats-chart-empty-v3 .axis,
+.stats-chart-empty-v3 .chart-vertical-grid-lines,
+.stats-chart-empty-v3 .chart-horizontal-grid-lines {
+    -fx-opacity: .18;
+}
+.stats-chart-has-data-v3 { -fx-opacity: 1; }
+.stats-chart-card > .pie-chart { -fx-pref-height: 235; }
+.stats-chart-card > .bar-chart,
+.stats-chart-card > .line-chart { -fx-pref-height: 245; }
+#panelClientes .stats-chart-card > .pie-chart,
+#panelWeb .stats-chart-card > .pie-chart { -fx-pref-height: 225; }
+
+/* cerrar-estadisticas-semantica-v4 */
+.stats-value-positive-v4 { -fx-text-fill:#55bd8c; }
+.stats-value-warning-v4 { -fx-text-fill:#ddb65f; }
+.stats-value-negative-v4 { -fx-text-fill:#df7d88; }
+.stats-value-neutral-v4 { -fx-text-fill:#a9b5ba; }
+
+/* Identidad visual por familia de datos, sin alterar la paleta general. */
+#graficoCanIngresos .chart-bar { -fx-bar-fill:#5aa98a; }
+#graficoCanBloqueos .chart-bar { -fx-bar-fill:#c19542; }
+#graficoCanTorneos .chart-bar { -fx-bar-fill:#6f8fa6; }
+#graficoWebEmbudo .chart-bar { -fx-bar-fill:#4c9b78; }
+#graficoWebHorarios .chart-bar,
+#graficoWebDias .chart-bar { -fx-bar-fill:#5a9b80; }
+#graficoFinPagosDia .chart-series-line,
+#graficoFinResultadoDia .chart-series-line { -fx-stroke:#55ad84; }
+#graficoFinReembolsosDia .chart-series-line { -fx-stroke:#d47d86; }
+#graficoFinDiferencias .chart-series-line { -fx-stroke:#d3aa55; }
+
+/* Valores principales negativos o de atencion conservan contraste. */
+.stats-hero-value.stats-value-negative-v4,
+.stats-money-value.stats-value-negative-v4,
+.stats-web-money.stats-value-negative-v4 { -fx-text-fill:#e1848d; }
+.stats-hero-value.stats-value-warning-v4,
+.stats-rate-value.stats-value-warning-v4 { -fx-text-fill:#dfba66; }
+.stats-hero-value.stats-value-positive-v4,
+.stats-rate-value.stats-value-positive-v4,
+.stats-money-value.stats-value-positive-v4 { -fx-text-fill:#55bd8c; }
+
+.stats-explanation-card { -fx-min-height:88; }
+.stats-ranking-row { -fx-min-height:36; -fx-padding:7 10; }
+
+/* corregir-ayuda-actualizar-estadisticas-v5 */
+.stats-filter-bar .stats-update-button-v5,
+.stats-filter-bar .stats-update-button-v5:focused {
+    -fx-min-width: 150;
+    -fx-pref-width: 150;
+    -fx-max-width: 150;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 16;
+    -fx-alignment: CENTER;
+    -fx-background-color: #3f946f;
+    -fx-border-color: #55aa83;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
+.stats-filter-bar .stats-update-button-v5:hover {
+    -fx-background-color: #4ca77f;
+    -fx-border-color: #70c29d;
+    -fx-text-fill: #ffffff;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(71,181,132,.24), 10, .16, 0, 0);
+}
+.stats-filter-bar .stats-update-button-v5:pressed,
+.stats-filter-bar .stats-update-button-v5:focused:pressed {
+    -fx-background-color: #327657;
+    -fx-border-color: #478d6c;
+    -fx-text-fill: #ffffff;
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-effect: none;
+}
+.stats-filter-bar .stats-update-button-v5:disabled,
+.stats-filter-bar .stats-update-button-v5:disabled:hover,
+.stats-filter-bar .stats-update-button-v5:disabled:pressed {
+    -fx-background-color: #1d2924;
+    -fx-border-color: #354940;
+    -fx-text-fill: #71877b;
+    -fx-opacity: 1;
+    -fx-cursor: default;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
