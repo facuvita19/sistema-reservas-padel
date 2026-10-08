@@ -349,3 +349,76 @@
 .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:armed, .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:pressed { -fx-background-color: #2b271f; -fx-border-color: #705c3b; -fx-text-fill: #dfc187; -fx-effect: none; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
 .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-danger { -fx-min-width: 240; -fx-pref-width: 240; -fx-max-width: 240; }
 .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button:cancel { -fx-min-width: 190; -fx-pref-width: 190; -fx-max-width: 190; }
+/* garantia-tipografica-dialogos-v1 */
+/*
+ * La geometria y la jerarquia conservan los tamanos y pesos definidos
+ * por cada dialogo. Esta capa solo estabiliza familia y estilo.
+ */
+.dialog-pane.admin-dialog,
+.dialog-pane.admin-dialog .label,
+.dialog-pane.admin-dialog .text,
+.dialog-pane.admin-dialog .button,
+.dialog-pane.admin-dialog .text-input,
+.dialog-pane.admin-dialog .text-field,
+.dialog-pane.admin-dialog .password-field,
+.dialog-pane.admin-dialog .text-area,
+.dialog-pane.admin-dialog .text-area .content,
+.dialog-pane.admin-dialog .combo-box,
+.dialog-pane.admin-dialog .combo-box-base,
+.dialog-pane.admin-dialog .combo-box .list-cell,
+.dialog-pane.admin-dialog .list-view,
+.dialog-pane.admin-dialog .list-view .list-cell,
+.dialog-pane.admin-dialog .spinner,
+.dialog-pane.admin-dialog .spinner .text-field,
+.dialog-pane.admin-dialog .date-picker,
+.dialog-pane.admin-dialog .date-picker .text-field,
+.dialog-pane.admin-dialog .tab,
+.dialog-pane.admin-dialog .tab .tab-label,
+.dialog-pane.admin-dialog .check-box,
+.dialog-pane.admin-dialog .radio-button,
+.dialog-pane.admin-dialog .toggle-button,
+.dialog-pane.admin-dialog .table-view,
+.dialog-pane.admin-dialog .table-view .table-cell,
+.dialog-pane.admin-dialog .tree-view,
+.dialog-pane.admin-dialog .tree-cell {
+    -fx-font-family: "Segoe UI";
+    -fx-font-style: normal;
+}
+
+/* Los estados interactivos no deben alterar la identidad tipografica. */
+.dialog-pane.admin-dialog .button,
+.dialog-pane.admin-dialog .button:hover,
+.dialog-pane.admin-dialog .button:focused,
+.dialog-pane.admin-dialog .button:armed,
+.dialog-pane.admin-dialog .button:pressed,
+.dialog-pane.admin-dialog .button:disabled,
+.dialog-pane.admin-dialog .toggle-button,
+.dialog-pane.admin-dialog .toggle-button:hover,
+.dialog-pane.admin-dialog .toggle-button:focused,
+.dialog-pane.admin-dialog .toggle-button:armed,
+.dialog-pane.admin-dialog .toggle-button:pressed,
+.dialog-pane.admin-dialog .toggle-button:selected,
+.dialog-pane.admin-dialog .toggle-button:disabled {
+    -fx-font-family: "Segoe UI";
+    -fx-font-style: normal;
+}
+
+/* Estabiliza el texto interno creado por los skins de JavaFX. */
+.dialog-pane.admin-dialog .button .text,
+.dialog-pane.admin-dialog .toggle-button .text,
+.dialog-pane.admin-dialog .list-cell .text,
+.dialog-pane.admin-dialog .table-cell .text,
+.dialog-pane.admin-dialog .tab .text {
+    -fx-font-family: "Segoe UI";
+    -fx-font-style: normal;
+}
+
+/* Etiqueta estatica del enfrentamiento en la llave. */
+.bracket-versus-label-v1 {
+    -fx-text-fill: #7f8b90;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 900;
+    -fx-font-style: normal;
+    -fx-padding: 1 0;
+}

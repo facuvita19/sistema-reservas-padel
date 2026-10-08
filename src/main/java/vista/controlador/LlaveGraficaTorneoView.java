@@ -414,8 +414,7 @@ public class LlaveGraficaTorneoView {
         Label vs = new Label("VS");
         vs.setMaxWidth(Double.MAX_VALUE);
         vs.setAlignment(Pos.CENTER);
-        vs.setStyle("-fx-text-fill:#7f8b90;-fx-font-size:8.5px;"
-                + "-fx-font-weight:900;-fx-padding:1 0;");
+        vs.getStyleClass().add("bracket-versus-label-v1");
         VBox contenido = new VBox(1, uno, vs, dos);
         contenido.setAlignment(Pos.CENTER_LEFT);
         contenido.setPadding(new Insets(7, 9, 8, 9));
