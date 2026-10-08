@@ -530,3 +530,192 @@
     -fx-opacity: .95;
     -fx-mouse-transparent: true;
 }
+
+/* agenda-experiencia-unificada-v19 */
+/* Cabecera unificada. Agenda conserva dos niveles porque incluye leyenda operativa. */
+.agenda-header-shell { -fx-spacing: 7; }
+.agenda-back-button-v19 {
+    -fx-min-width: 42; -fx-pref-width: 42; -fx-max-width: 42;
+    -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42;
+    -fx-padding: 0; -fx-content-display: GRAPHIC_ONLY; -fx-alignment: CENTER;
+    -fx-background-color: #20272b; -fx-background-radius: 10;
+    -fx-border-color: #465158; -fx-border-radius: 10; -fx-cursor: hand;
+    -fx-focus-color: transparent; -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0; -fx-border-insets: 0;
+}
+.agenda-back-button-v19:hover { -fx-background-color: #26342f; -fx-border-color: -color-principal; -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 0); }
+.agenda-back-icon-v19, .agenda-module-icon-v19, .agenda-action-icon-v19 {
+    -fx-fill: transparent; -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round; -fx-stroke-line-join: round;
+}
+.agenda-back-icon-v19 { -fx-stroke: #b7c3c8; -fx-scale-x: .78; -fx-scale-y: .78; }
+.agenda-back-button-v19:hover .agenda-back-icon-v19 { -fx-stroke: white; }
+.agenda-module-icon-shell-v19 { -fx-background-color: #19282e; -fx-background-radius: 11; -fx-border-color: #3d6675; -fx-border-radius: 11; }
+.agenda-module-icon-v19 { -fx-stroke: #8fc7da; -fx-scale-x: .72; -fx-scale-y: .72; }
+.agenda-title-block-v19 { -fx-translate-y: 1; }
+.agenda-page-title { -fx-font-size: 27px; }
+
+/* Controles temporales compactos y alineados. */
+.agenda-date-controls { -fx-padding: 4; -fx-background-radius: 11; -fx-border-radius: 11; }
+.agenda-nav-button, .agenda-today-button, .agenda-update-button, .agenda-date-picker {
+    -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36;
+}
+.agenda-nav-button { -fx-min-width: 36; -fx-pref-width: 36; -fx-max-width: 36; -fx-padding: 0; }
+.agenda-today-button, .agenda-update-button { -fx-content-display: LEFT; -fx-graphic-text-gap: 7; }
+.agenda-action-icon-slot-v19 { -fx-alignment: CENTER; }
+.agenda-action-icon-v19 { -fx-stroke: #b9c6cb; -fx-scale-x: .67; -fx-scale-y: .67; }
+.agenda-update-button .agenda-action-icon-v19,
+.agenda-root .primary-button .agenda-action-icon-v19 { -fx-stroke: white; }
+.agenda-root .payment-button .agenda-action-icon-v19 { -fx-stroke: #d8e0e3; }
+.agenda-root .whatsapp-button .agenda-action-icon-v19 { -fx-stroke: #bdebd0; }
+.agenda-icon-only-v19 { -fx-content-display: GRAPHIC_ONLY; }
+
+/* Meta barra e indicadores mas densos. */
+.agenda-meta-bar { -fx-padding: 6 10; }
+.legend-item { -fx-padding: 3 7; -fx-font-size: 8.5px; }
+
+/* Panel lateral compacto. */
+.agenda-detail-panel { -fx-padding: 14; -fx-spacing: 10; }
+.agenda-detail-card, .agenda-finance-card { -fx-padding: 11; }
+.agenda-detail-action-v19 { -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42; -fx-content-display: LEFT; -fx-graphic-text-gap: 8; }
+.agenda-detail-close { -fx-padding: 0; -fx-background-radius: 8; -fx-border-radius: 8; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; }
+
+/* Criterio comun de interacción. */
+.agenda-root .button:hover {
+    -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1;
+}
+.agenda-root .button:pressed {
+    -fx-translate-y: 0; -fx-scale-x: .985; -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+.agenda-root .agenda-back-button-v19:pressed {
+    -fx-scale-x: .97; -fx-scale-y: .97;
+    -fx-background-color: #1b2421; -fx-border-color: #477663;
+}
+.agenda-root .button:focused {
+    -fx-focus-color: transparent; -fx-faint-focus-color: transparent;
+}
+.agenda-root .button:disabled,
+.agenda-root .button:disabled:hover,
+.agenda-root .button:disabled:pressed {
+    -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1; -fx-effect: none;
+}
+
+/* Las tarjetas de la grilla no se escalan: su feedback sigue siendo color y seleccion. */
+.agenda-cell:pressed { -fx-scale-x: 1; -fx-scale-y: 1; }
+
+
+
+/* agenda-grilla-estable-v20 */
+/* Una sola matriz temporal: sin gaps dobles ni cambios geometricos al seleccionar. */
+.agenda-grid, .agenda-fixed-header {
+    -fx-hgap: 0;
+    -fx-vgap: 0;
+    -fx-padding: 1;
+}
+.agenda-column-divider {
+    -fx-background-color: #30383d;
+    -fx-opacity: .82;
+}
+.agenda-time-cell {
+    -fx-padding: 4 6;
+    -fx-border-color: transparent transparent #293137 transparent;
+}
+
+/* Tarjetas mas integradas a la linea temporal. */
+.agenda-cell {
+    -fx-background-insets: 2;
+    -fx-border-insets: 2;
+    -fx-padding: 8 10;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+}
+.agenda-event-time { -fx-font-size: 8.5px; }
+.agenda-event-title { -fx-line-spacing: 1px; }
+.agenda-event-subtitle { -fx-line-spacing: 1px; }
+
+/* Seleccion estable: misma geometria, solo mas luz y contraste. */
+.agenda-cell-selected,
+.agenda-disponible.agenda-cell-selected,
+.agenda-pendiente.agenda-cell-selected,
+.agenda-confirmada.agenda-cell-selected,
+.agenda-completada.agenda-cell-selected,
+.agenda-ausente.agenda-cell-selected,
+.agenda-bloqueada.agenda-cell-selected,
+.agenda-partido-torneo.agenda-cell-selected {
+    -fx-background-insets: 2;
+    -fx-border-insets: 2;
+    -fx-border-width: 1 1 1 4;
+}
+.agenda-cell-selected {
+    -fx-effect: dropshadow(gaussian, rgba(130,174,194,.28), 8, .10, 0, 0);
+}
+.agenda-disponible.agenda-cell-selected {
+    -fx-background-color: #17302d;
+    -fx-border-color: #62c6a8;
+    -fx-effect: dropshadow(gaussian, rgba(65,188,151,.30), 8, .10, 0, 0);
+}
+.agenda-pendiente.agenda-cell-selected {
+    -fx-border-color: #e7bb61;
+    -fx-effect: dropshadow(gaussian, rgba(214,169,79,.30), 8, .10, 0, 0);
+}
+.agenda-confirmada.agenda-cell-selected {
+    -fx-border-color: #8ac8ee;
+    -fx-effect: dropshadow(gaussian, rgba(109,167,207,.32), 8, .10, 0, 0);
+}
+.agenda-completada.agenda-cell-selected {
+    -fx-border-color: #82c8a5;
+    -fx-effect: dropshadow(gaussian, rgba(105,169,137,.30), 8, .10, 0, 0);
+}
+.agenda-ausente.agenda-cell-selected,
+.agenda-bloqueada.agenda-cell-selected {
+    -fx-effect: dropshadow(gaussian, rgba(202,115,121,.30), 8, .10, 0, 0);
+}
+.agenda-partido-torneo.agenda-cell-selected {
+    -fx-border-color: #b99aef;
+    -fx-effect: dropshadow(gaussian, rgba(146,117,207,.32), 8, .10, 0, 0);
+}
+
+/* Fragmentos que no alcanzan la duracion minima: superficie reconocible, no hueco negro. */
+.agenda-fragmento-no-reservable,
+.agenda-fragmento-no-reservable:hover {
+    -fx-background-color: linear-gradient(to bottom, #171c20, #161b1f);
+    -fx-border-color: transparent transparent #293137 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-opacity: 1;
+    -fx-cursor: default;
+}
+
+/* Superficies pasadas y filtradas conservan la misma cuadricula. */
+.agenda-timeline-slot, .agenda-filtered-slot,
+.agenda-filtered-placeholder {
+    -fx-border-color: transparent transparent #293137 transparent;
+}
+
+/* Bloques largos aprovechan la altura sin exagerar espacios. */
+.agenda-cell .agenda-event-badge { -fx-padding: 2 6; }
+
+/* agenda-detalles-finales-v21 */
+/* Etiquetas estables aun con nombres largos de partidos o eventos. */
+.agenda-detail-card .agenda-detail-label {
+    -fx-min-width: 112;
+    -fx-pref-width: 112;
+    -fx-max-width: 112;
+    -fx-text-overrun: clip;
+    -fx-wrap-text: false;
+}
+.agenda-detail-card .agenda-detail-value {
+    -fx-wrap-text: true;
+    -fx-text-overrun: ellipsis;
+}
+
+/* Fragmentos no reservables: visibles como parte de la linea temporal. */
+.agenda-fragmento-no-reservable,
+.agenda-fragmento-no-reservable:hover {
+    -fx-background-color: #1a2024;
+    -fx-border-color: transparent transparent #30383e transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-opacity: 1;
+    -fx-effect: none;
+    -fx-cursor: default;
+}

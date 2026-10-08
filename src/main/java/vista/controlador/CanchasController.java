@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -25,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.shape.SVGPath;
 import negocio.Cancha;
 import negocio.TipoCancha;
 import servicio.CanchaService;
@@ -41,9 +43,15 @@ public class CanchasController {
 
 	private FilteredList<Cancha> canchasFiltradas;
 	private Cancha canchaSeleccionada;
+	private String estadoFormularioInicial = "";
+	private boolean actualizandoFormulario;
 
 	@FXML
 	private TextField campoBuscar;
+	@FXML private ScrollPane scrollDetalleCancha;
+	@FXML private Label etiquetaResultados;
+	@FXML private Label etiquetaAyudaListado;
+	@FXML private Label etiquetaModoCancha;
 	@FXML
 	private TableView<Cancha> tablaCanchas;
 	@FXML
@@ -105,6 +113,7 @@ public class CanchasController {
 	private Button botonGuardar;
 	@FXML
 	private Button botonDesactivar;
+	@FXML private SVGPath iconoAccionEstado;
 	@FXML
 	private Button botonEliminarDefinitivamente;
 	@FXML
@@ -117,6 +126,7 @@ public class CanchasController {
 		configurarCombos();
 		configurarTabla();
 		configurarBusqueda();
+		configurarCambiosFormulario();
 		cargarCanchas();
 		nuevo();
 	}
@@ -142,6 +152,7 @@ public class CanchasController {
 	}
 
 	private void configurarTabla() {
+		tablaCanchas.setFixedCellSize(61);
 		columnaOrden.setCellValueFactory(
 		                new PropertyValueFactory<>("ordenVisual"));
 		columnaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
@@ -152,7 +163,7 @@ public class CanchasController {
 		columnaPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
 		columnaPrecio.setCellFactory(columna -> new javafx.scene.control.TableCell<>() {
                         {
-                                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                                setAlignment(javafx.geometry.Pos.CENTER);
                                 getStyleClass().add("court-price-cell");
                         }
                         @Override
@@ -182,12 +193,20 @@ public class CanchasController {
                         TableRow<Cancha> fila = new TableRow<>();
                         fila.itemProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, actual));
                         fila.selectedProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, fila.getItem()));
+                        fila.emptyProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, fila.getItem()));
+                        fila.setOnMousePressed(evento -> seleccionarFilaCancha(fila));
                         return fila;
                 });
                 tablaCanchas.setOnMouseClicked(evento -> { if (clicEnFondoTabla(evento.getTarget())) nuevo(); });
                 tablaCanchas.getSelectionModel().selectedItemProperty().addListener((observable, anterior, actual) -> {
                         if (actual != null) editar(actual);
                 });
+	}
+
+	private void seleccionarFilaCancha(TableRow<Cancha> fila) {
+	        if (fila == null || fila.isEmpty() || fila.getItem() == null) return;
+	        tablaCanchas.getSelectionModel().select(fila.getItem());
+	        tablaCanchas.requestFocus();
 	}
 
 	private void actualizarClaseFila(TableRow<Cancha> fila, Cancha cancha) {
@@ -216,7 +235,28 @@ public class CanchasController {
 
 			canchasFiltradas.setPredicate(cancha -> filtro.isBlank() || contiene(cancha.getNombre(), filtro)
 					|| contiene(cancha.getSuperficie(), filtro) || contiene(cancha.getTipo().toString(), filtro));
+			actualizarResultadosVisibles();
 		});
+	}
+
+	@FXML
+	private void limpiarBusqueda() {
+		campoBuscar.clear();
+		limpiarMensajeContextual();
+		nuevo();
+		actualizarResultadosVisibles();
+		campoBuscar.requestFocus();
+	}
+
+	private void actualizarResultadosVisibles() {
+		if (etiquetaResultados == null || canchasFiltradas == null) return;
+		int visibles = canchasFiltradas.size();
+		etiquetaResultados.setText(visibles + (visibles == 1 ? " cancha visible" : " canchas visibles"));
+	}
+
+	private void actualizarAyudaListado(Cancha cancha) {
+		if (etiquetaAyudaListado == null) return;
+		etiquetaAyudaListado.setText(cancha == null ? "Seleccioná una cancha para editarla" : "Seleccionada: " + cancha.getNombre());
 	}
 
 	private boolean contiene(String valor, String filtro) {
@@ -228,7 +268,9 @@ public class CanchasController {
 		try {
 			List<Cancha> resultado = canchaService.listarTodas();
 			canchas.setAll(resultado);
-			mostrarInfo(resultado.size() + " cancha(s) cargada(s).");
+			if (tablaCanchas.getSelectionModel().getSelectedItem() == null && !resultado.isEmpty()) tablaCanchas.scrollTo(0);
+			actualizarResultadosVisibles();
+			mostrarInfo(resultado.size() + (resultado.size() == 1 ? " cancha cargada." : " canchas cargadas."));
 		} catch (RuntimeException exception) {
 			mostrarError(exception.getMessage());
 		}
@@ -236,8 +278,11 @@ public class CanchasController {
 
 	@FXML
 	private void nuevo() {
+		limpiarMensajeContextual();
+		actualizandoFormulario = true;
 		canchaSeleccionada = null;
 		tablaCanchas.getSelectionModel().clearSelection();
+		etiquetaModoCancha.setText("NUEVA CANCHA");
 		tituloFormulario.setText("Nueva cancha");
                 subtituloFormulario.setText("Configurá disponibilidad, horarios y tarifa del nuevo espacio.");
                 insigniaEstadoCancha.setVisible(false);
@@ -251,11 +296,8 @@ public class CanchasController {
                 botonSubir.setManaged(false);
                 botonBajar.setVisible(false);
                 botonBajar.setManaged(false);
-                botonDesactivar.setText("DESACTIVAR");
-                botonDesactivar.getStyleClass().removeAll(
-                                "danger-button", "reactivate-button");
-                botonDesactivar.getStyleClass().add("danger-button");
-                botonGuardar.setDisable(false);
+                configurarBotonEstado(true);
+
 
 		campoNombre.clear();
 		comboTipo.getSelectionModel().select(TipoCancha.CUBIERTA);
@@ -267,12 +309,20 @@ public class CanchasController {
 		campoPrecio.clear();
 		campoDescripcion.clear();
 		seleccionarDiasLaborales();
-		etiquetaMensaje.setText("");
+		actualizarMensaje("", false);
+		estadoFormularioInicial = estadoFormularioActual();
+		actualizandoFormulario = false;
+		actualizarEstadoGuardar();
+		actualizarAyudaListado(null);
+		volverArribaDetalle();
 		campoNombre.requestFocus();
 	}
 
 	private void editar(Cancha cancha) {
+		limpiarMensajeContextual();
+		actualizandoFormulario = true;
 		canchaSeleccionada = cancha;
+		etiquetaModoCancha.setText("CANCHA SELECCIONADA");
 		tituloFormulario.setText("Editar cancha");
                 subtituloFormulario.setText(cancha.getNombre() + " · " + cancha.getTipo() + "\n"
                                 + (cancha.getSuperficie() == null || cancha.getSuperficie().isBlank()
@@ -286,13 +336,8 @@ public class CanchasController {
 		botonGuardar.setText("GUARDAR CAMBIOS");
 		botonDesactivar.setVisible(true);
 		botonDesactivar.setManaged(true);
-                botonDesactivar.setText(cancha.isActivo()
-                                ? "DESACTIVAR" : "REACTIVAR");
-                botonDesactivar.getStyleClass().removeAll(
-                                "danger-button", "reactivate-button");
-                botonDesactivar.getStyleClass().add(cancha.isActivo()
-                                ? "danger-button" : "reactivate-button");
-                botonGuardar.setDisable(!cancha.isActivo());
+                configurarBotonEstado(cancha.isActivo());
+
                 botonEliminarDefinitivamente.setVisible(!cancha.isActivo());
                 botonEliminarDefinitivamente.setManaged(!cancha.isActivo());
                 botonSubir.setVisible(true);
@@ -311,8 +356,39 @@ public class CanchasController {
 		campoPrecio.setText(cancha.getPrecio().toPlainString());
 		campoDescripcion.setText(cancha.getDescripcion());
 		cargarDias(cancha.getDiasDisponibles());
-		etiquetaMensaje.setText("");
+		actualizarMensaje("", false);
+		estadoFormularioInicial = estadoFormularioActual();
+		actualizandoFormulario = false;
+		actualizarEstadoGuardar();
+		actualizarAyudaListado(cancha);
+		volverArribaDetalle();
 	}
+
+	private void volverArribaDetalle() {
+		if (scrollDetalleCancha == null) return;
+		javafx.application.Platform.runLater(() -> { scrollDetalleCancha.setVvalue(0); scrollDetalleCancha.setHvalue(0); });
+	}
+
+	private void configurarCambiosFormulario() {
+		javafx.beans.InvalidationListener listener = obs -> { actualizarEstadoGuardar(); actualizarMensaje("", false); };
+		campoNombre.textProperty().addListener(listener); campoSuperficie.textProperty().addListener(listener); campoPrecio.textProperty().addListener(listener); campoDescripcion.textProperty().addListener(listener);
+		comboTipo.valueProperty().addListener(listener); comboApertura.valueProperty().addListener(listener); comboCierre.valueProperty().addListener(listener); comboDuracion.valueProperty().addListener(listener); checkIluminacion.selectedProperty().addListener(listener);
+		for (CheckBox check : List.of(checkLunes, checkMartes, checkMiercoles, checkJueves, checkViernes, checkSabado, checkDomingo)) check.selectedProperty().addListener(listener);
+	}
+
+	private void actualizarEstadoGuardar() {
+		if (actualizandoFormulario || botonGuardar == null) return;
+		boolean valido = !texto(campoNombre).isBlank() && comboTipo.getValue() != null && comboApertura.getValue() != null && comboCierre.getValue() != null && comboDuracion.getValue() != null && !texto(campoPrecio).isBlank() && !obtenerDiasSeleccionados().isEmpty();
+		boolean habilitado = canchaSeleccionada == null ? valido : canchaSeleccionada.isActivo() && valido && !estadoFormularioActual().equals(estadoFormularioInicial);
+		botonGuardar.setDisable(!habilitado);
+	}
+
+	private String estadoFormularioActual() {
+		return String.join("\u001F", texto(campoNombre), String.valueOf(comboTipo.getValue()), texto(campoSuperficie), String.valueOf(checkIluminacion.isSelected()), String.valueOf(comboApertura.getValue()), String.valueOf(comboCierre.getValue()), String.valueOf(comboDuracion.getValue()), texto(campoPrecio), texto(campoDescripcion), obtenerDiasSeleccionados().toString());
+	}
+
+	private String texto(TextField campo) { return campo == null || campo.getText() == null ? "" : campo.getText().trim(); }
+	private String texto(TextArea campo) { return campo == null || campo.getText() == null ? "" : campo.getText().trim(); }
 
 	@FXML
 	private void guardar() {
@@ -339,6 +415,22 @@ public class CanchasController {
 			mostrarError(exception.getMessage());
 		} catch (RuntimeException exception) {
 			mostrarError("No se pudo guardar la cancha: " + exception.getMessage());
+		}
+	}
+
+	private void configurarBotonEstado(boolean activa) {
+		botonDesactivar.setText(activa ? "DESACTIVAR" : "REACTIVAR");
+		botonDesactivar.getStyleClass().removeAll(
+				"danger-button", "reactivate-button",
+				"court-deactivate-button-v1",
+				"court-reactivate-button-v3");
+		botonDesactivar.getStyleClass().add(activa
+				? "court-deactivate-button-v1"
+				: "court-reactivate-button-v3");
+		if (iconoAccionEstado != null) {
+			iconoAccionEstado.setContent(activa
+					? "M12 3 C7 3 3 7 3 12 C3 17 7 21 12 21 C17 21 21 17 21 12 C21 7 17 3 12 3 M7 12 L17 12"
+					: "M20 7 L20 2 L15 2 M20 2 C15 -1 7 1 4 7 M4 17 L4 22 L9 22 M4 22 C9 25 17 23 20 17");
 		}
 	}
 
@@ -429,9 +521,11 @@ public class CanchasController {
 	                canchas.stream()
 	                        .filter(cancha -> cancha.getId() == id)
 	                        .findFirst()
-	                        .ifPresent(cancha ->
-	                                tablaCanchas.getSelectionModel()
-	                                        .select(cancha));
+	                        .ifPresent(cancha -> {
+	                                tablaCanchas.getSelectionModel().select(cancha);
+	                                javafx.application.Platform.runLater(() ->
+	                                        tablaCanchas.scrollTo(cancha));
+	                        });
 	                mostrarInfo("El orden de las canchas fue actualizado.");
 	        } catch (RuntimeException exception) {
 	                mostrarError(exception.getMessage());
@@ -501,19 +595,17 @@ public class CanchasController {
 				DayOfWeek.FRIDAY, DayOfWeek.SATURDAY));
 	}
 
-	private void mostrarError(String mensaje) {
-		etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje);
-		etiquetaMensaje.getStyleClass().remove("mensaje-exito");
-		if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) {
-			etiquetaMensaje.getStyleClass().add("mensaje-error");
-		}
+	private void limpiarMensajeContextual() {
+		if (etiquetaMensaje == null) return;
+		etiquetaMensaje.setText("");
+		etiquetaMensaje.setVisible(false);
+		etiquetaMensaje.setManaged(false);
+		etiquetaMensaje.getStyleClass().removeAll("mensaje-exito", "mensaje-error");
 	}
 
-	private void mostrarInfo(String mensaje) {
-		etiquetaMensaje.setText(mensaje);
-		etiquetaMensaje.getStyleClass().remove("mensaje-error");
-		if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) {
-			etiquetaMensaje.getStyleClass().add("mensaje-exito");
-		}
+	private void mostrarError(String mensaje) { actualizarMensaje(mensaje == null ? "Ocurrió un error." : mensaje, true); }
+	private void mostrarInfo(String mensaje) { actualizarMensaje(mensaje, false); }
+	private void actualizarMensaje(String mensaje, boolean error) {
+		String texto = mensaje == null ? "" : mensaje.trim(); etiquetaMensaje.setText(texto); etiquetaMensaje.setVisible(!texto.isBlank()); etiquetaMensaje.setManaged(!texto.isBlank()); etiquetaMensaje.getStyleClass().removeAll("mensaje-exito", "mensaje-error"); if (!texto.isBlank()) etiquetaMensaje.getStyleClass().add(error ? "mensaje-error" : "mensaje-exito");
 	}
 }

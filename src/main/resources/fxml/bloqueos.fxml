@@ -3,48 +3,35 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.BloqueosController"
             styleClass="module-root, blocks-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
-            <children>
-                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
-                <VBox spacing="3">
-                    <children>
-                        <Label text="Bloqueos de cancha" styleClass="page-title" />
-                        <Label text="Reservá franjas para mantenimiento, torneos y eventos privados."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button text="NUEVO BLOQUEO" onAction="#nuevo"
-                        styleClass="primary-button" />
-            </children>
+        <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header, blocks-module-header-v1">
+            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+            <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="blocks-back-button-v1"><tooltip><Tooltip text="Volver al inicio"/></tooltip><graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="blocks-back-icon-v1"/></graphic></Button>
+            <StackPane minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="blocks-module-icon-shell-v1"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M8 15 L16 15" styleClass="blocks-module-icon-v1"/></StackPane>
+            <VBox spacing="2" styleClass="blocks-title-block-v1"><Label text="Bloqueos de cancha" styleClass="page-title"/><Label text="Reservá franjas para mantenimiento, torneos y eventos privados." styleClass="page-subtitle"/></VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="NUEVO BLOQUEO" onAction="#nuevo" styleClass="blocks-new-button-v1"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M12 12 L12 18 M9 15 L15 15" styleClass="blocks-action-icon-v1"/></StackPane></graphic></Button>
         </HBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.62" styleClass="module-split">
+        <SplitPane dividerPositions="0.60" styleClass="module-split, blocks-split-v1">
             <items>
-                <VBox spacing="16" styleClass="list-panel">
-                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                <VBox spacing="10" styleClass="list-panel, blocks-list-v1">
+                    <padding><Insets top="16" right="18" bottom="18" left="24"/></padding>
                     <children>
-                        <HBox spacing="10">
-                            <children>
-                                <TextField fx:id="campoBuscar"
-                                           promptText="Buscar por cancha, motivo o fecha..."
-                                           HBox.hgrow="ALWAYS"
-                                           styleClass="modern-field" />
-                                <Button text="LIMPIAR" onAction="#limpiarSeleccion"
-                                        styleClass="secondary-button, block-clear-button" />
-                                <Button text="Actualizar" onAction="#cargarBloqueos"
-                                        styleClass="secondary-button" />
-                            </children>
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="blocks-filter-row-v1">
+                            <StackPane alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" styleClass="blocks-search-shell-v1"><TextField fx:id="campoBuscar" promptText="Buscar por cancha, motivo o fecha..." maxWidth="Infinity" styleClass="blocks-search-field-v1"/><StackPane mouseTransparent="true" minWidth="40" prefWidth="40" maxWidth="40" minHeight="40" prefHeight="40" maxHeight="40" StackPane.alignment="CENTER_LEFT"><SVGPath content="M10.5 4 A6.5 6.5 0 1 0 10.5 17 A6.5 6.5 0 1 0 10.5 4 M15.5 15.5 L21 21" styleClass="blocks-search-icon-v1"/></StackPane></StackPane>
+                            <Button text="LIMPIAR" onAction="#limpiarSeleccion" styleClass="blocks-filter-button-v1"><graphic><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="blocks-button-icon-v1"/></graphic></Button>
+                            <Button text="ACTUALIZAR" onAction="#cargarBloqueos" styleClass="blocks-refresh-button-v1"><graphic><StackPane minWidth="17" prefWidth="17" maxWidth="17" minHeight="17" prefHeight="17" maxHeight="17"><SVGPath content="M16.5 6 A6.5 6.5 0 1 0 17.5 13 M16.5 6 L16.5 2.5 M16.5 6 L13 6" styleClass="blocks-refresh-icon-v1"/></StackPane></graphic></Button>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" styleClass="blocks-results-bar-v1"><Label fx:id="etiquetaResultados" text="0 bloqueos visibles" styleClass="blocks-results-text-v1"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaAyudaListado" text="Seleccioná un bloqueo para editarlo" styleClass="blocks-results-hint-v1"/></HBox>
 
                         <TableView fx:id="tablaBloqueos" VBox.vgrow="ALWAYS"
                                    styleClass="modern-table">
@@ -62,25 +49,17 @@
                     </children>
                 </VBox>
 
-                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                <ScrollPane fx:id="scrollDetalleBloqueo" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
                     <content>
-                        <VBox spacing="15" styleClass="form-card">
-                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                        <VBox spacing="13" styleClass="form-card, blocks-form-v1">
+                            <padding><Insets top="18" right="24" bottom="28" left="24"/></padding>
                             <children>
                                 <VBox spacing="6" styleClass="block-detail-header">
-                                    <HBox alignment="CENTER_LEFT" spacing="8">
-                                        <Label fx:id="tituloFormulario" text="Nuevo bloqueo"
-                                               styleClass="section-title" />
-                                        <Region HBox.hgrow="ALWAYS" />
-                                        <Label fx:id="insigniaEstadoBloqueo" text="PROGRAMADO"
-                                               visible="false" managed="false"
-                                               styleClass="block-detail-status" />
-                                    </HBox>
-                                    <Label fx:id="subtituloFormulario"
-                                           text="Reservá temporalmente una franja de la cancha."
-                                           wrapText="true" styleClass="block-detail-subtitle" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10"><StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="block-detail-icon-shell-v1"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M8 15 L16 15" styleClass="block-detail-icon-v1"/></StackPane><VBox spacing="1"><Label fx:id="etiquetaModoBloqueo" text="NUEVO BLOQUEO" styleClass="block-detail-eyebrow-v1"/><Label fx:id="tituloFormulario" text="Nuevo bloqueo" styleClass="section-title"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="insigniaEstadoBloqueo" text="PROGRAMADO" visible="false" managed="false" styleClass="block-detail-status"/></HBox>
+                                    <Label fx:id="subtituloFormulario" text="Reservá temporalmente una franja de la cancha." wrapText="true" styleClass="block-detail-subtitle"/>
                                 </VBox>
 
+                                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="block-section-header-v1"><StackPane styleClass="block-section-icon-shell-v1"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="block-section-icon-v1"/></StackPane><Label text="Franja bloqueada" styleClass="block-section-title-v1"/></HBox>
                                 <Label text="Cancha *" styleClass="field-label" />
                                 <ComboBox fx:id="comboCancha" maxWidth="Infinity"
                                           promptText="Seleccionar cancha"
@@ -113,7 +92,9 @@
                                     </children>
                                 </GridPane>
 
-                                <Label text="Motivo frecuente" styleClass="field-label" />
+                                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="block-section-header-v1"><StackPane styleClass="block-section-icon-shell-v1"><SVGPath content="M5 4 L19 4 L19 20 L5 20 Z M8 8 L16 8 M8 12 L16 12 M8 16 L14 16" styleClass="block-section-icon-v1"/></StackPane><Label text="Motivo y validación" styleClass="block-section-title-v1"/></HBox>
+
+                                <Label text="Motivo frecuente" styleClass="field-label"/>
                                 <ComboBox fx:id="comboMotivoRapido" maxWidth="Infinity"
                                           promptText="Seleccionar una opción"
                                           styleClass="modern-combo" />
@@ -124,27 +105,17 @@
                                           promptText="Describí el motivo del bloqueo..."
                                           styleClass="modern-area" />
 
-                                <VBox spacing="8" styleClass="block-note">
+                                <VBox spacing="7" styleClass="block-note"><HBox alignment="CENTER_LEFT" spacing="8"><StackPane minWidth="28" prefWidth="28" maxWidth="28" minHeight="28" prefHeight="28" maxHeight="28" styleClass="block-note-icon-shell-v1"><SVGPath content="M12 3 L20 6 L20 12 C20 17 16 20 12 22 C8 20 4 17 4 12 L4 6 Z M8 12 L11 15 L16 9" styleClass="block-note-icon-v1"/></StackPane><Label text="VALIDACIÓN AUTOMÁTICA" styleClass="block-note-title"/></HBox>
                                     <children>
-                                        <Label text="VALIDACIÓN AUTOMÁTICA" styleClass="block-note-title" />
-                                        <Label text="El sistema comprobará que la franja esté dentro del horario de la cancha y que no tenga reservas activas ni otros bloqueos superpuestos."
+                                                                                <Label text="El sistema comprobará que la franja esté dentro del horario de la cancha y que no tenga reservas activas ni otros bloqueos superpuestos."
                                                wrapText="true"
                                                styleClass="block-note-text" />
                                     </children>
                                 </VBox>
 
-                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+                                <Label fx:id="etiquetaMensaje" wrapText="true" visible="false" managed="false" styleClass="block-form-message-v1"/>
 
-                                <HBox spacing="10">
-                                    <children>
-                                        <Button fx:id="botonGuardar" text="GUARDAR BLOQUEO"
-                                                onAction="#guardar" HBox.hgrow="ALWAYS"
-                                                maxWidth="Infinity" styleClass="primary-button" />
-                                        <Button fx:id="botonEliminar" text="ELIMINAR"
-                                                onAction="#eliminar"
-                                                styleClass="danger-button" />
-                                    </children>
-                                </HBox>
+                                <HBox spacing="12" styleClass="block-actions-v1"><Button fx:id="botonGuardar" text="GUARDAR BLOQUEO" onAction="#guardar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="block-save-button-v1"><graphic><SVGPath content="M4 3 L18 3 L21 6 L21 21 L3 21 L3 3 Z M7 3 L7 9 L17 9 L17 3 M7 15 L17 15 L17 21 L7 21 Z" styleClass="blocks-button-icon-v1"/></graphic></Button><Button fx:id="botonEliminar" text="ELIMINAR" onAction="#eliminar" styleClass="block-delete-button-v1"><graphic><SVGPath content="M5 7 L19 7 M9 7 L9 4 L15 4 L15 7 M7 7 L8 21 L16 21 L17 7 M10 10 L10 18 M14 10 L14 18" styleClass="blocks-button-icon-v1"/></graphic></Button></HBox>
                             </children>
                         </VBox>
                     </content>

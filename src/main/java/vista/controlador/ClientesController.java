@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.Node;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -51,8 +52,14 @@ public class ClientesController {
     private FilteredList<Cliente> clientesFiltrados;
     private Cliente clienteSeleccionado;
     private long solicitudHistorialActual;
+    private String estadoFormularioInicial = "";
+    private boolean actualizandoFormulario;
 
     @FXML private TextField campoBuscar;
+    @FXML private ScrollPane scrollDetalleCliente;
+    @FXML private Label etiquetaResultados;
+    @FXML private Label etiquetaAyudaListado;
+    @FXML private Label etiquetaModoCliente;
     @FXML private TableView<Cliente> tablaClientes;
     @FXML private TableColumn<Cliente, String> columnaNombre;
     @FXML private TableColumn<Cliente, String> columnaDocumento;
@@ -73,6 +80,7 @@ public class ClientesController {
     @FXML private Button botonReactivar;
     @FXML private Button botonEliminarDefinitivamente;
     @FXML private Button botonNuevaReserva;
+    @FXML private Button botonAbrirReserva;
     @FXML private Label etiquetaTotalReservas;
     @FXML private Label etiquetaCompletadas;
     @FXML private Label etiquetaCanceladas;
@@ -94,6 +102,7 @@ public class ClientesController {
         configurarTablaClientes();
         configurarTablaHistorial();
         configurarBusqueda();
+        configurarCambiosFormulario();
         cargarClientes();
         nuevo();
         tablaClientes.setOnKeyPressed(evento -> {
@@ -107,11 +116,16 @@ public class ClientesController {
     private void configurarTablaClientes() {
         tablaClientes.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tablaClientes.setFixedCellSize(61);
         columnaNombre.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().getNombreCompleto()));
         columnaDocumento.setCellValueFactory(new PropertyValueFactory<>("documento"));
         columnaTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         columnaEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         columnaEstado.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().isActivo() ? "Activo" : "Inactivo"));
+        columnaNombre.getStyleClass().add("client-column-name-v6");
+        columnaDocumento.getStyleClass().add("client-column-centered-v6");
+        columnaTelefono.getStyleClass().add("client-column-centered-v6");
+        columnaEstado.getStyleClass().add("client-column-centered-v6");
         columnaEstado.setCellFactory(columna -> new TableCell<>() {
             private final Label insignia = new Label();
             { insignia.getStyleClass().add("client-status-badge"); setText(null); }
@@ -127,8 +141,13 @@ public class ClientesController {
         });
         tablaClientes.setRowFactory(tabla -> {
             TableRow<Cliente> fila = new TableRow<>();
-            fila.itemProperty().addListener((obs, anterior, actual) -> actualizarClaseFilaCliente(fila, actual));
-            fila.selectedProperty().addListener((obs, anterior, actual) -> actualizarClaseFilaCliente(fila, fila.getItem()));
+            fila.itemProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFilaCliente(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFilaCliente(fila, fila.getItem()));
+            fila.emptyProperty().addListener((obs, anterior, actual) ->
+                    actualizarClaseFilaCliente(fila, fila.getItem()));
+            fila.setOnMousePressed(evento -> seleccionarFilaCliente(fila));
             return fila;
         });
         tablaClientes.setOnMouseClicked(evento -> {
@@ -136,6 +155,7 @@ public class ClientesController {
         });
         tablaClientes.getSelectionModel().selectedItemProperty().addListener((o, a, actual) -> {
             if (actual != null) editar(actual);
+            actualizarAyudaListado(actual);
         });
     }
 
@@ -165,10 +185,20 @@ public class ClientesController {
         columnaHistorialPrecio.setCellValueFactory(new PropertyValueFactory<>("precioTotal"));
         columnaHistorialAcreditado.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(acreditadoPorReserva.getOrDefault(d.getValue().getId(), BigDecimal.ZERO)));
         columnaHistorialSaldo.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(saldoPorReserva.getOrDefault(d.getValue().getId(), BigDecimal.ZERO)));
+        for (TableColumn<Reserva, ?> columna : List.of(
+                columnaHistorialFecha, columnaHistorialHorario,
+                columnaHistorialCancha, columnaHistorialEstado,
+                columnaHistorialPrecio, columnaHistorialAcreditado,
+                columnaHistorialSaldo)) {
+            columna.getStyleClass().add("client-history-column-centered-v6");
+        }
         configurarColumnaMoneda(columnaHistorialPrecio);
         configurarColumnaMoneda(columnaHistorialAcreditado);
         configurarColumnaMoneda(columnaHistorialSaldo);
         tablaHistorial.setItems(historial);
+        tablaHistorial.getSelectionModel().selectedItemProperty()
+                .addListener((obs, anterior, actual) ->
+                        botonAbrirReserva.setDisable(actual == null));
         tablaHistorial.setRowFactory(t -> {
             javafx.scene.control.TableRow<Reserva> fila = new javafx.scene.control.TableRow<>();
             fila.setOnMouseClicked(e -> { if (e.getClickCount() == 2 && !fila.isEmpty()) abrirReserva(fila.getItem()); });
@@ -180,7 +210,7 @@ public class ClientesController {
         columna.setCellFactory(c -> new TableCell<>() {
             @Override protected void updateItem(BigDecimal importe, boolean vacia) {
                 super.updateItem(importe, vacia);
-                setAlignment(javafx.geometry.Pos.CENTER_RIGHT);
+                setAlignment(javafx.geometry.Pos.CENTER);
                 setText(vacia || importe == null ? null : formatearMoneda(importe));
             }
         });
@@ -201,6 +231,12 @@ public class ClientesController {
         if (r == null || r.getHoraInicio() == null) return "";
         String inicio = r.getHoraInicio().format(FORMATO_HORA);
         return r.getHoraFin() == null ? inicio : inicio + " - " + r.getHoraFin().format(FORMATO_HORA);
+    }
+
+    private void seleccionarFilaCliente(TableRow<Cliente> fila) {
+        if (fila == null || fila.isEmpty() || fila.getItem() == null) return;
+        tablaClientes.getSelectionModel().select(fila.getItem());
+        tablaClientes.requestFocus();
     }
 
     private void actualizarClaseFilaCliente(TableRow<Cliente> fila, Cliente cliente) {
@@ -227,7 +263,70 @@ public class ClientesController {
             String f = texto == null ? "" : texto.trim().toLowerCase(Locale.ROOT);
             clientesFiltrados.setPredicate(c -> f.isBlank() || contiene(c.getNombreCompleto(), f)
                     || contiene(c.getDocumento(), f) || contiene(c.getTelefono(), f) || contiene(c.getEmail(), f));
+            actualizarResultadosVisibles();
         });
+    }
+
+    private void volverArribaDetalle() {
+        if (scrollDetalleCliente == null) return;
+        javafx.application.Platform.runLater(() -> {
+            scrollDetalleCliente.setVvalue(0);
+            scrollDetalleCliente.setHvalue(0);
+        });
+    }
+
+    private void configurarCambiosFormulario() {
+        for (TextField campo : List.of(campoNombre, campoApellido,
+                campoDocumento, campoTelefono, campoEmail)) {
+            campo.textProperty().addListener((obs, anterior, actual) ->
+                    actualizarEstadoGuardar());
+        }
+    }
+
+    private void actualizarEstadoGuardar() {
+        if (actualizandoFormulario || botonGuardar == null) return;
+        boolean obligatoriosCompletos = !texto(campoNombre).isBlank()
+                && !texto(campoApellido).isBlank()
+                && !texto(campoDocumento).isBlank()
+                && !texto(campoTelefono).isBlank();
+        boolean habilitado = clienteSeleccionado == null
+                ? obligatoriosCompletos
+                : clienteSeleccionado.isActivo()
+                        && obligatoriosCompletos
+                        && !estadoFormularioActual().equals(estadoFormularioInicial);
+        botonGuardar.setDisable(!habilitado);
+    }
+
+    private String estadoFormularioActual() {
+        return String.join("\u001F", texto(campoNombre), texto(campoApellido),
+                texto(campoDocumento), texto(campoTelefono), texto(campoEmail));
+    }
+
+    private String texto(TextField campo) {
+        return campo == null || campo.getText() == null
+                ? "" : campo.getText().trim();
+    }
+
+    private void actualizarAyudaListado(Cliente cliente) {
+        if (etiquetaAyudaListado == null) return;
+        etiquetaAyudaListado.setText(cliente == null
+                ? "Seleccioná un cliente para editarlo"
+                : "Seleccionado: " + cliente.getNombreCompleto());
+    }
+
+    private void actualizarResultadosVisibles() {
+        if (etiquetaResultados == null || clientesFiltrados == null) return;
+        int visibles = clientesFiltrados.size();
+        String filtro = campoBuscar == null ? "" : campoBuscar.getText();
+        String texto = textoCantidad(visibles, "cliente visible", "clientes visibles");
+        if (filtro != null && !filtro.isBlank()) {
+            texto += " para \"" + filtro.trim() + "\"";
+        }
+        etiquetaResultados.setText(texto);
+    }
+
+    private String textoCantidad(int cantidad, String singular, String plural) {
+        return cantidad + " " + (cantidad == 1 ? singular : plural);
     }
 
     private boolean contiene(String valor, String filtro) {
@@ -236,7 +335,9 @@ public class ClientesController {
 
     @FXML
     private void limpiarSeleccion() {
+        campoBuscar.clear();
         nuevo();
+        actualizarResultadosVisibles();
         campoBuscar.requestFocus();
     }
 
@@ -245,14 +346,21 @@ public class ClientesController {
         try {
             List<Cliente> resultado = clienteService.listarTodos();
             clientes.setAll(resultado);
-            mostrarInfo(resultado.size() + " cliente(s) cargado(s).");
+            if (tablaClientes.getSelectionModel().getSelectedItem() == null
+                    && !resultado.isEmpty()) {
+                tablaClientes.scrollTo(0);
+            }
+            actualizarResultadosVisibles();
+            mostrarInfo(textoCantidad(resultado.size(), "cliente cargado", "clientes cargados") + ".");
         } catch (RuntimeException e) { mostrarError(e.getMessage()); }
     }
 
     @FXML
     private void nuevo() {
+        actualizandoFormulario = true;
         clienteSeleccionado = null;
         tablaClientes.getSelectionModel().clearSelection();
+        etiquetaModoCliente.setText("NUEVO CLIENTE");
         tituloFormulario.setText("Nuevo cliente");
         subtituloFormulario.setText("Registrá los datos personales y de contacto.");
         insigniaEstadoCliente.setVisible(false);
@@ -262,15 +370,21 @@ public class ClientesController {
         mostrarBoton(botonReactivar, false);
         mostrarBoton(botonEliminarDefinitivamente, false);
         mostrarBoton(botonNuevaReserva, false);
-        botonGuardar.setDisable(false);
         campoNombre.clear(); campoApellido.clear(); campoDocumento.clear(); campoTelefono.clear(); campoEmail.clear();
-        etiquetaMensaje.setText("");
+        actualizarMensaje("", false);
         limpiarHistorial();
+        estadoFormularioInicial = estadoFormularioActual();
+        actualizandoFormulario = false;
+        actualizarEstadoGuardar();
+        actualizarAyudaListado(null);
+        volverArribaDetalle();
         campoNombre.requestFocus();
     }
 
     private void editar(Cliente cliente) {
+        actualizandoFormulario = true;
         clienteSeleccionado = cliente;
+        etiquetaModoCliente.setText("CLIENTE SELECCIONADO");
         tituloFormulario.setText("Editar cliente");
         subtituloFormulario.setText(
                 cliente.getNombreCompleto()
@@ -288,13 +402,17 @@ public class ClientesController {
         mostrarBoton(botonReactivar, !cliente.isActivo());
         mostrarBoton(botonEliminarDefinitivamente, !cliente.isActivo());
         mostrarBoton(botonNuevaReserva, cliente.isActivo());
-        botonGuardar.setDisable(!cliente.isActivo());
         campoNombre.setText(cliente.getNombre());
         campoApellido.setText(cliente.getApellido());
         campoDocumento.setText(cliente.getDocumento());
         campoTelefono.setText(cliente.getTelefono());
         campoEmail.setText(cliente.getEmail());
-        etiquetaMensaje.setText("");
+        actualizarMensaje("", false);
+        estadoFormularioInicial = estadoFormularioActual();
+        actualizandoFormulario = false;
+        actualizarEstadoGuardar();
+        actualizarAyudaListado(cliente);
+        volverArribaDetalle();
         cargarHistorial(cliente.getId());
     }
 
@@ -350,8 +468,13 @@ public class ClientesController {
                     resultado.totalAcreditado(),
                     resultado.saldoPendiente());
             tablaHistorial.setDisable(false);
-            mostrarInfo(resultado.reservas().size()
-                    + " reserva(s) cargada(s) para el cliente.");
+            if (resultado.reservas().isEmpty()) {
+                mostrarInfo("El cliente todavía no tiene reservas registradas.");
+            } else {
+                mostrarInfo(textoCantidad(resultado.reservas().size(),
+                        "reserva registrada", "reservas registradas")
+                        + " para este cliente.");
+            }
         });
 
         tarea.setOnFailed(evento -> {
@@ -425,6 +548,8 @@ public class ClientesController {
     private void limpiarHistorial() {
         solicitudHistorialActual++;
         tablaHistorial.setDisable(false);
+        tablaHistorial.getSelectionModel().clearSelection();
+        if (botonAbrirReserva != null) botonAbrirReserva.setDisable(true);
         historial.clear(); acreditadoPorReserva.clear(); saldoPorReserva.clear();
         etiquetaTotalReservas.setText("0"); etiquetaCompletadas.setText("0"); etiquetaCanceladas.setText("0"); etiquetaAusencias.setText("0");
         etiquetaTotalAcreditado.setText("ARS 0.00"); etiquetaSaldoPendiente.setText("ARS 0.00"); etiquetaProximaReserva.setText("Seleccioná un cliente");
@@ -440,6 +565,8 @@ public class ClientesController {
             c.setTelefono(campoTelefono.getText()); c.setEmail(campoEmail.getText());
             if (clienteSeleccionado == null) c.setActivo(true);
             clienteService.guardar(c);
+            estadoFormularioInicial = estadoFormularioActual();
+            actualizarEstadoGuardar();
             cargarClientes();
             clientes.stream().filter(x -> x.getId() == c.getId()).findFirst().ifPresent(x -> tablaClientes.getSelectionModel().select(x));
             mostrarInfo("El cliente se guardó correctamente.");
@@ -520,12 +647,23 @@ public class ClientesController {
     @FXML private void volver() { Navegacion.mostrarDashboard(Navegacion.getUsuarioActual()); }
 
     private void mostrarError(String m) {
-        etiquetaMensaje.setText(m == null ? "Ocurrió un error." : m);
-        etiquetaMensaje.getStyleClass().remove("mensaje-exito");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) etiquetaMensaje.getStyleClass().add("mensaje-error");
+        actualizarMensaje(m == null ? "Ocurrió un error." : m, true);
     }
+
     private void mostrarInfo(String m) {
-        etiquetaMensaje.setText(m); etiquetaMensaje.getStyleClass().remove("mensaje-error");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) etiquetaMensaje.getStyleClass().add("mensaje-exito");
+        actualizarMensaje(m, false);
+    }
+
+    private void actualizarMensaje(String mensaje, boolean error) {
+        String texto = mensaje == null ? "" : mensaje.trim();
+        etiquetaMensaje.setText(texto);
+        etiquetaMensaje.setVisible(!texto.isBlank());
+        etiquetaMensaje.setManaged(!texto.isBlank());
+        etiquetaMensaje.getStyleClass().removeAll(
+                "mensaje-exito", "mensaje-error");
+        if (!texto.isBlank()) {
+            etiquetaMensaje.getStyleClass().add(
+                    error ? "mensaje-error" : "mensaje-exito");
+        }
     }
 }

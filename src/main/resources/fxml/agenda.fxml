@@ -2,6 +2,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.AgendaController"
@@ -10,18 +11,16 @@
         <VBox spacing="8" styleClass="agenda-header-shell">
             <padding><Insets top="12" right="20" bottom="10" left="20"/></padding>
             <HBox alignment="CENTER_LEFT" spacing="14">
-                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/>
-                <VBox spacing="1">
-                    <Label text="Agenda diaria" styleClass="agenda-page-title"/>
-                    <Label fx:id="etiquetaFecha" text="Agenda del complejo" styleClass="agenda-page-subtitle"/>
-                </VBox>
+                <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="agenda-back-button-v19"><tooltip><Tooltip text="Volver a Inicio"/></tooltip><graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="agenda-back-icon-v19"/></graphic></Button>
+                <StackPane minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="agenda-module-icon-shell-v19"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="agenda-module-icon-v19"/></StackPane>
+                <VBox spacing="1" styleClass="agenda-title-block-v19"><Label text="Agenda diaria" styleClass="agenda-page-title"/><Label fx:id="etiquetaFecha" text="Agenda del complejo" styleClass="agenda-page-subtitle"/></VBox>
                 <Region HBox.hgrow="ALWAYS"/>
                 <HBox alignment="CENTER" spacing="7" styleClass="agenda-date-controls">
-                    <Button text="‹" onAction="#diaAnterior" styleClass="agenda-nav-button"/>
-                    <Button text="HOY" onAction="#irHoy" styleClass="agenda-today-button"/>
-                    <Button text="›" onAction="#diaSiguiente" styleClass="agenda-nav-button"/>
+                    <Button onAction="#diaAnterior" styleClass="agenda-nav-button, agenda-icon-only-v19"><tooltip><Tooltip text="Día anterior"/></tooltip><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M14 6 L8 12 L14 18" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
+                    <Button text="HOY" onAction="#irHoy" styleClass="agenda-today-button"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M9 14 L15 14" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
+                    <Button onAction="#diaSiguiente" styleClass="agenda-nav-button, agenda-icon-only-v19"><tooltip><Tooltip text="Día siguiente"/></tooltip><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M10 6 L16 12 L10 18" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
                     <DatePicker fx:id="selectorFecha" prefWidth="155" styleClass="agenda-date-picker"/>
-                    <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#actualizarAgenda" styleClass="agenda-update-button"/>
+                    <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#actualizarAgenda" styleClass="agenda-update-button"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M19 8 A8 8 0 1 0 20 13 M19 4 L19 8 L15 8" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
                 </HBox>
             </HBox>
             <HBox alignment="CENTER_LEFT" spacing="10" styleClass="agenda-meta-bar">
@@ -48,14 +47,14 @@
                     <ScrollPane fx:id="scrollEncabezado" fitToWidth="true"
                                 hbarPolicy="NEVER" vbarPolicy="NEVER"
                                 mouseTransparent="true" styleClass="agenda-header-scroll">
-                        <GridPane fx:id="grillaEncabezado" minWidth="0" hgap="2" styleClass="agenda-fixed-header"/>
+                        <GridPane fx:id="grillaEncabezado" minWidth="0" hgap="0" styleClass="agenda-fixed-header"/>
                     </ScrollPane>
                 </StackPane>
                 <StackPane VBox.vgrow="ALWAYS">
                     <ScrollPane fx:id="scrollAgenda" fitToHeight="false" fitToWidth="true"
                                 pannable="false" hbarPolicy="AS_NEEDED" vbarPolicy="ALWAYS"
                                 styleClass="agenda-scroll">
-                        <GridPane fx:id="grillaAgenda" minWidth="0" hgap="2" vgap="1" styleClass="agenda-grid"/>
+                        <GridPane fx:id="grillaAgenda" minWidth="0" hgap="0" vgap="0" styleClass="agenda-grid"/>
                     </ScrollPane>
                     <VBox fx:id="contenedorSinCanchas" alignment="CENTER" spacing="8"
                           visible="false" managed="false" mouseTransparent="true">
@@ -64,27 +63,31 @@
                     </VBox>
                 </StackPane>
             </VBox>
-            <VBox fx:id="panelDetalle" prefWidth="350" minWidth="330" maxWidth="390"
+            <VBox fx:id="panelDetalle" prefWidth="360" minWidth="340" maxWidth="390"
                   visible="false" managed="false"
                   spacing="13" styleClass="agenda-detail-panel">
-                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <padding><Insets top="14" right="14" bottom="14" left="14"/></padding>
                 <HBox alignment="CENTER_LEFT">
                     <VBox spacing="2">
                         <Label text="DETALLE DEL BLOQUE" styleClass="agenda-detail-overline"/>
                         <Label fx:id="detalleTitulo" text="Sin selección" wrapText="true" styleClass="agenda-detail-title"/>
                     </VBox>
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Button text="✕" onAction="#cerrarDetalle" styleClass="agenda-detail-close"/>
+                    <Button onAction="#cerrarDetalle" minWidth="34" prefWidth="34" maxWidth="34" minHeight="34" prefHeight="34" maxHeight="34" styleClass="agenda-detail-close, agenda-icon-only-v19"><tooltip><Tooltip text="Cerrar detalle"/></tooltip><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
                 </HBox>
                 <Label fx:id="detalleEstado" text="Seleccioná una celda" styleClass="agenda-detail-status"/>
                 <GridPane hgap="10" vgap="9" styleClass="agenda-detail-card">
-                    <Label text="CANCHA" styleClass="agenda-detail-label"/>
+                    <columnConstraints>
+                        <ColumnConstraints minWidth="112" prefWidth="112" maxWidth="112" hgrow="NEVER"/>
+                        <ColumnConstraints minWidth="0" prefWidth="220" maxWidth="Infinity" hgrow="ALWAYS" fillWidth="true"/>
+                    </columnConstraints>
+                    <Label text="CANCHA" minWidth="112" prefWidth="112" maxWidth="112" styleClass="agenda-detail-label"/>
                     <Label fx:id="detalleCancha" text="-" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
-                    <Label text="HORARIO" GridPane.rowIndex="1" styleClass="agenda-detail-label"/>
+                    <Label text="HORARIO" minWidth="112" prefWidth="112" maxWidth="112" GridPane.rowIndex="1" styleClass="agenda-detail-label"/>
                     <Label fx:id="detalleHorario" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="agenda-detail-value"/>
-                    <Label text="CLIENTE / EVENTO" GridPane.rowIndex="2" styleClass="agenda-detail-label"/>
+                    <Label text="CLIENTE / EVENTO" minWidth="112" prefWidth="112" maxWidth="112" GridPane.rowIndex="2" styleClass="agenda-detail-label"/>
                     <Label fx:id="detalleCliente" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
-                    <Label text="CONTACTO" GridPane.rowIndex="3" styleClass="agenda-detail-label"/>
+                    <Label text="CONTACTO" minWidth="112" prefWidth="112" maxWidth="112" GridPane.rowIndex="3" styleClass="agenda-detail-label"/>
                     <Label fx:id="detalleTelefono" text="-" GridPane.rowIndex="3" GridPane.columnIndex="1" wrapText="true" styleClass="agenda-detail-value"/>
                 </GridPane>
                 <GridPane hgap="8" vgap="5" styleClass="agenda-finance-card">
@@ -97,12 +100,12 @@
                 </GridPane>
                 <Label fx:id="detalleAyuda" text="Seleccioná un horario, una reserva, un bloqueo o un partido para ver sus datos." wrapText="true" styleClass="agenda-detail-help"/>
                 <Region VBox.vgrow="ALWAYS"/>
-                <Button fx:id="botonAccionDetalle" visible="false" managed="false" maxWidth="Infinity" styleClass="primary-button"/>
+                <Button fx:id="botonAccionDetalle" visible="false" managed="false" maxWidth="Infinity" styleClass="primary-button, agenda-detail-action-v19"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
                 <HBox spacing="8">
-                    <Button fx:id="botonAbrirReserva" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button"/>
-                    <Button fx:id="botonAbrirPagos" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button"/>
+                    <Button fx:id="botonAbrirReserva" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="primary-button, agenda-detail-action-v19"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
+                    <Button fx:id="botonAbrirPagos" visible="false" managed="false" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button, agenda-detail-action-v19"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M4 6 L20 6 L20 18 L4 18 Z M4 10 L20 10 M7 15 L11 15" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
                 </HBox>
-                <Button fx:id="botonWhatsApp" visible="false" managed="false" maxWidth="Infinity" styleClass="whatsapp-button"/>
+                <Button fx:id="botonWhatsApp" visible="false" managed="false" maxWidth="Infinity" styleClass="whatsapp-button, agenda-detail-action-v19"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="agenda-action-icon-slot-v19"><SVGPath content="M12 3 C7 3 3 6.8 3 11.5 C3 13.4 3.7 15.2 5 16.6 L4 21 L8.7 19.4 C9.7 19.8 10.8 20 12 20 C17 20 21 16.2 21 11.5 C21 6.8 17 3 12 3 Z M8.5 8.5 C9.5 12 12 14.5 15.5 15.5" styleClass="agenda-action-icon-v19"/></StackPane></graphic></Button>
             </VBox>
         </HBox>
     </center>

@@ -464,9 +464,9 @@ public class AgendaController {
 
     private void agregarRestriccionesColumnas(AgendaDiaria agenda) {
         ColumnConstraints hora = new ColumnConstraints();
-        hora.setMinWidth(68);
-        hora.setPrefWidth(74);
-        hora.setMaxWidth(82);
+        hora.setMinWidth(64);
+        hora.setPrefWidth(68);
+        hora.setMaxWidth(74);
         hora.setHgrow(Priority.NEVER);
         hora.setFillWidth(true);
         grillaAgenda.getColumnConstraints().add(hora);
@@ -586,9 +586,15 @@ public class AgendaController {
             Region superficie = new Region();
             superficie.setMinHeight(cantidadFilas * ALTO_FILA);
             superficie.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-            superficie.setMouseTransparent(true);
+            superficie.setMouseTransparent(false);
             superficie.getStyleClass().addAll("agenda-timeline-slot",
                     claseEstado(celda.getEstado()));
+            if (celda.getEstado() == EstadoCeldaAgenda.NO_DISPONIBLE) {
+                superficie.getStyleClass().add(
+                        "agenda-fragmento-no-reservable");
+                Tooltip.install(superficie, new Tooltip(
+                        "Franja no reservable: no alcanza la duracion minima del turno."));
+            }
             return superficie;
         }
         String horario = celda.getHoraInicio().format(FORMATO_HORA)
@@ -600,18 +606,19 @@ public class AgendaController {
         Label etiquetaTitulo = new Label(tituloCelda(celda));
         etiquetaTitulo.setWrapText(true);
         etiquetaTitulo.setMaxWidth(Double.MAX_VALUE);
-        etiquetaTitulo.setMaxHeight(38);
+        etiquetaTitulo.setMaxHeight(cantidadFilas <= 2 ? 34 :
+                cantidadFilas == 3 ? 44 : 58);
         etiquetaTitulo.getStyleClass().add("agenda-event-title");
         VBox.setVgrow(etiquetaTitulo, Priority.ALWAYS);
 
         Label etiquetaSecundaria = new Label(subtituloCelda(celda));
         etiquetaSecundaria.setWrapText(true);
         etiquetaSecundaria.setMaxWidth(Double.MAX_VALUE);
-        etiquetaSecundaria.setMaxHeight(34);
+        etiquetaSecundaria.setMaxHeight(cantidadFilas <= 3 ? 30 : 48);
         etiquetaSecundaria.getStyleClass().add("agenda-event-subtitle");
         boolean mostrarSecundaria = etiquetaSecundaria.getText() != null
                 && !etiquetaSecundaria.getText().isBlank()
-                && cantidadFilas > 1;
+                && cantidadFilas >= 3;
         etiquetaSecundaria.setVisible(mostrarSecundaria);
         etiquetaSecundaria.setManaged(mostrarSecundaria);
 
@@ -674,7 +681,7 @@ public class AgendaController {
         tarjeta.setMouseTransparent(!interactiva);
         if (interactiva) {
             tarjeta.setOnMouseClicked(
-                    evento -> manejarClic(evento, celda, tarjeta));
+                    evento -> manejarClic(evento, celda, tarjeta, cantidadFilas));
         }
         return tarjeta;
     }
@@ -771,9 +778,9 @@ public class AgendaController {
     }
 
     private void manejarClic(MouseEvent evento, CeldaAgenda celda,
-            Node tarjeta) {
+            Node tarjeta, int cantidadFilas) {
         seleccionarTarjeta(tarjeta);
-        mostrarDetalleCelda(celda);
+        mostrarDetalleCelda(celda, cantidadFilas);
         if (evento.getClickCount() == 2) {
             ejecutarAccionCelda(celda);
         }
@@ -818,13 +825,16 @@ public class AgendaController {
         }
     }
 
-    private void mostrarDetalleCelda(CeldaAgenda celda) {
+    private void mostrarDetalleCelda(
+            CeldaAgenda celda, int cantidadFilas) {
         panelDetalle.setVisible(true);
         panelDetalle.setManaged(true);
         detalleCancha.setText(celda.getNombreCancha());
+        LocalTime horaFinalVisual = celda.getHoraInicio()
+                .plusMinutes(Math.max(1, cantidadFilas) * 30L);
         detalleHorario.setText(
                 celda.getHoraInicio().format(FORMATO_HORA) + " - "
-                        + celda.getHoraFin().format(FORMATO_HORA));
+                        + horaFinalVisual.format(FORMATO_HORA));
         detalleEstado.setText(formatoEstado(celda.getEstado()));
         detalleEstado.getStyleClass().removeIf(
                 clase -> clase.startsWith("detail-status-"));

@@ -64,3 +64,242 @@
     -fx-scale-x: .98;
     -fx-scale-y: .98;
 }
+
+/* modernizar-clientes-unificado-v1 */
+.clients-root { -clients-green: #429571; -clients-green-hover: #50a980; -clients-green-pressed: #34785a; -clients-graphite: #252c30; -clients-border: #515d63; }
+.clients-module-header { -fx-min-height: 96; -fx-pref-height: 96; }
+.clients-header-icon-v1 { -fx-background-color: #1b3028; -fx-border-color: #3f765e; -fx-background-radius: 12; -fx-border-radius: 12; }
+.clients-header-icon-path { -fx-fill: transparent; -fx-stroke: #80cfaa; -fx-stroke-width: 1.8; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.clients-button-icon, .clients-muted-icon, .client-detail-icon, .clients-section-icon, .next-reservation-icon { -fx-fill: transparent; -fx-stroke: currentColor; -fx-stroke-width: 1.7; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.clients-button-icon { -fx-stroke: #eef4f1; }
+.clients-muted-icon { -fx-stroke: #8d9a9f; }
+.clients-back-button { -fx-min-width: 52; -fx-pref-width: 52; -fx-max-width: 52; -fx-min-height: 52; -fx-pref-height: 52; -fx-max-height: 52; -fx-background-color: #20272b; -fx-border-color: #4b585f; -fx-background-radius: 11; -fx-border-radius: 11; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 7, .08, 0, 2); }
+.clients-back-button:hover { -fx-background-color: #293238; -fx-border-color: -color-principal; -fx-translate-y: -1; }
+.clients-back-button:pressed { -fx-background-color: #1b2124; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
+.clients-new-button, .client-save-button { -fx-min-height: 52; -fx-pref-height: 52; -fx-background-color: -clients-green; -fx-border-color: #68b18f; -fx-background-radius: 11; -fx-border-radius: 11; -fx-text-fill: white; -fx-font-family: "Segoe UI"; -fx-font-size: 12px; -fx-font-weight: 900; -fx-content-display: LEFT; -fx-graphic-text-gap: 9; -fx-padding: 0 20; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(66,149,113,.24), 8, .10, 0, 2); }
+.clients-new-button:hover, .client-save-button:hover { -fx-background-color: -clients-green-hover; -fx-border-color: #87c9aa; -fx-translate-y: -1; -fx-effect: dropshadow(gaussian, rgba(80,169,128,.32), 10, .12, 0, 3); }
+.clients-new-button:pressed, .client-save-button:pressed { -fx-background-color: -clients-green-pressed; -fx-border-color: #579879; -fx-translate-y: 0; -fx-scale-x: .985; -fx-scale-y: .985; -fx-effect: none; }
+.clients-new-button:focused, .client-save-button:focused, .clients-back-button:focused { -fx-focus-color: transparent; -fx-faint-focus-color: transparent; }
+.clients-filter-bar { -fx-min-height: 42; -fx-pref-height: 42; }
+.clients-search-icon-box { -fx-background-color: #1c2226; -fx-border-color: #3b454b; -fx-background-radius: 9 0 0 9; -fx-border-radius: 9 0 0 9; }
+.clients-search-field { -fx-min-height: 40; -fx-pref-height: 40; -fx-background-radius: 0 9 9 0; -fx-border-radius: 0 9 9 0; -fx-translate-x: -8; }
+.clients-filter-button, .clients-refresh-button { -fx-min-height: 40; -fx-pref-height: 40; -fx-max-height: 40; -fx-background-color: linear-gradient(to bottom, #30363a, #282e32); -fx-border-color: #59636a; -fx-background-radius: 9; -fx-border-radius: 9; -fx-text-fill: #eef2f3; -fx-font-family: "Segoe UI"; -fx-font-size: 10px; -fx-font-weight: 900; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(0,0,0,.22), 6, .06, 0, 2); }
+.clients-filter-button { -fx-min-width: 112; -fx-pref-width: 112; -fx-graphic-text-gap: 7; }
+.clients-refresh-button { -fx-min-width: 44; -fx-pref-width: 44; -fx-max-width: 44; -fx-padding: 0; }
+.clients-filter-button:hover, .clients-refresh-button:hover { -fx-background-color: #384146; -fx-border-color: -color-principal; -fx-translate-y: -1; }
+.clients-filter-button:pressed, .clients-refresh-button:pressed { -fx-background-color: #23292d; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
+.clients-results-bar { -fx-min-height: 30; -fx-pref-height: 30; -fx-padding: 0 4; }
+.clients-results-text { -fx-text-fill: #8fc6ad; -fx-font-size: 10.5px; -fx-font-weight: 800; }
+.clients-results-hint { -fx-text-fill: #748087; -fx-font-size: 9.5px; }
+.client-detail-header { -fx-padding: 11 13; }
+.client-detail-icon-box { -fx-background-color: #1c3028; -fx-border-color: #3d6f59; -fx-background-radius: 9; -fx-border-radius: 9; }
+.client-detail-icon { -fx-stroke: #7ccaa5; }
+.client-detail-eyebrow { -fx-text-fill: #7d8a90; -fx-font-size: 8.5px; -fx-font-weight: 900; }
+.clients-root .field-label { -fx-font-size: 10.5px; }
+.clients-root .modern-field { -fx-min-height: 40; -fx-pref-height: 40; }
+.client-form-message { -fx-background-color: #18221e; -fx-border-color: #2f4e40; -fx-background-radius: 8; -fx-border-radius: 8; -fx-padding: 8 10; -fx-font-size: 10.5px; }
+.client-form-message:empty { -fx-min-height: 0; -fx-pref-height: 0; -fx-max-height: 0; -fx-padding: 0; -fx-background-color: transparent; -fx-border-color: transparent; }
+.client-actions-bar { -fx-min-height: 48; }
+.client-save-button { -fx-min-height: 48; -fx-pref-height: 48; -fx-max-height: 48; }
+.client-deactivate-button { -fx-min-width: 170; -fx-pref-width: 170; -fx-max-width: 170; -fx-min-height: 48; -fx-pref-height: 48; -fx-max-height: 48; -fx-background-color: #3a2529; -fx-border-color: #7b4650; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-fill: #f0aeb7; -fx-font-family: "Segoe UI"; -fx-font-size: 11px; -fx-font-weight: 900; -fx-content-display: LEFT; -fx-graphic-text-gap: 8; -fx-cursor: hand; }
+.client-deactivate-button:hover { -fx-background-color: #4a2c32; -fx-border-color: #aa5b67; -fx-text-fill: #ffc6cd; -fx-translate-y: -1; }
+.client-deactivate-button:pressed { -fx-background-color: #302126; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
+.client-save-button:disabled, .client-deactivate-button:disabled { -fx-opacity: .48; -fx-effect: none; -fx-cursor: default; -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1; }
+.clients-section-separator .line { -fx-border-color: #303a40; }
+.clients-section-header, .clients-history-header { -fx-min-height: 42; }
+.clients-section-icon-box { -fx-min-width: 32; -fx-pref-width: 32; -fx-max-width: 32; -fx-min-height: 32; -fx-pref-height: 32; -fx-max-height: 32; -fx-background-color: #20272b; -fx-border-color: #3c484e; -fx-background-radius: 8; -fx-border-radius: 8; }
+.clients-section-icon { -fx-stroke: #91a1a8; }
+.history-metric { -fx-min-height: 76; -fx-padding: 9 5; -fx-background-radius: 10; -fx-border-radius: 10; }
+.history-metric:hover { -fx-border-color: #4c5a61; -fx-translate-y: -1; }
+.next-reservation-card { -fx-min-height: 58; -fx-padding: 9 13; }
+.next-reservation-icon-box { -fx-min-width: 34; -fx-pref-width: 34; -fx-max-width: 34; -fx-min-height: 34; -fx-pref-height: 34; -fx-max-height: 34; -fx-background-color: #203129; -fx-background-radius: 8; }
+.next-reservation-icon { -fx-stroke: #79c59f; }
+.next-reservation-value { -fx-padding: 0; }
+.client-open-reservation-button { -fx-min-width: 176; -fx-pref-width: 176; -fx-min-height: 42; -fx-pref-height: 42; -fx-background-color: linear-gradient(to bottom, #30363a, #282e32); -fx-border-color: #59636a; -fx-background-radius: 9; -fx-border-radius: 9; -fx-text-fill: #eef2f3; -fx-font-family: "Segoe UI"; -fx-font-size: 10px; -fx-font-weight: 900; -fx-graphic-text-gap: 8; -fx-cursor: hand; }
+.client-open-reservation-button:hover { -fx-background-color: #374046; -fx-border-color: -color-principal; -fx-translate-y: -1; }
+.client-open-reservation-button:pressed { -fx-background-color: #23292d; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
+.client-open-reservation-button:disabled { -fx-opacity: .42; -fx-cursor: default; -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1; }
+.clients-root .table-view .table-row-cell:hover { -fx-background-color: #20272b; }
+.clients-root .table-view .column-header { -fx-size: 48; }
+.clients-root .form-card { -fx-spacing: 13; }
+
+/* perfeccionar-clientes-referencia-v3 */
+.clients-root .list-panel { -fx-spacing: 10; }
+.clients-root .clients-filter-bar { -fx-spacing: 0; -fx-background-color: #1b2024; -fx-border-color: #3b444a; -fx-border-radius: 9; -fx-background-radius: 9; }
+.clients-root .clients-search-icon-box { -fx-background-color: transparent; -fx-border-color: transparent; -fx-background-radius: 9 0 0 9; -fx-border-radius: 9 0 0 9; }
+.clients-root .clients-search-field { -fx-translate-x: 0; -fx-background-color: transparent; -fx-border-color: transparent; -fx-effect: none; }
+.clients-root .clients-results-bar { -fx-min-height: 24; -fx-pref-height: 24; -fx-padding: 0 4 2 4; }
+.clients-root .client-form-message { -fx-max-width: infinity; -fx-background-color: #18251f; -fx-border-color: #3a694f; -fx-border-width: 0 0 0 3; -fx-background-radius: 7; -fx-border-radius: 3 7 7 3; -fx-padding: 8 11; }
+.clients-root .client-form-message.mensaje-error { -fx-background-color: #2c2023; -fx-border-color: #8d4c56; -fx-text-fill: #f0afb7; }
+.clients-root .client-form-message.mensaje-exito { -fx-text-fill: #82d1aa; }
+.clients-root .history-metric { -fx-border-width: 1 1 1 3; }
+.clients-root .history-metric-total { -fx-border-color: #3a4349 #3a4349 #3a4349 #567486; }
+.clients-root .history-metric-completed { -fx-border-color: #3a4349 #3a4349 #3a4349 #438e6c; }
+.clients-root .history-metric-completed .history-metric-value { -fx-text-fill: #7fd0a8; }
+.clients-root .history-metric-cancelled { -fx-border-color: #3a4349 #3a4349 #3a4349 #96505b; }
+.clients-root .history-metric-cancelled .history-metric-value { -fx-text-fill: #e69ca5; }
+.clients-root .history-metric-absence { -fx-border-color: #3a4349 #3a4349 #3a4349 #a17b3d; }
+.clients-root .history-metric-absence .history-metric-value { -fx-text-fill: #dfbd78; }
+.clients-root .history-metric-paid { -fx-border-color: #3a4349 #3a4349 #3a4349 #438e6c; }
+.clients-root .history-metric-balance { -fx-border-color: #3a4349 #3a4349 #3a4349 #a17b3d; }
+.clients-root .client-actions-bar .client-save-button { -fx-max-width: infinity; }
+.clients-root .client-deactivate-button { -fx-min-width: 200; -fx-pref-width: 200; -fx-max-width: 200; }
+.clients-root .modern-table .table-row-cell { -fx-cell-size: 61px; }
+.clients-root .clients-results-hint { -fx-text-overrun: ellipsis; }
+
+/* estabilizar-clientes-seleccion-v4 */
+.clients-root .clients-filter-row { -fx-min-height: 42; -fx-pref-height: 42; }
+.clients-root .clients-search-shell { -fx-background-color: #1b2024; -fx-border-color: #3b444a; -fx-border-radius: 9; -fx-background-radius: 9; }
+.clients-root .clients-search-shell:focused, .clients-root .clients-search-shell:focus-within { -fx-border-color: #3b444a; -fx-effect: none; }
+.clients-root .clients-search-field:focused { -fx-background-color: transparent; -fx-border-color: transparent; -fx-effect: none; }
+.clients-root .clients-filter-button, .clients-root .clients-refresh-button { -fx-translate-x: 0; }
+.clients-root .client-form-message { -fx-min-height: 0; }
+.clients-root .client-form-message:disabled { -fx-opacity: 1; }
+.clients-root .client-save-button:disabled, .clients-root .client-open-reservation-button:disabled { -fx-opacity: .58; -fx-text-fill: #b4c0ba; }
+.clients-root .client-save-button:disabled .clients-button-icon, .clients-root .client-open-reservation-button:disabled .clients-button-icon { -fx-stroke: #9aa6a0; }
+.clients-root .modern-table .table-row-cell:filled { -fx-cursor: hand; }
+.clients-root .modern-table .table-row-cell:empty { -fx-cursor: default; }
+
+/* cerrar-clientes-scroll-estado-v5 */
+.clients-root .client-history-status { -fx-min-width: 92; -fx-pref-width: 92; -fx-max-width: 116; -fx-text-overrun: clip; }
+.clients-root .client-history-status-pendiente { -fx-min-width: 106; -fx-pref-width: 106; -fx-max-width: 106; -fx-font-size: 8.5px; }
+.clients-root .client-history-table .table-cell { -fx-padding: 0 8; }
+
+/* centrar-tablas-clientes-v6 */
+.clients-root .modern-table .column-header.client-column-name-v6 .label {
+    -fx-alignment: CENTER;
+}
+.clients-root .modern-table .table-cell.client-column-name-v6 {
+    -fx-alignment: CENTER_LEFT;
+}
+.clients-root .modern-table .column-header.client-column-centered-v6 .label,
+.clients-root .modern-table .table-cell.client-column-centered-v6,
+.clients-root .client-history-table .column-header.client-history-column-centered-v6 .label,
+.clients-root .client-history-table .table-cell.client-history-column-centered-v6 {
+    -fx-alignment: CENTER;
+}
+.clients-root .client-history-table .client-history-status {
+    -fx-alignment: CENTER;
+}
+
+/* centrar-encabezado-cliente-v7 */
+
+/* ajustar-cabecera-actualizar-clientes-v8 */
+.clients-root .clients-page-title-v8 {
+    -fx-font-size: 29px;
+    -fx-font-weight: 900;
+}
+.clients-root .clients-refresh-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+    -fx-padding: 0 13;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.clients-root .clients-refresh-icon-box-v8 {
+    -fx-alignment: CENTER;
+}
+.clients-root .clients-refresh-icon-v8 {
+    -fx-fill: transparent;
+    -fx-stroke: #eef4f1;
+    -fx-stroke-width: 1.65;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+.clients-root .clients-refresh-button:disabled .clients-refresh-icon-v8 {
+    -fx-stroke: #8d9994;
+}
+
+/* unificar-cabecera-clientes-reservas-v9 */
+.clients-root .clients-module-header {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.clients-root .clients-back-button {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-alignment: CENTER;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+.clients-root .clients-back-icon-v9 {
+    -fx-fill: transparent;
+    -fx-stroke: #b7c3c8;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .78;
+    -fx-scale-y: .78;
+}
+.clients-root .clients-header-icon-v1 {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+}
+.clients-root .clients-header-icon-path {
+    -fx-stroke-width: 1.5;
+    -fx-scale-x: .72;
+    -fx-scale-y: .72;
+}
+.clients-root .clients-title-block-v9 {
+    -fx-translate-y: 1;
+}
+.clients-root .clients-page-title-v8 {
+    -fx-font-size: inherit;
+    -fx-font-weight: inherit;
+}
+.clients-root .clients-new-button,
+.clients-root .clients-new-button:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 17;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+}
+.clients-root .clients-new-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(63,145,109,.25), 8, .10, 0, 1);
+}
+.clients-root .clients-new-button:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(35,104,75,.28), 5, .10, 0, 1);
+}
+.clients-root .clients-header-action-icon-slot-v9 {
+    -fx-alignment: CENTER;
+}
+.clients-root .clients-header-action-icon-v9 {
+    -fx-fill: transparent;
+    -fx-stroke: #ffffff;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .67;
+    -fx-scale-y: .67;
+}

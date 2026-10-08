@@ -17,6 +17,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -45,8 +46,14 @@ public class BloqueosController {
             FXCollections.observableArrayList();
     private FilteredList<BloqueoCancha> bloqueosFiltrados;
     private BloqueoCancha bloqueoSeleccionado;
+    private String estadoFormularioInicial = "";
+    private boolean actualizandoFormulario;
 
     @FXML private TextField campoBuscar;
+    @FXML private ScrollPane scrollDetalleBloqueo;
+    @FXML private Label etiquetaResultados;
+    @FXML private Label etiquetaAyudaListado;
+    @FXML private Label etiquetaModoBloqueo;
     @FXML private TableView<BloqueoCancha> tablaBloqueos;
     @FXML private TableColumn<BloqueoCancha, LocalDate> columnaFecha;
     @FXML private TableColumn<BloqueoCancha, String> columnaHorario;
@@ -71,12 +78,14 @@ public class BloqueosController {
         configurarTabla();
         configurarBusqueda();
         configurarFormulario();
+        configurarCambiosFormulario();
         cargarCanchas();
         cargarBloqueos();
         nuevo();
     }
 
     private void configurarTabla() {
+        tablaBloqueos.setFixedCellSize(61);
         columnaFecha.setCellValueFactory(
                 new PropertyValueFactory<>("fecha")
         );
@@ -106,10 +115,10 @@ public class BloqueosController {
 
         tablaBloqueos.setRowFactory(tabla -> {
             TableRow<BloqueoCancha> fila = new TableRow<>();
-            fila.itemProperty().addListener((obs, anterior, actual) ->
-                    actualizarClaseFila(fila, actual));
-            fila.selectedProperty().addListener((obs, anterior, actual) ->
-                    actualizarClaseFila(fila, fila.getItem()));
+            fila.itemProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, actual));
+            fila.selectedProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, fila.getItem()));
+            fila.emptyProperty().addListener((obs, anterior, actual) -> actualizarClaseFila(fila, fila.getItem()));
+            fila.setOnMousePressed(evento -> seleccionarFilaBloqueo(fila));
             return fila;
         });
         tablaBloqueos.setOnMouseClicked(evento -> {
@@ -125,6 +134,12 @@ public class BloqueosController {
                 .addListener((obs, anterior, actual) -> {
                     if (actual != null) editar(actual);
                 });
+    }
+
+    private void seleccionarFilaBloqueo(TableRow<BloqueoCancha> fila) {
+        if (fila == null || fila.isEmpty() || fila.getItem() == null) return;
+        tablaBloqueos.getSelectionModel().select(fila.getItem());
+        tablaBloqueos.requestFocus();
     }
 
     private void actualizarClaseFila(
@@ -170,7 +185,19 @@ public class BloqueosController {
                             || contiene(bloqueo.getMotivo(), filtro)
                             || bloqueo.getFecha().format(FORMATO_FECHA).contains(filtro)
             );
+            actualizarResultadosVisibles();
         });
+    }
+
+    private void actualizarResultadosVisibles() {
+        if (etiquetaResultados == null || bloqueosFiltrados == null) return;
+        int visibles = bloqueosFiltrados.size();
+        etiquetaResultados.setText(visibles + (visibles == 1 ? " bloqueo visible" : " bloqueos visibles"));
+    }
+
+    private void actualizarAyudaListado(BloqueoCancha bloqueo) {
+        if (etiquetaAyudaListado == null) return;
+        etiquetaAyudaListado.setText(bloqueo == null ? "Seleccioná un bloqueo para editarlo" : "Seleccionado: " + bloqueo.getNombreCancha() + " · " + bloqueo.getFecha().format(FORMATO_FECHA));
     }
 
     private boolean contiene(String valor, String filtro) {
@@ -224,7 +251,9 @@ public class BloqueosController {
         try {
             List<BloqueoCancha> resultado = bloqueoService.listar();
             bloqueos.setAll(resultado);
-            mostrarInfo(resultado.size() + " bloqueo(s) cargado(s).");
+            if (tablaBloqueos.getSelectionModel().getSelectedItem() == null && !resultado.isEmpty()) tablaBloqueos.scrollTo(0);
+            actualizarResultadosVisibles();
+            mostrarInfo(resultado.size() + (resultado.size() == 1 ? " bloqueo cargado." : " bloqueos cargados."));
         } catch (RuntimeException exception) {
             mostrarError(exception.getMessage());
         }
@@ -232,8 +261,11 @@ public class BloqueosController {
 
     @FXML
     private void nuevo() {
+        limpiarMensajeContextual();
+        actualizandoFormulario = true;
         bloqueoSeleccionado = null;
         tablaBloqueos.getSelectionModel().clearSelection();
+        etiquetaModoBloqueo.setText("NUEVO BLOQUEO");
         tituloFormulario.setText("Nuevo bloqueo");
         subtituloFormulario.setText(
                 "Reservá temporalmente una franja de la cancha.");
@@ -250,11 +282,18 @@ public class BloqueosController {
         comboHoraFin.getItems().clear();
         comboMotivoRapido.getSelectionModel().clearSelection();
         campoMotivo.clear();
-        etiquetaMensaje.setText("");
+        estadoFormularioInicial = estadoFormularioActual();
+        actualizandoFormulario = false;
+        actualizarEstadoGuardar();
+        actualizarAyudaListado(null);
+        volverArribaDetalle();
     }
 
     private void editar(BloqueoCancha bloqueo) {
+        limpiarMensajeContextual();
+        actualizandoFormulario = true;
         bloqueoSeleccionado = bloqueo;
+        etiquetaModoBloqueo.setText("BLOQUEO SELECCIONADO");
         boolean finalizado = bloqueo.getFecha().isBefore(LocalDate.now());
         tituloFormulario.setText(finalizado
                 ? "Bloqueo finalizado" : "Editar bloqueo");
@@ -285,8 +324,24 @@ public class BloqueosController {
         comboHoraFin.setValue(
                 bloqueo.getHoraFin().format(FORMATO_HORA)
         );
+        sincronizarMotivoFrecuente(bloqueo.getMotivo());
         campoMotivo.setText(bloqueo.getMotivo());
-        etiquetaMensaje.setText("");
+        estadoFormularioInicial = estadoFormularioActual();
+        actualizandoFormulario = false;
+        actualizarEstadoGuardar();
+        actualizarAyudaListado(bloqueo);
+        volverArribaDetalle();
+    }
+
+    private void sincronizarMotivoFrecuente(String motivo) {
+        comboMotivoRapido.getSelectionModel().clearSelection();
+        if (motivo == null || motivo.isBlank()) return;
+        String coincidencia = comboMotivoRapido.getItems().stream()
+                .filter(opcion -> !"Otro".equals(opcion))
+                .filter(opcion -> opcion.equalsIgnoreCase(motivo.trim()))
+                .findFirst()
+                .orElse("Otro");
+        comboMotivoRapido.setValue(coincidencia);
     }
 
     private void configurarFormularioSoloLectura(boolean soloLectura) {
@@ -333,6 +388,39 @@ public class BloqueosController {
             comboHoraFin.getSelectionModel().select(1);
         }
     }
+
+    private void volverArribaDetalle() {
+        if (scrollDetalleBloqueo == null) return;
+        javafx.application.Platform.runLater(() ->
+                javafx.application.Platform.runLater(() -> {
+                    scrollDetalleBloqueo.setVvalue(0);
+                    scrollDetalleBloqueo.setHvalue(0);
+                }));
+    }
+
+    private void configurarCambiosFormulario() {
+        javafx.beans.InvalidationListener listener = obs -> { actualizarEstadoGuardar(); limpiarMensajeContextual(); };
+        comboCancha.valueProperty().addListener(listener);
+        selectorFecha.valueProperty().addListener(listener);
+        comboHoraInicio.valueProperty().addListener(listener);
+        comboHoraFin.valueProperty().addListener(listener);
+        comboMotivoRapido.valueProperty().addListener(listener);
+        campoMotivo.textProperty().addListener(listener);
+    }
+
+    private void actualizarEstadoGuardar() {
+        if (actualizandoFormulario || botonGuardar == null) return;
+        boolean finalizado = bloqueoSeleccionado != null && bloqueoSeleccionado.getFecha().isBefore(LocalDate.now());
+        boolean valido = comboCancha.getValue() != null && selectorFecha.getValue() != null && comboHoraInicio.getValue() != null && comboHoraFin.getValue() != null && !texto(campoMotivo).isBlank();
+        boolean habilitado = !finalizado && valido && (bloqueoSeleccionado == null || !estadoFormularioActual().equals(estadoFormularioInicial));
+        botonGuardar.setDisable(!habilitado);
+    }
+
+    private String estadoFormularioActual() {
+        return String.join("\u001F", String.valueOf(comboCancha.getValue() == null ? null : comboCancha.getValue().getId()), String.valueOf(selectorFecha.getValue()), String.valueOf(comboHoraInicio.getValue()), String.valueOf(comboHoraFin.getValue()), texto(campoMotivo));
+    }
+
+    private String texto(TextArea campo) { return campo == null || campo.getText() == null ? "" : campo.getText().trim(); }
 
     @FXML
     private void guardar() {
@@ -415,19 +503,15 @@ public class BloqueosController {
         Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
     }
 
-    private void mostrarError(String mensaje) {
-        etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-exito");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-error");
-        }
+    private void limpiarMensajeContextual() {
+        if (etiquetaMensaje == null) return;
+        etiquetaMensaje.setText(""); etiquetaMensaje.setVisible(false); etiquetaMensaje.setManaged(false);
+        etiquetaMensaje.getStyleClass().removeAll("mensaje-exito", "mensaje-error");
     }
 
-    private void mostrarInfo(String mensaje) {
-        etiquetaMensaje.setText(mensaje);
-        etiquetaMensaje.getStyleClass().remove("mensaje-error");
-        if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) {
-            etiquetaMensaje.getStyleClass().add("mensaje-exito");
-        }
+    private void mostrarError(String mensaje) { actualizarMensaje(mensaje == null ? "Ocurrió un error." : mensaje, true); }
+    private void mostrarInfo(String mensaje) { actualizarMensaje(mensaje, false); }
+    private void actualizarMensaje(String mensaje, boolean error) {
+        String texto = mensaje == null ? "" : mensaje.trim(); etiquetaMensaje.setText(texto); etiquetaMensaje.setVisible(!texto.isBlank()); etiquetaMensaje.setManaged(!texto.isBlank()); etiquetaMensaje.getStyleClass().removeAll("mensaje-exito", "mensaje-error"); if (!texto.isBlank()) etiquetaMensaje.getStyleClass().add(error ? "mensaje-error" : "mensaje-exito");
     }
 }

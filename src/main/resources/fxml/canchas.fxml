@@ -3,54 +3,44 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.CanchasController"
             styleClass="module-root, courts-root">
-    <top>
-        <HBox alignment="CENTER_LEFT" spacing="16.0" styleClass="module-header">
-            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
-            <children>
-                <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
-                <VBox spacing="3">
-                    <children>
-                        <Label text="Gestión de canchas" styleClass="page-title" />
-                        <Label text="Configurá disponibilidad, horarios y precios."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <Button text="NUEVA CANCHA" onAction="#nuevo" styleClass="primary-button" />
-            </children>
+        <top>
+        <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header, courts-module-header-v1">
+            <padding><Insets top="12" right="24" bottom="12" left="24" /></padding>
+            <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="courts-back-button-v1"><tooltip><Tooltip text="Volver al inicio"/></tooltip><graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="courts-back-icon-v1"/></graphic></Button>
+            <StackPane minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="courts-module-icon-shell-v1"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M12 5 L12 19 M4 12 L20 12 M8 8 L8 16 M16 8 L16 16" styleClass="courts-module-icon-v1"/></StackPane>
+            <VBox spacing="2" styleClass="courts-title-block-v1"><Label text="Gestión de canchas" styleClass="page-title"/><Label text="Configurá disponibilidad, horarios y precios." styleClass="page-subtitle"/></VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="NUEVA CANCHA" onAction="#nuevo" styleClass="courts-new-button-v1"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="courts-action-icon-slot-v1"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M12 5 L12 19 M4 12 L20 12 M17 2 L17 8 M14 5 L20 5" styleClass="courts-action-icon-v1"/></StackPane></graphic></Button>
         </HBox>
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.57" styleClass="module-split">
+        <SplitPane dividerPositions="0.55" styleClass="module-split, courts-split-v1">
             <items>
-                <VBox spacing="16" styleClass="list-panel">
-                    <padding><Insets top="22" right="22" bottom="22" left="28" /></padding>
+                <VBox spacing="10" styleClass="list-panel, courts-list-v1">
+                    <padding><Insets top="16" right="18" bottom="18" left="24" /></padding>
                     <children>
-                        <HBox spacing="10">
-                            <children>
-                                <TextField fx:id="campoBuscar"
-                                           promptText="Buscar por nombre, tipo o superficie..."
-                                           HBox.hgrow="ALWAYS"
-                                           styleClass="modern-field" />
-                                <Button text="Actualizar" onAction="#cargarCanchas"
-                                        styleClass="secondary-button" />
-                            </children>
+                        <HBox alignment="CENTER_LEFT" spacing="8" styleClass="courts-filter-row-v1">
+                            <StackPane alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" styleClass="courts-search-shell-v5"><TextField fx:id="campoBuscar" promptText="Buscar por nombre, tipo o superficie..." maxWidth="Infinity" styleClass="courts-search-field-v5"/><StackPane mouseTransparent="true" minWidth="40" prefWidth="40" maxWidth="40" minHeight="40" prefHeight="40" maxHeight="40" StackPane.alignment="CENTER_LEFT" styleClass="courts-search-icon-shell-v5"><SVGPath content="M10.5 4 A6.5 6.5 0 1 0 10.5 17 A6.5 6.5 0 1 0 10.5 4 M15.5 15.5 L21 21" styleClass="courts-search-icon-v5"/></StackPane></StackPane>
+                            <Button text="LIMPIAR" onAction="#limpiarBusqueda" styleClass="courts-filter-button-v1"><graphic><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="courts-button-icon-v1"/></graphic></Button>
+                            <Button text="ACTUALIZAR" onAction="#cargarCanchas" styleClass="courts-refresh-button-v1"><graphic><StackPane minWidth="17" prefWidth="17" maxWidth="17" minHeight="17" prefHeight="17" maxHeight="17"><SVGPath content="M16.5 6 A6.5 6.5 0 1 0 17.5 13 M16.5 6 L16.5 2.5 M16.5 6 L13 6" styleClass="courts-refresh-icon-v1"/></StackPane></graphic></Button>
                         </HBox>
+                        <HBox alignment="CENTER_LEFT" styleClass="courts-results-bar-v1"><Label fx:id="etiquetaResultados" text="0 canchas visibles" styleClass="courts-results-text-v1"/><Region HBox.hgrow="ALWAYS"/><Label fx:id="etiquetaAyudaListado" text="Seleccioná una cancha para editarla" styleClass="courts-results-hint-v1"/></HBox>
                         <TableView fx:id="tablaCanchas" VBox.vgrow="ALWAYS"
                                    styleClass="modern-table">
                             <columns>
-                                <TableColumn fx:id="columnaOrden" text="#" prefWidth="48" minWidth="48" maxWidth="48" />
-                                <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="145" />
-                                <TableColumn fx:id="columnaTipo" text="TIPO" prefWidth="110" />
-                                <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="130" />
+                                <TableColumn fx:id="columnaOrden" text="#" prefWidth="48" minWidth="48" maxWidth="48" styleClass="court-centered-column-v3"/>
+                                <TableColumn fx:id="columnaNombre" text="CANCHA" prefWidth="145" styleClass="court-name-column-v3"/>
+                                <TableColumn fx:id="columnaTipo" text="TIPO" prefWidth="110" styleClass="court-centered-column-v3"/>
+                                <TableColumn fx:id="columnaHorario" text="HORARIO" prefWidth="130" styleClass="court-centered-column-v3"/>
                                 <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="125" styleClass="court-price-column" />
-                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="90" />
+                                <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="90" styleClass="court-centered-column-v3"/>
                             </columns>
                             <placeholder>
                                 <Label text="Todavía no hay canchas registradas."
@@ -60,21 +50,18 @@
                     </children>
                 </VBox>
 
-                <ScrollPane fitToWidth="true" styleClass="form-scroll">
+                <ScrollPane fx:id="scrollDetalleCancha" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
                     <content>
-                        <VBox spacing="15" styleClass="form-card">
-                            <padding><Insets top="24" right="30" bottom="28" left="30" /></padding>
+                        <VBox spacing="13" styleClass="form-card, courts-form-v1">
+                            <padding><Insets top="18" right="24" bottom="28" left="24" /></padding>
                             <children>
                                 <VBox spacing="6" styleClass="court-detail-header">
-                                    <HBox alignment="CENTER_LEFT" spacing="8">
-                                        <Label fx:id="tituloFormulario" text="Nueva cancha" styleClass="section-title" />
-                                        <Region HBox.hgrow="ALWAYS" />
-                                        <Label fx:id="insigniaEstadoCancha" text="ACTIVA" visible="false" managed="false" styleClass="court-detail-status" />
-                                    </HBox>
-                                    <Label fx:id="subtituloFormulario" text="Configurá disponibilidad, horarios y tarifa del nuevo espacio." wrapText="true" styleClass="court-detail-subtitle" />
-                                    <Label text="Los campos con * son obligatorios." styleClass="small-caption" />
+                                    <HBox alignment="CENTER_LEFT" spacing="10"><StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="court-detail-icon-shell-v1"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M12 5 L12 19 M4 12 L20 12" styleClass="court-detail-icon-v1"/></StackPane><VBox spacing="1"><Label fx:id="etiquetaModoCancha" text="NUEVA CANCHA" styleClass="court-detail-eyebrow-v1"/><Label fx:id="tituloFormulario" text="Nueva cancha" styleClass="section-title"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="insigniaEstadoCancha" text="ACTIVA" visible="false" managed="false" styleClass="court-detail-status"/></HBox>
+                                    <Label fx:id="subtituloFormulario" text="Configurá disponibilidad, horarios y tarifa del nuevo espacio." wrapText="true" styleClass="court-detail-subtitle"/>
+                                    <Label text="Los campos con * son obligatorios." styleClass="small-caption"/>
                                 </VBox>
 
+                                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="court-section-header-v1"><StackPane styleClass="court-section-icon-shell-v1"><SVGPath content="M5 5 L19 5 L19 19 L5 19 Z M9 9 L15 9 M9 13 L15 13" styleClass="court-section-icon-v1"/></StackPane><Label text="Identidad de la cancha" styleClass="court-section-title-v1"/></HBox>
                                 <Label text="Nombre *" styleClass="field-label" />
                                 <TextField fx:id="campoNombre" promptText="Ejemplo: Cancha Central"
                                            styleClass="modern-field" />
@@ -102,8 +89,9 @@
                                     </children>
                                 </GridPane>
 
-                                <CheckBox fx:id="checkIluminacion" text="Tiene iluminación"
-                                          styleClass="modern-check" />
+                                <CheckBox fx:id="checkIluminacion" text="Tiene iluminación" styleClass="modern-check, court-lighting-check-v1"/>
+
+                                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="court-section-header-v1"><StackPane styleClass="court-section-icon-shell-v1"><SVGPath content="M4 7 L20 7 M6 4 L6 10 M18 4 L18 10 M5 12 L19 12 L19 20 L5 20 Z" styleClass="court-section-icon-v1"/></StackPane><Label text="Disponibilidad y tarifa" styleClass="court-section-title-v1"/></HBox>
 
                                 <GridPane hgap="12" vgap="10">
                                     <columnConstraints>
@@ -153,35 +141,23 @@
                                     </children>
                                 </FlowPane>
 
+                                <HBox alignment="CENTER_LEFT" spacing="8" styleClass="court-section-header-v1"><StackPane styleClass="court-section-icon-shell-v1"><SVGPath content="M5 4 L19 4 L19 20 L5 20 Z M8 8 L16 8 M8 12 L16 12 M8 16 L14 16" styleClass="court-section-icon-v1"/></StackPane><Label text="Información adicional" styleClass="court-section-title-v1"/></HBox>
+
                                 <Label text="Descripción" styleClass="field-label" />
                                 <TextArea fx:id="campoDescripcion" prefRowCount="3" wrapText="true"
                                           promptText="Información adicional de la cancha..."
                                           styleClass="modern-area" />
 
                                 <HBox spacing="8" alignment="CENTER_LEFT" styleClass="court-order-panel">
-                                    <Label text="Orden en Agenda y selectores" styleClass="small-caption" />
+                                    <VBox spacing="2"><Label text="ORDEN DE VISUALIZACIÓN" styleClass="court-order-title-v1"/><Label text="Define la posición en Agenda y en los selectores." styleClass="small-caption"/></VBox>
                                     <Region HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="botonSubir" text="SUBIR" onAction="#subirOrden" visible="false" managed="false" styleClass="court-order-button" />
-                                    <Button fx:id="botonBajar" text="BAJAR" onAction="#bajarOrden" visible="false" managed="false" styleClass="court-order-button" />
+                                    <Button fx:id="botonSubir" text="SUBIR" onAction="#subirOrden" visible="false" managed="false" styleClass="court-order-button, court-order-up-v3"><graphic><SVGPath content="M12 19 L12 5 M6 11 L12 5 L18 11" styleClass="court-order-icon-v3"/></graphic></Button>
+                                    <Button fx:id="botonBajar" text="BAJAR" onAction="#bajarOrden" visible="false" managed="false" styleClass="court-order-button, court-order-down-v3"><graphic><SVGPath content="M12 5 L12 19 M6 13 L12 19 L18 13" styleClass="court-order-icon-v3"/></graphic></Button>
                                 </HBox>
 
-                                <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
+                                <Label fx:id="etiquetaMensaje" wrapText="true" visible="false" managed="false" styleClass="court-form-message-v1"/>
 
-                                <HBox spacing="10">
-                                    <children>
-                                        <Button fx:id="botonGuardar" text="GUARDAR CANCHA"
-                                                onAction="#guardar" HBox.hgrow="ALWAYS"
-                                                maxWidth="Infinity" styleClass="primary-button" />
-                                        <Button fx:id="botonDesactivar" text="DESACTIVAR"
-                                                onAction="#desactivar"
-                                                styleClass="danger-button" />
-                                        <Button fx:id="botonEliminarDefinitivamente"
-                                                text="ELIMINAR"
-                                                onAction="#eliminarDefinitivamente"
-                                                visible="false" managed="false"
-                                                styleClass="delete-court-button" />
-                                    </children>
-                                </HBox>
+                                <HBox spacing="12" styleClass="court-actions-v1"><Button fx:id="botonGuardar" text="GUARDAR CANCHA" onAction="#guardar" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="court-save-button-v1"><graphic><SVGPath content="M4 3 L18 3 L21 6 L21 21 L3 21 L3 3 Z M7 3 L7 9 L17 9 L17 3 M7 15 L17 15 L17 21 L7 21 Z" styleClass="courts-button-icon-v1"/></graphic></Button><Button fx:id="botonDesactivar" text="DESACTIVAR" onAction="#desactivar" styleClass="court-deactivate-button-v1"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath fx:id="iconoAccionEstado" content="M12 3 C7 3 3 7 3 12 C3 17 7 21 12 21 C17 21 21 17 21 12 C21 7 17 3 12 3 M7 12 L17 12" styleClass="courts-button-icon-v1"/></StackPane></graphic></Button><Button fx:id="botonEliminarDefinitivamente" text="ELIMINAR" onAction="#eliminarDefinitivamente" visible="false" managed="false" styleClass="delete-court-button"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath content="M5 7 L19 7 M9 7 L9 4 L15 4 L15 7 M7 7 L8 21 L16 21 L17 7 M10 10 L10 18 M14 10 L14 18" styleClass="courts-button-icon-v1"/></StackPane></graphic></Button></HBox>
                             </children>
                         </VBox>
                     </content>
