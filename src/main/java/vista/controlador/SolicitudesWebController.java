@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Comparator;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -63,14 +64,14 @@ public class SolicitudesWebController {
     private Timeline reloj;
 
     @FXML private TextField campoBuscar;
-    @FXML private ComboBox<EstadoReserva> filtroEstado;
+    @FXML private ComboBox<String> filtroVista;
     @FXML private TableView<Reserva> tablaSolicitudes;
     @FXML private TableColumn<Reserva,Long> columnaId;
     @FXML private TableColumn<Reserva,String> columnaCliente,columnaTurno,columnaCancha;
     @FXML private TableColumn<Reserva,EstadoReserva> columnaEstado;
     @FXML private TableColumn<Reserva,Reserva> columnaVencimiento;
     @FXML private TableColumn<Reserva,Reserva> columnaTiempo;
-    @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo,detallePorcentajePago;
+    @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,etiquetaVacioTitulo,etiquetaVacioDetalle,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo,detallePorcentajePago;
     @FXML private ProgressBar detalleProgresoPago;
     @FXML private Button botonReserva,botonPagos,botonWhatsApp,botonLimpiar,botonActualizar,tarjetaTotal,tarjetaVigentes,tarjetaProximas,tarjetaExpiradas;
     @FXML private VBox panelDetalle,panelDetalleVacio;
@@ -107,7 +108,7 @@ public class SolicitudesWebController {
             @Override protected void updateItem(Reserva r,boolean vacia){
                 super.updateItem(r,vacia);
                 setAlignment(Pos.CENTER);
-                setText(vacia||r==null?null:textoVencimiento(r));
+                setText(vacia||r==null?null:textoSenia(r));
                 getStyleClass().removeAll("web-time-ok","web-time-warning","web-time-expired");
                 if(!vacia&&r!=null)getStyleClass().add(claseTiempo(r));
             }
@@ -155,67 +156,167 @@ public class SolicitudesWebController {
     }
 
     private void configurarFiltros(){
-        filtroEstado.setItems(FXCollections.observableArrayList(
-                EstadoReserva.PENDIENTE,EstadoReserva.CONFIRMADA,
-                EstadoReserva.EXPIRADA,EstadoReserva.CANCELADA,
-                EstadoReserva.COMPLETADA,EstadoReserva.AUSENTE));
-        filtroEstado.setCellFactory(lista->crearCeldaEstadoFiltro(false));
-        filtroEstado.setButtonCell(crearCeldaEstadoFiltro(true));
+        filtroVista.setItems(FXCollections.observableArrayList(
+                "En seguimiento", "Confirmadas", "Historial", "Todas"));
+        filtroVista.setValue("En seguimiento");
+        filtroVista.valueProperty().addListener((o,a,n)->aplicarFiltros());
         solicitudesFiltradas=new FilteredList<>(solicitudes,v->true);
         tablaSolicitudes.setItems(solicitudesFiltradas);
         campoBuscar.textProperty().addListener((o,a,n)->aplicarFiltros());
-        filtroEstado.valueProperty().addListener((o,a,n)->aplicarFiltros());
         campoBuscar.setOnKeyPressed(e->{
             if(e.getCode()==KeyCode.ESCAPE)limpiarFiltros();
         });
         botonLimpiar.setDisable(false);
     }
 
-    private javafx.scene.control.ListCell<EstadoReserva> crearCeldaEstadoFiltro(
-            boolean boton){
-        return new javafx.scene.control.ListCell<>(){
-            @Override protected void updateItem(
-                    EstadoReserva estado,boolean vacia){
-                super.updateItem(estado,vacia);
-                if(vacia||estado==null){
-                    setText(boton?"Todos los estados":null);
-                }else{
-                    setText(nombreEstado(estado));
-                }
-                setGraphic(null);
-            }
-        };
-    }
-
     @FXML public void cargarSolicitudes(){
         botonActualizar.setDisable(true);etiquetaEstadoCarga.setText("Actualizando...");
-        try{solicitudes.setAll(reservaService.listar().stream().filter(r->r.getOrigen()==OrigenReserva.WEB).toList());aplicarFiltros();actualizarResumen();etiquetaActualizacion.setText("Última actualización: "+LocalTime.now().format(HORA));etiquetaEstadoCarga.setText("");}
+        try{solicitudes.setAll(reservaService.listar().stream()
+                .filter(r->r.getOrigen()==OrigenReserva.WEB)
+                .sorted(ordenOperativo())
+                .toList());aplicarFiltros();actualizarResumen();etiquetaActualizacion.setText("Actualizado "+LocalTime.now().format(HORA));etiquetaEstadoCarga.setText("");}
         catch(RuntimeException e){etiquetaEstadoCarga.setText(e.getMessage()==null?"No se pudieron cargar las solicitudes.":e.getMessage());}
         finally{botonActualizar.setDisable(false);}
     }
 
-    private void aplicarFiltros(){if(solicitudesFiltradas==null)return;String texto=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);EstadoReserva estado=filtroEstado.getValue();solicitudesFiltradas.setPredicate(r->(estado==null||r.getEstado()==estado)&&(texto.isBlank()||contiene(r.getNombreCliente(),texto)||contiene(r.getNombreCancha(),texto)||contiene(nombreEstado(r.getEstado()),texto)||String.valueOf(r.getId()).contains(texto)));actualizarMensajeResultados();}
+    private void aplicarFiltros(){
+        if(solicitudesFiltradas==null)return;
+        String texto=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);
+        String vista=filtroVista==null||filtroVista.getValue()==null?"En seguimiento":filtroVista.getValue();
+        solicitudes.sort(comparadorVista(vista));
+        solicitudesFiltradas.setPredicate(r->coincideVista(r,vista)
+                &&(texto.isBlank()||contiene(r.getNombreCliente(),texto)
+                    ||contiene(r.getNombreCancha(),texto)
+                    ||contiene(nombreEstado(r.getEstado()),texto)
+                    ||contiene(textoSenia(r),texto)
+                    ||String.valueOf(r.getId()).contains(texto)));
+        actualizarMensajeResultados();
+        actualizarEstadoVacio(vista);
+        conservarSeleccionVisible();
+    }
+    private boolean coincideVista(Reserva r,String vista){
+        return switch(vista){
+            case "Confirmadas"->r.getEstado()==EstadoReserva.CONFIRMADA;
+            case "Historial"->r.getEstado()==EstadoReserva.EXPIRADA
+                    ||r.getEstado()==EstadoReserva.CANCELADA
+                    ||r.getEstado()==EstadoReserva.COMPLETADA
+                    ||r.getEstado()==EstadoReserva.AUSENTE;
+            case "Todas"->true;
+            default->r.getEstado()==EstadoReserva.PENDIENTE;
+        };
+    }
+    private Comparator<Reserva> comparadorVista(String vista){
+        Comparator<Reserva> fechaAscendente = Comparator
+                .comparing(Reserva::getFecha)
+                .thenComparing(Reserva::getHoraInicio)
+                .thenComparingLong(Reserva::getId);
+        Comparator<Reserva> fechaDescendente = fechaAscendente.reversed();
+        Comparator<Reserva> confirmadas = Comparator
+                .comparingInt(this::prioridadConfirmada)
+                .thenComparing((Reserva r) -> fechaTurno(r),
+                        Comparator.naturalOrder())
+                .thenComparingLong(Reserva::getId);
+        Comparator<Reserva> seguimiento = Comparator
+                .comparing((Reserva r) -> r.getFechaVencimiento(),
+                        Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(fechaAscendente);
+        return switch(vista){
+            case "Confirmadas" -> confirmadas;
+            case "Historial" -> fechaDescendente;
+            case "En seguimiento" -> seguimiento;
+            default -> ordenOperativo();
+        };
+    }
+    private int prioridadConfirmada(Reserva r){
+        return LocalDateTime.now().isBefore(fechaTurno(r))?0:1;
+    }
+    private LocalDateTime fechaTurno(Reserva r){
+        return LocalDateTime.of(r.getFecha(),r.getHoraInicio());
+    }
+
+    private void actualizarEstadoVacio(String vista){
+        if(etiquetaVacioTitulo==null||etiquetaVacioDetalle==null)return;
+        boolean seguimiento="En seguimiento".equals(vista);
+        etiquetaVacioTitulo.setText(seguimiento
+                ? "Todo al día"
+                : "Sin solicitudes para mostrar");
+        etiquetaVacioDetalle.setText(seguimiento
+                ? "No hay solicitudes pendientes de seguimiento. Las señas recibidas se acreditan automáticamente."
+                : "No hay solicitudes en esta vista. Probá cambiar los filtros.");
+    }
+
+    private Comparator<Reserva> ordenOperativo(){
+        return Comparator.comparingInt(this::prioridadOperativa)
+                .thenComparing(r->r.getFechaVencimiento()==null?LocalDateTime.MAX:r.getFechaVencimiento())
+                .thenComparing(Reserva::getFecha)
+                .thenComparing(Reserva::getHoraInicio)
+                .thenComparing(Comparator.comparingLong(Reserva::getId).reversed());
+    }
+    private int prioridadOperativa(Reserva r){
+        if(proximaAVencer(r))return 0;
+        return switch(r.getEstado()){
+            case PENDIENTE->1; case CONFIRMADA->2;
+            case COMPLETADA,AUSENTE->3; case EXPIRADA,CANCELADA->4;
+        };
+    }
+    private void conservarSeleccionVisible(){
+        if(seleccionada==null)return;
+        boolean visible=solicitudesFiltradas.stream().anyMatch(r->r.getId()==seleccionada.getId());
+        if(visible)tablaSolicitudes.getSelectionModel().select(seleccionada);
+        else mostrarDetalleVacio();
+    }
     private boolean contiene(String v,String f){return v!=null&&v.toLowerCase(Locale.ROOT).contains(f);}
     private void actualizarMensajeResultados(){
         int n=solicitudesFiltradas==null?0:solicitudesFiltradas.size();
         String busqueda=campoBuscar.getText()==null?"":campoBuscar.getText().trim();
-        EstadoReserva estado=filtroEstado.getValue();
-        String texto=n+" "+(n==1?"solicitud visible":"solicitudes visibles");
-        if(estado!=null)texto+=" · "+nombreEstado(estado);
+        String vista=filtroVista==null||filtroVista.getValue()==null?"En seguimiento":filtroVista.getValue();
+        String texto=n+" "+(n==1?"solicitud visible":"solicitudes visibles")+" · "+vista;
         if(!busqueda.isBlank())texto+=" para \""+busqueda+"\"";
         etiquetaMensaje.setText(texto);
     }
-    @FXML private void limpiarFiltros(){campoBuscar.clear();filtroEstado.getSelectionModel().clearSelection();}
-    @FXML private void mostrarTodas(){limpiarFiltros();}
-    @FXML private void mostrarVigentes(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.PENDIENTE);}
-    @FXML private void mostrarExpiradas(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.EXPIRADA);}
-    @FXML private void mostrarProximas(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.PENDIENTE);solicitudesFiltradas.setPredicate(this::proximaAVencer);actualizarMensajeResultados();botonLimpiar.setDisable(false);}
+    @FXML private void limpiarFiltros(){
+        campoBuscar.clear();
+        filtroVista.setValue("En seguimiento");
+        limpiarSeleccion();
+    }
+    @FXML private void mostrarTodas(){campoBuscar.clear();filtroVista.setValue("Todas");}
+    @FXML private void mostrarVigentes(){campoBuscar.clear();filtroVista.setValue("En seguimiento");}
+    @FXML private void mostrarExpiradas(){
+        campoBuscar.setText("expirada");
+        filtroVista.setValue("Historial");
+    }
+    @FXML private void mostrarProximas(){
+        campoBuscar.clear();
+        filtroVista.setValue("En seguimiento");
+        solicitudesFiltradas.setPredicate(this::proximaAVencer);
+        actualizarMensajeResultados();
+        botonLimpiar.setDisable(false);
+    }
 
     private void actualizarResumen(){LocalDateTime a=LocalDateTime.now();long vigentes=solicitudes.stream().filter(r->r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null&&r.getFechaVencimiento().isAfter(a)).count();long proximas=solicitudes.stream().filter(this::proximaAVencer).count();long expiradas=solicitudes.stream().filter(r->r.getEstado()==EstadoReserva.EXPIRADA).count();etiquetaTotal.setText(String.valueOf(solicitudes.size()));etiquetaVigentes.setText(String.valueOf(vigentes));etiquetaProximas.setText(String.valueOf(proximas));etiquetaExpiradas.setText(String.valueOf(expiradas));tarjetaProximas.getStyleClass().remove("web-metric-warning");if(proximas>0)tarjetaProximas.getStyleClass().add("web-metric-warning");}
     private boolean proximaAVencer(Reserva r){LocalDateTime a=LocalDateTime.now();return r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null&&r.getFechaVencimiento().isAfter(a)&&!r.getFechaVencimiento().isAfter(a.plusMinutes(5));}
 
-    private void iniciarReloj(){reloj=new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),e->{tablaSolicitudes.refresh();actualizarResumen();if(seleccionada!=null)actualizarSituacionDetalle();}));reloj.setCycleCount(Timeline.INDEFINITE);reloj.play();}
+    private void iniciarReloj(){
+        reloj=new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),e->{
+            boolean hayPendientesVisibles=solicitudesFiltradas!=null
+                    &&solicitudesFiltradas.stream().anyMatch(r->r.getEstado()==EstadoReserva.PENDIENTE);
+            if(hayPendientesVisibles)tablaSolicitudes.refresh();
+            actualizarResumen();
+            if(seleccionada!=null&&seleccionada.getEstado()==EstadoReserva.PENDIENTE)
+                actualizarSituacionDetalle();
+        }));
+        reloj.setCycleCount(Timeline.INDEFINITE);reloj.play();
+    }
     private void detenerReloj(){if(reloj!=null)reloj.stop();}
+    private String textoSenia(Reserva r){
+        if(r==null)return "-";
+        return switch(r.getEstado()){
+            case PENDIENTE->"Pendiente";
+            case CONFIRMADA,COMPLETADA,AUSENTE->"Acreditada";
+            case EXPIRADA->"No recibida";
+            case CANCELADA->"Cancelada";
+        };
+    }
     private String textoVencimiento(Reserva r){
         if(r==null)return "-";
         if(r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null){
@@ -266,16 +367,18 @@ public class SolicitudesWebController {
     }
     private String ayudaSituacion(Reserva r,String s){
         if(r.getEstado()==EstadoReserva.EXPIRADA)
-            return "La solicitud venció y el turno fue liberado por falta de acreditación.";
+            return "La seña no fue recibida dentro del plazo. El turno fue liberado automáticamente.";
         if(r.getEstado()==EstadoReserva.CANCELADA)
             return "La solicitud fue cancelada y el turno quedó liberado.";
         if(r.getEstado()==EstadoReserva.PENDIENTE)
             return s.matches("\\d{2}:\\d{2}")
-                    ? "Tiempo restante para acreditar la seña."
-                    : "La solicitud está alcanzando su vencimiento.";
+                    ? "Esperando la acreditación automática de la seña. Vence en "+s+"."
+                    : "La solicitud está alcanzando su vencimiento automático.";
         if("Finalizada".equals(s)&&r.getEstado()==EstadoReserva.CONFIRMADA)
             return "El turno terminó y puede requerir cierre como completado o ausente.";
-        if("Próxima".equals(s))return "El turno todavía no comenzó.";
+        if("Próxima".equals(s))return r.getEstado()==EstadoReserva.CONFIRMADA
+                ? "Seña acreditada automáticamente. La reserva ya está confirmada y el turno todavía no comenzó."
+                : "El turno todavía no comenzó.";
         if("En curso".equals(s))
             return "El turno se encuentra dentro de su horario reservado.";
         return "Situación temporal del turno seleccionado.";
@@ -330,3 +433,9 @@ public class SolicitudesWebController {
     @FXML private void volver(){detenerReloj();Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());}
     // solicitudes-web-ajuste-final-v1
 }
+
+// mejorar-seguimiento-solicitudes-web-v3
+// cerrar-solicitudes-web-v4
+// corregir-comparadores-solicitudes-web-v5
+// restaurar-estado-vacio-solicitudes-web-v6
+// eliminar-filtro-estado-solicitudes-web-v7

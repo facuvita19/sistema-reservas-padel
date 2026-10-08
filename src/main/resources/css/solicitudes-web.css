@@ -1192,3 +1192,93 @@
     -fx-stroke: #89c8ab;
     -fx-stroke-width: 1.5;
 }
+
+/* mejorar-seguimiento-solicitudes-web-v3 */
+/* Selector de vista operativo, estable en todos sus estados. */
+.web-root-v2 .web-view-filter,
+.web-root-v2 .web-view-filter:hover,
+.web-root-v2 .web-view-filter:focused,
+.web-root-v2 .web-view-filter:showing {
+    -fx-min-width: 154; -fx-pref-width: 154; -fx-max-width: 154;
+    -fx-min-height: 40; -fx-pref-height: 40; -fx-max-height: 40;
+    -fx-background-color: #19221f;
+    -fx-border-color: #3b5e50;
+    -fx-background-radius: 9; -fx-border-radius: 9;
+    -fx-border-width: 1; -fx-padding: 0;
+    -fx-font-family: "Segoe UI"; -fx-font-size: 10px;
+    -fx-text-fill: #dce8e2; -fx-mark-color: #86c5a7;
+    -fx-effect: none;
+}
+.web-root-v2 .web-view-filter:focused,
+.web-root-v2 .web-view-filter:showing { -fx-border-color: -color-principal; }
+.web-root-v2 .web-view-filter > .list-cell {
+    -fx-background-color: transparent; -fx-text-fill: #dce8e2;
+    -fx-padding: 0 10; -fx-alignment: CENTER_LEFT;
+}
+.web-root-v2 .web-view-filter > .arrow-button,
+.web-root-v2 .web-view-filter:hover > .arrow-button,
+.web-root-v2 .web-view-filter:focused > .arrow-button,
+.web-root-v2 .web-view-filter:showing > .arrow-button {
+    -fx-min-width: 32; -fx-pref-width: 32; -fx-max-width: 32;
+    -fx-background-color: transparent; -fx-border-color: transparent;
+    -fx-padding: 0; -fx-alignment: CENTER;
+}
+.web-root-v2 .web-view-filter > .arrow-button > .arrow { -fx-background-color: #8eaaa0; }
+/* La tabla comunica claramente sus tres dimensiones: estado, seña y situación. */
+.web-root-v2 .web-table-v2 .web-col-estado .label,
+.web-root-v2 .web-table-v2 .web-col-vencimiento .label,
+.web-root-v2 .web-table-v2 .web-col-situacion .label { -fx-alignment: CENTER; }
+.web-root-v2 .web-results-strip { -fx-spacing: 12; }
+
+/* cerrar-solicitudes-web-v4 */
+/* Estado vacio compacto y positivo para la vista operativa. */
+.web-root-v2 .web-empty-state-v3 {
+    -fx-alignment: CENTER;
+    -fx-padding: 28;
+    -fx-spacing: 8;
+}
+.web-root-v2 .web-empty-icon-shell-v3 {
+    -fx-min-width: 48;
+    -fx-pref-width: 48;
+    -fx-max-width: 48;
+    -fx-min-height: 48;
+    -fx-pref-height: 48;
+    -fx-max-height: 48;
+    -fx-alignment: CENTER;
+}
+.web-root-v2 .web-empty-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-alignment: CENTER;
+}
+.web-root-v2 .web-empty-copy {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-text-alignment: CENTER;
+    -fx-alignment: CENTER;
+}
+
+/* eliminar-filtro-estado-solicitudes-web-v7 */
+/* Barra simplificada: busqueda, vista operativa y acciones. */
+.web-root-v2 .web-view-filter,
+.web-root-v2 .web-view-filter:hover,
+.web-root-v2 .web-view-filter:focused,
+.web-root-v2 .web-view-filter:showing {
+    -fx-min-width: 198;
+    -fx-pref-width: 198;
+    -fx-max-width: 198;
+}
+.web-root-v2 .web-search-shell-v3 {
+    -fx-min-width: 360;
+}
+.web-root-v2 .web-filter-clear {
+    -fx-min-width: 116;
+    -fx-pref-width: 116;
+    -fx-max-width: 116;
+}
+.web-root-v2 .web-refresh-button {
+    -fx-min-width: 134;
+    -fx-pref-width: 134;
+    -fx-max-width: 134;
+}
