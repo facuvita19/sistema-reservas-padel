@@ -15,3 +15,155 @@
 .users-root .modern-table .table-row-cell.user-row-inactive { -fx-opacity: .58; }
 .users-root .modern-table .table-row-cell.user-row-selected { -fx-opacity: 1; -fx-background-color: #22292e; -fx-border-color: transparent transparent #343d42 -color-principal; -fx-border-width: 0 0 1 4; }
 .users-root .activate-button { -fx-background-color: #26543f; -fx-border-color: #4b866c; -fx-text-fill: #e9fff5; }
+
+/* modernizar-usuarios-referencia-v1 */
+.users-root .users-module-header-v1 { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; }
+.users-back-button-v1 { -fx-padding:0; -fx-content-display:GRAPHIC_ONLY; -fx-background-color:#20272b; -fx-border-color:#465158; -fx-background-radius:10; -fx-border-radius:10; -fx-cursor:hand; -fx-focus-color:transparent; -fx-faint-focus-color:transparent; }
+.users-back-button-v1:hover { -fx-background-color:#26342f; -fx-border-color:-color-principal; } .users-back-button-v1:pressed { -fx-background-color:#1b2421; -fx-scale-x:.97; -fx-scale-y:.97; }
+.users-back-icon-v1,.users-module-icon-v1,.users-action-icon-v1,.users-button-icon-v1,.users-refresh-icon-v1,.users-search-icon-v1,.user-session-icon-v1,.user-detail-icon-v1,.user-role-icon-v1,.user-password-icon-v1 { -fx-fill:transparent; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; }
+.users-back-icon-v1 { -fx-stroke:#b7c3c8; -fx-stroke-width:1.5; -fx-scale-x:.78; -fx-scale-y:.78; }
+.users-module-icon-shell-v1 { -fx-background-color:#1b2926; -fx-border-color:#3d6b5b; -fx-background-radius:11; -fx-border-radius:11; } .users-module-icon-v1 { -fx-stroke:#89c8ab; -fx-stroke-width:1.5; -fx-scale-x:.72; -fx-scale-y:.72; }
+.users-title-block-v1 { -fx-translate-y:1; }
+.users-new-button-v1 { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-padding:0 17; -fx-background-color:#3f916d; -fx-border-color:#55aa83; -fx-background-radius:10; -fx-border-radius:10; -fx-text-fill:white; -fx-font-family:"Segoe UI"; -fx-font-size:11px; -fx-font-weight:900; -fx-graphic-text-gap:8; -fx-cursor:hand; } .users-new-button-v1:hover { -fx-background-color:#4a9f79; -fx-border-color:#76c19e; } .users-new-button-v1:pressed { -fx-background-color:#2f684f; -fx-scale-x:.985; -fx-scale-y:.985; } .users-action-icon-v1 { -fx-stroke:white; -fx-stroke-width:1.5; -fx-scale-x:.67; -fx-scale-y:.67; }
+.user-session-card-v1 { -fx-min-height:42; -fx-pref-height:42; -fx-background-color:#1d2227; -fx-border-color:#3b454d; -fx-background-radius:10; -fx-border-radius:10; -fx-padding:5 11; } .user-session-icon-shell-v1 { -fx-background-color:#21352d; -fx-background-radius:7; } .user-session-icon-v1 { -fx-stroke:#83c3a5; -fx-stroke-width:1.5; -fx-scale-x:.65; -fx-scale-y:.65; } .user-session-eyebrow-v1 { -fx-text-fill:#7d8a90; -fx-font-size:7.5px; -fx-font-weight:900; } .user-session-value-v1 { -fx-text-fill:#c7d0d3; -fx-font-size:10px; -fx-font-weight:800; }
+.users-root .users-list-v1 { -fx-spacing:10; } .users-filter-row-v1 { -fx-min-height:42; -fx-pref-height:42; }
+.users-search-shell-v1 { -fx-min-height:40; -fx-pref-height:40; -fx-background-color:#1b2024; -fx-border-color:#3b444a; -fx-background-radius:9; -fx-border-radius:9; } .users-search-field-v1,.users-search-field-v1:hover,.users-search-field-v1:focused { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; -fx-background-color:transparent; -fx-border-color:transparent; -fx-padding:0 14 0 42; -fx-text-fill:-control-text; -fx-prompt-text-fill:#84949b; -fx-effect:none; -fx-focus-color:transparent; -fx-faint-focus-color:transparent; } .users-search-icon-v1 { -fx-stroke:#8d9a9f; -fx-stroke-width:1.7; -fx-scale-x:.78; -fx-scale-y:.78; }
+.users-inactive-filter-v1 { -fx-min-height:40; -fx-pref-height:40; -fx-padding:0 11; -fx-background-color:#242a2e; -fx-border-color:#465057; -fx-background-radius:9; -fx-border-radius:9; -fx-font-size:10px; -fx-font-weight:900; } .users-inactive-filter-v1:selected { -fx-background-color:#20372d; -fx-border-color:-color-principal; -fx-text-fill:#bde8d3; }
+.users-filter-button-v1,.users-refresh-button-v1 { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; -fx-background-color:linear-gradient(to bottom,#30363a,#282e32); -fx-border-color:#59636a; -fx-background-radius:9; -fx-border-radius:9; -fx-text-fill:#eef2f3; -fx-font-family:"Segoe UI"; -fx-font-size:10px; -fx-font-weight:900; -fx-graphic-text-gap:8; -fx-cursor:hand; } .users-filter-button-v1 { -fx-min-width:108; -fx-pref-width:108; } .users-refresh-button-v1 { -fx-min-width:124; -fx-pref-width:124; } .users-filter-button-v1:hover,.users-refresh-button-v1:hover { -fx-background-color:#384146; -fx-border-color:-color-principal; -fx-translate-y:-1; } .users-filter-button-v1:pressed,.users-refresh-button-v1:pressed { -fx-background-color:#23292d; -fx-translate-y:0; -fx-scale-x:.98; -fx-scale-y:.98; }
+.users-button-icon-v1,.users-refresh-icon-v1 { -fx-stroke:#eef4f1; -fx-stroke-width:1.65; }
+.users-results-bar-v1 { -fx-min-height:24; -fx-pref-height:24; -fx-padding:0 4 2 4; } .users-results-text-v1 { -fx-text-fill:#8fc6ad; -fx-font-size:10.5px; -fx-font-weight:800; } .users-results-hint-v1 { -fx-text-fill:#748087; -fx-font-size:9.5px; }
+.users-root .users-table-v1 .column-header .label { -fx-alignment:CENTER; } .users-root .users-table-v1 .table-cell { -fx-alignment:CENTER; } .users-root .users-table-v1 .table-cell.user-name-column-v1 { -fx-alignment:CENTER_LEFT; -fx-padding:0 10 0 16; } .users-root .users-table-v1 .table-row-cell { -fx-cell-size:61px; } .users-root .users-table-v1 .table-row-cell:filled { -fx-cursor:hand; } .users-root .users-table-v1 .table-row-cell.user-row-inactive:hover { -fx-opacity:.66; -fx-background-color:#192024; } .users-root .users-table-v1 .table-row-cell.user-row-inactive.user-row-selected { -fx-opacity:1; }
+.user-detail-icon-shell-v1,.user-role-icon-shell-v1 { -fx-background-color:#1c3028; -fx-border-color:#3d6f59; -fx-background-radius:9; -fx-border-radius:9; } .user-detail-icon-v1,.user-role-icon-v1 { -fx-stroke:#7ccaa5; -fx-stroke-width:1.6; -fx-scale-x:.72; -fx-scale-y:.72; } .user-detail-eyebrow-v1 { -fx-text-fill:#7d8a90; -fx-font-size:8.5px; -fx-font-weight:900; }
+.user-role-note { -fx-border-width:0 0 0 3; -fx-background-radius:7; -fx-border-radius:3 7 7 3; -fx-padding:10 12; }
+.user-password-note { -fx-border-width:0 0 0 3; -fx-background-radius:7; -fx-border-radius:3 7 7 3; -fx-padding:9 11; } .user-password-icon-shell-v1 { -fx-background-color:#37301d; -fx-background-radius:7; } .user-password-icon-v1 { -fx-stroke:#e2c66f; -fx-stroke-width:1.5; -fx-scale-x:.7; -fx-scale-y:.7; }
+.user-password-help-v1 { -fx-text-fill:#84949b; -fx-font-size:10px; } .user-password-help-v1.password-help-warning-v1 { -fx-text-fill:#d6c07e; } .user-password-help-v1.password-help-error-v1 { -fx-text-fill:#ef9ca6; } .user-password-help-v1.password-help-ok-v1 { -fx-text-fill:#82d1aa; }
+.user-form-message-v1 { -fx-max-width:infinity; -fx-background-color:#18251f; -fx-border-color:#3a694f; -fx-border-width:0 0 0 3; -fx-background-radius:7; -fx-border-radius:3 7 7 3; -fx-padding:8 11; -fx-text-fill:#82d1aa; } .user-form-message-v1.mensaje-error { -fx-background-color:#2c2023; -fx-border-color:#8d4c56; -fx-text-fill:#f0afb7; }
+.user-primary-actions-v1 { -fx-min-height:48; } .user-save-button-v1 { -fx-min-height:48; -fx-pref-height:48; -fx-max-height:48; -fx-background-color:#3f936f; -fx-border-color:#69b18f; -fx-background-radius:10; -fx-border-radius:10; -fx-text-fill:white; -fx-font-family:"Segoe UI"; -fx-font-size:11px; -fx-font-weight:900; -fx-graphic-text-gap:8; -fx-cursor:hand; } .user-save-button-v1:hover { -fx-background-color:#4da17e; -fx-border-color:#86c5a8; -fx-translate-y:-1; } .user-save-button-v1:pressed { -fx-background-color:#337b5c; -fx-translate-y:0; -fx-scale-x:.985; -fx-scale-y:.985; }
+.user-save-button-v1:disabled,.user-save-button-v1:disabled:hover,.user-save-button-v1:disabled:pressed { -fx-background-color:#1d2a24; -fx-border-color:#354a40; -fx-text-fill:#9aaba2; -fx-opacity:1; -fx-effect:none; -fx-translate-y:0; -fx-scale-x:1; -fx-scale-y:1; }
+.user-state-button-v1,.user-reactivate-button-v1 { -fx-min-width:190; -fx-pref-width:190; -fx-min-height:48; -fx-pref-height:48; -fx-background-radius:10; -fx-border-radius:10; -fx-font-family:"Segoe UI"; -fx-font-size:11px; -fx-font-weight:900; -fx-graphic-text-gap:8; -fx-cursor:hand; } .user-state-button-v1 { -fx-background-color:#3a2529; -fx-border-color:#7b4650; -fx-text-fill:#f0aeb7; } .user-reactivate-button-v1 { -fx-background-color:#26543f; -fx-border-color:#4b866c; -fx-text-fill:#e9fff5; } .user-state-button-v1:hover { -fx-background-color:#4a2c32; -fx-border-color:#aa5b67; } .user-reactivate-button-v1:hover { -fx-background-color:#31684e; -fx-border-color:#69aa8b; }
+.user-state-button-v1:disabled { -fx-opacity:.42; -fx-effect:none; }
+.user-reset-button-v1 { -fx-min-height:44; -fx-pref-height:44; -fx-background-color:#292f33; -fx-border-color:#566168; -fx-background-radius:9; -fx-border-radius:9; -fx-text-fill:#e3e8ea; -fx-font-family:"Segoe UI"; -fx-font-size:10.5px; -fx-font-weight:900; -fx-graphic-text-gap:8; -fx-cursor:hand; } .user-reset-button-v1:hover { -fx-background-color:#343c41; -fx-border-color:-color-principal; -fx-translate-y:-1; }
+.users-root .modern-field,.users-root .modern-combo { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+
+/* cerrar-usuarios-seguridad-dialogo-v2 */
+.users-root .user-state-button-v1,
+.users-root .user-reactivate-button-v1 {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+}
+.dialog-password-help-v2 {
+    -fx-text-fill: #8f9da3;
+    -fx-font-size: 10px;
+    -fx-padding: 2 0 0 0;
+}
+.dialog-password-help-v2.dialog-password-warning-v2 {
+    -fx-text-fill: #d7bd79;
+}
+.dialog-password-help-v2.dialog-password-error-v2 {
+    -fx-text-fill: #ef9ca6;
+}
+.dialog-password-help-v2.dialog-password-ok-v2 {
+    -fx-text-fill: #82d1aa;
+}
+.dialog-pane .dialog-action-primary:disabled {
+    -fx-opacity: .52;
+    -fx-effect: none;
+}
+
+/* corregir-dialogo-password-usuarios-v4 */
+.dialog-password-help-v3 {
+    -fx-min-height: 18;
+    -fx-pref-height: 18;
+    -fx-max-height: 18;
+    -fx-text-fill: #98a5aa;
+    -fx-font-size: 10px;
+    -fx-padding: 1 0 0 0;
+}
+.dialog-password-help-v3.dialog-password-error-v3 {
+    -fx-text-fill: #ef9ca6;
+}
+.dialog-password-eye-v3,
+.dialog-password-eye-v3:hover,
+.dialog-password-eye-v3:selected,
+.dialog-password-eye-v3:focused {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-max-height: 30;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-cursor: hand;
+}
+.dialog-password-eye-v3:hover {
+    -fx-background-color: #293137;
+}
+.dialog-password-eye-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #9ba8ad;
+    -fx-stroke-width: 1.55;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .72;
+    -fx-scale-y: .72;
+}
+.dialog-password-eye-v3:selected .dialog-password-eye-icon-v3 {
+    -fx-stroke: #82d1aa;
+}
+.dialog-pane .dialog-field {
+    -fx-padding: 0 40 0 10;
+}
+
+/* perfeccionar-ojo-password-usuarios-v7 */
+.dialog-password-eye-v3,
+.dialog-password-eye-v3:hover,
+.dialog-password-eye-v3:selected,
+.dialog-password-eye-v3:focused,
+.dialog-password-eye-v3:armed,
+.dialog-password-eye-v3:pressed {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-effect: none;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.dialog-password-eye-v3:hover .dialog-password-eye-icon-v3 {
+    -fx-stroke: #d4dddf;
+}
+.dialog-password-eye-v3:selected .dialog-password-eye-icon-v3,
+.dialog-password-eye-v3:selected:hover .dialog-password-eye-icon-v3 {
+    -fx-stroke: #82d1aa;
+}
+
+/* corregir-ojo-nativo-usuarios-v8 */
+.dialog-password-eye-plain-v8 {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 0;
+    -fx-effect: none;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+}
+.dialog-password-eye-plain-v8:hover .dialog-password-eye-icon-v3 {
+    -fx-stroke: #d4dddf;
+}
+.dialog-password-eye-plain-v8:focused .dialog-password-eye-icon-v3 {
+    -fx-stroke: #b9c7cb;
+}
+.dialog-password-eye-plain-v8.dialog-password-eye-visible-v8 .dialog-password-eye-icon-v3,
+.dialog-password-eye-plain-v8.dialog-password-eye-visible-v8:hover .dialog-password-eye-icon-v3 {
+    -fx-stroke: #82d1aa;
+}
