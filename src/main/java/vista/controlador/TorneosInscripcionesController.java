@@ -7,9 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import dao.ClienteDAOMySQL;
-import javafx.animation.ScaleTransition;
 import javafx.collections.FXCollections;
-import javafx.util.Duration;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
@@ -104,56 +102,8 @@ public class TorneosInscripcionesController {
     private void initialize() {
         configurarTabla();
         configurarFiltros();
-        configurarAnimacionesPanel();
         detalleObservaciones.textProperty().addListener((o, a, actual) -> actualizarBotonObservacion());
         cargarInscripciones();
-    }
-
-    private void configurarAnimacionesPanel() {
-        for (Button boton : java.util.List.of(
-                botonWhatsappResponsable, botonWhatsappPareja,
-                botonVincularResponsable, botonVincularPareja,
-                botonDesvincularResponsable, botonDesvincularPareja,
-                botonGuardarObservacion, botonConfirmar,
-                botonListaEspera, botonRechazar, botonCancelar)) {
-            animarBotonPanel(boton);
-        }
-    }
-
-    private void animarBotonPanel(Button boton) {
-        boton.getStyleClass().add("inscription-animated-button");
-        boton.setOnMouseEntered(evento -> {
-            if (!boton.isDisabled()) {
-                animarEscala(boton, 1.018, 115);
-            }
-        });
-        boton.setOnMouseExited(evento ->
-                animarEscala(boton, 1.0, 130));
-        boton.setOnMousePressed(evento -> {
-            if (!boton.isDisabled()) {
-                animarEscala(boton, 0.975, 70);
-            }
-        });
-        boton.setOnMouseReleased(evento -> {
-            if (!boton.isDisabled()) {
-                animarEscala(boton, boton.isHover() ? 1.018 : 1.0, 95);
-            }
-        });
-        boton.disabledProperty().addListener((obs, anterior, deshabilitado) -> {
-            if (deshabilitado) {
-                boton.setScaleX(1.0);
-                boton.setScaleY(1.0);
-            }
-        });
-    }
-
-    private void animarEscala(
-            Button boton, double escala, double milisegundos) {
-        ScaleTransition animacion = new ScaleTransition(
-                Duration.millis(milisegundos), boton);
-        animacion.setToX(escala);
-        animacion.setToY(escala);
-        animacion.play();
     }
 
     private void configurarTabla() {

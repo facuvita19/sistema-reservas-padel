@@ -572,3 +572,333 @@
 .tournaments-root .inscriptions-table .column-header .label {
     -fx-text-overrun: ellipsis;
 }
+
+/* inscripciones-experiencia-unificada-v4 */
+/* Cabecera unificada */
+.module-header { -fx-min-height: 82; -fx-pref-height: 82; }
+.inscriptions-back-button-v4 {
+    -fx-min-width: 42; -fx-pref-width: 42; -fx-max-width: 42;
+    -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42;
+    -fx-padding: 0; -fx-alignment: CENTER; -fx-content-display: GRAPHIC_ONLY;
+    -fx-background-color: #20272b; -fx-background-radius: 10;
+    -fx-border-color: #465158; -fx-border-radius: 10; -fx-cursor: hand;
+}
+.inscriptions-back-button-v4:hover { -fx-background-color: #26342f; -fx-border-color: -color-principal; -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 0); }
+.inscriptions-back-icon-v4, .inscriptions-module-icon-v4,
+.inscriptions-icon-v4, .inscriptions-search-icon-v4,
+.inscriptions-metric-icon-v4, .inscriptions-empty-icon-v4 {
+    -fx-fill: transparent; -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round; -fx-stroke-line-join: round;
+}
+.inscriptions-back-icon-v4 { -fx-stroke: #b7c3c8; -fx-scale-x: .78; -fx-scale-y: .78; }
+.inscriptions-back-button-v4:hover .inscriptions-back-icon-v4 { -fx-stroke: white; }
+.inscriptions-module-icon-shell-v4 { -fx-background-color: #1d2a27; -fx-background-radius: 11; -fx-border-color: #3f6c5d; -fx-border-radius: 11; }
+.inscriptions-module-icon-v4 { -fx-stroke: #83c8aa; -fx-scale-x: .72; -fx-scale-y: .72; }
+.inscriptions-title-block-v4 { -fx-translate-y: 1; }
+
+/* Iconografia y geometria estable */
+.primary-button, .inscriptions-refresh-button, .inscriptions-clear-button,
+.tournament-link-button, .tournament-unlink-button, .whatsapp-button,
+.inscription-save-note, .tournament-action-confirm, .tournament-action-wait,
+.tournament-action-reject, .tournament-action-cancel {
+    -fx-content-display: LEFT; -fx-graphic-text-gap: 8;
+    -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1;
+}
+.inscriptions-icon-slot-v4 { -fx-alignment: CENTER; }
+.inscriptions-icon-v4 { -fx-stroke: #b7c3c8; -fx-scale-x: .68; -fx-scale-y: .68; }
+.primary-button .inscriptions-icon-v4, .tournament-action-confirm .inscriptions-icon-v4 { -fx-stroke: white; }
+.whatsapp-button .inscriptions-icon-v4 { -fx-stroke: #bdebd0; }
+.tournament-action-wait .inscriptions-icon-v4 { -fx-stroke: #fff0bd; }
+.tournament-action-reject .inscriptions-icon-v4 { -fx-stroke: #ffd1d7; }
+
+/* Metricas */
+.tournaments-root .tournament-metric { -fx-min-height: 62; -fx-pref-height: 62; -fx-max-height: 62; }
+.inscriptions-metric-icon-v4 { -fx-scale-x: .58; -fx-scale-y: .58; }
+.inscriptions-metric-total-icon-v4 { -fx-stroke: #9ab4c0; }
+.inscriptions-metric-pending-icon-v4 { -fx-stroke: #f0a13b; }
+.inscriptions-metric-confirmed-icon-v4 { -fx-stroke: #72c59a; }
+.inscriptions-metric-wait-icon-v4 { -fx-stroke: #c7a1f2; }
+.inscriptions-metric-final-icon-v4 { -fx-stroke: #d9828d; }
+
+/* Busqueda y limpiar */
+.inscriptions-search-shell-v4 { -fx-alignment: CENTER-LEFT; }
+.inscriptions-search-shell-v4 .modern-field { -fx-padding: 0 12 0 36; }
+.inscriptions-search-icon-v4 { -fx-stroke: #73858e; -fx-scale-x: .68; -fx-scale-y: .68; -fx-translate-x: 11; }
+.tournaments-root .inscriptions-clear-button { -fx-min-width: 104; -fx-pref-width: 104; -fx-max-width: 104; -fx-padding: 0 11; }
+
+/* Estado vacio */
+.inscriptions-empty-state-v4 { -fx-padding: 24; }
+.inscriptions-empty-icon-shell-v4 { -fx-background-color: #1a2421; -fx-background-radius: 25; -fx-border-color: #38584d; -fx-border-radius: 25; }
+.inscriptions-empty-icon-v4 { -fx-stroke: #76aa94; -fx-scale-x: .80; -fx-scale-y: .80; }
+.inscriptions-empty-title-v4 { -fx-text-fill: #adb9bd; -fx-font-size: 13px; -fx-font-weight: 900; }
+.inscriptions-empty-copy-v4 { -fx-text-fill: #6f8087; -fx-font-size: 10px; }
+
+/* Todas las interacciones son iluminacion, nunca escala o desplazamiento. */
+.inscription-animated-button,
+.inscription-animated-button:hover,
+.inscription-animated-button:pressed,
+.tournament-link-button:hover, .whatsapp-button:hover, .tournament-unlink-button:hover,
+.inscription-save-note:hover, .tournament-action-confirm:hover,
+.tournament-action-wait:hover, .tournament-action-reject:hover,
+.tournament-action-cancel:hover,
+.tournament-link-button:pressed, .whatsapp-button:pressed, .tournament-unlink-button:pressed,
+.inscription-save-note:pressed, .tournament-action-confirm:pressed,
+.tournament-action-wait:pressed, .tournament-action-reject:pressed,
+.tournament-action-cancel:pressed {
+    -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1;
+}
+.inscriptions-refresh-button:hover, .inscriptions-clear-button:hover {
+    -fx-background-color: #30393e; -fx-border-color: #718087;
+    -fx-text-fill: white; -fx-effect: dropshadow(gaussian, rgba(150,164,172,.24), 10, .16, 0, 0);
+}
+
+/* inscripciones-densidad-escritorio-v5 */
+/* Densidad comun para pantallas administrativas de escritorio. */
+.module-header {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+
+/* Acciones de cabecera: misma altura que la navegacion y el icono del modulo. */
+.module-header .primary-button,
+.module-header .inscriptions-refresh-button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 16;
+}
+
+/* Indicadores compactos, conservando legibilidad y color semantico. */
+.tournaments-root .tournament-metric {
+    -fx-min-height: 56;
+    -fx-pref-height: 56;
+    -fx-max-height: 56;
+    -fx-padding: 5 10;
+    -fx-spacing: 0;
+}
+.tournaments-root .tournament-metric-value {
+    -fx-font-size: 18px;
+}
+.inscriptions-metric-icon-v4 {
+    -fx-scale-x: .54;
+    -fx-scale-y: .54;
+}
+
+/* La tabla muestra mas registros sin reducir tipografia. */
+.tournaments-root .inscriptions-table {
+    -fx-fixed-cell-size: 48;
+}
+.tournaments-root .inscriptions-table .table-row-cell {
+    -fx-cell-size: 48;
+}
+
+/* Panel lateral con ancho controlado para proteger la tabla principal. */
+.tournaments-root .inscription-detail-wide {
+    -fx-min-width: 500;
+    -fx-pref-width: 540;
+    -fx-max-width: 580;
+}
+.inscription-detail-header {
+    -fx-padding: 14 16 12 16;
+}
+
+/* Tarjetas de integrantes mas densas. */
+.tournaments-root .player-card {
+    -fx-padding: 9 10;
+    -fx-spacing: 4;
+}
+.tournaments-root .player-card .tournament-link-button,
+.tournaments-root .player-card .tournament-unlink-button,
+.tournaments-root .player-card .whatsapp-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-padding: 0 10;
+}
+.tournaments-root .player-card .whatsapp-button {
+    -fx-min-width: 132;
+    -fx-pref-width: 132;
+    -fx-max-width: 132;
+}
+.tournaments-root .player-card .tournament-unlink-button {
+    -fx-min-width: 142;
+    -fx-pref-width: 142;
+    -fx-max-width: 142;
+}
+
+/* Comentario y observacion conservan espacio util con menos aire exterior. */
+.tournaments-root .tournament-detail {
+    -fx-spacing: 8;
+}
+.tournaments-root .inscription-comment-compact {
+    -fx-min-height: 50;
+    -fx-pref-height: 50;
+    -fx-max-height: 62;
+}
+
+/* Acciones inferiores compactas y consistentes. */
+.tournaments-root .management-actions-fixed {
+    -fx-spacing: 7;
+    -fx-padding: 10 16 12 16;
+}
+.tournaments-root .inscription-save-note {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 12;
+}
+.tournaments-root .tournament-action-confirm,
+.tournaments-root .tournament-action-wait,
+.tournaments-root .tournament-action-reject,
+.tournaments-root .tournament-action-cancel {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0 12;
+}
+
+/* La compactacion nunca introduce movimiento o escalado. */
+.module-header .button,
+.tournaments-root .player-card .button,
+.tournaments-root .management-actions-fixed .button,
+.module-header .button:hover,
+.tournaments-root .player-card .button:hover,
+.tournaments-root .management-actions-fixed .button:hover,
+.module-header .button:pressed,
+.tournaments-root .player-card .button:pressed,
+.tournaments-root .management-actions-fixed .button:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* inscripciones-feedback-pulsacion-v6 */
+/* Hover: solo iluminacion, sin movimiento ni cambio de tamano. */
+.module-header .button:hover,
+.tournaments-root .inscriptions-clear-button:hover,
+.tournaments-root .player-card .button:hover,
+.tournaments-root .management-actions-fixed .button:hover {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Pressed: compresion tactil minima mientras el mouse permanece presionado. */
+.module-header .button:pressed,
+.tournaments-root .inscriptions-clear-button:pressed,
+.tournaments-root .player-card .button:pressed,
+.tournaments-root .management-actions-fixed .button:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+
+/* La navegacion de regreso usa una compresion aun mas discreta. */
+.module-header .inscriptions-back-button-v4:pressed {
+    -fx-scale-x: .97;
+    -fx-scale-y: .97;
+    -fx-background-color: #1b2421;
+    -fx-border-color: #477663;
+}
+
+/* Los botones deshabilitados nunca reaccionan visualmente. */
+.module-header .button:disabled,
+.module-header .button:disabled:hover,
+.module-header .button:disabled:pressed,
+.tournaments-root .inscriptions-clear-button:disabled,
+.tournaments-root .inscriptions-clear-button:disabled:hover,
+.tournaments-root .inscriptions-clear-button:disabled:pressed,
+.tournaments-root .player-card .button:disabled,
+.tournaments-root .player-card .button:disabled:hover,
+.tournaments-root .player-card .button:disabled:pressed,
+.tournaments-root .management-actions-fixed .button:disabled,
+.tournaments-root .management-actions-fixed .button:disabled:hover,
+.tournaments-root .management-actions-fixed .button:disabled:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
+
+/* agregar-inscripcion-pressed-verde-v1 */
+/* Evita que el estilo global primary-button muestre azul al presionar. */
+.tournaments-root .module-header .primary-button,
+.tournaments-root .module-header .primary-button:focused {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+    -fx-text-fill: #ffffff;
+}
+
+.tournaments-root .module-header .primary-button:hover {
+    -fx-background-color: -color-principal-hover;
+    -fx-border-color: #76b697;
+    -fx-text-fill: #ffffff;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+.tournaments-root .module-header .primary-button:pressed {
+    -fx-background-color: #326f52;
+    -fx-border-color: #4d8e6f;
+    -fx-text-fill: #ffffff;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-translate-y: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+
+.tournaments-root .module-header .primary-button:pressed .inscriptions-icon-v4 {
+    -fx-stroke: #ffffff;
+}
+
+.tournaments-root .module-header .primary-button:disabled,
+.tournaments-root .module-header .primary-button:disabled:hover,
+.tournaments-root .module-header .primary-button:disabled:pressed {
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+    -fx-effect: none;
+}
+
+/* agregar-inscripcion-sin-contorno-foco-v2 */
+/* Elimina el anillo rectangular de foco de JavaFX sin alterar el borde redondeado. */
+.tournaments-root .module-header .primary-button,
+.tournaments-root .module-header .primary-button:focused,
+.tournaments-root .module-header .primary-button:hover,
+.tournaments-root .module-header .primary-button:pressed {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.tournaments-root .module-header .primary-button:focused {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+    -fx-effect: none;
+}
+
+.tournaments-root .module-header .primary-button:hover {
+    -fx-background-color: -color-principal-hover;
+    -fx-border-color: #76b697;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 10, .16, 0, 0);
+}
+
+.tournaments-root .module-header .primary-button:pressed,
+.tournaments-root .module-header .primary-button:focused:pressed {
+    -fx-background-color: #326f52;
+    -fx-border-color: #4d8e6f;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-translate-y: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
