@@ -256,10 +256,19 @@ public class ReservaService {
             throw new IllegalArgumentException(
                     "La reserva no puede ser nula.");
         }
-        if (reserva.getClienteId() <= 0 || reserva.getCanchaId() <= 0
-                || reserva.getUsuarioId() <= 0) {
+        boolean tieneClienteRegistrado = reserva.getClienteId() > 0;
+        boolean tieneClienteOcasional =
+                reserva.getClienteOcasionalNombre() != null
+                && !reserva.getClienteOcasionalNombre().isBlank();
+
+        if (tieneClienteRegistrado == tieneClienteOcasional) {
             throw new IllegalArgumentException(
-                    "Cliente, cancha y usuario son obligatorios.");
+                    "La reserva debe tener un único responsable: "
+                    + "cliente registrado o cliente ocasional.");
+        }
+        if (reserva.getCanchaId() <= 0 || reserva.getUsuarioId() <= 0) {
+            throw new IllegalArgumentException(
+                    "La cancha y el usuario son obligatorios.");
         }
         if (reserva.getFecha() == null || reserva.getHoraInicio() == null) {
             throw new IllegalArgumentException(
@@ -331,6 +340,14 @@ public class ReservaService {
         reserva.setComentarios(limpiarOpcional(reserva.getComentarios()));
         reserva.setObservacionesAdministrativas(
                 limpiarOpcional(reserva.getObservacionesAdministrativas()));
+        reserva.setClienteOcasionalNombre(
+                limpiarOpcional(reserva.getClienteOcasionalNombre()));
+        reserva.setClienteOcasionalTelefono(
+                limpiarOpcional(reserva.getClienteOcasionalTelefono()));
+        reserva.setClienteOcasionalEmail(
+                limpiarOpcional(reserva.getClienteOcasionalEmail()));
+        reserva.setClienteOcasionalDocumento(
+                limpiarOpcional(reserva.getClienteOcasionalDocumento()));
     }
 
     private String limpiarOpcional(String valor) {

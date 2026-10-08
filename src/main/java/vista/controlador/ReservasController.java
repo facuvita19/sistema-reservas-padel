@@ -28,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -98,7 +99,21 @@ public class ReservasController {
     @FXML private Label etiquetaMensaje;
     @FXML private Label etiquetaPrecio;
     @FXML private Label etiquetaSaldoPendiente;
+    @FXML private Button botonNuevaReservaSuperior;
+    @FXML private VBox panelAltaResponsable;
+    @FXML private VBox panelResponsableInformativo;
+    @FXML private Label etiquetaResponsableNombre;
+    @FXML private Label etiquetaResponsableTipo;
+    @FXML private Label etiquetaResponsableContacto;
     @FXML private ComboBox<Cliente> comboCliente;
+    @FXML private ToggleButton botonClienteRegistrado;
+    @FXML private ToggleButton botonClienteOcasional;
+    @FXML private VBox contenedorClienteOcasional;
+    @FXML private TextField campoClienteOcasionalNombre;
+    @FXML private TextField campoClienteOcasionalTelefono;
+    @FXML private TextField campoClienteOcasionalEmail;
+    @FXML private TextField campoClienteOcasionalDocumento;
+    @FXML private Label insigniaNuevaReserva;
     @FXML private ComboBox<Cancha> comboCancha;
     @FXML private DatePicker selectorFecha;
     @FXML private ComboBox<LocalTime> comboHorario;
@@ -438,6 +453,23 @@ public class ReservasController {
         comboHorario.valueProperty().addListener((obs, anterior, actual) -> actualizarResumenPrecio());
     }
 
+    @FXML private void usarClienteRegistrado() {
+        if (reservaSeleccionada == null) configurarModoCliente(false);
+    }
+
+    @FXML private void usarClienteOcasional() {
+        if (reservaSeleccionada == null) configurarModoCliente(true);
+    }
+
+    private void configurarModoCliente(boolean ocasional) {
+        botonClienteRegistrado.setSelected(!ocasional);
+        botonClienteOcasional.setSelected(ocasional);
+        comboCliente.setVisible(!ocasional); comboCliente.setManaged(!ocasional);
+        contenedorClienteOcasional.setVisible(ocasional); contenedorClienteOcasional.setManaged(ocasional);
+        if (ocasional) { comboCliente.getSelectionModel().clearSelection(); campoClienteOcasionalNombre.requestFocus(); }
+        else comboCliente.requestFocus();
+    }
+
     @FXML private void cargarDatosBase() {
         try {
             comboCliente.setItems(FXCollections.observableArrayList(clienteService.listar()));
@@ -567,6 +599,12 @@ public class ReservasController {
         reservaSeleccionada = null;
         tablaReservas.getSelectionModel().clearSelection();
         tituloFormulario.setText("Nueva reserva");
+        insigniaNuevaReserva.setVisible(true); insigniaNuevaReserva.setManaged(true);
+        configurarModoCliente(false);
+        configurarPanelAlta();
+        campoClienteOcasionalNombre.clear(); campoClienteOcasionalTelefono.clear();
+        campoClienteOcasionalEmail.clear(); campoClienteOcasionalDocumento.clear();
+        scrollFormulario.setVvalue(0);
         subtituloFormulario.setText(
                 "Completá los datos para registrar un nuevo turno.");
         insigniaEstadoDetalle.setVisible(false);
@@ -603,6 +641,9 @@ public class ReservasController {
     private void mostrarDetalle(Reserva reserva) {
         reservaSeleccionada = reserva;
         tituloFormulario.setText("Detalle de reserva");
+        insigniaNuevaReserva.setVisible(false); insigniaNuevaReserva.setManaged(false);
+        configurarPanelDetalle(reserva);
+        botonGuardar.setText("GUARDAR CAMBIOS");
         actualizarEncabezadoDetalle(reserva);
         actualizandoFormulario = true;
         try {
@@ -612,9 +653,17 @@ public class ReservasController {
         } finally {
             actualizandoFormulario = false;
         }
-        actualizarDisponibilidad();
-        if (!comboHorario.getItems().contains(reserva.getHoraInicio())) comboHorario.getItems().add(reserva.getHoraInicio());
-        comboHorario.setValue(reserva.getHoraInicio());
+        if (esEstadoFinal(reserva)) {
+            comboHorario.setItems(FXCollections.observableArrayList(reserva.getHoraInicio()));
+            comboHorario.setValue(reserva.getHoraInicio());
+            comboCancha.setValue(buscarCancha(reserva.getCanchaId()));
+        } else {
+            actualizarDisponibilidad();
+            if (!comboHorario.getItems().contains(reserva.getHoraInicio())) {
+                comboHorario.getItems().add(reserva.getHoraInicio());
+            }
+            comboHorario.setValue(reserva.getHoraInicio());
+        }
         spinnerJugadores.getValueFactory().setValue(reserva.getCantidadJugadores());
         campoComentarios.setText(reserva.getComentarios());
         campoObservaciones.setText(reserva.getObservacionesAdministrativas());
@@ -625,6 +674,79 @@ public class ReservasController {
         actualizarAccionesReserva();
         mostrarDetalleCancelacion(reserva);
         cargarAuditoria(reserva.getId());
+        aplicarEstadoEdicion(reserva);
+    }
+
+    // reservas-panel-boton-final-v14
+    private void configurarPanelAlta() {
+        panelAltaResponsable.setVisible(true);
+        panelAltaResponsable.setManaged(true);
+        panelResponsableInformativo.setVisible(false);
+        panelResponsableInformativo.setManaged(false);
+        botonNuevaReservaSuperior.getStyleClass().add(
+                "reservation-new-button-active-v13");
+        comboCancha.setDisable(false);
+        selectorFecha.setDisable(false);
+        comboHorario.setDisable(false);
+        spinnerJugadores.setDisable(false);
+        campoComentarios.setEditable(true);
+        campoObservaciones.setEditable(true);
+        botonGuardar.setVisible(true);
+        botonGuardar.setManaged(true);
+    }
+
+    private void configurarPanelDetalle(Reserva reserva) {
+        panelAltaResponsable.setVisible(false);
+        panelAltaResponsable.setManaged(false);
+        panelResponsableInformativo.setVisible(true);
+        panelResponsableInformativo.setManaged(true);
+        botonNuevaReservaSuperior.getStyleClass().remove(
+                "reservation-new-button-active-v13");
+
+        String nombre = reserva.getNombreCliente();
+        etiquetaResponsableNombre.setText(
+                nombre == null || nombre.isBlank()
+                        ? "Responsable sin nombre" : nombre);
+        etiquetaResponsableTipo.setText(
+                reserva.esClienteOcasional()
+                        ? "CLIENTE OCASIONAL" : "CLIENTE REGISTRADO");
+
+        String contacto;
+        if (reserva.esClienteOcasional()) {
+            contacto = reserva.getClienteOcasionalTelefono();
+        } else {
+            Cliente cliente = buscarCliente(reserva.getClienteId());
+            contacto = cliente == null ? null : cliente.getTelefono();
+        }
+        boolean tieneContacto = contacto != null && !contacto.isBlank();
+        etiquetaResponsableContacto.setText(
+                tieneContacto ? contacto : "Sin teléfono registrado");
+        etiquetaResponsableContacto.setVisible(true);
+        etiquetaResponsableContacto.setManaged(true);
+    }
+
+    private void aplicarEstadoEdicion(Reserva reserva) {
+        boolean finalizada = esEstadoFinal(reserva);
+        comboCancha.setDisable(finalizada);
+        selectorFecha.setDisable(finalizada);
+        comboHorario.setDisable(finalizada);
+        spinnerJugadores.setDisable(finalizada);
+        campoComentarios.setEditable(!finalizada);
+        campoObservaciones.setEditable(!finalizada);
+        botonGuardar.setVisible(!finalizada);
+        botonGuardar.setManaged(!finalizada);
+
+        if (finalizada && !subtituloFormulario.getText().contains(
+                "información de solo lectura")) {
+            subtituloFormulario.setText(subtituloFormulario.getText()
+                    + "\nReserva finalizada · información de solo lectura");
+        }
+    }
+
+    // corregir-compilacion-reservas-v13
+    private boolean esEstadoFinal(Reserva reserva) {
+        return reserva != null && reserva.getEstado() != null
+                && reserva.getEstado().esFinal();
     }
 
     private void actualizarEncabezadoDetalle(Reserva reserva) {
@@ -702,6 +824,13 @@ public class ReservasController {
     @FXML private void abrirWhatsApp() {
         if (reservaSeleccionada == null) { mostrarError("Seleccioná una reserva antes de abrir WhatsApp."); return; }
         Cliente cliente = buscarCliente(reservaSeleccionada.getClienteId());
+        if (reservaSeleccionada.esClienteOcasional()) {
+            String telefono = reservaSeleccionada.getClienteOcasionalTelefono();
+            if (telefono == null || telefono.isBlank()) { mostrarError("El cliente ocasional no tiene un teléfono registrado."); return; }
+            try { whatsAppService.abrirConversacion(telefono, "Hola " + reservaSeleccionada.getNombreCliente() + ", te contactamos por tu reserva."); }
+            catch (RuntimeException exception) { mostrarError("No se pudo abrir WhatsApp: " + exception.getMessage()); }
+            return;
+        }
         if (cliente == null) { mostrarError("No se pudo encontrar el cliente de la reserva."); return; }
         if (cliente.getTelefono() == null || cliente.getTelefono().isBlank()) {
             mostrarError("El cliente no tiene un teléfono registrado.");
@@ -816,8 +945,25 @@ public class ReservasController {
                 + "\n" + reservaSeleccionada.getHoraInicio().format(FORMATO_HORA) + " - "
                 + reservaSeleccionada.getHoraFin().format(FORMATO_HORA));
         Dialogos.preparar(dialogo, "dialog-choice");
+        // dialogos-reservas-prioridad-final-v16
+        dialogo.getDialogPane().setPrefWidth(940);
+        dialogo.getDialogPane().setMinWidth(880);
+        javafx.scene.Node botonCompletada = dialogo.getDialogPane()
+                .lookupButton(completada);
+        javafx.scene.Node botonAusente = dialogo.getDialogPane()
+                .lookupButton(ausente);
+        javafx.scene.Node botonVolver = dialogo.getDialogPane()
+                .lookupButton(volver);
         vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                 Navegacion.getConfiguracionActual());
+        botonCompletada.getStyleClass().add(
+                "reservation-close-complete-v15");
+        botonAusente.getStyleClass().add(
+                "reservation-close-absent-v15");
+        botonVolver.getStyleClass().add(
+                "reservation-close-back-v15");
+        dialogo.getDialogPane().getStyleClass().add(
+                "reservation-close-dialog-v15");
         dialogo.showAndWait().ifPresent(respuesta -> {
             if (respuesta == completada) cambiarEstadoSeleccionado(EstadoReserva.COMPLETADA);
             else if (respuesta == ausente) cambiarEstadoSeleccionado(EstadoReserva.AUSENTE);
@@ -829,7 +975,21 @@ public class ReservasController {
         try {
             validarSeleccionFormulario();
             Reserva reserva = reservaSeleccionada == null ? new Reserva() : reservaSeleccionada;
-            reserva.setClienteId(comboCliente.getValue().getId());
+            if (reservaSeleccionada == null) {
+                if (botonClienteOcasional.isSelected()) {
+                    reserva.setClienteId(0L);
+                    reserva.setClienteOcasionalNombre(campoClienteOcasionalNombre.getText());
+                    reserva.setClienteOcasionalTelefono(campoClienteOcasionalTelefono.getText());
+                    reserva.setClienteOcasionalEmail(campoClienteOcasionalEmail.getText());
+                    reserva.setClienteOcasionalDocumento(campoClienteOcasionalDocumento.getText());
+                } else {
+                    reserva.setClienteId(comboCliente.getValue().getId());
+                    reserva.setClienteOcasionalNombre(null);
+                    reserva.setClienteOcasionalTelefono(null);
+                    reserva.setClienteOcasionalEmail(null);
+                    reserva.setClienteOcasionalDocumento(null);
+                }
+            }
             reserva.setCanchaId(comboCancha.getValue().getId());
             reserva.setUsuarioId(Navegacion.getUsuarioActual().getId());
             reserva.setFecha(selectorFecha.getValue());
@@ -943,7 +1103,17 @@ public class ReservasController {
     }
 
     private void validarSeleccionFormulario() {
-        if (comboCliente.getValue() == null) throw new IllegalArgumentException("Seleccioná un cliente.");
+        if (reservaSeleccionada == null) {
+            if (botonClienteOcasional.isSelected()) {
+                if (campoClienteOcasionalNombre.getText() == null
+                        || campoClienteOcasionalNombre.getText().isBlank()) {
+                    throw new IllegalArgumentException(
+                            "Ingresá el nombre del cliente ocasional.");
+                }
+            } else if (comboCliente.getValue() == null) {
+                throw new IllegalArgumentException("Seleccioná un cliente.");
+            }
+        }
         if (comboCancha.getValue() == null) throw new IllegalArgumentException("Seleccioná una cancha.");
         if (selectorFecha.getValue() == null) throw new IllegalArgumentException("Seleccioná una fecha.");
         if (comboHorario.getValue() == null) throw new IllegalArgumentException("Seleccioná un horario disponible.");

@@ -106,7 +106,12 @@ CREATE TABLE IF NOT EXISTS cancha_dias_disponibles (
 -- ------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS reservas (
     id BIGINT NOT NULL AUTO_INCREMENT,
-    cliente_id BIGINT NOT NULL,
+    cliente_id BIGINT NULL,
+    cliente_ocasional_nombre VARCHAR(150) NULL,
+    cliente_ocasional_telefono VARCHAR(40) NULL,
+    cliente_ocasional_email VARCHAR(150) NULL,
+    cliente_ocasional_documento VARCHAR(40) NULL,
+
     cancha_id BIGINT NOT NULL,
     usuario_id BIGINT NOT NULL,
     fecha DATE NOT NULL,

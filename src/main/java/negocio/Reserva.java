@@ -32,6 +32,10 @@ public class Reserva {
     private String nombreCliente;
     private String nombreCancha;
     private String nombreUsuario;
+    private String clienteOcasionalNombre;
+    private String clienteOcasionalTelefono;
+    private String clienteOcasionalEmail;
+    private String clienteOcasionalDocumento;
 
     public long getId() { return id; }
     public void setId(long valor) { id = valor; }
@@ -80,6 +84,15 @@ public class Reserva {
     public void setNombreCancha(String valor) { nombreCancha = valor; }
     public String getNombreUsuario() { return nombreUsuario; }
     public void setNombreUsuario(String valor) { nombreUsuario = valor; }
+    public String getClienteOcasionalNombre() { return clienteOcasionalNombre; }
+    public void setClienteOcasionalNombre(String valor) { clienteOcasionalNombre = valor; }
+    public String getClienteOcasionalTelefono() { return clienteOcasionalTelefono; }
+    public void setClienteOcasionalTelefono(String valor) { clienteOcasionalTelefono = valor; }
+    public String getClienteOcasionalEmail() { return clienteOcasionalEmail; }
+    public void setClienteOcasionalEmail(String valor) { clienteOcasionalEmail = valor; }
+    public String getClienteOcasionalDocumento() { return clienteOcasionalDocumento; }
+    public void setClienteOcasionalDocumento(String valor) { clienteOcasionalDocumento = valor; }
+    public boolean esClienteOcasional() { return clienteId <= 0; }
 
     public boolean tieneVencimiento() {
         return fechaVencimiento != null;

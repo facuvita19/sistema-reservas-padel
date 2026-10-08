@@ -920,3 +920,349 @@
 .reservations-root .audit-list .corner {
     -fx-background-color: #151a1e;
 }
+
+/* reservas-experiencia-unificada-v8 */
+/* Cabecera y densidad base compartidas con el resto del sistema. */
+.reservations-root .module-header { -fx-min-height: 82; -fx-pref-height: 82; -fx-max-height: 82; }
+.reservation-back-button-v8 {
+    -fx-min-width: 42; -fx-pref-width: 42; -fx-max-width: 42;
+    -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42;
+    -fx-padding: 0; -fx-content-display: GRAPHIC_ONLY; -fx-alignment: CENTER;
+    -fx-background-color: #20272b; -fx-background-radius: 10;
+    -fx-border-color: #465158; -fx-border-radius: 10; -fx-cursor: hand;
+    -fx-focus-color: transparent; -fx-faint-focus-color: transparent;
+    -fx-background-insets: 0; -fx-border-insets: 0;
+}
+.reservation-back-button-v8:hover { -fx-background-color: #26342f; -fx-border-color: -color-principal; -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 0); }
+.reservation-back-icon-v8, .reservation-module-icon-v8, .reservation-icon-v8,
+.reservation-search-icon-v8, .reservation-empty-icon-v8 {
+    -fx-fill: transparent; -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round; -fx-stroke-line-join: round;
+}
+.reservation-back-icon-v8 { -fx-stroke: #b7c3c8; -fx-scale-x: .78; -fx-scale-y: .78; }
+.reservation-module-icon-shell-v8 { -fx-background-color: #1b2926; -fx-background-radius: 11; -fx-border-color: #3d6b5b; -fx-border-radius: 11; }
+.reservation-module-icon-v8 { -fx-stroke: #89c8ab; -fx-scale-x: .72; -fx-scale-y: .72; }
+.reservation-title-block-v8 { -fx-translate-y: 1; }
+.reservations-root .module-header > .primary-button { -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42; -fx-padding: 0 16; }
+
+/* Iconografia estable. */
+.reservation-icon-slot-v8 { -fx-alignment: CENTER; }
+.reservation-icon-v8 { -fx-stroke: #b8c4c9; -fx-scale-x: .67; -fx-scale-y: .67; }
+.reservations-root .primary-button .reservation-icon-v8,
+.reservations-root .status-confirm-button .reservation-icon-v8 { -fx-stroke: white; }
+.reservations-root .whatsapp-button .reservation-icon-v8 { -fx-stroke: #c6efda; }
+.reservations-root .button { -fx-content-display: LEFT; -fx-graphic-text-gap: 8; }
+.reservation-date-button { -fx-content-display: GRAPHIC_ONLY; }
+
+/* Navegacion temporal y filtros. */
+.reservations-root .reservation-date-button,
+.reservations-root .reservation-filter-stack .secondary-button,
+.reservations-root .reservation-filter-stack .modern-date { -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36; }
+.reservation-search-shell-v8 { -fx-alignment: CENTER_LEFT; }
+.reservation-search-with-icon-v8 { -fx-padding: 0 12 0 36; }
+.reservation-search-icon-v8 { -fx-stroke: #73858e; -fx-scale-x: .68; -fx-scale-y: .68; -fx-translate-x: 11; }
+.reservations-root .reservation-clear-compact { -fx-min-width: 100; -fx-pref-width: 100; -fx-max-width: 100; }
+.reservations-root .reservation-refresh-compact { -fx-min-width: 116; -fx-pref-width: 116; -fx-max-width: 116; }
+
+/* Tabla con densidad de escritorio y columnas coherentes. */
+.reservations-root .modern-table .table-row-cell { -fx-cell-size: 48; }
+.reservations-root .modern-table .table-cell { -fx-padding: 0 7; }
+.reservations-root .modern-table .column-header .label { -fx-padding: 0 5; }
+.reservations-root .modern-table .table-row-cell:selected,
+.reservations-root .modern-table .table-row-cell.reservation-row-selected {
+    -fx-border-width: 0 0 1 3;
+    -fx-effect: none;
+}
+
+/* Estado vacio moderno. */
+.reservation-empty-state-v8 { -fx-padding: 24; }
+.reservation-empty-icon-shell-v8 { -fx-background-color: #1a2421; -fx-background-radius: 25; -fx-border-color: #38584d; -fx-border-radius: 25; }
+.reservation-empty-icon-v8 { -fx-stroke: #76aa94; -fx-scale-x: .80; -fx-scale-y: .80; }
+.reservation-empty-title-v8 { -fx-text-fill: #adb9bd; -fx-font-size: 13px; -fx-font-weight: 900; }
+.reservation-empty-copy-v8 { -fx-text-fill: #6f8087; -fx-font-size: 10px; }
+
+/* Panel derecho mas claro y compacto. */
+.reservations-root .reservation-form-compact { -fx-spacing: 8; }
+.reservations-root .reservation-detail-header-compact { -fx-padding: 9 11; }
+.reservations-root .reservation-metrics { -fx-padding: 7; }
+.reservations-root .reservation-area-compact { -fx-min-height: 54; -fx-pref-height: 54; -fx-max-height: 54; }
+.reservations-root .form-card > .primary-button,
+.reservations-root .whatsapp-button { -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42; }
+.reservations-root .reservation-secondary-actions .button { -fx-min-height: 40; -fx-pref-height: 40; -fx-max-height: 40; }
+
+/* Interaccion unificada: hover luminoso, pressed tactil, sin anillos cuadrados. */
+.reservations-root .button,
+.reservations-root .button:hover,
+.reservations-root .button:focused {
+    -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1;
+    -fx-focus-color: transparent; -fx-faint-focus-color: transparent;
+}
+.reservations-root .button:pressed {
+    -fx-translate-y: 0; -fx-scale-x: .985; -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+.reservations-root .reservation-back-button-v8:pressed { -fx-scale-x: .97; -fx-scale-y: .97; -fx-background-color: #1b2421; -fx-border-color: #477663; }
+.reservations-root .button:disabled,
+.reservations-root .button:disabled:hover,
+.reservations-root .button:disabled:pressed { -fx-translate-y: 0; -fx-scale-x: 1; -fx-scale-y: 1; -fx-effect: none; }
+
+
+
+/* reservas-ocasionales-v1 */
+.reservation-new-button-v9, .reservation-new-button-v9:focused, .reservation-save-button-v9, .reservation-save-button-v9:focused { -fx-background-color: -color-principal; -fx-border-color: -color-principal-hover; -fx-focus-color: transparent; -fx-faint-focus-color: transparent; -fx-background-insets: 0; -fx-border-insets: 0; }
+.reservation-new-button-v9:hover, .reservation-save-button-v9:hover { -fx-background-color: -color-principal-hover; -fx-border-color: #76b697; }
+.reservation-new-button-v9:pressed, .reservation-save-button-v9:pressed { -fx-background-color: #326f52; -fx-border-color: #4d8e6f; -fx-scale-x: .985; -fx-scale-y: .985; }
+.reservation-new-icon-shell-v9 { -fx-background-color: #203a31; -fx-background-radius: 8; -fx-border-color: #4f806c; -fx-border-radius: 8; }
+.reservation-new-icon-v9 { -fx-fill: transparent; -fx-stroke: #9ae0c0; -fx-stroke-width: 1.5; -fx-scale-x: .64; -fx-scale-y: .64; }
+.reservation-new-badge-v9 { -fx-background-color: #234536; -fx-background-radius: 9; -fx-border-color: #529171; -fx-border-radius: 9; -fx-text-fill: #bdf1d8; -fx-font-size: 9px; -fx-font-weight: 900; -fx-padding: 4 8; }
+.reservation-client-mode-v9 { -fx-padding: 3; -fx-background-color: #181d21; -fx-background-radius: 9; -fx-border-color: #374047; -fx-border-radius: 9; }
+.reservation-mode-button-v9 { -fx-min-height: 32; -fx-pref-height: 32; -fx-background-color: transparent; -fx-border-color: transparent; -fx-text-fill: #89969b; -fx-font-size: 10px; -fx-font-weight: 900; -fx-cursor: hand; }
+.reservation-mode-button-v9:selected { -fx-background-color: #244438; -fx-background-radius: 7; -fx-border-color: #4f806c; -fx-border-radius: 7; -fx-text-fill: #bcebd5; }
+.reservation-occasional-card-v9 { -fx-background-color: #181e21; -fx-background-radius: 9; -fx-border-color: #3a484d; -fx-border-radius: 9; -fx-padding: 9; }
+
+/* reservas-nueva-sin-azul-v11 */
+/*
+ * Selector deliberadamente mas especifico que primary-button:pressed.
+ * Mantiene el verde durante toda la pulsacion y elimina halos azules.
+ */
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9,
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:focused {
+    -fx-background-color: -color-principal;
+    -fx-border-color: -color-principal-hover;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:hover {
+    -fx-background-color: -color-principal-hover;
+    -fx-border-color: #76b697;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:pressed,
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:focused:pressed,
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:hover:pressed {
+    -fx-background-color: #326f52;
+    -fx-border-color: #4d8e6f;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(35,104,75,.28), 5, .10, 0, 1);
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+}
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:pressed .app-icon-v2,
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:focused:pressed .app-icon-v2,
+.reservations-root .module-header .button.primary-button.reservation-new-button-v9:hover:pressed .app-icon-v2 {
+    -fx-stroke: #ffffff;
+    -fx-fill: transparent;
+}
+
+/* reservas-panel-boton-final-v14 */
+.reservations-root .reservation-new-button-final-v13,
+.reservations-root .reservation-new-button-final-v13:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-padding: 0 17;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-background-color: #3f916d;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-color: #55aa83;
+    -fx-border-insets: 0;
+    -fx-border-radius: 10;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: none;
+}
+.reservations-root .reservation-new-button-final-v13:hover,
+.reservations-root .reservation-new-button-final-v13:hover:focused {
+    -fx-background-color: #4a9f79;
+    -fx-border-color: #76c19e;
+    -fx-effect: dropshadow(gaussian, rgba(63,145,109,.25), 8, .10, 0, 1);
+}
+.reservations-root .reservation-new-button-final-v13:armed,
+.reservations-root .reservation-new-button-final-v13:pressed,
+.reservations-root .reservation-new-button-final-v13:hover:pressed,
+.reservations-root .reservation-new-button-final-v13:focused:pressed,
+.reservations-root .reservation-new-button-final-v13:hover:focused:pressed {
+    -fx-background-color: #2f684f;
+    -fx-background-insets: 0;
+    -fx-border-color: #4d8e6f;
+    -fx-border-insets: 0;
+    -fx-text-fill: #ffffff;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: none;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+}
+.reservations-root .reservation-new-button-final-v13 .reservation-icon-v8,
+.reservations-root .reservation-new-button-final-v13:pressed .reservation-icon-v8,
+.reservations-root .reservation-new-button-final-v13:armed .reservation-icon-v8 {
+    -fx-stroke: #ffffff;
+    -fx-fill: transparent;
+}
+.reservations-root .reservation-new-button-active-v13 {
+    -fx-border-color: #9addbd;
+    -fx-effect: dropshadow(gaussian, rgba(80,180,133,.30), 9, .12, 0, 1);
+}
+.reservations-root .reservation-responsible-card-v13 {
+    -fx-background-color: #181e22;
+    -fx-background-radius: 10;
+    -fx-border-color: #3b474d;
+    -fx-border-radius: 10;
+    -fx-padding: 10 12;
+}
+.reservations-root .reservation-responsible-icon-shell-v13 {
+    -fx-background-color: #1b3129;
+    -fx-background-radius: 9;
+    -fx-border-color: #44745f;
+    -fx-border-radius: 9;
+}
+.reservations-root .reservation-responsible-icon-v13 {
+    -fx-fill: transparent;
+    -fx-stroke: #86c9aa;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .72;
+    -fx-scale-y: .72;
+}
+.reservations-root .reservation-responsible-caption-v13 {
+    -fx-text-fill: #75868d;
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+}
+.reservations-root .reservation-responsible-name-v13 {
+    -fx-text-fill: #edf1f2;
+    -fx-font-size: 13px;
+    -fx-font-weight: 900;
+}
+.reservations-root .reservation-responsible-type-v13 {
+    -fx-text-fill: #86c9aa;
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+}
+.reservations-root .reservation-responsible-contact-v13 {
+    -fx-text-fill: #98a5aa;
+    -fx-font-size: 10px;
+}
+.reservations-root .combo-box:disabled,
+.reservations-root .date-picker:disabled,
+.reservations-root .spinner:disabled,
+.reservations-root .text-area:disabled {
+    -fx-opacity: 1;
+}
+.reservations-root .combo-box:disabled,
+.reservations-root .date-picker:disabled,
+.reservations-root .spinner:disabled {
+    -fx-background-color: #171c20;
+    -fx-border-color: #30383e;
+}
+.reservations-root .combo-box:disabled .list-cell,
+.reservations-root .date-picker:disabled .text-field,
+.reservations-root .spinner:disabled .text-field {
+    -fx-opacity: 1;
+    -fx-text-fill: #b8c0c4;
+}
+
+
+/* reservas-boton-guardar-final-v14 */
+/* Clase independiente: no hereda el pressed azul ni la tipografia de primary-button. */
+.reservations-root .reservation-save-button-final-v14,
+.reservations-root .reservation-save-button-final-v14:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: -color-principal;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-color: -color-principal-hover;
+    -fx-border-insets: 0;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 9;
+    -fx-padding: 0 16;
+    -fx-cursor: hand;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-effect: none;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.reservations-root .reservation-save-button-final-v14:hover,
+.reservations-root .reservation-save-button-final-v14:hover:focused {
+    -fx-background-color: -color-principal-hover;
+    -fx-background-insets: 0;
+    -fx-border-color: #76b697;
+    -fx-border-insets: 0;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-effect: dropshadow(gaussian, rgba(72,161,119,.24), 10, .16, 0, 2);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.reservations-root .reservation-save-button-final-v14:armed,
+.reservations-root .reservation-save-button-final-v14:pressed,
+.reservations-root .reservation-save-button-final-v14:hover:pressed,
+.reservations-root .reservation-save-button-final-v14:focused:pressed,
+.reservations-root .reservation-save-button-final-v14:hover:focused:pressed {
+    -fx-background-color: #326f52;
+    -fx-background-insets: 0;
+    -fx-border-color: #5d9d7d;
+    -fx-border-insets: 0;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-effect: none;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-translate-y: 0;
+}
+.reservations-root .reservation-save-button-final-v14 .reservation-icon-v8,
+.reservations-root .reservation-save-button-final-v14:hover .reservation-icon-v8,
+.reservations-root .reservation-save-button-final-v14:armed .reservation-icon-v8,
+.reservations-root .reservation-save-button-final-v14:pressed .reservation-icon-v8 {
+    -fx-fill: transparent;
+    -fx-stroke: #ffffff;
+}
+.reservations-root .reservation-save-button-final-v14:disabled,
+.reservations-root .reservation-save-button-final-v14:disabled:hover,
+.reservations-root .reservation-save-button-final-v14:disabled:pressed {
+    -fx-background-color: #1d2a24;
+    -fx-border-color: #354a40;
+    -fx-text-fill: #718077;
+    -fx-opacity: 1;
+    -fx-effect: none;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+    -fx-cursor: default;
+}

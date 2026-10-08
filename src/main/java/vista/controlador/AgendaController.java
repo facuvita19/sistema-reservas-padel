@@ -911,7 +911,7 @@ public class AgendaController {
                 return;
             }
 
-            Cliente cliente = clienteService.buscar(reserva.getClienteId());
+            Cliente cliente = reserva.esClienteOcasional() ? null : clienteService.buscar(reserva.getClienteId());
             reservaSeleccionada = reserva;
             clienteSeleccionado = cliente;
 
@@ -922,11 +922,11 @@ public class AgendaController {
             detalleCancha.setText(reserva.getNombreCancha());
             detalleEstado.setText(nombreEstado(reserva.getEstado()));
             detalleCliente.setText(reserva.getNombreCliente());
-            detalleTelefono.setText(cliente == null
-                    || cliente.getTelefono() == null
-                    || cliente.getTelefono().isBlank()
-                            ? "Sin teléfono registrado"
-                            : cliente.getTelefono());
+            detalleTelefono.setText(reserva.esClienteOcasional()
+                    ? (reserva.getClienteOcasionalTelefono() == null || reserva.getClienteOcasionalTelefono().isBlank()
+                            ? "Sin teléfono registrado" : reserva.getClienteOcasionalTelefono())
+                    : (cliente == null || cliente.getTelefono() == null || cliente.getTelefono().isBlank()
+                            ? "Sin teléfono registrado" : cliente.getTelefono()));
 
             BigDecimal precio = reserva.getPrecioTotal() == null
                     ? BigDecimal.ZERO : reserva.getPrecioTotal();

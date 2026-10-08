@@ -7,18 +7,20 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.ReservasController" styleClass="module-root, reservations-root">
     <top>
         <HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header">
-            <padding><Insets top="22" right="28" bottom="22" left="28" /></padding>
-            <Button text="INICIO" onAction="#volver" styleClass="admin-home-button" />
-            <VBox spacing="3">
+            <padding><Insets top="12" right="24" bottom="12" left="24" /></padding>
+            <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="reservation-back-button-v8"><tooltip><Tooltip text="Volver a Inicio"/></tooltip><graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="reservation-back-icon-v8"/></graphic></Button>
+            <StackPane minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="reservation-module-icon-shell-v8"><SVGPath content="M5 5 L19 5 L19 19 L5 19 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M8 14 L11 17 L16 12" styleClass="reservation-module-icon-v8"/></StackPane>
+            <VBox spacing="2" styleClass="reservation-title-block-v8">
                 <Label text="Gestión de reservas" styleClass="page-title" />
                 <Label text="Consultá disponibilidad y administrá la agenda del complejo." styleClass="page-subtitle" />
             </VBox>
             <Region HBox.hgrow="ALWAYS" />
-            <Button text="NUEVA RESERVA" onAction="#nuevaReserva" styleClass="primary-button" />
+            <Button fx:id="botonNuevaReservaSuperior" text="NUEVA RESERVA" onAction="#nuevaReserva" styleClass="reservation-new-button-final-v13" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M12 12 L12 18 M9 15 L15 15" styleClass="reservation-icon-v8, reservation-icon-primary-v8"/></StackPane></graphic></Button>
         </HBox>
     </top>
     <center>
@@ -27,18 +29,18 @@
                 <padding><Insets top="14" right="14" bottom="14" left="18" /></padding>
                 <VBox spacing="8" styleClass="reservation-filter-stack">
                     <HBox alignment="CENTER_LEFT" spacing="10">
-                        <Button text="‹" onAction="#diaAnterior" styleClass="reservation-date-button" />
-                        <Button text="HOY" onAction="#irHoy" styleClass="secondary-button" />
-                        <Button text="›" onAction="#diaSiguiente" styleClass="reservation-date-button" />
+                        <Button text="‹" onAction="#diaAnterior" styleClass="reservation-date-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M14 6 L8 12 L14 18" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
+                        <Button text="HOY" onAction="#irHoy" styleClass="secondary-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
+                        <Button text="›" onAction="#diaSiguiente" styleClass="reservation-date-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M10 6 L16 12 L10 18" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
                         <DatePicker fx:id="filtroFecha" prefWidth="155" styleClass="modern-date" />
                         <Label fx:id="etiquetaFechaSeleccionada" text="Reservas de hoy" styleClass="reservation-date-label" />
                         <Region HBox.hgrow="ALWAYS" />
 
                     </HBox>
                     <HBox spacing="10">
-                        <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha o estado..." HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="modern-field, reservation-search-compact" />
+                        <StackPane HBox.hgrow="ALWAYS" styleClass="reservation-search-shell-v8"><TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha o estado..." maxWidth="Infinity" styleClass="modern-field, reservation-search-compact, reservation-search-with-icon-v8"/><SVGPath content="M10.5 4 C6.9 4 4 6.9 4 10.5 C4 14.1 6.9 17 10.5 17 C14.1 17 17 14.1 17 10.5 C17 6.9 14.1 4 10.5 4 Z M15.5 15.5 L21 21" mouseTransparent="true" StackPane.alignment="CENTER_LEFT" styleClass="reservation-search-icon-v8"/></StackPane>
                         <ComboBox fx:id="filtroEstado" promptText="Todos los estados" minWidth="150" prefWidth="150" maxWidth="150" styleClass="modern-combo, reservation-state-compact" />
-                        <Button text="LIMPIAR" minWidth="88" prefWidth="88" onAction="#limpiarFiltros" styleClass="secondary-button, reservation-clear-compact" /><Button text="ACTUALIZAR" minWidth="96" prefWidth="96" onAction="#cargarReservas" styleClass="secondary-button, reservation-refresh-compact" />
+                        <Button text="LIMPIAR" minWidth="88" prefWidth="88" onAction="#limpiarFiltros" styleClass="secondary-button, reservation-clear-compact" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="reservation-icon-v8"/></StackPane></graphic></Button><Button text="ACTUALIZAR" minWidth="96" prefWidth="96" onAction="#cargarReservas" styleClass="secondary-button, reservation-refresh-compact" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M19 8 A8 8 0 1 0 20 13 M19 4 L19 8 L15 8" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
                     </HBox>
                 </VBox>
                 <TableView fx:id="tablaReservas" VBox.vgrow="ALWAYS" styleClass="modern-table">
@@ -50,7 +52,7 @@
                         <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="115" />
                         <TableColumn fx:id="columnaPrecio" text="PRECIO" prefWidth="125" styleClass="reservation-price-column" />
                     </columns>
-                    <placeholder><Label text="Todavía no hay reservas registradas." styleClass="empty-state" /></placeholder>
+                    <placeholder><VBox alignment="CENTER" spacing="7" styleClass="reservation-empty-state-v8"><StackPane minWidth="48" prefWidth="48" minHeight="48" prefHeight="48" styleClass="reservation-empty-icon-shell-v8"><SVGPath content="M5 5 L19 5 L19 19 L5 19 Z M8 9 L16 9 M8 13 L14 13" styleClass="reservation-empty-icon-v8"/></StackPane><Label text="No hay reservas para mostrar" styleClass="reservation-empty-title-v8"/><Label text="Probá cambiar los filtros o creá una nueva reserva." styleClass="reservation-empty-copy-v8"/></VBox></placeholder>
                 </TableView>
             </VBox>
             <ScrollPane fx:id="scrollFormulario" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
@@ -66,8 +68,9 @@
                     </VBox>
                     <VBox spacing="4" styleClass="reservation-detail-header, reservation-detail-header-compact">
                         <HBox alignment="CENTER_LEFT" spacing="8">
-                            <Label fx:id="tituloFormulario" text="Nueva reserva" styleClass="section-title" />
+                            <StackPane minWidth="32" prefWidth="32" minHeight="32" prefHeight="32" styleClass="reservation-new-icon-shell-v9"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10 M12 12 L12 18 M9 15 L15 15" styleClass="reservation-new-icon-v9"/></StackPane><Label fx:id="tituloFormulario" text="Nueva reserva" styleClass="section-title" />
                             <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="insigniaNuevaReserva" text="NUEVA" visible="true" managed="true" styleClass="reservation-new-badge-v9" />
                             <Label fx:id="insigniaOrigenDetalle" text="PERSONAL"
                                    visible="false" managed="false"
                                    styleClass="reservation-origin-badge" />
@@ -82,8 +85,38 @@
                                visible="false" managed="false" wrapText="true"
                                styleClass="reservation-expiration-badge" />
                     </VBox>
-                    <Label text="Cliente *" styleClass="field-label" />
-                    <ComboBox fx:id="comboCliente" maxWidth="Infinity" visibleRowCount="7" promptText="Seleccionar cliente" styleClass="modern-combo" />
+                    <!-- reservas-panel-boton-final-v14 -->
+                    <VBox fx:id="panelAltaResponsable" spacing="7">
+                        <Label text="Cliente de la reserva *" styleClass="field-label" />
+                        <HBox spacing="7" styleClass="reservation-client-mode-v9">
+                            <ToggleButton fx:id="botonClienteRegistrado" text="REGISTRADO" selected="true" onAction="#usarClienteRegistrado" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="reservation-mode-button-v9"/>
+                            <ToggleButton fx:id="botonClienteOcasional" text="OCASIONAL" onAction="#usarClienteOcasional" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="reservation-mode-button-v9"/>
+                        </HBox>
+                        <ComboBox fx:id="comboCliente" maxWidth="Infinity" visibleRowCount="7" promptText="Buscar y seleccionar cliente" styleClass="modern-combo" />
+                        <VBox fx:id="contenedorClienteOcasional" visible="false" managed="false" spacing="7" styleClass="reservation-occasional-card-v9">
+                            <TextField fx:id="campoClienteOcasionalNombre" promptText="Nombre y apellido *" styleClass="modern-field"/>
+                            <GridPane hgap="8" vgap="7"><columnConstraints><ColumnConstraints percentWidth="50"/><ColumnConstraints percentWidth="50"/></columnConstraints>
+                                <TextField fx:id="campoClienteOcasionalTelefono" promptText="Teléfono" styleClass="modern-field"/>
+                                <TextField fx:id="campoClienteOcasionalDocumento" promptText="Documento" GridPane.columnIndex="1" styleClass="modern-field"/>
+                                <TextField fx:id="campoClienteOcasionalEmail" promptText="Correo electrónico" GridPane.rowIndex="1" GridPane.columnSpan="2" styleClass="modern-field"/>
+                            </GridPane>
+                        </VBox>
+                    </VBox>
+                    <VBox fx:id="panelResponsableInformativo" visible="false" managed="false" spacing="5" styleClass="reservation-responsible-card-v13">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="reservation-responsible-icon-shell-v13">
+                                <SVGPath content="M12 11 C9.8 11 8 9.2 8 7 C8 4.8 9.8 3 12 3 C14.2 3 16 4.8 16 7 C16 9.2 14.2 11 12 11 Z M5 21 C5 16 8 13 12 13 C16 13 19 16 19 21" styleClass="reservation-responsible-icon-v13"/>
+                            </StackPane>
+                            <VBox spacing="2" HBox.hgrow="ALWAYS">
+                                <Label text="RESPONSABLE DE LA RESERVA" styleClass="reservation-responsible-caption-v13"/>
+                                <Label fx:id="etiquetaResponsableNombre" text="Responsable" wrapText="true" styleClass="reservation-responsible-name-v13"/>
+                                <HBox spacing="7" alignment="CENTER_LEFT">
+                                    <Label fx:id="etiquetaResponsableTipo" text="Cliente registrado" styleClass="reservation-responsible-type-v13"/>
+                                    <Label fx:id="etiquetaResponsableContacto" text="" visible="false" managed="false" styleClass="reservation-responsible-contact-v13"/>
+                                </HBox>
+                            </VBox>
+                        </HBox>
+                    </VBox>
                     <Label text="Cancha *" styleClass="field-label" />
                     <ComboBox fx:id="comboCancha" maxWidth="Infinity" visibleRowCount="6" promptText="Seleccionar cancha" styleClass="modern-combo" />
                     <GridPane hgap="12" vgap="10">
@@ -140,18 +173,18 @@
                                   styleClass="audit-list" />
                     </VBox>
                     <Label fx:id="etiquetaMensaje" minHeight="22" wrapText="true" />
-                    <Button fx:id="botonGuardar" text="GUARDAR RESERVA" onAction="#guardar" maxWidth="Infinity" styleClass="primary-button" />
+                    <Button fx:id="botonGuardar" text="GUARDAR RESERVA" onAction="#guardar" maxWidth="Infinity" styleClass="reservation-save-button-final-v14" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M5 4 L17 4 L20 7 L20 20 L4 20 L4 4 Z M8 4 L8 10 L16 10 L16 4 M8 20 L8 14 L16 14 L16 20" styleClass="reservation-icon-v8, reservation-icon-primary-v8"/></StackPane></graphic></Button>
                     <Button fx:id="botonWhatsApp" text="ABRIR WHATSAPP" onAction="#abrirWhatsApp" maxWidth="Infinity"
-                            visible="false" managed="false" styleClass="whatsapp-button" />
+                            visible="false" managed="false" styleClass="whatsapp-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M12 3 C7 3 3 6.8 3 11.5 C3 13.4 3.7 15.2 5 16.6 L4 21 L8.7 19.4 C9.7 19.8 10.8 20 12 20 C17 20 21 16.2 21 11.5 C21 6.8 17 3 12 3 Z M8.5 8.5 C9.5 12 12 14.5 15.5 15.5" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
                     <VBox fx:id="contenedorAccionesReserva" spacing="7"
                           styleClass="reservation-secondary-actions">
                         <HBox spacing="7">
-                            <Button fx:id="botonAccionPrincipal" text="CONFIRMAR RESERVA" onAction="#ejecutarAccionPrincipal" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="status-confirm-button" />
-                            <Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button" />
+                            <Button fx:id="botonAccionPrincipal" text="CONFIRMAR RESERVA" onAction="#ejecutarAccionPrincipal" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="status-confirm-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M5 12 L10 17 L19 7" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
+                            <Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="payment-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M4 6 L20 6 L20 18 L4 18 Z M4 10 L20 10 M7 15 L11 15" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
                         </HBox>
                         <HBox spacing="7">
-                            <Button fx:id="botonReprogramar" text="REPROGRAMAR" onAction="#iniciarReprogramacion" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="reschedule-button" />
-                            <Button fx:id="botonCancelar" text="CANCELAR RESERVA" onAction="#cancelarReserva" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="danger-button" />
+                            <Button fx:id="botonReprogramar" text="REPROGRAMAR" onAction="#iniciarReprogramacion" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="reschedule-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M18 8 A7 7 0 1 0 19 14 M18 4 L18 8 L14 8" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
+                            <Button fx:id="botonCancelar" text="CANCELAR RESERVA" onAction="#cancelarReserva" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="danger-button" ><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="reservation-icon-slot-v8"><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="reservation-icon-v8"/></StackPane></graphic></Button>
                         </HBox>
                     </VBox>
                 </VBox>

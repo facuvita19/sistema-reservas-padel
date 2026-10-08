@@ -37,8 +37,9 @@ public class ReservaDAOMySQL implements ReservaDAO {
                 + "(cliente_id, cancha_id, usuario_id, origen, fecha, hora_inicio, "
                 + "hora_fin, estado, fecha_vencimiento, fecha_expiracion, "
                 + "cantidad_jugadores, comentarios, "
-                + "observaciones_administrativas, precio_total) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "observaciones_administrativas, precio_total, cliente_ocasional_nombre, "
+                + "cliente_ocasional_telefono, cliente_ocasional_email, cliente_ocasional_documento) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(
@@ -61,13 +62,14 @@ public class ReservaDAOMySQL implements ReservaDAO {
                 + "usuario_id = ?, origen = ?, fecha = ?, hora_inicio = ?, hora_fin = ?, "
                 + "estado = ?, fecha_vencimiento = ?, fecha_expiracion = ?, "
                 + "cantidad_jugadores = ?, comentarios = ?, "
-                + "observaciones_administrativas = ?, precio_total = ? "
-                + "WHERE id = ?";
+                + "observaciones_administrativas = ?, precio_total = ?, "
+                + "cliente_ocasional_nombre = ?, cliente_ocasional_telefono = ?, "
+                + "cliente_ocasional_email = ?, cliente_ocasional_documento = ? WHERE id = ?";
 
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, reserva);
-            sentencia.setLong(15, reserva.getId());
+            sentencia.setLong(19, reserva.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("La reserva no existe.");
             }
@@ -80,7 +82,8 @@ public class ReservaDAOMySQL implements ReservaDAO {
     private void cargarParametros(
             PreparedStatement sentencia,
             Reserva reserva) throws SQLException {
-        sentencia.setLong(1, reserva.getClienteId());
+        if (reserva.getClienteId() <= 0) sentencia.setNull(1, Types.BIGINT);
+        else sentencia.setLong(1, reserva.getClienteId());
         sentencia.setLong(2, reserva.getCanchaId());
         sentencia.setLong(3, reserva.getUsuarioId());
         sentencia.setString(4, reserva.getOrigen().name());
@@ -94,6 +97,10 @@ public class ReservaDAOMySQL implements ReservaDAO {
         sentencia.setString(12, reserva.getComentarios());
         sentencia.setString(13, reserva.getObservacionesAdministrativas());
         sentencia.setBigDecimal(14, reserva.getPrecioTotal());
+        sentencia.setString(15, reserva.getClienteOcasionalNombre());
+        sentencia.setString(16, reserva.getClienteOcasionalTelefono());
+        sentencia.setString(17, reserva.getClienteOcasionalEmail());
+        sentencia.setString(18, reserva.getClienteOcasionalDocumento());
     }
 
     private void cargarTimestamp(
@@ -270,13 +277,14 @@ public class ReservaDAOMySQL implements ReservaDAO {
                 + "r.tipo_cancelacion, r.motivo_cancelacion, "
                 + "r.fecha_cancelacion, r.usuario_cancelacion_id, "
                 + "r.cantidad_jugadores, r.comentarios, "
-                + "r.observaciones_administrativas, r.precio_total, "
+                + "r.observaciones_administrativas, r.precio_total, r.cliente_ocasional_nombre, "
+                + "r.cliente_ocasional_telefono, r.cliente_ocasional_email, r.cliente_ocasional_documento, "
                 + "r.fecha_creacion, "
-                + "CONCAT(cl.nombre, ' ', cl.apellido) AS nombre_cliente, "
+                + "COALESCE(CONCAT(cl.nombre, ' ', cl.apellido), r.cliente_ocasional_nombre) AS nombre_cliente, "
                 + "c.nombre AS nombre_cancha, "
                 + "u.nombre_usuario AS nombre_usuario "
                 + "FROM reservas r "
-                + "INNER JOIN clientes cl ON cl.id = r.cliente_id "
+                + "LEFT JOIN clientes cl ON cl.id = r.cliente_id "
                 + "INNER JOIN canchas c ON c.id = r.cancha_id "
                 + "INNER JOIN usuarios u ON u.id = r.usuario_id";
     }
@@ -285,7 +293,8 @@ public class ReservaDAOMySQL implements ReservaDAO {
             throws SQLException {
         Reserva reserva = new Reserva();
         reserva.setId(resultado.getLong("id"));
-        reserva.setClienteId(resultado.getLong("cliente_id"));
+        long clienteId = resultado.getLong("cliente_id");
+        reserva.setClienteId(resultado.wasNull() ? 0L : clienteId);
         reserva.setCanchaId(resultado.getLong("cancha_id"));
         reserva.setUsuarioId(resultado.getLong("usuario_id"));
         reserva.setOrigen(OrigenReserva.valueOf(resultado.getString("origen")));
@@ -319,6 +328,10 @@ public class ReservaDAOMySQL implements ReservaDAO {
         reserva.setNombreCliente(resultado.getString("nombre_cliente"));
         reserva.setNombreCancha(resultado.getString("nombre_cancha"));
         reserva.setNombreUsuario(resultado.getString("nombre_usuario"));
+        reserva.setClienteOcasionalNombre(resultado.getString("cliente_ocasional_nombre"));
+        reserva.setClienteOcasionalTelefono(resultado.getString("cliente_ocasional_telefono"));
+        reserva.setClienteOcasionalEmail(resultado.getString("cliente_ocasional_email"));
+        reserva.setClienteOcasionalDocumento(resultado.getString("cliente_ocasional_documento"));
         reserva.setFechaCreacion(
                 convertirTimestamp(resultado, "fecha_creacion"));
         return reserva;
