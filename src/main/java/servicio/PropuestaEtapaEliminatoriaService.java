@@ -26,11 +26,16 @@ public class PropuestaEtapaEliminatoriaService {
             new PosicionesGrupoTorneoService();
 
     public PropuestaEtapaEliminatoria proponer(long categoriaId) {
-        List<ClasificadoEtapaEliminatoria> clasificados =
-                obtenerClasificados(categoriaId);
+        return construirDesdeClasificados(obtenerClasificados(categoriaId));
+    }
+
+    PropuestaEtapaEliminatoria construirDesdeClasificados(
+            List<ClasificadoEtapaEliminatoria> clasificados) {
+        List<ClasificadoEtapaEliminatoria> valores = clasificados == null
+                ? List.of() : new ArrayList<>(clasificados);
         PropuestaEtapaEliminatoria propuesta = new PropuestaEtapaEliminatoria();
-        propuesta.setClasificados(clasificados);
-        construirGeneral(clasificados, propuesta);
+        propuesta.setClasificados(valores);
+        construirGeneral(valores, propuesta);
         validar(propuesta);
         return propuesta;
     }
@@ -404,12 +409,15 @@ public class PropuestaEtapaEliminatoriaService {
                     "Todos los primeros deben recibir el mismo tratamiento.");
             return;
         }
-        boolean primerosJuntos = propuesta.getCruces().stream()
-                .anyMatch(c -> posicionDe(c.getParticipante1()) == 1
-                        && posicionDe(c.getParticipante2()) == 1);
-        if (primerosJuntos) {
+        Map<String, ClasificadoEtapaEliminatoria> porReferencia =
+                propuesta.getClasificados().stream().collect(
+                        java.util.stream.Collectors.toMap(
+                                ClasificadoEtapaEliminatoria::referencia, c -> c));
+        Set<String> crucesPrimerosEvitables =
+                crucesPrimerosEvitables(propuesta, porReferencia);
+        if (!crucesPrimerosEvitables.isEmpty()) {
             invalidar(propuesta,
-                    "Dos primeros no pueden compartir un cruce inicial.");
+                    "La propuesta contiene cruces evitables entre primeros.");
             return;
         }
         propuesta.setValida(!propuesta.getCruces().isEmpty());
@@ -622,6 +630,42 @@ public class PropuestaEtapaEliminatoriaService {
         }
     }
 
+    public boolean reasignarIntercambiando(
+            PropuestaEtapaEliminatoria propuesta,
+            CrucePropuestoTorneo destino, boolean primera,
+            String nuevaReferencia) {
+        if (propuesta == null || destino == null
+                || nuevaReferencia == null || nuevaReferencia.isBlank()
+                || nuevaReferencia.startsWith("Ganador ")) return false;
+        String anterior = primera ? destino.getParticipante1()
+                : destino.getParticipante2();
+        if (java.util.Objects.equals(anterior, nuevaReferencia)) return false;
+        PlazaEditable ocupada = null;
+        for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
+            if (nuevaReferencia.equals(cruce.getParticipante1())
+                    && !cruce.getParticipante1().startsWith("Ganador ")) {
+                ocupada = new PlazaEditable(cruce, true);
+                break;
+            }
+            if (nuevaReferencia.equals(cruce.getParticipante2())
+                    && !cruce.getParticipante2().startsWith("Ganador ")) {
+                ocupada = new PlazaEditable(cruce, false);
+                break;
+            }
+        }
+        if (primera) destino.setParticipante1(nuevaReferencia);
+        else destino.setParticipante2(nuevaReferencia);
+        if (ocupada != null && ocupada.cruce() != destino) {
+            if (ocupada.primera()) ocupada.cruce().setParticipante1(anterior);
+            else ocupada.cruce().setParticipante2(anterior);
+        }
+        validarEdicionManual(propuesta);
+        return true;
+    }
+
+    private record PlazaEditable(CrucePropuestoTorneo cruce,
+            boolean primera) { }
+
     public List<String> advertenciasDeportivas(
             PropuestaEtapaEliminatoria propuesta) {
         List<String> advertencias = new ArrayList<>();
@@ -630,48 +674,105 @@ public class PropuestaEtapaEliminatoriaService {
                 propuesta.getClasificados().stream().collect(
                     java.util.stream.Collectors.toMap(
                         ClasificadoEtapaEliminatoria::referencia, c -> c));
+        Set<String> crucesPrimerosEvitables =
+                crucesPrimerosEvitables(propuesta, porReferencia);
         for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
             ClasificadoEtapaEliminatoria a = porReferencia.get(
                     cruce.getParticipante1());
             ClasificadoEtapaEliminatoria b = porReferencia.get(
                     cruce.getParticipante2());
-            if (a == null || b == null) continue;
-            if (a.grupoId() == b.grupoId()) {
+            if (a != null && b != null && a.grupoId() == b.grupoId()) {
                 advertencias.add(cruce.getInstancia() + " #"
                         + cruce.getOrden()
                         + " enfrenta parejas del mismo grupo.");
             }
-            if (a.posicionGrupo() == 1 && b.posicionGrupo() == 1
-                    && existeCruceSuperiorInferiorPosible(
-                            propuesta, cruce.getRonda())) {
+            String clave = claveCruce(cruce);
+            if (crucesPrimerosEvitables.contains(clave)) {
                 advertencias.add(cruce.getInstancia() + " #"
                         + cruce.getOrden()
-                        + " enfrenta dos primeros aunque existe una "
-                        + "distribucion 1° contra 2°/3°.");
+                        + " enfrenta dos primeros y puede redistribuirse "
+                        + "sin quitar la proteccion deportiva.");
             }
         }
         return advertencias;
     }
 
-    private boolean existeCruceSuperiorInferiorPosible(
-            PropuestaEtapaEliminatoria propuesta, int ronda) {
-        boolean hayPrimero = false;
-        boolean hayInferior = false;
-        Map<String, Integer> posiciones = propuesta.getClasificados().stream()
-                .collect(java.util.stream.Collectors.toMap(
-                        ClasificadoEtapaEliminatoria::referencia,
-                        ClasificadoEtapaEliminatoria::posicionGrupo));
-        for (CrucePropuestoTorneo cruce : propuesta.getCruces()) {
-            if (cruce.getRonda() != ronda) continue;
-            for (String referencia : List.of(cruce.getParticipante1(),
-                    cruce.getParticipante2())) {
-                Integer posicion = posiciones.get(referencia);
-                if (posicion == null) continue;
-                hayPrimero |= posicion == 1;
-                hayInferior |= posicion > 1;
+    private Set<String> crucesPrimerosEvitables(
+            PropuestaEtapaEliminatoria propuesta,
+            Map<String, ClasificadoEtapaEliminatoria> porReferencia) {
+        Map<String, CrucePropuestoTorneo> porInstanciaOrden =
+                propuesta.getCruces().stream().collect(
+                        java.util.stream.Collectors.toMap(
+                                this::claveCruce, c -> c, (a, b) -> a));
+        Set<String> resultado = new java.util.LinkedHashSet<>();
+        Map<Integer, List<CrucePropuestoTorneo>> porRonda =
+                propuesta.getCruces().stream().collect(
+                        java.util.stream.Collectors.groupingBy(
+                                CrucePropuestoTorneo::getRonda,
+                                java.util.TreeMap::new,
+                                java.util.stream.Collectors.toList()));
+        for (List<CrucePropuestoTorneo> crucesRonda : porRonda.values()) {
+            List<CrucePropuestoTorneo> ordenados = crucesRonda.stream()
+                    .sorted(Comparator.comparingInt(
+                            CrucePropuestoTorneo::getOrden)).toList();
+            int origenesSoloPrimeros = 0;
+            int crucesPrimerosActuales = 0;
+            List<CrucePropuestoTorneo> crucesPrimeros = new ArrayList<>();
+            for (CrucePropuestoTorneo cruce : ordenados) {
+                Set<Integer> posiciones1 = posicionesPosibles(
+                        cruce.getParticipante1(), porReferencia,
+                        porInstanciaOrden, new HashSet<>());
+                Set<Integer> posiciones2 = posicionesPosibles(
+                        cruce.getParticipante2(), porReferencia,
+                        porInstanciaOrden, new HashSet<>());
+                if (esSoloPrimero(posiciones1)) origenesSoloPrimeros++;
+                if (esSoloPrimero(posiciones2)) origenesSoloPrimeros++;
+                if (esSoloPrimero(posiciones1) && esSoloPrimero(posiciones2)) {
+                    crucesPrimerosActuales++;
+                    crucesPrimeros.add(cruce);
+                }
+            }
+            int totalOrigenes = ordenados.size() * 2;
+            int otrosOrigenes = totalOrigenes - origenesSoloPrimeros;
+            int minimoInevitable = Math.max(0,
+                    (origenesSoloPrimeros - otrosOrigenes + 1) / 2);
+            int evitables = Math.max(0,
+                    crucesPrimerosActuales - minimoInevitable);
+            for (int i = crucesPrimeros.size() - evitables;
+                    i < crucesPrimeros.size(); i++) {
+                if (i >= 0) resultado.add(claveCruce(crucesPrimeros.get(i)));
             }
         }
-        return hayPrimero && hayInferior;
+        return resultado;
+    }
+
+    private Set<Integer> posicionesPosibles(String referencia,
+            Map<String, ClasificadoEtapaEliminatoria> porReferencia,
+            Map<String, CrucePropuestoTorneo> porInstanciaOrden,
+            Set<String> visitadas) {
+        ClasificadoEtapaEliminatoria directa = porReferencia.get(referencia);
+        if (directa != null) return Set.of(directa.posicionGrupo());
+        if (referencia == null || !referencia.startsWith("Ganador ")) {
+            return Set.of(99);
+        }
+        String clave = referencia.substring("Ganador ".length());
+        CrucePropuestoTorneo origen = porInstanciaOrden.get(clave);
+        if (origen == null || !visitadas.add(clave)) return Set.of(99);
+        Set<Integer> posiciones = new HashSet<>();
+        posiciones.addAll(posicionesPosibles(origen.getParticipante1(),
+                porReferencia, porInstanciaOrden, visitadas));
+        posiciones.addAll(posicionesPosibles(origen.getParticipante2(),
+                porReferencia, porInstanciaOrden, visitadas));
+        visitadas.remove(clave);
+        return posiciones;
+    }
+
+    private boolean esSoloPrimero(Set<Integer> posiciones) {
+        return posiciones.size() == 1 && posiciones.contains(1);
+    }
+
+    private String claveCruce(CrucePropuestoTorneo cruce) {
+        return cruce.getInstancia() + " #" + cruce.getOrden();
     }
 
     public PropuestaEtapaEliminatoria copiar(

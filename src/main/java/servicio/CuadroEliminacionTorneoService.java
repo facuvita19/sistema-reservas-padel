@@ -94,7 +94,7 @@ public class CuadroEliminacionTorneoService {
                 }
                 Torneo torneo = torneoDAO.buscar(
                         conexion, categoria.getTorneoId());
-                validarTorneo(torneo);
+                validarTorneo(torneo, categoria);
                 if (existeCuadroEliminatorio(conexion, categoriaId)) {
                     throw new IllegalArgumentException(
                             "La categoria ya tiene un cuadro eliminatorio generado.");
@@ -391,16 +391,22 @@ public class CuadroEliminacionTorneoService {
         }
     }
 
-    private void validarTorneo(Torneo torneo) {
+    private void validarTorneo(
+            Torneo torneo,
+            TorneoCategoria categoria) {
         if (torneo == null || !torneo.isActivo()) {
             throw new IllegalArgumentException(
                     "El torneo no existe o esta inactivo.");
         }
-        if (torneo.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA
-                && torneo.getEstado() != EstadoTorneo.EN_CURSO) {
-            throw new IllegalArgumentException(
-                    "El cuadro solo puede generarse con la inscripcion "
-                            + "cerrada o el torneo en curso.");
+        boolean eliminacionDirecta = !categoria.usaFaseGrupos()
+                && torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA;
+        boolean desdeGrupos = categoria.usaFaseGrupos()
+                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        if (!eliminacionDirecta && !desdeGrupos) {
+            throw new IllegalArgumentException(categoria.usaFaseGrupos()
+                    ? "La etapa eliminatoria puede generarse con las inscripciones cerradas o el torneo en curso."
+                    : "El cuadro de eliminación directa solo puede generarse con las inscripciones cerradas.");
         }
     }
 

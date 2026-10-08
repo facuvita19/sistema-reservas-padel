@@ -1,8 +1,13 @@
-﻿param(
+param(
+    [Parameter(Position = 0)]
     [ValidateSet("2x3", "2x4", "4x3", "3x4", "2x3-1x4", "4x4", "5x3", "limpiar", "resumen")]
     [string]$Escenario = "resumen",
+
     [long]$CategoriaId = 11,
-    [string]$Contenedor = "padel-mysql"
+
+    [string]$Contenedor = "padel-mysql",
+
+    [switch]$ReiniciarPrueba
 )
 
 $ErrorActionPreference = "Stop"
@@ -203,7 +208,21 @@ if ($partes[1] -notin @("INSCRIPCION_CERRADA", "EN_CURSO")) {
     throw "Estado de torneo no permitido: $($partes[1])."
 }
 if ([int]$partes[3] -gt 0) {
-    throw "Hay partidos eliminatorios disputados. No se modifico nada."
+    if (-not $ReiniciarPrueba) {
+        throw "Hay partidos eliminatorios disputados. Usa -ReiniciarPrueba solo para recrear un escenario automatizado."
+    }
+    if ($Escenario -ne "5x3") {
+        throw "El reinicio protegido solo esta habilitado para el escenario 5x3."
+    }
+    if ([int]$partes[4] -gt 0) {
+        throw "La categoria contiene inscripciones ajenas al generador. El reinicio protegido fue cancelado."
+    }
+    $confirmacionReinicio = Read-Host "Escribi exactamente REINICIAR-5x3-$CategoriaId para borrar el cuadro disputado y recrear la prueba"
+    if ($confirmacionReinicio -cne "REINICIAR-5x3-$CategoriaId") {
+        Write-Host "Operacion cancelada." -ForegroundColor Yellow
+        exit 0
+    }
+    Write-Warning "Se eliminaran partidos grupales y eliminatorios, grupos e inscripciones automatizadas de la categoria $CategoriaId."
 }
 if ([int]$partes[4] -gt 0) {
     Write-Warning "La categoria contiene inscripciones ajenas al generador. Tambien seran eliminadas."
