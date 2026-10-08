@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert;
@@ -30,6 +31,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -44,6 +47,8 @@ import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneosController {
+    // corregir-tooltip-categoria-deshabilitada-v10
+    // corregir-compilacion-torneos-v6
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter FECHA_HORA =
             DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -65,6 +70,8 @@ public class TorneosController {
     @FXML private TableView<TorneoCategoria> tablaCategorias;
     @FXML private TableColumn<TorneoCategoria, String> colCategoria;
     @FXML private TableColumn<TorneoCategoria, String> colRama;
+    @FXML private TableColumn<TorneoCategoria, String> colFormato;
+    @FXML private TableColumn<TorneoCategoria, String> colCategoriaEstado;
     @FXML private TableColumn<TorneoCategoria, Integer> colCupo;
     @FXML private TableColumn<TorneoCategoria, Integer> colConfirmadas;
     @FXML private TableColumn<TorneoCategoria, Integer> colDisponibles;
@@ -80,12 +87,16 @@ public class TorneosController {
     @FXML private Label etiquetaAccionTitulo;
     @FXML private Label etiquetaAccionAyuda;
     @FXML private Label etiquetaCategoriaSeleccionada;
+    @FXML private Label etiquetaFormatoCategoria;
+    @FXML private Label etiquetaPreparacion;
     @FXML private Button botonLimpiar;
+    @FXML private Button botonActualizar;
     @FXML private VBox panelSinSeleccion;
     @FXML private VBox panelDetalle;
     @FXML private HBox panelAccionesCategoria;
     @FXML private ScrollPane scrollDetalle;
     @FXML private Button botonEditar;
+    @FXML private StackPane contenedorNuevaCategoria;
     @FXML private Button botonNuevaCategoria;
     @FXML private Button botonEditarCategoria;
     @FXML private Button botonDesactivarCategoria;
@@ -134,6 +145,21 @@ public class TorneosController {
         tablaTorneos.setColumnResizePolicy(
                 TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         tablaTorneos.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> seleccionar(n));
+        tablaTorneos.setRowFactory(tabla -> {
+            TableRow<Torneo> fila = new TableRow<>();
+            fila.setOnMousePressed(evento -> {
+                if (!fila.isEmpty() && fila.getItem() != null) {
+                    tablaTorneos.getSelectionModel().select(fila.getItem());
+                    tablaTorneos.requestFocus();
+                }
+            });
+            Tooltip tooltip = new Tooltip();
+            fila.itemProperty().addListener((o, anterior, actual) -> {
+                if (actual == null) fila.setTooltip(null);
+                else { tooltip.setText(actual.getNombre()); fila.setTooltip(tooltip); }
+            });
+            return fila;
+        });
 
         colCategoria.setStyle("-fx-alignment: CENTER;");
         colCategoria.setCellValueFactory(d -> new SimpleStringProperty(d.getValue().getNombre()));
@@ -141,6 +167,27 @@ public class TorneosController {
         colRama.setStyle("-fx-alignment: CENTER;");
         colRama.setCellValueFactory(d -> new SimpleStringProperty(String.valueOf(d.getValue().getRama())));
         colRama.setCellFactory(c -> celdaTexto(Pos.CENTER));
+        colFormato.setStyle("-fx-alignment: CENTER;");
+        colFormato.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().usaFaseGrupos()
+                        ? "Grupos + eliminación" : "Eliminación directa"));
+        colFormato.setCellFactory(c -> celdaTexto(Pos.CENTER));
+        colCategoriaEstado.setStyle("-fx-alignment: CENTER;");
+        colCategoriaEstado.setCellValueFactory(d -> new SimpleStringProperty(
+                d.getValue().isActivo() ? "Activa" : "Inactiva"));
+        colCategoriaEstado.setCellFactory(c -> new TableCell<>() {
+            @Override protected void updateItem(String valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                getStyleClass().removeAll("tournaments-category-active-v4",
+                        "tournaments-category-inactive-v4");
+                setText(vacia ? null : valor);
+                if (!vacia && valor != null) getStyleClass().add(
+                        "Activa".equals(valor)
+                                ? "tournaments-category-active-v4"
+                                : "tournaments-category-inactive-v4");
+            }
+        });
         colCupo.setStyle("-fx-alignment: CENTER;");
         colCupo.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCupoParejas()).asObject());
         colCupo.setCellFactory(c -> celdaEnteroCentrada());
@@ -149,7 +196,20 @@ public class TorneosController {
         colConfirmadas.setCellFactory(c -> celdaEnteroCentrada());
         colDisponibles.setStyle("-fx-alignment: CENTER;");
         colDisponibles.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getCuposDisponibles()).asObject());
-        colDisponibles.setCellFactory(c -> celdaEnteroCentrada());
+        colDisponibles.setCellFactory(c -> new TableCell<>() {
+            @Override protected void updateItem(Integer valor, boolean vacia) {
+                super.updateItem(valor, vacia);
+                setAlignment(Pos.CENTER);
+                getStyleClass().removeAll("tournaments-available-ok-v4",
+                        "tournaments-available-low-v4",
+                        "tournaments-available-full-v4");
+                setText(vacia || valor == null ? null : String.valueOf(valor));
+                if (!vacia && valor != null) getStyleClass().add(
+                        valor == 0 ? "tournaments-available-full-v4"
+                                : valor <= 2 ? "tournaments-available-low-v4"
+                                : "tournaments-available-ok-v4");
+            }
+        });
         colPrecio.setStyle("-fx-alignment: CENTER;");
         colPrecio.setCellValueFactory(d -> new SimpleStringProperty(
                 formatearMoneda(d.getValue().getPrecioInscripcion())));
@@ -160,6 +220,14 @@ public class TorneosController {
                 pseudoClassStateChanged(
                         javafx.css.PseudoClass.getPseudoClass("inactive"),
                         !vacia && categoria != null && !categoria.isActivo());
+            }
+            {
+                setOnMousePressed(evento -> {
+                    if (!isEmpty() && getItem() != null) {
+                        tablaCategorias.getSelectionModel().select(getItem());
+                        tablaCategorias.requestFocus();
+                    }
+                });
             }
         });
         tablaCategorias.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> actualizarBotonesCategoria());
@@ -212,11 +280,26 @@ public class TorneosController {
     }
     private void configurarFiltros() {
         filtroEstado.setItems(FXCollections.observableArrayList(EstadoTorneo.values()));
+        filtroEstado.setCellFactory(lista -> crearCeldaEstado(false));
+        filtroEstado.setButtonCell(crearCeldaEstado(true));
         filtrados = new FilteredList<>(torneos, t -> true);
         tablaTorneos.setItems(filtrados);
         campoBuscar.textProperty().addListener((o, a, n) -> aplicarFiltros());
         filtroEstado.valueProperty().addListener((o, a, n) -> aplicarFiltros());
         campoBuscar.setOnKeyPressed(e -> { if (e.getCode() == KeyCode.ESCAPE) limpiarFiltros(); });
+        botonLimpiar.setDisable(false);
+    }
+
+    private ListCell<EstadoTorneo> crearCeldaEstado(boolean boton) {
+        return new ListCell<>() {
+            @Override protected void updateItem(EstadoTorneo estado, boolean vacia) {
+                super.updateItem(estado, vacia);
+                setText(vacia || estado == null
+                        ? (boton ? "Todos los estados" : null)
+                        : estado.toString());
+                setGraphic(null);
+            }
+        };
     }
 
     @FXML private void cargarTorneos() {
@@ -236,14 +319,20 @@ public class TorneosController {
         filtrados.setPredicate(t -> (estado == null || t.getEstado() == estado)
                 && (texto.isBlank() || t.getNombre().toLowerCase(Locale.ROOT).contains(texto)));
         actualizarMensajeResultados();
-        botonLimpiar.setDisable(texto.isBlank() && estado == null);
     }
 
     @FXML private void limpiarFiltros() { campoBuscar.clear(); filtroEstado.getSelectionModel().clearSelection(); }
 
     private void actualizarMensajeResultados() {
         int cantidad = filtrados == null ? 0 : filtrados.size();
-        etiquetaMensaje.setText(cantidad + (cantidad == 1 ? " torneo encontrado" : " torneos encontrados"));
+        String busqueda = campoBuscar.getText() == null
+                ? "" : campoBuscar.getText().trim();
+        EstadoTorneo estado = filtroEstado.getValue();
+        String texto = cantidad
+                + (cantidad == 1 ? " torneo visible" : " torneos visibles");
+        if (estado != null) texto += " · " + estado;
+        if (!busqueda.isBlank()) texto += " para \"" + busqueda + "\"";
+        etiquetaMensaje.setText(texto);
     }
 
     private void seleccionar(Torneo torneo) {
@@ -267,6 +356,7 @@ public class TorneosController {
         actualizarMetricas();
         tablaCategorias.getSelectionModel().clearSelection();
         configurarAccionContextual();
+        actualizarPreparacionCiclo();
         actualizarBotones();
     }
 
@@ -287,6 +377,47 @@ public class TorneosController {
         detalleCantidadCategorias.setText(String.valueOf(activas));
         detalleParejas.setText(String.valueOf(parejas));
         detalleCupos.setText(String.valueOf(cupos));
+        detalleCupos.getStyleClass().removeAll("tournaments-cupos-ok-v4",
+                "tournaments-cupos-low-v4", "tournaments-cupos-full-v4");
+        detalleCupos.getStyleClass().add(cupos == 0
+                ? "tournaments-cupos-full-v4"
+                : cupos <= 2 ? "tournaments-cupos-low-v4"
+                : "tournaments-cupos-ok-v4");
+        int filas = Math.max(2, Math.min(6, categorias.size()));
+        double alto = 38 + filas * 46;
+        tablaCategorias.setMinHeight(alto);
+        tablaCategorias.setPrefHeight(alto);
+        tablaCategorias.setMaxHeight(alto);
+    }
+
+    private void actualizarPreparacionCiclo() {
+        if (seleccionado == null || etiquetaPreparacion == null) return;
+        try {
+            GestionTorneoService.ResumenCiclo resumen =
+                    gestionService.resumenCiclo(seleccionado.getId());
+            if (seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA) {
+                int faltan = Math.max(0, resumen.categoriasCompetitivas()
+                        - resumen.categoriasConCuadro());
+                etiquetaPreparacion.setText(faltan == 0
+                        ? resumen.categoriasCompetitivas() + " de "
+                                + resumen.categoriasCompetitivas()
+                                + " categorías con estructura competitiva lista."
+                        : faltan + (faltan == 1
+                                ? " categoría todavía necesita cuadro."
+                                : " categorías todavía necesitan cuadro."));
+            } else if (seleccionado.getEstado() == EstadoTorneo.EN_CURSO) {
+                etiquetaPreparacion.setText(resumen.partidosFinalizados()
+                        + " de " + resumen.partidos()
+                        + " partidos finalizados · "
+                        + resumen.categoriasConCampeona() + " de "
+                        + resumen.categoriasCompetitivas()
+                        + " categorías con campeones definidos.");
+            } else {
+                etiquetaPreparacion.setText("");
+            }
+        } catch (RuntimeException exception) {
+            etiquetaPreparacion.setText("");
+        }
     }
 
     private void configurarAccionContextual() {
@@ -311,17 +442,65 @@ public class TorneosController {
     private void actualizarBotones() {
         boolean hay = seleccionado != null;
         EstadoTorneo e = hay ? seleccionado.getEstado() : null;
-        botonEditar.setDisable(!hay || e.esFinal());
-        botonNuevaCategoria.setDisable(!hay || e.esFinal() || e == EstadoTorneo.EN_CURSO);
-        botonNuevaCategoria.setTooltip(botonNuevaCategoria.isDisabled() && hay
-                ? new javafx.scene.control.Tooltip(
-                        "Las categorías no pueden modificarse en este estado del torneo.")
-                : null);
+        boolean consulta = hay && (e.esFinal() || e == EstadoTorneo.EN_CURSO);
+        botonEditar.setDisable(!hay);
+        botonEditar.setText(consulta ? "VER DATOS" : "EDITAR DATOS");
+        botonEditar.setTooltip(hay && e == EstadoTorneo.EN_CURSO
+                ? new Tooltip("El torneo en curso solo permite consultar sus datos generales.")
+                : hay && e.esFinal()
+                        ? new Tooltip("Los torneos cerrados no admiten modificaciones.")
+                        : null);
+        boolean permiteNuevaCategoria = hay && (e == EstadoTorneo.BORRADOR
+                || e == EstadoTorneo.PUBLICADO
+                || e == EstadoTorneo.INSCRIPCION_ABIERTA);
+        botonNuevaCategoria.setDisable(!permiteNuevaCategoria);
+        String ayudaNuevaCategoria;
+        if (!hay) {
+            ayudaNuevaCategoria =
+                    "Seleccioná un torneo para agregar una categoría.";
+        } else if (e == EstadoTorneo.INSCRIPCION_CERRADA) {
+            ayudaNuevaCategoria =
+                    "No se pueden crear categorías después del cierre de inscripciones.";
+        } else if (e == EstadoTorneo.EN_CURSO) {
+            ayudaNuevaCategoria =
+                    "No se pueden crear categorías con el torneo en curso.";
+        } else if (e.esFinal()) {
+            ayudaNuevaCategoria =
+                    "Los torneos finalizados o cancelados son de solo lectura.";
+        } else {
+            ayudaNuevaCategoria =
+                    "Agregar una categoría al torneo seleccionado.";
+        }
+        Tooltip tooltipNuevaCategoria = new Tooltip(ayudaNuevaCategoria);
+        tooltipNuevaCategoria.setShowDelay(javafx.util.Duration.millis(300));
+        Tooltip.uninstall(contenedorNuevaCategoria,
+                contenedorNuevaCategoria.getProperties().get(
+                        "tooltip-nueva-categoria") instanceof Tooltip anterior
+                                ? anterior : null);
+        Tooltip.install(contenedorNuevaCategoria, tooltipNuevaCategoria);
+        contenedorNuevaCategoria.getProperties().put(
+                "tooltip-nueva-categoria", tooltipNuevaCategoria);
+        botonNuevaCategoria.setTooltip(null);
         botonPublicar.setDisable(e != EstadoTorneo.BORRADOR);
         botonAbrir.setDisable(e != EstadoTorneo.PUBLICADO);
         botonCerrar.setDisable(e != EstadoTorneo.INSCRIPCION_ABIERTA);
         botonIniciar.setDisable(e != EstadoTorneo.INSCRIPCION_CERRADA);
-        botonFinalizar.setDisable(e != EstadoTorneo.EN_CURSO);
+        boolean finalizable = false;
+        String bloqueoFinal = null;
+        if (e == EstadoTorneo.EN_CURSO) {
+            try {
+                GestionTorneoService.ResumenCiclo r = gestionService.resumenCiclo(seleccionado.getId());
+                finalizable = r.categoriasCompetitivas() > 0
+                        && r.categoriasConCuadro() == r.categoriasCompetitivas()
+                        && r.partidosPendientes() == 0
+                        && r.categoriasConCampeona() == r.categoriasCompetitivas();
+                if (!finalizable) bloqueoFinal = r.partidosPendientes() > 0
+                        ? "Todavía hay " + r.partidosPendientes() + " partido(s) pendientes."
+                        : "Definí los campeones de todas las categorías antes de finalizar.";
+            } catch (RuntimeException ex) { bloqueoFinal = "No se pudo validar el cierre competitivo."; }
+        }
+        botonFinalizar.setDisable(!finalizable);
+        botonFinalizar.setTooltip(bloqueoFinal == null ? null : new Tooltip(bloqueoFinal));
         botonCancelar.setDisable(!hay || e.esFinal());
         if (hay) configurarAccionContextual();
         actualizarBotonesCategoria();
@@ -329,11 +508,17 @@ public class TorneosController {
 
     private void actualizarBotonesCategoria() {
         TorneoCategoria c = tablaCategorias.getSelectionModel().getSelectedItem();
-        boolean editable = seleccionado != null && !seleccionado.getEstado().esFinal()
-                && seleccionado.getEstado() != EstadoTorneo.EN_CURSO;
+        boolean editable = seleccionado != null && c != null && c.isActivo()
+                && seleccionado.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA
+                && seleccionado.getEstado() != EstadoTorneo.EN_CURSO
+                && !seleccionado.getEstado().esFinal();
         botonEditarCategoria.setDisable(c == null || !editable);
         botonDesactivarCategoria.setDisable(c == null || !c.isActivo() || !editable);
-        botonGestionarGrupos.setDisable(c == null || seleccionado == null || !c.usaFaseGrupos()
+        botonEditarCategoria.setTooltip(c != null && !editable
+                ? new Tooltip("No se puede editar una categoría en este estado del torneo.") : null);
+        botonDesactivarCategoria.setTooltip(c != null && !editable
+                ? new Tooltip("No se puede desactivar una categoría en este estado del torneo.") : null);
+        botonGestionarGrupos.setDisable(c == null || !c.isActivo() || seleccionado == null || !c.usaFaseGrupos()
                 || seleccionado.getEstado() == EstadoTorneo.BORRADOR
                 || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
                 || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
@@ -343,9 +528,26 @@ public class TorneosController {
         etiquetaCategoriaSeleccionada.setText(
                 c == null ? "ACCIONES DE CATEGORÍA"
                         : "ACCIONES PARA: " + c.getNombre());
+        etiquetaFormatoCategoria.setText(c == null
+                ? "Seleccioná una categoría"
+                : "Formato: " + (c.usaFaseGrupos()
+                        ? "Grupos + eliminación" : "Eliminación directa"));
+        botonGestionarGrupos.getStyleClass().remove("tournaments-category-primary-v4");
+        botonGestionarCuadro.getStyleClass().remove("tournaments-category-primary-v4");
+        if (c != null) {
+            if (c.usaFaseGrupos()
+                    && seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA) {
+                botonGestionarGrupos.getStyleClass().add("tournaments-category-primary-v4");
+            } else {
+                botonGestionarCuadro.getStyleClass().add("tournaments-category-primary-v4");
+            }
+        }
         botonGestionarGrupos.setVisible(c != null && c.usaFaseGrupos());
         botonGestionarGrupos.setManaged(botonGestionarGrupos.isVisible());
-        botonGestionarCuadro.setDisable(c == null || seleccionado == null
+        boolean historico = seleccionado != null && seleccionado.getEstado().esFinal();
+        botonGestionarGrupos.setText(historico ? "VER GRUPOS" : "GRUPOS");
+        botonGestionarCuadro.setText(historico ? "VER CUADRO" : "CUADRO");
+        botonGestionarCuadro.setDisable(c == null || !c.isActivo() || seleccionado == null
                 || seleccionado.getEstado() == EstadoTorneo.BORRADOR
                 || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
                 || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
@@ -365,7 +567,10 @@ public class TorneosController {
     @FXML private void editarTorneo() {
         if (seleccionado == null) return;
         try {
-            Torneo cambios = new TorneoDialog(seleccionado).mostrar().orElse(null);
+            boolean consulta = seleccionado.getEstado().esFinal()
+                    || seleccionado.getEstado() == EstadoTorneo.EN_CURSO;
+            Torneo cambios = new TorneoDialog(seleccionado, consulta).mostrar().orElse(null);
+            if (consulta) return;
             if (cambios == null) return;
             gestionService.editarTorneo(cambios);
             cargarTorneos();
@@ -448,8 +653,16 @@ public class TorneosController {
         }
     }
     @FXML private void cancelarTorneo() {
-        if (Dialogos.confirmarPeligro("Cancelar torneo",
-                "El torneo quedará cancelado y no podrá reabrirse.\nLas inscripciones existentes no se modificarán automáticamente.\n\n¿Querés continuar?"))
+        if (seleccionado == null) return;
+        String impacto = "Torneo: " + seleccionado.getNombre()
+                + "\nEstado actual: " + seleccionado.getEstado()
+                + "\nCategorías registradas: " + categorias.size()
+                + "\nParejas confirmadas: " + categorias.stream()
+                        .mapToInt(TorneoCategoria::getParejasConfirmadas).sum()
+                + "\n\nEl torneo quedará cancelado y no podrá reabrirse."
+                + "\nLas inscripciones existentes no se modificarán automáticamente."
+                + "\n\n¿Querés continuar?";
+        if (Dialogos.confirmarPeligro("Cancelar torneo", impacto))
             cambiar(() -> gestionService.cancelar(seleccionado.getId()));
     }
     private void cambiar(Runnable accion) {
@@ -515,5 +728,4 @@ public class TorneosController {
         etiquetaMensaje.setText(mensaje);
         Dialogos.exito("Operación completada", mensaje);
     }
-    // torneos-distribucion-compacta-v2
 }

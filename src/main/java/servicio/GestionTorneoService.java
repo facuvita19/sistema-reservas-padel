@@ -401,9 +401,10 @@ public class GestionTorneoService {
 
     private void validarAdministracionCategorias(Torneo torneo) {
         validarEditable(torneo);
-        if (torneo.getEstado() == EstadoTorneo.EN_CURSO) {
+        if (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                || torneo.getEstado() == EstadoTorneo.EN_CURSO) {
             throw new IllegalArgumentException(
-                    "No se pueden modificar categorias con el torneo en curso.");
+                    "No se pueden modificar categorias despues del cierre de inscripciones.");
         }
     }
 

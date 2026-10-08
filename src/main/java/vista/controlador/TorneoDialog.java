@@ -22,6 +22,7 @@ import negocio.Torneo;
 import vista.Dialogos;
 
 public class TorneoDialog {
+    // cerrar-ciclo-competitivo-torneos-v7
     private final Dialog<ButtonType> dialogo = new Dialog<>();
     private final TextField nombre = new TextField();
     private final TextArea descripcion = new TextArea();
@@ -34,12 +35,17 @@ public class TorneoDialog {
     private final TextArea reglamento = new TextArea();
     private final Label error = new Label();
     private final Torneo original;
+    private final boolean soloLectura;
     private final ButtonType guardar = new ButtonType("GUARDAR CAMBIOS", ButtonBar.ButtonData.OK_DONE);
 
-    public TorneoDialog(Torneo torneo) {
+    public TorneoDialog(Torneo torneo) { this(torneo, false); }
+
+    public TorneoDialog(Torneo torneo, boolean soloLectura) {
         original = torneo;
+        this.soloLectura = soloLectura;
         configurar();
         if (torneo != null) cargar(torneo);
+        if (soloLectura) aplicarSoloLectura();
     }
 
     public Optional<Torneo> mostrar() {
@@ -57,10 +63,15 @@ public class TorneoDialog {
 
     private void configurar() {
         boolean nuevo = original == null;
-        dialogo.setTitle(nuevo ? "Nuevo torneo" : "Editar torneo");
-        dialogo.setHeaderText(nuevo ? "Crear un nuevo torneo" : "Actualizar datos del torneo");
-        dialogo.getDialogPane().getButtonTypes().addAll(
-                guardar, new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
+        dialogo.setTitle(soloLectura ? "Datos del torneo" : (nuevo ? "Nuevo torneo" : "Editar torneo"));
+        dialogo.setHeaderText(soloLectura ? "Información general del torneo" : (nuevo ? "Crear un nuevo torneo" : "Actualizar datos del torneo"));
+        if (soloLectura) {
+            dialogo.getDialogPane().getButtonTypes().add(
+                    new ButtonType("CERRAR", ButtonBar.ButtonData.CANCEL_CLOSE));
+        } else {
+            dialogo.getDialogPane().getButtonTypes().addAll(guardar,
+                    new ButtonType("CANCELAR", ButtonBar.ButtonData.CANCEL_CLOSE));
+        }
         Dialogos.preparar(dialogo, "tournament-editor-dialog");
 
         nombre.setPromptText("Ejemplo: Copa Primavera 2026");
@@ -104,6 +115,23 @@ public class TorneoDialog {
         contenido.setPadding(new Insets(4, 2, 2, 2));
         dialogo.getDialogPane().setContent(contenido);
         dialogo.getDialogPane().setPrefSize(760, 680);
+    }
+
+    private void aplicarSoloLectura() {
+        nombre.setEditable(false);
+        descripcion.setEditable(false);
+        fechaInicio.setDisable(true);
+        fechaFin.setDisable(true);
+        inscripcionDesde.setDisable(true);
+        inscripcionHasta.setDisable(true);
+        horaDesde.setEditable(false);
+        horaHasta.setEditable(false);
+        reglamento.setEditable(false);
+        for (javafx.scene.Node control : new javafx.scene.Node[] { nombre,
+                descripcion, fechaInicio, fechaFin, inscripcionDesde,
+                inscripcionHasta, horaDesde, horaHasta, reglamento }) {
+            control.getStyleClass().add("tournament-readonly-field-v7");
+        }
     }
 
     private void aplicarCampo(javafx.scene.Node... controles) {

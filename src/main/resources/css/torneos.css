@@ -165,3 +165,417 @@
     -fx-text-fill: #687d72;
     -fx-opacity: 1;
 }
+
+/* torneos-experiencia-moderna-v3 */
+/* Cabecera unificada: volver + identidad del modulo + titulo. */
+.tournaments-header-v2 {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+}
+.tournaments-back-button-v3 {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-background-color: #20272b;
+    -fx-background-radius: 10;
+    -fx-border-color: #465158;
+    -fx-border-radius: 10;
+    -fx-cursor: hand;
+}
+.tournaments-back-button-v3:hover {
+    -fx-background-color: #2d2b22;
+    -fx-border-color: #b89548;
+}
+.tournaments-back-icon-v3,
+.tournaments-module-icon-v3,
+.tournaments-icon-v3,
+.tournaments-search-icon-v3,
+.tournaments-empty-icon-v3,
+.tournaments-empty-detail-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke-width: 1.55;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+}
+.tournaments-back-icon-v3 {
+    -fx-stroke: #b7c3c8;
+    -fx-scale-x: .78;
+    -fx-scale-y: .78;
+}
+.tournaments-back-button-v3:hover .tournaments-back-icon-v3 { -fx-stroke: #ffffff; }
+.tournaments-module-icon-shell-v3 {
+    -fx-background-color: #2b2518;
+    -fx-background-radius: 11;
+    -fx-border-color: #68552b;
+    -fx-border-radius: 11;
+}
+.tournaments-module-icon-v3 {
+    -fx-stroke: #e0bf72;
+    -fx-scale-x: .70;
+    -fx-scale-y: .70;
+}
+.tournaments-title-block-v3 { -fx-translate-y: 1; }
+
+/* Iconos de acciones */
+.tournaments-action-primary,
+.tournaments-action-secondary,
+.tournaments-action-danger,
+.tournaments-action-danger-outline {
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+.tournaments-icon-slot-v3 { -fx-alignment: CENTER; }
+.tournaments-icon-v3 {
+    -fx-stroke: #b7c3c8;
+    -fx-scale-x: .68;
+    -fx-scale-y: .68;
+}
+.tournaments-action-primary .tournaments-icon-v3 { -fx-stroke: #ffffff; }
+.tournaments-action-danger .tournaments-icon-v3,
+.tournaments-action-danger-outline .tournaments-icon-v3 { -fx-stroke: #efb1b9; }
+.tournaments-category-bracket .tournaments-icon-v3 { -fx-stroke: #d7f5e5; }
+
+/* Filtros */
+.tournaments-search-shell-v3 { -fx-alignment: CENTER-LEFT; }
+.tournaments-search-shell-v3 .tournaments-search-v2 { -fx-padding: 0 12 0 36; }
+.tournaments-search-icon-v3 {
+    -fx-stroke: #73858e;
+    -fx-scale-x: .68;
+    -fx-scale-y: .68;
+    -fx-translate-x: 11;
+}
+.tournaments-root-v2 .tournaments-clear-v2 {
+    -fx-min-width: 102;
+    -fx-pref-width: 102;
+    -fx-max-width: 102;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 7;
+    -fx-padding: 0 11;
+}
+
+/* Estados vacios */
+.tournaments-empty-state-v3 { -fx-padding: 20; }
+.tournaments-empty-icon-shell-v3,
+.tournaments-empty-detail-icon-shell-v3 {
+    -fx-background-color: #1c2226;
+    -fx-background-radius: 25;
+    -fx-border-color: #3d464b;
+    -fx-border-radius: 25;
+}
+.tournaments-empty-icon-v3 {
+    -fx-stroke: #7f9098;
+    -fx-scale-x: .78;
+    -fx-scale-y: .78;
+}
+.tournaments-empty-detail-icon-shell-v3 {
+    -fx-background-color: #252117;
+    -fx-background-radius: 30;
+    -fx-border-color: #5f502c;
+    -fx-border-radius: 30;
+}
+.tournaments-empty-detail-icon-v3 {
+    -fx-stroke: #d2b567;
+    -fx-scale-x: .86;
+    -fx-scale-y: .86;
+}
+
+/* interaccion-desactivar-torneos-v1 */
+/* Acción peligrosa secundaria: respuesta equivalente al resto de la barra. */
+.tournaments-root-v2 .tournaments-action-danger-outline,
+.tournaments-root-v2 .tournaments-action-danger-outline:focused {
+    -fx-background-color: #251c20;
+    -fx-border-color: #70434d;
+    -fx-text-fill: #dba4ac;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.tournaments-root-v2 .tournaments-action-danger-outline:hover {
+    -fx-background-color: #3a2329;
+    -fx-border-color: #a65361;
+    -fx-text-fill: #ffd5da;
+    -fx-effect: dropshadow(gaussian, rgba(166,83,97,.28), 10, .18, 0, 2);
+    -fx-translate-y: -1;
+}
+.tournaments-root-v2 .tournaments-action-danger-outline:hover .tournaments-icon-v3 {
+    -fx-stroke: #ffd5da;
+}
+.tournaments-root-v2 .tournaments-action-danger-outline:pressed {
+    -fx-background-color: #21171a;
+    -fx-border-color: #7e3e49;
+    -fx-text-fill: #efb6bd;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: .98;
+    -fx-scale-y: .98;
+}
+.tournaments-root-v2 .tournaments-action-danger-outline:disabled {
+    -fx-background-color: #1b1719;
+    -fx-border-color: #3d3034;
+    -fx-text-fill: #66565a;
+    -fx-opacity: 1;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+}
+.tournaments-root-v2 .tournaments-action-danger-outline:disabled .tournaments-icon-v3 {
+    -fx-stroke: #66565a;
+}
+
+/* torneos-iluminacion-botones-v2 */
+/* Iluminacion estable: sin cambios de tamano ni desplazamiento. */
+.tournaments-root-v2 .tournaments-action-danger-outline,
+.tournaments-root-v2 .tournaments-action-danger-outline:hover,
+.tournaments-root-v2 .tournaments-action-danger-outline:pressed,
+.tournaments-root-v2 .tournaments-action-danger-outline:focused {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.tournaments-root-v2 .tournaments-action-danger-outline:hover {
+    -fx-background-color: #382329;
+    -fx-border-color: #a55a67;
+    -fx-text-fill: #f0b4bd;
+    -fx-effect: dropshadow(gaussian, rgba(171,79,94,.30), 11, .18, 0, 0);
+}
+
+.tournaments-root-v2 .tournaments-action-danger-outline:pressed {
+    -fx-background-color: #2c1d21;
+    -fx-border-color: #874955;
+    -fx-text-fill: #e5a3ad;
+    -fx-effect: dropshadow(gaussian, rgba(150,63,76,.18), 6, .10, 0, 0);
+}
+
+.tournaments-root-v2 .tournaments-action-danger-outline:disabled,
+.tournaments-root-v2 .tournaments-action-danger-outline:disabled:hover {
+    -fx-background-color: #1d191b;
+    -fx-border-color: #423138;
+    -fx-text-fill: #755d63;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.tournaments-root-v2 .tournaments-clear-v2,
+.tournaments-root-v2 .tournaments-clear-v2:hover,
+.tournaments-root-v2 .tournaments-clear-v2:pressed,
+.tournaments-root-v2 .tournaments-clear-v2:focused {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.tournaments-root-v2 .tournaments-clear-v2:hover {
+    -fx-background-color: #30393e;
+    -fx-border-color: #6d7a81;
+    -fx-text-fill: #f2f5f6;
+    -fx-effect: dropshadow(gaussian, rgba(150,164,172,.25), 10, .16, 0, 0);
+}
+
+.tournaments-root-v2 .tournaments-clear-v2:pressed {
+    -fx-background-color: #232a2e;
+    -fx-border-color: #59656c;
+    -fx-text-fill: #dce2e4;
+    -fx-effect: dropshadow(gaussian, rgba(127,143,151,.14), 5, .08, 0, 0);
+}
+
+.tournaments-root-v2 .tournaments-clear-v2:disabled,
+.tournaments-root-v2 .tournaments-clear-v2:disabled:hover {
+    -fx-background-color: #151a1d;
+    -fx-border-color: #2b3338;
+    -fx-text-fill: #56636a;
+    -fx-opacity: 1;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* torneos-feedback-pulsacion-v3 */
+/* Hover estable: ilumina sin cambiar geometria. */
+.tournaments-root-v2 .button:hover {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Pulsacion breve y perceptible. */
+.tournaments-root-v2 .button:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+
+/* La flecha compacta admite una respuesta levemente mayor. */
+.tournaments-root-v2 .tournaments-back-button-v3:pressed {
+    -fx-scale-x: .97;
+    -fx-scale-y: .97;
+    -fx-background-color: #242117;
+    -fx-border-color: #8c7134;
+}
+
+/* Los controles deshabilitados nunca reaccionan. */
+.tournaments-root-v2 .button:disabled,
+.tournaments-root-v2 .button:disabled:hover,
+.tournaments-root-v2 .button:disabled:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
+
+/* modernizar-torneos-integral-v5 */
+.tournaments-header-v2 {
+    -fx-min-height: 82; -fx-pref-height: 82; -fx-max-height: 82;
+    -fx-padding: 12 24;
+}
+.tournaments-title-v2 { -fx-font-size: 24px; }
+.tournaments-subtitle-v2 { -fx-font-size: 11px; }
+.tournaments-action-primary, .tournaments-action-secondary,
+.tournaments-action-danger, .tournaments-action-danger-outline,
+.tournaments-clear-v2, .tournaments-refresh-v4,
+.tournaments-empty-create-v4 {
+    -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42;
+    -fx-font-family: "Segoe UI"; -fx-font-size: 10px; -fx-font-weight: 900;
+    -fx-content-display: LEFT; -fx-graphic-text-gap: 8; -fx-alignment: CENTER;
+}
+.tournaments-filter-stack-v4 { -fx-fill-width: true; }
+.tournaments-search-v2, .tournaments-filter-v2,
+.tournaments-clear-v2, .tournaments-refresh-v4 {
+    -fx-min-height: 40; -fx-pref-height: 40; -fx-max-height: 40;
+}
+.tournaments-refresh-v4, .tournaments-refresh-v4:focused {
+    -fx-background-color: #293136; -fx-border-color: #566168;
+    -fx-background-radius: 9; -fx-border-radius: 9;
+    -fx-text-fill: #eef2f3; -fx-cursor: hand;
+}
+.tournaments-refresh-v4:hover { -fx-background-color: #3a4449; -fx-border-color: #76838a; }
+.tournaments-refresh-v4:pressed { -fx-background-color: #23292d; }
+.tournaments-clear-v2, .tournaments-clear-v2:focused {
+    -fx-background-color: linear-gradient(to bottom, #30363a, #282e32);
+    -fx-border-color: #59636a; -fx-text-fill: #eef2f3; -fx-opacity: 1;
+}
+.tournaments-clear-v2:hover { -fx-background-color: #384146; -fx-border-color: -color-principal; }
+.tournaments-filter-v2 .arrow-button,
+.tournaments-filter-v2 .arrow-button:hover {
+    -fx-background-color: transparent; -fx-border-color: transparent;
+}
+.tournaments-filter-v2 > .list-cell { -fx-padding: 0 10; -fx-text-fill: #e2e7e9; }
+.tournaments-list-v2 .table-row-cell { -fx-cell-size: 52px; -fx-cursor: hand; }
+.tournaments-empty-detail-v2 { -fx-padding: 120 40 40 40; }
+.tournaments-empty-detail-icon-shell-v3 {
+    -fx-background-radius: 12; -fx-border-radius: 12;
+}
+.tournaments-empty-create-v4, .tournaments-empty-create-v4:focused {
+    -fx-background-color: #18231e; -fx-border-color: #3f735b;
+    -fx-background-radius: 9; -fx-border-radius: 9;
+    -fx-text-fill: #a9d9c1; -fx-padding: 0 14; -fx-cursor: hand;
+}
+.tournaments-empty-create-v4:hover { -fx-background-color: #203127; -fx-border-color: #5a9979; -fx-text-fill: white; }
+.tournaments-detail-icon-shell-v4 {
+    -fx-background-color: #2b2518; -fx-border-color: #68552b;
+    -fx-background-radius: 10; -fx-border-radius: 10;
+}
+.tournaments-detail-icon-v4, .tournaments-mini-icon-v4 {
+    -fx-fill: transparent; -fx-stroke: #e0bf72; -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round; -fx-stroke-line-join: round;
+    -fx-scale-x: .70; -fx-scale-y: .70;
+}
+.tournament-state-v2 {
+    -fx-padding: 4 8; -fx-background-radius: 10; -fx-border-radius: 10;
+}
+.tournaments-calendar-card-v4 { -fx-spacing: 5; }
+.tournaments-cupos-ok-v4 { -fx-text-fill: #79c9a3; }
+.tournaments-cupos-low-v4 { -fx-text-fill: #e0b75e; }
+.tournaments-cupos-full-v4 { -fx-text-fill: #df7d88; }
+.tournaments-readiness-v4 {
+    -fx-text-fill: #a9b7bc; -fx-font-size: 9px; -fx-font-weight: 800;
+    -fx-padding: 3 0 0 0;
+}
+.tournaments-categories-table-v2 { -fx-min-height: 102; -fx-pref-height: 190; -fx-max-height: 284; }
+.tournaments-categories-table-v2 .table-row-cell { -fx-cell-size: 46px; -fx-cursor: hand; }
+.tournaments-available-ok-v4 { -fx-text-fill: #7bd4ae; -fx-font-weight: 900; }
+.tournaments-available-low-v4 { -fx-text-fill: #e0bf72; -fx-font-weight: 900; }
+.tournaments-available-full-v4 { -fx-text-fill: #e88e99; -fx-font-weight: 900; }
+.tournaments-category-active-v4 { -fx-text-fill: #7bd4ae; -fx-font-weight: 900; }
+.tournaments-category-inactive-v4 { -fx-text-fill: #8a777b; -fx-font-weight: 900; }
+.tournaments-category-format-v4 { -fx-text-fill: #778a92; -fx-font-size: 8.5px; }
+.tournaments-category-primary-v4,
+.tournaments-category-primary-v4:focused {
+    -fx-background-color: #28684d; -fx-border-color: #438a69; -fx-text-fill: #f1fff8;
+}
+.tournaments-category-primary-v4:hover { -fx-background-color: #337e5e; -fx-border-color: #5ca27f; }
+.tournaments-action-primary:disabled, .tournaments-action-secondary:disabled,
+.tournaments-action-danger:disabled, .tournaments-action-danger-outline:disabled {
+    -fx-opacity: 1; -fx-background-color: #1a2023; -fx-border-color: #30383d;
+    -fx-text-fill: #617077;
+}
+
+
+/* cerrar-ciclo-competitivo-torneos-v7 */
+.tournaments-root-v2 .tournaments-category-bracket:not(.tournaments-category-primary-v4),
+.tournaments-root-v2 .tournaments-category-bracket:not(.tournaments-category-primary-v4):focused { -fx-background-color:#20292e; -fx-border-color:#526168; -fx-text-fill:#cbd4d8; }
+.tournaments-root-v2 .tournaments-category-bracket:not(.tournaments-category-primary-v4):hover { -fx-background-color:#29343a; -fx-border-color:-color-principal; -fx-text-fill:white; }
+.tournament-state-v2 { -fx-min-height:22; -fx-alignment:CENTER; -fx-padding:3 9; -fx-border-width:1; }
+.tournament-state-en-curso { -fx-border-color:#377484; } .tournament-state-finalizado { -fx-border-color:#5b5680; } .tournament-state-inscripcion-cerrada { -fx-border-color:#806a32; }
+.tournaments-root-v2 .button:disabled { -fx-opacity:1; -fx-background-color:#1b2226; -fx-border-color:#384248; -fx-text-fill:#7f8d93; }
+.tournament-readonly-field-v7, .tournament-readonly-field-v7:disabled { -fx-opacity:1; -fx-text-fill:#dfe5e7; -fx-control-inner-background:#171d21; }
+
+/* corregir-detalles-torneos-v9 */
+/* LIMPIAR y ACTUALIZAR comparten exactamente la misma caja. */
+.tournaments-root-v2 .tournaments-clear-v2,
+.tournaments-root-v2 .tournaments-refresh-v4 {
+    -fx-min-width: 116;
+    -fx-pref-width: 116;
+    -fx-max-width: 116;
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-padding: 0 11;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-alignment: CENTER;
+}
+/* Volver usa el acento verde global; el trofeo conserva el ambar del modulo. */
+.tournaments-root-v2 .tournaments-back-button-v3:hover {
+    -fx-background-color: #1d2925;
+    -fx-border-color: -color-principal;
+}
+.tournaments-root-v2 .tournaments-back-button-v3:hover .tournaments-back-icon-v3 {
+    -fx-stroke: -color-principal-hover;
+}
+.tournaments-root-v2 .tournaments-back-button-v3:pressed {
+    -fx-background-color: #17211d;
+    -fx-border-color: -color-principal-presionado;
+}
+/* El estado deshabilitado de NUEVA CATEGORIA sigue siendo legible. */
+.tournaments-root-v2 .tournaments-categories-v2 .tournaments-action-primary:disabled {
+    -fx-background-color: #1b2420;
+    -fx-border-color: #35483f;
+    -fx-text-fill: #71877b;
+    -fx-opacity: 1;
+}
+
+/* corregir-tooltip-categoria-deshabilitada-v10 */
+.tournaments-root-v2 .tournaments-new-category-shell-v10 {
+    -fx-alignment: CENTER;
+    -fx-padding: 0;
+    -fx-cursor: default;
+}
+.tournaments-root-v2 .tournaments-new-category-shell-v10 > .button {
+    -fx-min-width: 187;
+    -fx-pref-width: 187;
+    -fx-max-width: 187;
+}
