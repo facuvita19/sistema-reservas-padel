@@ -86,6 +86,7 @@ public class TorneoGruposController {
 
     @FXML private Label titulo;
     @FXML private Label resumen;
+    @FXML private Label etiquetaModo;
     @FXML private Label mensaje;
     @FXML private Label resumenPartidos;
     @FXML private ComboBox<TorneoGrupo> selectorGrupoPartidos;
@@ -142,6 +143,8 @@ public class TorneoGruposController {
     @FXML private Label ayudaModo;
     @FXML private Label ayudaPosiciones;
     @FXML private Label resumenClasificacion;
+    @FXML private Label tituloPanelConfirmado;
+    @FXML private Label ayudaPanelConfirmado;
     @FXML private Label tituloPartido;
     @FXML private Label pareja1Detalle;
     @FXML private Label pareja2Detalle;
@@ -150,6 +153,9 @@ public class TorneoGruposController {
     @FXML private Button botonQuitar;
     @FXML private Button botonCabeza;
     @FXML private Button botonSortear;
+    @FXML private Button botonIrCuadro;
+    @FXML private Button botonEtapaConfirmada;
+    @FXML private HBox bloqueCorreccion;
 
     @FXML
     private void initialize() {
@@ -166,7 +172,33 @@ public class TorneoGruposController {
         configurarDeseleccion(listaGrupos);
         configurarDeseleccion(integrantes);
         configurarInteraccionesModernas();
+        configurarEstadosVacios();
         cargar();
+    }
+
+    private void configurarEstadosVacios() {
+        sinAsignar.setPlaceholder(crearEstadoVacio(
+                "DISTRIBUCIÓN COMPLETA",
+                "Todas las parejas confirmadas fueron asignadas."));
+        listaGrupos.setPlaceholder(crearEstadoVacio(
+                "SIN GRUPOS",
+                "La categoría todavía no tiene estructura grupal."));
+        integrantes.setPlaceholder(crearEstadoVacio(
+                "SIN INTEGRANTES",
+                "Seleccioná un grupo para consultar sus parejas."));
+    }
+
+    private VBox crearEstadoVacio(String titulo, String detalle) {
+        Label encabezado = new Label(titulo);
+        encabezado.getStyleClass().add("groups-empty-title-v13");
+        Label texto = new Label(detalle);
+        texto.setWrapText(true);
+        texto.setMaxWidth(260);
+        texto.getStyleClass().add("groups-empty-copy-v13");
+        VBox estado = new VBox(6, encabezado, texto);
+        estado.setAlignment(Pos.CENTER);
+        estado.getStyleClass().add("groups-empty-state-v13");
+        return estado;
     }
 
     private void configurarInteraccionesModernas() {
@@ -487,27 +519,124 @@ public class TorneoGruposController {
             resumen.setText(vista.inscripciones().size()
                     + " confirmadas · " + vista.grupos().size()
                     + " grupos · " + libres.size() + " sin asignar");
+            boolean preparacion = torneo != null && torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA && categoria.isActivo();
+            boolean competencia = torneo != null && torneo.getEstado() == EstadoTorneo.EN_CURSO && categoria.isActivo();
+            boolean consulta = !preparacion && !competencia;
             boolean cerrado = vista.grupos().stream()
                     .anyMatch(TorneoGrupo::isConfirmado);
+            boolean hayPartidos = vista.grupos().stream()
+                    .anyMatch(g -> !partidoDAO.listarPorGrupo(g.getId()).isEmpty());
+            boolean faseCompleta = hayPartidos && vista.grupos().stream()
+                    .allMatch(this::grupoConPosicionesDefinitivas);
+            boolean existeCuadro = partidoDAO.existeCuadroPorCategoria(categoriaId);
+            actualizarEstadoCiclo(preparacion, competencia, consulta,
+                    cerrado, faseCompleta, existeCuadro);
+            actualizarPanelConfirmado(cerrado, hayPartidos, faseCompleta,
+                    existeCuadro, consulta);
             confirmar.setDisable(cerrado);
             generarPartidos.setDisable(!cerrado);
-            panelEdicionGrupos.setVisible(!cerrado); panelEdicionGrupos.setManaged(!cerrado);
+            panelEdicionGrupos.setVisible(!cerrado && preparacion); panelEdicionGrupos.setManaged(!cerrado && preparacion);
             panelConfirmado.setVisible(cerrado); panelConfirmado.setManaged(cerrado);
-            accionesIntegrantes.setVisible(!cerrado); accionesIntegrantes.setManaged(!cerrado);
-            botonAgregar.setVisible(!cerrado); botonAgregar.setManaged(!cerrado);
+            accionesIntegrantes.setVisible(!cerrado && preparacion); accionesIntegrantes.setManaged(!cerrado && preparacion);
+            botonAgregar.setVisible(!cerrado && preparacion); botonAgregar.setManaged(!cerrado && preparacion);
             actualizarBotonAgregar();
             etiquetaEstadoGrupos.setText(cerrado ? "CONFIRMADOS" : "EN EDICIÓN");
             etiquetaDisponibles.setText(String.valueOf(libres.size()));
             actualizarModo();
             restaurarGrupo();
-            boolean hayPartidos = vista.grupos().stream().anyMatch(g -> !partidoDAO.listarPorGrupo(g.getId()).isEmpty());
-            generarPartidos.setVisible(cerrado && !hayPartidos); generarPartidos.setManaged(cerrado && !hayPartidos);
+            generarPartidos.setVisible(cerrado && !hayPartidos && preparacion); generarPartidos.setManaged(cerrado && !hayPartidos && preparacion);
             pestanaPartidos.setDisable(!cerrado || !hayPartidos);
             pestanaPosiciones.setDisable(!cerrado || !hayPartidos);
             if (cerrado) mensaje.setText("Los grupos estan confirmados.");
             if (hayPartidos) mostrarPartidos(); else mostrarArmado();
         } catch (RuntimeException exception) {
             mostrarError("No se pudieron cargar los grupos", exception);
+        }
+    }
+
+    private boolean grupoConPosicionesDefinitivas(TorneoGrupo grupo) {
+        try {
+            var resultado = posicionesService.calcular(grupo);
+            return resultado.definitivo() && !resultado.desempatePendiente();
+        } catch (RuntimeException exception) {
+            return false;
+        }
+    }
+
+    private void actualizarEstadoCiclo(boolean preparacion,
+            boolean competencia, boolean consulta, boolean cerrado,
+            boolean faseCompleta, boolean existeCuadro) {
+        etiquetaModo.getStyleClass().removeAll(
+                "groups-mode-manage-v7", "groups-mode-readonly-v7",
+                "groups-mode-ready-v13", "groups-mode-live-v13");
+        if (consulta) {
+            etiquetaModo.setText("MODO CONSULTA");
+            etiquetaModo.getStyleClass().add("groups-mode-readonly-v7");
+        } else if (competencia) {
+            etiquetaModo.setText(faseCompleta
+                    ? "FASE DE GRUPOS COMPLETADA"
+                    : "COMPETENCIA EN CURSO");
+            etiquetaModo.getStyleClass().add(faseCompleta
+                    ? "groups-mode-ready-v13" : "groups-mode-live-v13");
+        } else if (cerrado) {
+            etiquetaModo.setText("ESTRUCTURA LISTA");
+            etiquetaModo.getStyleClass().add("groups-mode-ready-v13");
+        } else {
+            etiquetaModo.setText("PREPARACIÓN");
+            etiquetaModo.getStyleClass().add("groups-mode-manage-v7");
+        }
+        botonIrCuadro.getStyleClass().remove("groups-bracket-primary-v13");
+        if (existeCuadro) {
+            botonIrCuadro.setText(consulta ? "VER CUADRO" : "IR AL CUADRO");
+            botonIrCuadro.getStyleClass().add("groups-bracket-primary-v13");
+        } else if (faseCompleta) {
+            botonIrCuadro.setText("GENERAR CUADRO");
+            botonIrCuadro.getStyleClass().add("groups-bracket-primary-v13");
+        } else {
+            botonIrCuadro.setText("CUADRO");
+        }
+    }
+
+    private void actualizarPanelConfirmado(boolean cerrado,
+            boolean hayPartidos, boolean faseCompleta,
+            boolean existeCuadro, boolean consulta) {
+        if (!cerrado) return;
+        if (faseCompleta) {
+            tituloPanelConfirmado.setText("FASE DE GRUPOS COMPLETADA");
+            ayudaPanelConfirmado.setText(existeCuadro
+                    ? "Las posiciones son definitivas y la etapa eliminatoria ya está disponible."
+                    : "Las posiciones son definitivas. Continuá con la etapa eliminatoria.");
+            botonEtapaConfirmada.setText(existeCuadro
+                    ? (consulta ? "VER CUADRO" : "IR AL CUADRO")
+                    : "VER POSICIONES");
+        } else if (hayPartidos) {
+            tituloPanelConfirmado.setText("FASE DE GRUPOS EN CURSO");
+            ayudaPanelConfirmado.setText(
+                    "Completá los partidos para definir las posiciones y clasificados.");
+            botonEtapaConfirmada.setText("VER PARTIDOS");
+        } else {
+            tituloPanelConfirmado.setText("GRUPOS CONFIRMADOS");
+            ayudaPanelConfirmado.setText(
+                    "La distribución quedó bloqueada. Generá los partidos para continuar.");
+            botonEtapaConfirmada.setText("VER ARMADO");
+        }
+    }
+
+    @FXML
+    private void abrirEtapaConfirmada() {
+        boolean existeCuadro = partidoDAO.existeCuadroPorCategoria(categoriaId);
+        boolean faseCompleta = vista != null && !vista.grupos().isEmpty()
+                && vista.grupos().stream()
+                        .allMatch(this::grupoConPosicionesDefinitivas);
+        if (faseCompleta && existeCuadro) {
+            irAlCuadro();
+        } else if (faseCompleta) {
+            mostrarPosiciones();
+        } else if (vista != null && vista.grupos().stream()
+                .anyMatch(g -> !partidoDAO.listarPorGrupo(g.getId()).isEmpty())) {
+            mostrarPartidos();
+        } else {
+            mostrarArmado();
         }
     }
 
@@ -609,17 +738,17 @@ public class TorneoGruposController {
     private void mostrarPartido(TorneoPartido partido) {
         boolean hay = partido != null;
         boolean completo = hay && partido.tieneDosParejas();
-        botonProgramar.setDisable(!completo
+        boolean competencia = torneo != null && torneo.getEstado() == EstadoTorneo.EN_CURSO
+                && categoria != null && categoria.isActivo();
+        botonProgramar.setDisable(!competencia || !completo
                 || partido.getEstado() != EstadoPartidoTorneo.PENDIENTE);
-        botonQuitarProgramacion.setDisable(!hay
+        botonQuitarProgramacion.setDisable(!competencia || !hay
                 || partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO);
-        botonResultado.setDisable(!completo
+        botonResultado.setDisable(!competencia || !completo
                 || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
                     && partido.getEstado()
                         != EstadoPartidoTorneo.EN_CURSO));
-        boolean permiteCorreccion = torneo != null
-                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
-                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        boolean permiteCorreccion = competencia;
         botonCorregir.setDisable(!hay || !permiteCorreccion
                 || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO);
         panelPartidoVacio.setVisible(!hay); panelPartidoVacio.setManaged(!hay);
@@ -634,6 +763,7 @@ public class TorneoGruposController {
         botonQuitarProgramacion.setVisible(partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO); botonQuitarProgramacion.setManaged(botonQuitarProgramacion.isVisible());
         botonResultado.setVisible(puedeResultado); botonResultado.setManaged(puedeResultado);
         botonCorregir.setVisible(finalizado); botonCorregir.setManaged(finalizado);
+        bloqueCorreccion.setVisible(finalizado); bloqueCorreccion.setManaged(finalizado);
         TorneoGrupo grupoActual = listaGrupos.getSelectionModel().getSelectedItem();
         tituloPartido.setText("PARTIDO " + partido.getOrdenFase()
                 + (grupoActual == null ? "" : " · " + grupoActual.getNombre().toUpperCase()));
@@ -884,6 +1014,10 @@ public class TorneoGruposController {
         botonQuitarProgramacion.setDisable(true);
         botonResultado.setDisable(true);
         botonCorregir.setDisable(true);
+        if (bloqueCorreccion != null) {
+            bloqueCorreccion.setVisible(false);
+            bloqueCorreccion.setManaged(false);
+        }
     }
 
     private void vincularAnchoPartido(
@@ -1015,5 +1149,4 @@ public class TorneoGruposController {
     private void volver() {
         Navegacion.mostrarTorneos();
     }
-    // corregir-boton-agregar-grupo-v2
 }

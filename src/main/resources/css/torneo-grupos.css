@@ -617,3 +617,101 @@
     -fx-translate-y: 0;
     -fx-effect: none;
 }
+
+
+/* cerrar-ciclo-competitivo-torneos-v7 */
+.groups-header-v2 { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; -fx-padding:12 24; }
+.groups-title-v2 { -fx-font-size:24px; } .groups-subtitle-v2 { -fx-font-size:11px; }
+.groups-action-primary,.groups-action-secondary,.groups-action-danger-outline { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-font-family:"Segoe UI"; -fx-font-size:10px; }
+.groups-mode-v7 { -fx-padding:4 9; -fx-background-radius:10; -fx-border-radius:10; -fx-font-size:9px; -fx-font-weight:900; }
+.groups-mode-manage-v7 { -fx-background-color:#1d513f; -fx-border-color:#39785a; -fx-text-fill:#a5e8ca; }
+.groups-mode-readonly-v7 { -fx-background-color:#303940; -fx-border-color:#526068; -fx-text-fill:#b7c3c8; }
+.groups-root-v2 .button:disabled { -fx-opacity:1; -fx-background-color:#1b2226; -fx-border-color:#384248; -fx-text-fill:#7f8d93; }
+
+/* mejorar-experiencia-grupos-torneo-v13 */
+.groups-header-v2 {
+    -fx-min-height: 82; -fx-pref-height: 82; -fx-max-height: 82;
+    -fx-padding: 12 24;
+}
+.groups-back-button-v13 {
+    -fx-padding: 0; -fx-alignment: CENTER; -fx-content-display: GRAPHIC_ONLY;
+    -fx-background-color: #20272b; -fx-background-radius: 10;
+    -fx-border-color: #465158; -fx-border-radius: 10; -fx-cursor: hand;
+}
+.groups-back-button-v13:hover { -fx-background-color: #1d2925; -fx-border-color: -color-principal; }
+.groups-back-button-v13:pressed { -fx-background-color: #17211d; -fx-border-color: -color-principal-presionado; }
+.groups-back-icon-v13, .groups-module-icon-v13, .groups-action-icon-v13 {
+    -fx-fill: transparent; -fx-stroke: #b7c3c8; -fx-stroke-width: 1.55;
+    -fx-stroke-line-cap: round; -fx-stroke-line-join: round;
+}
+.groups-back-icon-v13 { -fx-scale-x: .78; -fx-scale-y: .78; }
+.groups-back-button-v13:hover .groups-back-icon-v13 { -fx-stroke: -color-principal-hover; }
+.groups-module-icon-shell-v13 { -fx-background-color: #17251f; -fx-border-color: #355646; -fx-background-radius: 11; -fx-border-radius: 11; }
+.groups-module-icon-v13 { -fx-stroke: #7bd4ae; -fx-scale-x: .68; -fx-scale-y: .68; }
+.groups-action-icon-v13 { -fx-scale-x: .67; -fx-scale-y: .67; }
+.groups-bracket-action-v13 { -fx-content-display: LEFT; -fx-graphic-text-gap: 8; }
+.groups-bracket-primary-v13, .groups-bracket-primary-v13:focused { -fx-background-color: #28684d; -fx-border-color: #438a69; -fx-text-fill: white; }
+.groups-bracket-primary-v13:hover { -fx-background-color: #337e5e; -fx-border-color: #5ca27f; }
+.groups-mode-ready-v13 { -fx-background-color: #244a39; -fx-border-color: #438a69; -fx-text-fill: #b7efd2; }
+.groups-mode-live-v13 { -fx-background-color: #1d4c59; -fx-border-color: #377484; -fx-text-fill: #a9e2ee; }
+.groups-empty-state-v13 { -fx-padding: 24; }
+.groups-empty-title-v13 { -fx-text-fill: #9fb0b7; -fx-font-size: 11px; -fx-font-weight: 900; }
+.groups-empty-copy-v13 { -fx-text-fill: #71838b; -fx-font-size: 10px; -fx-text-alignment: center; -fx-alignment: CENTER; }
+.groups-root-v2 .list-cell:empty, .groups-root-v2 .list-cell:empty:hover, .groups-root-v2 .list-cell:empty:selected { -fx-background-color: #151a1e; -fx-border-color: transparent; }
+.groups-root-v2 .table-row-cell:empty, .groups-root-v2 .table-row-cell:empty:hover, .groups-root-v2 .table-row-cell:empty:selected { -fx-background-color: #151a1e; -fx-border-color: transparent; }
+.groups-correction-block-v13 { -fx-background-color: #191d20; -fx-background-radius: 9; -fx-border-color: #46343a; -fx-border-radius: 9; -fx-padding: 10; }
+.groups-correction-block-v13 .groups-action-danger-outline { -fx-min-width: 190; }
+.groups-group-selector-v2:not(:focused):not(:showing) { -fx-border-color: #414b51; -fx-border-width: 1; }
+.groups-group-selector-v2:focused, .groups-group-selector-v2:showing { -fx-border-color: -color-principal; -fx-border-width: 1.5; }
+
+/* cerrar-detalles-grupos-torneo-v14 */
+.groups-confirmed-v2 {
+    -fx-min-height: 84;
+    -fx-pref-height: 84;
+    -fx-max-height: 84;
+}
+.groups-confirmed-v2 .groups-confirmed-title {
+    -fx-font-size: 11px;
+}
+.groups-confirmed-v2 .groups-action-primary,
+.groups-confirmed-v2 .groups-action-secondary {
+    -fx-min-width: 132;
+}
+.groups-root-v2 .list-view .virtual-flow .clipped-container .sheet .list-cell:empty {
+    -fx-border-color: transparent;
+    -fx-background-color: #151a1e;
+}
+.groups-root-v2 .table-view .virtual-flow .clipped-container .sheet .table-row-cell:empty {
+    -fx-border-color: transparent;
+    -fx-background-color: #151a1e;
+}
+
+/* corregir-alineacion-grupos-torneo-v15 */
+/* El bloque tipografico se baja levemente para alinearlo opticamente con el icono. */
+.groups-title-block-v15 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-translate-y: 2;
+}
+.groups-title-block-v15 .groups-title-v2,
+.groups-title-block-v15 .groups-subtitle-v2 {
+    -fx-padding: 0;
+}
+/* Advertencia y accion sensible comparten una unica linea y eje vertical. */
+.groups-correction-row-v15 {
+    -fx-min-height: 66;
+    -fx-pref-height: 66;
+    -fx-max-height: 66;
+    -fx-padding: 10 12;
+}
+.groups-correction-copy-v15 {
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-alignment: left;
+}
+.groups-correction-button-v15 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-alignment: CENTER;
+}
