@@ -293,3 +293,690 @@
     -fx-padding: 0;
     -fx-border-width: 0 0 0 1;
 }
+
+
+/* cerrar-ciclo-competitivo-torneos-v7 */
+.bracket-header-v2 { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; -fx-padding:12 24; }
+.bracket-title-v2 { -fx-font-size:24px; } .bracket-subtitle-v2 { -fx-font-size:11px; }
+.bracket-action-primary,.bracket-action-secondary,.bracket-action-danger,.bracket-action-danger-outline,.bracket-action-result-secondary { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-font-family:"Segoe UI"; -fx-font-size:10px; }
+.bracket-mode-v7 { -fx-padding:4 9; -fx-background-radius:10; -fx-border-radius:10; -fx-font-size:9px; -fx-font-weight:900; }
+.bracket-mode-manage-v7 { -fx-background-color:#1d513f; -fx-border-color:#39785a; -fx-text-fill:#a5e8ca; }
+.bracket-mode-readonly-v7 { -fx-background-color:#303940; -fx-border-color:#526068; -fx-text-fill:#b7c3c8; }
+.bracket-root-v2 .button:disabled { -fx-opacity:1; -fx-background-color:#1b2226; -fx-border-color:#384248; -fx-text-fill:#7f8d93; }
+.bracket-champion-pending-v2 { -fx-min-height:70; }
+
+/* restaurar-generacion-cuadro-desde-grupos-v11 */
+.bracket-root-v2 .bracket-action-primary {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+.bracket-root-v2 .bracket-empty-copy-v2 {
+    -fx-text-alignment: center;
+    -fx-alignment: CENTER;
+}
+.bracket-root-v2 .bracket-mode-v7 {
+    -fx-min-height: 28;
+    -fx-alignment: CENTER;
+}
+
+/* cerrar-experiencia-cuadro-torneo-v17 */
+.bracket-header-v2 { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; -fx-padding:12 24; }
+.bracket-back-button-v17 { -fx-padding:0; -fx-alignment:CENTER; -fx-content-display:GRAPHIC_ONLY; -fx-background-color:#20272b; -fx-background-radius:10; -fx-border-color:#465158; -fx-border-radius:10; -fx-cursor:hand; }
+.bracket-back-button-v17:hover { -fx-background-color:#1d2925; -fx-border-color:-color-principal; }
+.bracket-back-button-v17:pressed { -fx-background-color:#17211d; -fx-border-color:-color-principal-presionado; }
+.bracket-back-icon-v17,.bracket-module-icon-v17,.bracket-action-icon-v17 { -fx-fill:transparent; -fx-stroke:#b7c3c8; -fx-stroke-width:1.55; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; }
+.bracket-back-icon-v17 { -fx-scale-x:.78; -fx-scale-y:.78; }
+.bracket-back-button-v17:hover .bracket-back-icon-v17 { -fx-stroke:-color-principal-hover; }
+.bracket-module-icon-shell-v17 { -fx-background-color:#17251f; -fx-border-color:#355646; -fx-background-radius:11; -fx-border-radius:11; }
+.bracket-module-icon-v17 { -fx-stroke:#7bd4ae; -fx-scale-x:.72; -fx-scale-y:.72; }
+.bracket-action-icon-v17 { -fx-scale-x:.67; -fx-scale-y:.67; }
+.bracket-title-block-v17 { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-translate-y:2; }
+.bracket-title-v2 { -fx-font-size:24px; }
+.bracket-header-v2 .bracket-action-primary,.bracket-header-v2 .bracket-action-secondary,.bracket-header-v2 .bracket-action-danger { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-content-display:LEFT; -fx-graphic-text-gap:8; }
+.bracket-champion-v2 { -fx-min-height:68; -fx-pref-height:68; -fx-max-height:68; -fx-padding:8 12; }
+.bracket-champion-icon-shell-v17 { -fx-background-color:#20272b; -fx-border-color:#3c484e; -fx-background-radius:10; -fx-border-radius:10; }
+.bracket-champion-pending-v2 .bracket-trophy-v2 { -fx-text-fill:#7f8d93; -fx-font-size:24px; }
+.bracket-champion-defined-v2 .bracket-champion-icon-shell-v17 { -fx-background-color:#332d1d; -fx-border-color:#7b6633; }
+.bracket-champion-defined-v2 .bracket-trophy-v2 { -fx-text-fill:#e1bd4a; }
+.bracket-filter-label-v17 { -fx-text-fill:#91a3aa; -fx-font-size:9px; -fx-font-weight:900; }
+.bracket-filters-v2 { -fx-min-height:74; -fx-pref-height:74; -fx-max-height:74; }
+.bracket-filter-v2,.bracket-clear-v2 { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.bracket-clear-v2 { -fx-alignment:CENTER; }
+.bracket-detail-shell-v2 { -fx-min-width:420; -fx-pref-width:440; }
+.bracket-detail-v2 { -fx-padding:16; }
+.bracket-match-text-v2 { -fx-font-size:11px; -fx-line-spacing:2px; -fx-text-overrun:clip; }
+.bracket-table-v2 .table-row-cell:empty,.bracket-table-v2 .table-row-cell:empty:hover,.bracket-table-v2 .table-row-cell:empty:selected { -fx-background-color:#151a1e; -fx-border-color:transparent; }
+.bracket-action-danger { -fx-background-color:#382329; -fx-border-color:#70404a; -fx-text-fill:#e9a9b1; }
+.bracket-action-danger:hover { -fx-background-color:#4a2931; -fx-border-color:#a05260; -fx-text-fill:#ffd0d5; }
+
+/* corregir-inconsistencias-cuadro-torneo-v18 */
+/* El panel completo puede desplazarse: programación, resultado e historial nunca se recortan. */
+.bracket-detail-scroll-v18,
+.bracket-detail-scroll-v18 > .viewport {
+    -fx-background-color: #11171b;
+    -fx-border-color: transparent;
+}
+.bracket-detail-scroll-v18 {
+    -fx-fit-to-width: true;
+    -fx-padding: 0;
+}
+.bracket-detail-scroll-v18 .scroll-bar:vertical {
+    -fx-pref-width: 8;
+    -fx-background-color: transparent;
+}
+.bracket-detail-scroll-v18 .scroll-bar:vertical .thumb {
+    -fx-background-color: #40535d;
+    -fx-background-radius: 8;
+}
+.bracket-detail-v2 {
+    -fx-min-width: 0;
+}
+/* Corrección en una fila equilibrada, sin dominar todo el panel. */
+.bracket-correction-row-v18 {
+    -fx-min-height: 66;
+    -fx-pref-height: 66;
+    -fx-max-height: 66;
+    -fx-background-color: #191d20;
+    -fx-background-radius: 9;
+    -fx-border-color: #50363d;
+    -fx-border-radius: 9;
+    -fx-padding: 10 12;
+}
+.bracket-correction-copy-v18 {
+    -fx-text-fill: #92a1a7;
+    -fx-font-size: 9px;
+    -fx-alignment: CENTER_LEFT;
+    -fx-text-alignment: left;
+}
+.bracket-correction-row-v18 .bracket-action-danger-outline {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+/* Filtros con una geometría exacta, incluso con foco o desplegados. */
+.bracket-filters-v2 .bracket-filter-v2.combo-box,
+.bracket-filters-v2 .bracket-filter-v2.combo-box:hover,
+.bracket-filters-v2 .bracket-filter-v2.combo-box:focused,
+.bracket-filters-v2 .bracket-filter-v2.combo-box:showing,
+.bracket-filters-v2 .bracket-clear-v2,
+.bracket-filters-v2 .bracket-clear-v2:hover,
+.bracket-filters-v2 .bracket-clear-v2:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+.bracket-filters-v2 .bracket-filter-v2.combo-box > .arrow-button,
+.bracket-filters-v2 .bracket-filter-v2.combo-box:focused > .arrow-button,
+.bracket-filters-v2 .bracket-filter-v2.combo-box:showing > .arrow-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+/* Tarjeta final más integrada y menos vacía. */
+.bracket-champion-v2 {
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+}
+.bracket-champion-name-v2 { -fx-font-size: 15px; }
+.bracket-champion-copy-v2 { -fx-font-size: 9.5px; }
+
+/* unificar-distribucion-cuadro-torneo-v19 */
+/* La zona superior recupera altura útil para tabla y detalle. */
+.bracket-content-v2 { -fx-spacing: 8; }
+.bracket-champion-v2 {
+    -fx-min-height: 50;
+    -fx-pref-height: 50;
+    -fx-max-height: 50;
+    -fx-padding: 6 10;
+}
+.bracket-champion-icon-shell-v17 {
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+}
+.bracket-champion-v2 .bracket-trophy-v2 { -fx-font-size: 20px; }
+.bracket-champion-name-v2 { -fx-font-size: 14px; }
+.bracket-champion-copy-v2 { -fx-font-size: 9px; }
+.bracket-champion-separator-v19 { -fx-text-fill: #65777f; -fx-font-size: 12px; }
+.bracket-filters-v2 {
+    -fx-min-height: 62;
+    -fx-pref-height: 62;
+    -fx-max-height: 62;
+    -fx-padding: 7 12;
+}
+.bracket-filters-v2 > .v-box { -fx-spacing: 1; }
+.bracket-filter-label-v17 { -fx-font-size: 8.5px; }
+/* Actualizar y Limpiar son utilidades hermanas de la misma barra. */
+.bracket-filter-actions-v19 { -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42; }
+.bracket-refresh-v19,
+.bracket-clear-v2 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #1b2226;
+    -fx-background-radius: 8;
+    -fx-border-color: #414b51;
+    -fx-border-radius: 8;
+    -fx-text-fill: #c4cdd1;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 7;
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+    -fx-padding: 0 10;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.bracket-refresh-v19:hover,
+.bracket-clear-v2:hover {
+    -fx-background-color: #263138;
+    -fx-border-color: #61737c;
+    -fx-text-fill: #f2f5f6;
+    -fx-effect: dropshadow(gaussian, rgba(93,130,143,.16), 7, .08, 0, 1);
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.bracket-refresh-v19:pressed,
+.bracket-clear-v2:pressed {
+    -fx-background-color: #151c20;
+    -fx-border-color: -color-principal;
+    -fx-effect: none;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.bracket-toolbar-icon-v19 {
+    -fx-fill: transparent;
+    -fx-stroke: #aebbc1;
+    -fx-stroke-width: 1.55;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .68;
+    -fx-scale-y: .68;
+}
+.bracket-refresh-v19:hover .bracket-toolbar-icon-v19,
+.bracket-clear-v2:hover .bracket-toolbar-icon-v19 { -fx-stroke: white; }
+.bracket-summary-v2 { -fx-font-size: 9.5px; }
+/* El detalle gana ancho y conserva el mismo patrón de panel de Clientes y Grupos. */
+.bracket-detail-shell-v2 { -fx-min-width: 470; -fx-pref-width: 490; }
+.bracket-detail-v2 { -fx-padding: 14; }
+.bracket-section-v2 { -fx-padding: 10; }
+.bracket-match-text-v2 { -fx-min-height: 48; }
+
+/* compactar-barra-y-formulario-cuadro-v20 */
+/* Una sola barra contiene filtros, utilidades, progreso y estado de la final. */
+.bracket-toolbar-v20 {
+    -fx-min-height: 68;
+    -fx-pref-height: 68;
+    -fx-max-height: 68;
+    -fx-background-color: #151d22;
+    -fx-background-radius: 11;
+    -fx-border-color: #354047;
+    -fx-border-radius: 11;
+    -fx-padding: 7 12;
+}
+.bracket-toolbar-v20 > .v-box { -fx-min-height: 52; -fx-pref-height: 52; -fx-max-height: 52; }
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box,
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box:hover,
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box:focused,
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box:showing,
+.bracket-toolbar-v20 .bracket-clear-v2,
+.bracket-toolbar-v20 .bracket-refresh-v19 {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box > .arrow-button,
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box:focused > .arrow-button,
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box:showing > .arrow-button {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-padding: 0;
+}
+.bracket-toolbar-v20 .bracket-filter-v2.combo-box > .list-cell {
+    -fx-padding: 0 10;
+    -fx-alignment: CENTER_LEFT;
+}
+.bracket-toolbar-v20 .bracket-filter-actions-v19 {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+}
+/* La final deja de ser un rectángulo independiente y funciona como estado compacto. */
+.bracket-toolbar-v20 .bracket-champion-v2 {
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+    -fx-min-width: 0;
+    -fx-pref-width: -1;
+    -fx-max-width: 520;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+.bracket-toolbar-v20 .bracket-champion-icon-shell-v17 {
+    -fx-background-color: #20272b;
+    -fx-border-color: #3c484e;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+.bracket-toolbar-v20 .bracket-trophy-v2 { -fx-font-size: 17px; }
+.bracket-toolbar-v20 .bracket-champion-name-v2 { -fx-font-size: 12px; }
+.bracket-toolbar-v20 .bracket-champion-copy-v2 { -fx-font-size: 9px; }
+.bracket-toolbar-v20 .bracket-overline-v2 { -fx-font-size: 8px; }
+.bracket-toolbar-v20 .bracket-summary-v2 { -fx-font-size: 9px; }
+/* Formulario lateral: misma geometría que filtros y Grupos, sin controles de 46 px. */
+.bracket-detail-v2 .bracket-input-v2.combo-box,
+.bracket-detail-v2 .bracket-input-v2.combo-box:hover,
+.bracket-detail-v2 .bracket-input-v2.combo-box:focused,
+.bracket-detail-v2 .bracket-input-v2.combo-box:showing,
+.bracket-detail-v2 .bracket-input-v2.date-picker,
+.bracket-detail-v2 .bracket-input-v2.date-picker:hover,
+.bracket-detail-v2 .bracket-input-v2.date-picker:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-effect: none;
+}
+.bracket-detail-v2 .bracket-input-v2.combo-box > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.combo-box:focused > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.combo-box:showing > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.date-picker > .arrow-button {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1;
+}
+.bracket-detail-v2 .bracket-input-v2.combo-box > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.date-picker > .text-field {
+    -fx-padding: 0 10;
+    -fx-alignment: CENTER_LEFT;
+}
+.bracket-detail-v2 .bracket-input-v2.combo-box:focused,
+.bracket-detail-v2 .bracket-input-v2.combo-box:showing,
+.bracket-detail-v2 .bracket-input-v2.date-picker:focused {
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1.5;
+}
+/* Todas las acciones del formulario comparten 42 px. */
+.bracket-detail-v2 .bracket-action-primary,
+.bracket-detail-v2 .bracket-action-result-secondary,
+.bracket-detail-v2 .bracket-action-danger-outline {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+
+/* corregir-controles-y-detalle-cuadro-v21 */
+/* El estado de campeones se retira de la composicion hasta contar con una ubicacion util. */
+.bracket-toolbar-v20 .bracket-summary-v2 {
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 4 0 12;
+}
+/* Formulario lateral igualado al patron de Reservas y Grupos. */
+.bracket-detail-v2 .bracket-input-v2.combo-box,
+.bracket-detail-v2 .bracket-input-v2.combo-box:hover,
+.bracket-detail-v2 .bracket-input-v2.combo-box:focused,
+.bracket-detail-v2 .bracket-input-v2.combo-box:showing,
+.bracket-detail-v2 .bracket-input-v2.date-picker,
+.bracket-detail-v2 .bracket-input-v2.date-picker:hover,
+.bracket-detail-v2 .bracket-input-v2.date-picker:focused {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+/* Zona de clic amplia y consistente para desplegables. */
+.bracket-detail-v2 .bracket-input-v2.combo-box > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.combo-box:focused > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.combo-box:showing > .arrow-button {
+    -fx-min-width: 40;
+    -fx-pref-width: 40;
+    -fx-max-width: 40;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1;
+}
+/* Calendario con boton completo de 42 px, no una franja minima. */
+.bracket-detail-v2 .bracket-input-v2.date-picker > .arrow-button {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-color: #273137;
+    -fx-background-radius: 0 8 8 0;
+    -fx-cursor: hand;
+}
+.bracket-detail-v2 .bracket-input-v2.date-picker > .arrow-button:hover {
+    -fx-background-color: #324139;
+}
+.bracket-detail-v2 .bracket-input-v2.date-picker > .arrow-button > .arrow {
+    -fx-min-width: 15;
+    -fx-pref-width: 15;
+    -fx-max-width: 15;
+    -fx-min-height: 15;
+    -fx-pref-height: 15;
+    -fx-max-height: 15;
+    -fx-background-color: #b9c5ca;
+}
+.bracket-detail-v2 .bracket-input-v2.combo-box > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.date-picker > .text-field {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+}
+/* Registrar resultado adopta el verde principal de las acciones positivas. */
+.bracket-detail-v2 .bracket-action-result-secondary,
+.bracket-detail-v2 .bracket-action-result-secondary:focused {
+    -fx-background-color: #28684d;
+    -fx-border-color: #438a69;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.bracket-detail-v2 .bracket-action-result-secondary:hover {
+    -fx-background-color: #337e5e;
+    -fx-border-color: #5ca27f;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(52,143,101,.18), 7, .08, 0, 1);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.bracket-detail-v2 .bracket-action-result-secondary:pressed {
+    -fx-background-color: #20553f;
+    -fx-border-color: #39785a;
+    -fx-effect: none;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+/* El historial depende exclusivamente del scroll integral del panel derecho. */
+.bracket-history-flat-v21,
+.bracket-history-flat-v21 > .viewport {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+.bracket-history-flat-v21 .scroll-bar:vertical,
+.bracket-history-flat-v21 .scroll-bar:horizontal {
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+}
+.bracket-history-flat-v21 {
+    -fx-min-height: 0;
+    -fx-pref-height: -1;
+    -fx-max-height: 10000;
+}
+
+/* igualar-controles-cuadro-a-reservas-v25 */
+/* Replica el patron visual y geometrico usado por el formulario de Reservas. */
+.bracket-detail-v2 .bracket-reservation-combo-v24,
+.bracket-detail-v2 .bracket-reservation-date-v24 {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-background-color: #181f23;
+    -fx-background-radius: 9;
+    -fx-border-color: #3b464c;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-effect: none;
+}
+.bracket-detail-v2 .bracket-reservation-combo-v24:hover,
+.bracket-detail-v2 .bracket-reservation-date-v24:hover {
+    -fx-background-color: #1b2429;
+    -fx-border-color: #526068;
+}
+.bracket-detail-v2 .bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-reservation-combo-v24:showing,
+.bracket-detail-v2 .bracket-reservation-date-v24:focused {
+    -fx-background-color: #18231f;
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1.5;
+    -fx-effect: none;
+}
+.bracket-detail-v2 .bracket-reservation-combo-v24 > .list-cell,
+.bracket-detail-v2 .bracket-reservation-date-v24 > .text-field {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: transparent;
+    -fx-text-fill: #edf2f3;
+    -fx-prompt-text-fill: #819198;
+    -fx-padding: 0 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+}
+/* En Reservas el sector lateral es visible y comodo, no una franja estrecha. */
+.bracket-detail-v2 .bracket-reservation-combo-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-reservation-date-v24 > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #252e33;
+    -fx-background-radius: 0 8 8 0;
+    -fx-border-color: #3b464c;
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+.bracket-detail-v2 .bracket-reservation-combo-v24 > .arrow-button:hover,
+.bracket-detail-v2 .bracket-reservation-date-v24 > .arrow-button:hover {
+    -fx-background-color: #303b40;
+}
+.bracket-detail-v2 .bracket-reservation-combo-v24 > .arrow-button > .arrow {
+    -fx-background-color: #aebbc1;
+    -fx-padding: 4;
+}
+.bracket-detail-v2 .bracket-reservation-date-v24 > .arrow-button > .arrow {
+    -fx-background-color: #aebbc1;
+    -fx-min-width: 14;
+    -fx-pref-width: 14;
+    -fx-max-width: 14;
+    -fx-min-height: 14;
+    -fx-pref-height: 14;
+    -fx-max-height: 14;
+    -fx-padding: 0;
+}
+/* Las reglas anteriores de bracket-input-v2 no pueden volver a estrechar los botones. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+}
+
+/* ajuste-optico-desplegables-cuadro-v26 */
+/* Ajuste optico final: sector lateral tan visible y comodo como en Reservas. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button {
+    -fx-min-width: 38;
+    -fx-pref-width: 38;
+    -fx-max-width: 38;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-color: #2b353a;
+    -fx-background-radius: 0 8 8 0;
+    -fx-border-color: #526068;
+    -fx-border-width: 0 0 0 1;
+    -fx-padding: 0 1 0 0;
+    -fx-cursor: hand;
+    -fx-translate-x: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button:hover {
+    -fx-background-color: #35443d;
+    -fx-border-color: #62746b;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused > .arrow-button {
+    -fx-background-color: #304139;
+    -fx-border-color: -color-principal;
+}
+/* Flecha algo mayor y un pixel hacia la izquierda para quedar centrada opticamente. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button > .arrow {
+    -fx-background-color: #c1ccd0;
+    -fx-padding: 4.5;
+    -fx-translate-x: -1;
+    -fx-translate-y: 0;
+}
+/* Calendario con el mismo bloque lateral y una marca mas legible. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button > .arrow {
+    -fx-background-color: #c1ccd0;
+    -fx-min-width: 15;
+    -fx-pref-width: 15;
+    -fx-max-width: 15;
+    -fx-min-height: 15;
+    -fx-pref-height: 15;
+    -fx-max-height: 15;
+    -fx-padding: 0;
+    -fx-translate-x: -1;
+    -fx-translate-y: 0;
+}
+/* Se mantiene la geometria sin saltos en todos los estados. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+/* corregir-foco-iconos-desplegables-cuadro-v27 */
+/* Mismo contraste discreto que Reservas: iconos gris medio, no blancos. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button > .arrow,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover > .arrow-button > .arrow,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .arrow-button > .arrow,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .arrow-button > .arrow {
+    -fx-background-color: #87979e;
+    -fx-opacity: .88;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button > .arrow,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:hover > .arrow-button > .arrow,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused > .arrow-button > .arrow {
+    -fx-background-color: #87979e;
+    -fx-opacity: .88;
+}
+/* El foco y el estado desplegado no pueden modificar la caja exterior. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+/* Foco verde sin pasar de 1 px: evita el crecimiento visual al abrir Inicio o Fin. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused {
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+/* El contenido y el sector lateral conservan medidas exactas en todos los estados. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .text-field,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused > .text-field {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 12;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:hover > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-date-v24:focused > .arrow-button {
+    -fx-min-width: 38;
+    -fx-pref-width: 38;
+    -fx-max-width: 38;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 1 0 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 0 0 0 1;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}

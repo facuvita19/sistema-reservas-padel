@@ -3,6 +3,7 @@
     -fx-border-color: #355161;
     -fx-border-width: 1;
     -fx-font-family: "Segoe UI";
+    -fx-font-smoothing-type: lcd;
 }
 .admin-dialog > .header-panel {
     -fx-background-color: linear-gradient(to right, #10202b, #142b39);
@@ -1259,12 +1260,12 @@
 .dialog-pane.dialog-bracket-editor-new .bracket-adjustment-button,
 .dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button:not(:default),
 .dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button:not(:default) {
-    -fx-min-width: 238;
-    -fx-pref-width: 238;
-    -fx-max-width: 238;
-    -fx-min-height: 42;
-    -fx-pref-height: 42;
-    -fx-max-height: 42;
+    -fx-min-width: 170;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
     -fx-padding: 0 14;
     -fx-alignment: CENTER;
     -fx-background-color: linear-gradient(to bottom, #343126, #2a2821);
@@ -3071,4 +3072,1581 @@
     -fx-max-width: 310;
     -fx-min-height: 46;
     -fx-pref-height: 46;
+}
+
+/* tipografia-dialogos-unificada-v1 */
+.dialog-pane.admin-dialog,
+.dialog-pane.admin-dialog .label,
+.dialog-pane.admin-dialog .button,
+.dialog-pane.admin-dialog .text-input,
+.dialog-pane.admin-dialog .combo-box,
+.dialog-pane.admin-dialog .list-cell,
+.dialog-pane.admin-dialog .spinner {
+    -fx-font-family: "Segoe UI";
+}
+.dialog-pane.admin-dialog > .header-panel .label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-style: normal;
+}
+.dialog-pane.admin-dialog .dialog-message-label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 13px;
+    -fx-font-weight: 400;
+    -fx-font-style: normal;
+}
+.dialog-pane.admin-dialog .button-bar .button,
+.dialog-pane.admin-dialog .button-bar .button:hover,
+.dialog-pane.admin-dialog .button-bar .button:focused,
+.dialog-pane.admin-dialog .button-bar .button:armed,
+.dialog-pane.admin-dialog .button-bar .button:pressed {
+    -fx-font-family: "Segoe UI";
+    -fx-font-style: normal;
+}
+
+/* modernizar-propuesta-eliminatoria-fase1b-v1 */
+.dialog-pane.proposal-review-dialog > .header-panel {
+    -fx-min-height: 72;
+    -fx-pref-height: 72;
+    -fx-padding: 14 18;
+    -fx-background-color: #11181c;
+    -fx-border-color: transparent transparent #303a40 transparent;
+}
+.dialog-pane.proposal-review-dialog > .header-panel .label {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #f1f5f6;
+}
+.proposal-review-root { -fx-background-color: #10171b; -fx-spacing: 9; }
+.proposal-fixed-summary { -fx-spacing: 7; }
+.proposal-intro-card {
+    -fx-padding: 10 12;
+    -fx-spacing: 4;
+    -fx-background-color: #161f24;
+    -fx-background-radius: 10;
+    -fx-border-color: #334047;
+    -fx-border-radius: 10;
+}
+.proposal-context-badge-v1b {
+    -fx-padding: 4 8;
+    -fx-background-color: #23352e;
+    -fx-background-radius: 999;
+    -fx-text-fill: #89cdaa;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 800;
+}
+.proposal-intro-copy { -fx-font-size: 10.5px; -fx-text-fill: #aebbc1; }
+.proposal-passes { -fx-font-size: 9.5px; -fx-text-fill: #8fa2aa; }
+.proposal-metrics {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-padding: 0 12;
+    -fx-alignment: center-left;
+    -fx-background-color: #151d22;
+    -fx-background-radius: 9;
+    -fx-border-color: #303b41;
+    -fx-border-radius: 9;
+}
+.proposal-metric { -fx-font-size: 9.5px; -fx-font-weight: 800; }
+.proposal-warning-card { -fx-padding: 8 11; -fx-spacing: 4; }
+.proposal-phase-tabs { -fx-spacing: 7; }
+.proposal-phase-tab {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-min-width: 118;
+    -fx-padding: 0 10;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.proposal-phase-tab:hover,
+.proposal-phase-tab:selected {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.proposal-phase-name-v1b { -fx-font-size: 9px; -fx-font-weight: 800; -fx-text-fill: inherit; }
+.proposal-phase-count-v1b {
+    -fx-min-width: 21;
+    -fx-pref-width: 21;
+    -fx-min-height: 21;
+    -fx-pref-height: 21;
+    -fx-alignment: center;
+    -fx-background-color: rgba(255,255,255,.08);
+    -fx-background-radius: 999;
+    -fx-text-fill: #cbd4d8;
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+}
+.proposal-phase-tab:selected .proposal-phase-count-v1b {
+    -fx-background-color: rgba(255,255,255,.18);
+    -fx-text-fill: white;
+}
+.proposal-matches-scroll,
+.proposal-matches-scroll > .viewport { -fx-background-color: transparent; }
+.proposal-match-grid { -fx-padding: 2 1 6 1; }
+.proposal-match-card {
+    -fx-min-height: 126;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.proposal-match-header { -fx-min-height: 34; -fx-pref-height: 34; -fx-padding: 0 10; }
+.proposal-match-body { -fx-padding: 7 10 9 10; -fx-spacing: 4; }
+.proposal-participant {
+    -fx-min-height: 38;
+    -fx-padding: 5 8;
+    -fx-background-color: #12191d;
+    -fx-background-radius: 7;
+    -fx-border-color: #2f3a40;
+    -fx-border-radius: 7;
+}
+.proposal-participant-origin-v1b {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #83949c;
+}
+.proposal-participant-name-v1b {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #e6ecee;
+}
+.proposal-versus { -fx-font-size: 8px; -fx-padding: 0; }
+.proposal-local-actions {
+    -fx-min-height: 48;
+    -fx-pref-height: 48;
+    -fx-padding: 5 8;
+    -fx-background-color: #151d22;
+    -fx-background-radius: 9;
+    -fx-border-color: #303b41;
+    -fx-border-radius: 9;
+}
+.proposal-edit-button,
+.proposal-preview-button,
+.proposal-restore-button {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0 12;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.proposal-edit-button:hover,
+.proposal-preview-button:hover,
+.proposal-restore-button:hover,
+.proposal-edit-button:pressed,
+.proposal-preview-button:pressed,
+.proposal-restore-button:pressed {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.proposal-status-label-v1b { -fx-font-size: 8px; -fx-font-weight: 800; -fx-text-fill: #718188; }
+.proposal-status-badge { -fx-font-size: 9px; -fx-padding: 4 8; }
+.proposal-decision-bar-v1b {
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-padding: 0 4;
+}
+.proposal-confirm-copy-v1b { -fx-font-size: 9.5px; -fx-text-fill: #84949b; }
+.dialog-pane.proposal-review-dialog > .button-bar > .container {
+    -fx-padding: 8 16 10 16;
+}
+.dialog-pane.proposal-review-dialog > .button-bar .button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-min-width: 132;
+    -fx-padding: 0 14;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.proposal-review-dialog > .button-bar .button:hover,
+.dialog-pane.proposal-review-dialog > .button-bar .button:pressed {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+/* cerrar-propuesta-eliminatoria-fase1b-v4 */
+.dialog-pane.proposal-review-dialog > .header-panel {
+    -fx-min-height: 64; -fx-pref-height: 64; -fx-max-height: 64;
+    -fx-padding: 10 18;
+}
+.dialog-pane.proposal-review-dialog > .header-panel .label { -fx-font-size: 19px; }
+.proposal-intro-card { -fx-padding: 8 11; -fx-spacing: 3; }
+.proposal-competition-context-v4 {
+    -fx-font-family: "Segoe UI"; -fx-font-size: 10px; -fx-font-weight: 700;
+    -fx-text-fill: #8fa2aa;
+}
+.proposal-protected-flow-v4 { -fx-alignment: center-left; -fx-padding: 2 0 0 0; }
+.proposal-protected-title-v4 {
+    -fx-font-family: "Segoe UI"; -fx-font-size: 8px; -fx-font-weight: 800;
+    -fx-text-fill: #718188; -fx-padding: 4 4 4 0;
+}
+.proposal-protected-badge-v4 {
+    -fx-font-family: "Segoe UI"; -fx-font-size: 8.5px; -fx-font-weight: 700;
+    -fx-text-fill: #a9d8bd; -fx-background-color: #20342b;
+    -fx-background-radius: 999; -fx-border-color: #356149;
+    -fx-border-radius: 999; -fx-padding: 3 7;
+}
+.proposal-metrics { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; }
+.proposal-match-grid { -fx-alignment: top-center; }
+.proposal-match-card { -fx-max-width: 590; }
+.proposal-match-body { -fx-padding: 8 10 10 10; -fx-spacing: 5; }
+.proposal-participant { -fx-min-height: 42; -fx-padding: 6 8; }
+.proposal-local-actions {
+    -fx-min-height: 54; -fx-pref-height: 54; -fx-max-height: 54;
+    -fx-padding: 6 8;
+}
+.proposal-confirm-copy-v1b { -fx-font-size: 9px; -fx-text-fill: #7f9097; }
+.dialog-pane.proposal-review-dialog > .button-bar .button {
+    -fx-min-width: 138; -fx-pref-width: 138; -fx-max-width: 138;
+}
+.dialog-pane.proposal-review-dialog > .button-bar .button:default {
+    -fx-min-width: 220; -fx-pref-width: 220; -fx-max-width: 220;
+}
+
+/* perfeccionar-distribucion-propuesta-fase1b-v5 */
+/* Zona central crece por filas reales y no ocupa toda la altura disponible. */
+.proposal-matches-scroll { -fx-padding: 0; }
+.proposal-match-grid { -fx-hgap: 12; -fx-vgap: 12; -fx-alignment: top-center; }
+/* Pie agrupado a la derecha con semantica visual estable. */
+.dialog-pane.proposal-review-dialog > .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+}
+.dialog-pane.proposal-review-dialog .proposal-cancel-final-v5 {
+    -fx-min-width: 138; -fx-pref-width: 138; -fx-max-width: 138;
+    -fx-background-color: #232d32;
+    -fx-border-color: #46545b;
+    -fx-text-fill: #e7edef;
+}
+.dialog-pane.proposal-review-dialog .proposal-cancel-final-v5:hover {
+    -fx-background-color: #2d393f;
+    -fx-border-color: #5d6d75;
+}
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5,
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:default {
+    -fx-min-width: 220; -fx-pref-width: 220; -fx-max-width: 220;
+    -fx-background-color: #2d7557;
+    -fx-border-color: #4e9a76;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:hover,
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:default:hover {
+    -fx-background-color: #398b68;
+    -fx-border-color: #68af8c;
+    -fx-effect: dropshadow(gaussian, rgba(52,143,101,.2), 7, .08, 0, 1);
+    -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:pressed,
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:default:pressed {
+    -fx-background-color: #245f47;
+    -fx-border-color: #407f61;
+    -fx-effect: none;
+    -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+
+/* restaurar-linea-administrativa-propuesta-fase1b-v8 */
+/* Composicion administrativa estable y de ancho completo. */
+.proposal-match-grid {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+    -fx-alignment: top-center;
+}
+.proposal-match-card {
+    -fx-min-width: 0;
+    -fx-pref-width: -1;
+    -fx-max-width: 10000;
+    -fx-min-height: 126;
+    -fx-pref-height: 126;
+    -fx-max-height: 126;
+}
+.proposal-matches-scroll,
+.proposal-matches-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+/* El pie vuelve al patron de acciones administrativas, alineado a la derecha. */
+.dialog-pane.proposal-review-dialog > .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+    -fx-padding: 8 16 10 16;
+}
+.dialog-pane.proposal-review-dialog .proposal-cancel-final-v5 {
+    -fx-min-width: 138;
+    -fx-pref-width: 138;
+    -fx-max-width: 138;
+}
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5,
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:default {
+    -fx-min-width: 220;
+    -fx-pref-width: 220;
+    -fx-max-width: 220;
+    -fx-background-color: #2d7557;
+    -fx-border-color: #4e9a76;
+    -fx-text-fill: white;
+}
+
+/* fijar-enfrentamientos-y-pie-propuesta-fase1b-v10 */
+/* Enfrentamientos de medida fija, compactos y alineados a la izquierda. */
+.proposal-match-grid {
+    -fx-hgap: 12;
+    -fx-vgap: 12;
+    -fx-alignment: top-left;
+    -fx-padding: 2 0 10 0;
+}
+.proposal-match-card {
+    -fx-min-width: 720;
+    -fx-pref-width: 720;
+    -fx-max-width: 720;
+    -fx-min-height: 150;
+    -fx-pref-height: 150;
+    -fx-max-height: 150;
+}
+.proposal-match-header {
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+    -fx-padding: 0 10;
+}
+.proposal-match-body {
+    -fx-padding: 6 9 7 9;
+    -fx-spacing: 2;
+}
+.proposal-participant {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-padding: 4 8;
+}
+.proposal-participant-origin-v1b { -fx-font-size: 7.5px; }
+.proposal-participant-name-v1b { -fx-font-size: 10px; }
+.proposal-versus { -fx-padding: 0; -fx-font-size: 8px; }
+/* Replicar el pie nativo del EditorCuadroTorneoDialog y alinearlo a la derecha. */
+.dialog-pane.proposal-review-dialog .button-bar {
+    -fx-alignment: center-right;
+}
+.dialog-pane.proposal-review-dialog .button-bar > .container,
+.dialog-pane.proposal-review-dialog > .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+    -fx-padding: 8 16 10 16;
+}
+.dialog-pane.proposal-review-dialog .proposal-cancel-final-v5 {
+    -fx-min-width: 138;
+    -fx-pref-width: 138;
+    -fx-max-width: 138;
+}
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5,
+.dialog-pane.proposal-review-dialog .proposal-confirm-final-v5:default {
+    -fx-min-width: 220;
+    -fx-pref-width: 220;
+    -fx-max-width: 220;
+    -fx-background-color: #2d7557;
+    -fx-border-color: #4e9a76;
+    -fx-text-fill: white;
+}
+
+/* modernizar-editor-seguro-cuadro-fase2a-v1 */
+.dialog-bracket-editor-new > .header-panel {
+    -fx-min-height: 72; -fx-pref-height: 72; -fx-max-height: 72;
+    -fx-padding: 12 22;
+}
+.bracket-editor-context-v2a {
+    -fx-font-family: "Segoe UI"; -fx-font-size: 10.5px; -fx-font-weight: 700;
+    -fx-text-fill: #8fa2aa; -fx-padding: 0 2 1 2;
+}
+.bracket-editor-tools { -fx-spacing: 9; -fx-alignment: center-left; }
+.bracket-adjustment-button { -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38; }
+.bracket-phase-count {
+    -fx-min-width: 24; -fx-pref-width: 24; -fx-min-height: 24; -fx-pref-height: 24;
+    -fx-alignment: center; -fx-background-radius: 999; -fx-padding: 0;
+}
+.bracket-phase-section { -fx-max-width: 1470; }
+.bracket-editor-match {
+    -fx-min-width: 720; -fx-pref-width: 720; -fx-max-width: 720;
+    -fx-min-height: 156; -fx-pref-height: 156; -fx-max-height: 156;
+}
+.bracket-match-header { -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36; }
+.bracket-editor-field-label {
+    -fx-min-width: 58; -fx-pref-width: 58; -fx-max-width: 58;
+    -fx-font-size: 8.5px; -fx-font-weight: 800;
+}
+.bracket-editor-combo {
+    -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44;
+    -fx-min-width: 0; -fx-pref-width: 650; -fx-max-width: 650;
+    -fx-background-insets: 0; -fx-border-insets: 0; -fx-border-width: 1;
+}
+.bracket-editor-combo:focused,
+.bracket-editor-combo:showing {
+    -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44;
+    -fx-background-insets: 0; -fx-border-insets: 0; -fx-border-width: 1;
+    -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+.bracket-editor-combo > .arrow-button {
+    -fx-min-width: 38; -fx-pref-width: 38; -fx-max-width: 38;
+}
+.bracket-editor-protected {
+    -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44;
+    -fx-min-width: 0; -fx-pref-width: 650; -fx-max-width: 650;
+}
+.bracket-protected-lock-v2a {
+    -fx-fill: #82939b; -fx-scale-x: .62; -fx-scale-y: .62;
+}
+.bracket-editor-draft-bar-v2a {
+    -fx-min-height: 42; -fx-pref-height: 42; -fx-max-height: 42;
+    -fx-padding: 4 0;
+}
+.bracket-editor-status {
+    -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36;
+    -fx-padding: 0 12;
+}
+.bracket-editor-consequence-v2a {
+    -fx-font-family: "Segoe UI"; -fx-font-size: 9.5px; -fx-text-fill: #7f9097;
+}
+.bracket-editor-scroll { -fx-padding: 0 5 0 0; }
+.dialog-bracket-editor-new .button-bar,
+.dialog-bracket-editor-new .button-bar > .container {
+    -fx-alignment: center-right; -fx-spacing: 10;
+}
+.dialog-bracket-editor-new .button-bar .button:default {
+    -fx-min-width: 220; -fx-pref-width: 220; -fx-max-width: 220;
+}
+.dialog-bracket-editor-new .button-bar .button:cancel {
+    -fx-min-width: 138; -fx-pref-width: 138; -fx-max-width: 138;
+}
+
+/* ajustar-medidas-editor-seguro-fase2a-v3 */
+/* Etiquetas completas y controles contenidos dentro de tarjetas de 720 px. */
+.bracket-editor-field-label {
+    -fx-min-width: 76;
+    -fx-pref-width: 76;
+    -fx-max-width: 76;
+    -fx-alignment: center;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 800;
+}
+.bracket-editor-combo,
+.bracket-editor-combo:focused,
+.bracket-editor-combo:showing {
+    -fx-min-width: 590;
+    -fx-pref-width: 590;
+    -fx-max-width: 590;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 1;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.bracket-editor-protected {
+    -fx-min-width: 590;
+    -fx-pref-width: 590;
+    -fx-max-width: 590;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+}
+/* Herramientas con ancho propio y sin crecimiento heredado. */
+.bracket-editor-tools .bracket-rotate-first-v3 {
+    -fx-min-width: 170;
+    -fx-pref-width: 170;
+    -fx-max-width: 170;
+}
+.bracket-editor-tools .bracket-rotate-rivals-v3,
+.bracket-editor-tools .bracket-restore-v3 {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+}
+.bracket-editor-tools .bracket-rotate-first-v3:hover,
+.bracket-editor-tools .bracket-rotate-first-v3:pressed {
+    -fx-min-width: 170;
+    -fx-pref-width: 170;
+    -fx-max-width: 170;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.bracket-editor-tools .bracket-rotate-rivals-v3:hover,
+.bracket-editor-tools .bracket-rotate-rivals-v3:pressed,
+.bracket-editor-tools .bracket-restore-v3:hover,
+.bracket-editor-tools .bracket-restore-v3:pressed {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+/* cerrar-medidas-y-desplegable-editor-fase2a-v5 */
+/* Selectores con la misma especificidad o mayor que la regla historica dominante. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default):pressed {
+    -fx-min-width: 170; -fx-pref-width: 170; -fx-max-width: 170;
+    -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38;
+    -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default):pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default):pressed {
+    -fx-min-width: 180; -fx-pref-width: 180; -fx-max-width: 180;
+    -fx-min-height: 38; -fx-pref-height: 38; -fx-max-height: 38;
+    -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+/* Popup del editor: seis filas visibles, 34 px por fila y estados consistentes. */
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4,
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:filled {
+    -fx-min-height: 34; -fx-pref-height: 34; -fx-max-height: 34;
+    -fx-padding: 0 10;
+    -fx-background-color: #1b2024;
+    -fx-text-fill: #d9dfe1;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 5;
+}
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:filled:hover {
+    -fx-background-color: #26302d;
+    -fx-text-fill: #edf5f1;
+    -fx-font-weight: 700;
+}
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:selected,
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:filled:selected {
+    -fx-background-color: #203d32;
+    -fx-text-fill: #f2f8f5;
+    -fx-font-weight: 800;
+}
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:filled:selected:hover {
+    -fx-background-color: #294d3f;
+    -fx-text-fill: white;
+}
+.combo-box-popup .list-view .list-cell.bracket-popup-row-v4:focused {
+    -fx-border-color: #468c6c;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+}
+.combo-box-popup .list-view:focused {
+    -fx-background-insets: 0;
+    -fx-padding: 3;
+}
+
+/* compactar-editor-seguro-fase2a-v6 */
+/* Herramientas realmente compactas, incluyendo selectores historicos especificos. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-first-v3:not(:default):pressed {
+    -fx-min-width: 145; -fx-pref-width: 145; -fx-max-width: 145;
+    -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36;
+    -fx-padding: 0 10; -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-adjustment-button.bracket-rotate-rivals-v3:not(:default):pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-restore-button.bracket-restore-v3:not(:default):pressed {
+    -fx-min-width: 155; -fx-pref-width: 155; -fx-max-width: 155;
+    -fx-min-height: 36; -fx-pref-height: 36; -fx-max-height: 36;
+    -fx-padding: 0 10; -fx-scale-x: 1; -fx-scale-y: 1; -fx-translate-y: 0;
+}
+/* Dos partidos completos dentro del viewport sin perder legibilidad. */
+.bracket-phase-section { -fx-spacing: 5; }
+.bracket-match-header {
+    -fx-min-height: 32; -fx-pref-height: 32; -fx-max-height: 32;
+}
+.bracket-editor-match {
+    -fx-min-height: 140; -fx-pref-height: 140; -fx-max-height: 140;
+}
+.bracket-editor-combo,
+.bracket-editor-combo:focused,
+.bracket-editor-combo:showing,
+.bracket-editor-protected {
+    -fx-min-height: 40; -fx-pref-height: 40; -fx-max-height: 40;
+}
+.bracket-reference-cell.button-cell { -fx-padding: 5 9; }
+
+/* mejorar-comportamiento-editor-cuadro-fase2b-v1 */
+.bracket-editor-match.modified {
+    -fx-border-color: #497c65;
+    -fx-border-width: 1;
+}
+.bracket-editor-combo.modified {
+    -fx-border-color: #4d9673;
+    -fx-background-color: #1b2822;
+}
+.bracket-editor-match.warning {
+    -fx-border-color: #9b7440;
+}
+.bracket-match-warning-v2b {
+    -fx-min-height: 22;
+    -fx-pref-height: 22;
+    -fx-padding: 3 9;
+    -fx-background-color: #30291f;
+    -fx-text-fill: #d9b77a;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 700;
+}
+.bracket-editor-status.valid {
+    -fx-background-color: #172a21;
+    -fx-border-color: #3f775d;
+}
+
+/* modernizar-estructura-avanzada-fase2c-v1 */
+/* Estructura avanzada alineada al ancho util de la pestaña Cruces. */
+.editor-advanced-view { -fx-padding: 0; }
+.advanced-structure-card-v2 {
+    -fx-max-width: 10000;
+    -fx-pref-width: -1;
+    -fx-padding: 14 16;
+}
+.advanced-operation-panel {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-spacing: 10;
+}
+.bracket-structure-summary {
+    -fx-min-height: 98;
+    -fx-pref-height: 98;
+    -fx-max-height: 98;
+    -fx-padding: 11 14;
+}
+.bracket-structure-summary-main { -fx-alignment: center-left; }
+.bracket-structure-metric-number-v2c {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 16px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #edf2f3;
+}
+.bracket-structure-metric-label-v2c {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #7f8e95;
+}
+.bracket-structure-metric-divider-v2c {
+    -fx-font-size: 16px;
+    -fx-text-fill: #465158;
+    -fx-padding: 0 2;
+}
+.advanced-notices-row { -fx-spacing: 12; }
+.advanced-equal-notice {
+    -fx-min-height: 74;
+    -fx-pref-height: 74;
+    -fx-max-height: 74;
+    -fx-padding: 10 14;
+}
+.advanced-editor-action-bar-v2c {
+    -fx-min-height: 60;
+    -fx-pref-height: 60;
+    -fx-max-height: 60;
+    -fx-padding: 8 0 0 0;
+    -fx-border-color: #303a40 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+}
+.advanced-editor-action-title-v2c {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #b6a1cc;
+}
+.bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default),
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:pressed {
+    -fx-min-width: 260;
+    -fx-pref-width: 260;
+    -fx-max-width: 260;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.18), 7, .08, 0, 1);
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:pressed {
+    -fx-effect: none;
+    -fx-background-color: #28232e;
+}
+
+/* corregir-interacciones-estructura-avanzada-fase2c-v2 */
+/* Las pestañas son controles interactivos y deben comunicar clic. */
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:hover,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:selected,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:pressed,
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:focused {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:hover {
+    -fx-background-color: #273136;
+    -fx-border-color: #56656c;
+    -fx-text-fill: #eef3f4;
+    -fx-effect: dropshadow(gaussian, rgba(75,104,92,.16), 6, .06, 0, 1);
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:selected:hover {
+    -fx-background-color: #18372b;
+    -fx-border-color: #4c9874;
+    -fx-text-fill: #7ed0a5;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:pressed {
+    -fx-background-color: #1d272b;
+    -fx-border-color: #65747b;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .18, 0, 1);
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:selected:pressed {
+    -fx-background-color: #112a20;
+    -fx-border-color: #3c7f60;
+    -fx-text-fill: #72c99b;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:focused {
+    -fx-border-width: 1;
+    -fx-border-color: #648078;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-editor-tab:selected:focused {
+    -fx-border-color: #50a07a;
+}
+
+/* Acción estructural alineada con los botones modernos del sistema. */
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default),
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):focused {
+    -fx-cursor: hand;
+    -fx-min-width: 260;
+    -fx-pref-width: 260;
+    -fx-max-width: 260;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default) {
+    -fx-background-color: linear-gradient(to bottom, #342d3d, #2b2632);
+    -fx-border-color: #68577b;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-text-fill: #eee6f4;
+    -fx-effect: none;
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):hover {
+    -fx-background-color: #40364b;
+    -fx-border-color: #9278aa;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(116,89,146,.24), 8, .10, 0, 2);
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):pressed {
+    -fx-background-color: #241f2a;
+    -fx-border-color: #584767;
+    -fx-text-fill: #ded2e7;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.32), 5, .18, 0, 1);
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):focused {
+    -fx-border-color: #a187b8;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(132,109,154,.18), 6, .08, 0, 0);
+}
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):disabled {
+    -fx-cursor: default;
+    -fx-opacity: .55;
+    -fx-effect: none;
+}
+
+/* reforzar-iluminacion-editor-estructural-fase2c-v3 */
+/* Override final: iluminación visible sin modificar geometría. */
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:hover,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):hover {
+    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, #51415f, #403449);
+    -fx-border-color: #b08ac8;
+    -fx-border-width: 1;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(173,122,205,.48), 14, .22, 0, 2);
+    -fx-min-width: 260;
+    -fx-pref-width: 260;
+    -fx-max-width: 260;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.dialog-bracket-editor-new .bracket-advanced-open-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:pressed,
+.dialog-pane.dialog-bracket-editor-new .button.bracket-advanced-open-button:not(:default):pressed {
+    -fx-background-color: #241f2a;
+    -fx-border-color: #725c84;
+    -fx-text-fill: #e5d9ed;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.38), 5, .20, 0, 1);
+    -fx-min-width: 260;
+    -fx-pref-width: 260;
+    -fx-max-width: 260;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+/* modernizar-editor-estructural-fase3a-v1 */
+/* Navegacion y shell de pantalla completa. */
+.dialog-pane.structural-editor-dialog .structural-editor-tab,
+.dialog-pane.structural-editor-dialog .structural-editor-tab:hover,
+.dialog-pane.structural-editor-dialog .structural-editor-tab:selected,
+.dialog-pane.structural-editor-dialog .structural-editor-tab:pressed,
+.dialog-pane.structural-editor-dialog .structural-editor-tab:focused {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-tab:hover {
+    -fx-background-color: #2c3439;
+    -fx-border-color: #66757c;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(91,116,105,.18), 7, .08, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .structural-editor-tab:selected:hover {
+    -fx-background-color: #40364b;
+    -fx-border-color: #9278aa;
+    -fx-text-fill: #ffffff;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-tab:pressed {
+    -fx-background-color: #20272b;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.30), 4, .18, 0, 1);
+}
+
+/* Tarjetas de la llave con lectura mas comoda sin perder la vista panoramica. */
+.structural-bracket-match,
+.bracket-structural-match,
+.manual-bracket-match,
+.structural-match-card {
+    -fx-min-width: 400;
+    -fx-pref-width: 400;
+    -fx-max-width: 400;
+    -fx-min-height: 122;
+    -fx-pref-height: 122;
+}
+
+/* Acciones dentro de cada partido. */
+.structural-match-swap,
+.structural-match-interchange,
+.bracket-structural-swap,
+.manual-bracket-swap {
+    -fx-min-width: 104;
+    -fx-pref-width: 104;
+    -fx-max-width: 104;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.structural-match-delete,
+.bracket-structural-delete,
+.manual-bracket-delete {
+    -fx-min-width: 76;
+    -fx-pref-width: 76;
+    -fx-max-width: 76;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.structural-match-swap:hover,
+.structural-match-interchange:hover,
+.bracket-structural-swap:hover,
+.manual-bracket-swap:hover {
+    -fx-background-color: #2e3c42;
+    -fx-border-color: #6d8994;
+    -fx-effect: dropshadow(gaussian, rgba(78,132,151,.22), 6, .08, 0, 1);
+}
+.structural-match-delete:hover,
+.bracket-structural-delete:hover,
+.manual-bracket-delete:hover {
+    -fx-background-color: #48282e;
+    -fx-border-color: #a45b68;
+    -fx-effect: dropshadow(gaussian, rgba(164,91,104,.20), 6, .08, 0, 1);
+}
+.structural-match-swap:pressed,
+.structural-match-interchange:pressed,
+.bracket-structural-swap:pressed,
+.manual-bracket-swap:pressed,
+.structural-match-delete:pressed,
+.bracket-structural-delete:pressed,
+.manual-bracket-delete:pressed {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.32), 4, .18, 0, 1);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+/* Barra superior y acciones globales. */
+.dialog-pane.structural-editor-dialog .structural-editor-button,
+.dialog-pane.structural-editor-dialog .structural-editor-button:hover,
+.dialog-pane.structural-editor-dialog .structural-editor-button:pressed {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button:hover {
+    -fx-effect: dropshadow(gaussian, rgba(145,112,166,.24), 8, .10, 0, 2);
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button:pressed {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.32), 4, .18, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .structural-editor-apply,
+.dialog-pane.structural-editor-dialog .structural-editor-cancel {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+
+/* modernizar-dialogos-editor-estructural-fase3b-v1 */
+/* Dialogos auxiliares compactos y con geometria estable. */
+.dialog-pane.structural-add-dialog {
+    -fx-pref-height: 470;
+    -fx-min-height: 450;
+}
+.dialog-pane.structural-add-dialog > .content {
+    -fx-padding: 0;
+}
+.structural-add-root {
+    -fx-padding: 12 16;
+    -fx-spacing: 10;
+    -fx-alignment: top-left;
+}
+.structural-add-context { -fx-spacing: 5; -fx-padding: 10 12; }
+.structural-add-fields { -fx-padding: 12 14; -fx-vgap: 8; }
+.structural-add-note {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-padding: 0 12;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:focused,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-combo:showing {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.structural-add-previous,
+.structural-add-previous:hover,
+.structural-add-previous:pressed {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm,
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:hover,
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:pressed,
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:focused,
+.dialog-pane.structural-add-dialog .button.structural-add-cancel,
+.dialog-pane.structural-add-dialog .button.structural-add-cancel:hover,
+.dialog-pane.structural-add-dialog .button.structural-add-cancel:pressed,
+.dialog-pane.structural-add-dialog .button.structural-add-cancel:focused {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:hover {
+    -fx-background-color: #463852;
+    -fx-border-color: #a17db9;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(161,125,185,.30), 9, .12, 0, 2);
+}
+.dialog-pane.structural-add-dialog .button.structural-add-confirm:pressed {
+    -fx-background-color: #29222f;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.34), 5, .20, 0, 1);
+}
+
+/* Cambiar participante reutiliza la familia visual pero con menor altura. */
+.dialog-pane.structural-participant-dialog {
+    -fx-pref-height: 405;
+    -fx-min-height: 385;
+}
+.dialog-pane.structural-participant-dialog > .content { -fx-padding: 0; }
+.dialog-pane.structural-participant-dialog .structural-add-root {
+    -fx-padding: 12 16;
+    -fx-spacing: 10;
+}
+.dialog-pane.structural-participant-dialog .structural-add-context {
+    -fx-padding: 10 12;
+}
+.dialog-pane.structural-participant-dialog .structural-add-fields {
+    -fx-padding: 12 14;
+}
+.dialog-pane.structural-participant-dialog .combo-box.structural-participant-combo,
+.dialog-pane.structural-participant-dialog .combo-box.structural-participant-combo:focused,
+.dialog-pane.structural-participant-dialog .combo-box.structural-participant-combo:showing {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-participant-dialog .button.structural-participant-clear,
+.dialog-pane.structural-participant-dialog .button.structural-participant-confirm,
+.dialog-pane.structural-participant-dialog .button.structural-add-cancel {
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-participant-dialog .button.structural-participant-clear:hover {
+    -fx-background-color: #4a3b22;
+    -fx-border-color: #b58a47;
+    -fx-text-fill: #ffe0a3;
+    -fx-effect: dropshadow(gaussian, rgba(181,138,71,.26), 8, .10, 0, 2);
+}
+.dialog-pane.structural-participant-dialog .button.structural-participant-clear:pressed {
+    -fx-background-color: #2d271c;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.34), 5, .20, 0, 1);
+}
+.dialog-pane.structural-participant-dialog .button.structural-participant-confirm:hover {
+    -fx-background-color: #4caf82;
+    -fx-border-color: #79caa2;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(76,175,130,.28), 9, .12, 0, 2);
+}
+.dialog-pane.structural-participant-dialog .button.structural-participant-confirm:pressed {
+    -fx-background-color: #2c7656;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.32), 5, .18, 0, 1);
+}
+
+/* Popups compactos de ambos dialogos. */
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-padding: 0 10;
+}
+
+/* agregar-restablecer-editor-estructural-fase3c-v2 */
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2,
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:hover,
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:pressed,
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:focused {
+    -fx-cursor: hand;
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2 {
+    -fx-background-color: linear-gradient(to bottom, #35302a, #2b2925);
+    -fx-border-color: #786744;
+    -fx-text-fill: #e2c991;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:hover {
+    -fx-background-color: #40382b;
+    -fx-border-color: #b18c4e;
+    -fx-text-fill: #ffe0a0;
+    -fx-effect: dropshadow(gaussian, rgba(177,140,78,.25), 8, .10, 0, 2);
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:pressed {
+    -fx-background-color: #29251f;
+    -fx-border-color: #806b48;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.34), 5, .20, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .structural-editor-button-restore-v2:focused {
+    -fx-border-color: #c19b58;
+    -fx-border-width: 1.5;
+}
+
+/* compactar-vista-detallada-editor-estructural-fase3c-v4 */
+/* Vista detallada más compacta y popups controlados. */
+.structural-detail-card {
+    -fx-padding: 0 10 8 10;
+    -fx-spacing: 6;
+}
+.structural-detail-card-header {
+    -fx-min-height: 46;
+    -fx-pref-height: 46;
+    -fx-max-height: 46;
+    -fx-padding: 6 9;
+}
+.structural-detail-controls {
+    -fx-min-height: 52;
+    -fx-pref-height: 52;
+    -fx-max-height: 52;
+    -fx-padding: 5 8;
+}
+.structural-detail-origins {
+    -fx-padding: 0 2;
+    -fx-vgap: 5;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-phase,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-phase:focused,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-phase:showing,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-number,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-number:focused,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-number:showing {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-origin,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-origin:focused,
+.dialog-pane.structural-editor-dialog .combo-box.structural-detail-origin:showing {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell,
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:filled {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-padding: 0 10;
+    -fx-background-color: #1b2024;
+    -fx-text-fill: #d9dfe1;
+    -fx-font-size: 10px;
+    -fx-font-weight: 600;
+    -fx-background-radius: 5;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:filled:hover {
+    -fx-background-color: #2d2733;
+    -fx-text-fill: #f2e8f8;
+    -fx-font-weight: 700;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:selected,
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:filled:selected {
+    -fx-background-color: #40334a;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+.combo-box-popup .list-view .list-cell.structural-detail-popup-cell:filled:selected:hover {
+    -fx-background-color: #4b3b58;
+    -fx-text-fill: white;
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete,
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:hover,
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:focused {
+    -fx-min-width: 84;
+    -fx-pref-width: 84;
+    -fx-max-width: 84;
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:hover {
+    -fx-background-color: #482c31;
+    -fx-border-color: #ad606a;
+    -fx-text-fill: #ffd8dc;
+    -fx-effect: dropshadow(gaussian, rgba(173,96,106,.22), 7, .08, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-detail-delete:pressed {
+    -fx-background-color: #2b2224;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.35), 5, .20, 0, 1);
+}
+
+/* filtrar-fases-previas-vista-detallada-fase3c-v5 */
+.structural-detail-previous-v5,
+.structural-detail-previous-v5:hover,
+.structural-detail-previous-v5:pressed {
+    -fx-cursor: hand;
+    -fx-text-fill: #c9b8d7;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 9px;
+    -fx-font-weight: 800;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.structural-detail-previous-v5 > .box {
+    -fx-min-width: 18;
+    -fx-pref-width: 18;
+    -fx-max-width: 18;
+    -fx-min-height: 18;
+    -fx-pref-height: 18;
+    -fx-max-height: 18;
+    -fx-background-color: #20262a;
+    -fx-border-color: #59636a;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+}
+.structural-detail-previous-v5:hover > .box {
+    -fx-background-color: #292e34;
+    -fx-border-color: #826b96;
+    -fx-effect: dropshadow(gaussian, rgba(130,107,150,.20), 6, .08, 0, 1);
+}
+.structural-detail-previous-v5:selected > .box {
+    -fx-background-color: #473653;
+    -fx-border-color: #997caf;
+}
+.structural-detail-previous-v5:selected > .box > .mark {
+    -fx-background-color: white;
+}
+
+/* marcar-tarjetas-incompletas-vista-detallada-fase3c-v8 */
+/* La Vista detallada refleja el mismo estado semántico que la Vista de llave. */
+.structural-detail-card.structural-detail-card-warning-v8 {
+    -fx-border-color: #c79b4e;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(199,155,78,.18), 8, .08, 0, 2);
+}
+.structural-detail-card.structural-detail-card-warning-v8:hover {
+    -fx-border-color: #d6ad63;
+    -fx-effect: dropshadow(gaussian, rgba(214,173,99,.24), 9, .10, 0, 2);
+}
+.structural-detail-card.structural-detail-card-warning-v8 .structural-detail-card-header {
+    -fx-border-color: #9a7742;
+}
+.structural-detail-card.structural-detail-card-warning-v8 .structural-detail-card-title {
+    -fx-text-fill: #e1bd78;
+}
+.structural-detail-card.structural-detail-card-warning-v8 .combo-box.structural-detail-origin {
+    -fx-border-color: #8d7040;
+}
+
+/* mostrar-cambios-sin-aplicar-editor-estructural-fase3d-v2 */
+/* El texto CAMBIOS SIN APLICAR convive con validación válida, atención o inválida. */
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-valid,
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-warning,
+.dialog-pane.structural-editor-dialog .structural-editor-status.structural-status-invalid {
+    -fx-font-weight: 800;
+}
+
+/* corregir-creacion-botones-pie-editor-estructural-fase3d-v6b */
+/* Clases exclusivas: sin :default, sin tamaños heredados y sin animación geométrica. */
+.dialog-pane.structural-editor-dialog > .button-bar {
+    -fx-background-color: #151a1e;
+    -fx-border-color: #343d42 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 9 18 11 18;
+}
+.dialog-pane.structural-editor-dialog > .button-bar > .container {
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+    -fx-padding: 0;
+}
+
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6,
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6,
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6,
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:hover,
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:hover,
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:hover,
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:focused,
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:focused,
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 16;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 800;
+    -fx-font-style: normal;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6 {
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:hover {
+    -fx-background-color: #49a77e;
+    -fx-border-color: #83c8a6;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(73,167,126,.20), 7, .08, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:pressed {
+    -fx-background-color: #337b5c;
+    -fx-border-color: #579578;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-apply-v6:focused {
+    -fx-border-color: #91ceb0;
+    -fx-effect: none;
+}
+
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6 {
+    -fx-background-color: #2d353a;
+    -fx-border-color: #56636a;
+    -fx-text-fill: #e7ecee;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:hover {
+    -fx-background-color: #374147;
+    -fx-border-color: #718087;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(103,125,135,.15), 6, .06, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:pressed {
+    -fx-background-color: #252c30;
+    -fx-border-color: #4d5960;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-return-v6:focused {
+    -fx-border-color: #829198;
+    -fx-effect: none;
+}
+
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6 {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #4d585e;
+    -fx-text-fill: #dfe4e6;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:hover {
+    -fx-background-color: #2d3438;
+    -fx-border-color: #667279;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:pressed {
+    -fx-background-color: #20262a;
+    -fx-border-color: #465057;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-footer-cancel-v6:focused {
+    -fx-border-color: #77848b;
+    -fx-effect: none;
+}
+
+/* integrar-pie-dentro-editor-estructural-fase3d-v7 */
+/* Pie propio dentro del contenido; el ButtonBar nativo queda solo como motor semántico. */
+.dialog-pane.structural-editor-dialog > .button-bar {
+    visibility: hidden;
+    -fx-managed: false;
+    -fx-min-height: 0;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-opacity: 0;
+}
+.structural-content-footer-v7 {
+    -fx-min-height: 54;
+    -fx-pref-height: 54;
+    -fx-max-height: 54;
+    -fx-padding: 6 0 2 0;
+    -fx-alignment: center-right;
+    -fx-spacing: 10;
+    -fx-border-color: #343d42 transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-background-color: #171c20;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:hover,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:focused {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 16;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-border-width: 1;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 800;
+    -fx-font-style: normal;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.primary {
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.primary:hover {
+    -fx-background-color: #49a77e;
+    -fx-border-color: #83c8a6;
+    -fx-effect: dropshadow(gaussian, rgba(73,167,126,.18), 6, .06, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.primary:pressed {
+    -fx-background-color: #337b5c;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.26), 4, .15, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.secondary {
+    -fx-background-color: #2d353a;
+    -fx-border-color: #56636a;
+    -fx-text-fill: #e7ecee;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.secondary:hover {
+    -fx-background-color: #374147;
+    -fx-border-color: #718087;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.secondary:pressed {
+    -fx-background-color: #252c30;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.26), 4, .15, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.cancel {
+    -fx-background-color: #242a2e;
+    -fx-border-color: #4d585e;
+    -fx-text-fill: #dfe4e6;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.cancel:hover {
+    -fx-background-color: #2d3438;
+    -fx-border-color: #667279;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7.cancel:pressed {
+    -fx-background-color: #20262a;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.26), 4, .15, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:focused {
+    -fx-border-width: 1;
+    -fx-effect: none;
+}
+
+/* unificar-alineacion-y-medidas-pie-editor-estructural-fase3d-v8 */
+/* Criterio global: acciones agrupadas a la izquierda y con geometría uniforme. */
+.structural-content-footer-v7 {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+    -fx-padding: 6 0 2 0;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:hover,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:focused {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-alignment: center;
+    -fx-padding: 0 14;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+/* corregir-criterio-pie-editor-estructural-fase3d-v9b */
+/* Criterio unificado: contexto a la izquierda y acciones iguales agrupadas a la derecha. */
+.structural-content-footer-v7 {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+    -fx-padding: 6 0 2 0;
+}
+.structural-footer-context-v9 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 9.5px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #839198;
+    -fx-padding: 0 4 0 2;
+}
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:hover,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-content-action-v7:focused {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-alignment: center;
+    -fx-padding: 0 14;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
 }

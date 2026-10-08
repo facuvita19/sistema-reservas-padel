@@ -200,3 +200,152 @@
     -fx-pref-width: 140;
     -fx-max-width: 140;
 }
+
+/* dialogos-reservas-final-v15 */
+/* Reprogramacion fuera de plazo: texto completo, sin abreviacion. */
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 {
+    -fx-pref-width: 900;
+    -fx-min-width: 860;
+}
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 > .content.label,
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 .dialog-message-label {
+    -fx-min-width: 720;
+    -fx-pref-width: 720;
+    -fx-max-width: 720;
+}
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 .button-bar > .container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 16;
+}
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 .button.dialog-long-primary-v15 {
+    -fx-min-width: 340;
+    -fx-pref-width: 340;
+    -fx-max-width: 340;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-text-overrun: CLIP;
+    -fx-wrap-text: false;
+    -fx-padding: 0 20;
+}
+.dialog-pane.dialog-custom-action.dialog-custom-action-wide-v15 .button:cancel {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+}
+
+/* Cerrar turno: paleta semantica moderna, sin azul heredado. */
+.dialog-pane.reservation-close-dialog-v15 {
+    -fx-pref-width: 930;
+    -fx-min-width: 860;
+}
+.dialog-pane.reservation-close-dialog-v15 > .header-panel {
+    -fx-background-color: linear-gradient(to right, #1a1f23, #22282c);
+    -fx-border-color: transparent transparent #3a4349 transparent;
+}
+.dialog-pane.reservation-close-dialog-v15 > .content.label {
+    -fx-background-color: #171c20;
+    -fx-text-fill: #dce2e4;
+    -fx-font-size: 13px;
+    -fx-line-spacing: 3px;
+    -fx-padding: 22 34 20 34;
+}
+.dialog-pane.reservation-close-dialog-v15 .button-bar > .container {
+    -fx-alignment: CENTER;
+    -fx-spacing: 16;
+}
+.dialog-pane.reservation-close-dialog-v15 .button {
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-translate-y: 0;
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-complete-v15,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-complete-v15:focused {
+    -fx-min-width: 260;
+    -fx-pref-width: 260;
+    -fx-max-width: 260;
+    -fx-background-color: #3f936f;
+    -fx-border-color: #69b18f;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(63,147,111,.24), 8, .10, 0, 2);
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-complete-v15:hover {
+    -fx-background-color: #4da17e;
+    -fx-border-color: #86c5a8;
+    -fx-effect: dropshadow(gaussian, rgba(77,161,126,.32), 10, .14, 0, 3);
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-complete-v15:armed,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-complete-v15:pressed {
+    -fx-background-color: #337b5c;
+    -fx-border-color: #579879;
+    -fx-effect: none;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-absent-v15,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-absent-v15:focused {
+    -fx-min-width: 230;
+    -fx-pref-width: 230;
+    -fx-max-width: 230;
+    -fx-background-color: #7a3540;
+    -fx-border-color: #b05261;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(122,53,64,.22), 8, .10, 0, 2);
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-absent-v15:hover {
+    -fx-background-color: #91424e;
+    -fx-border-color: #c46d78;
+    -fx-effect: dropshadow(gaussian, rgba(145,66,78,.32), 10, .14, 0, 3);
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-absent-v15:armed,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-absent-v15:pressed {
+    -fx-background-color: #652d36;
+    -fx-border-color: #914550;
+    -fx-effect: none;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-back-v15,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-back-v15:focused {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+    -fx-background-color: #2b3236;
+    -fx-border-color: #59636a;
+    -fx-text-fill: #eef1f2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.24), 7, .08, 0, 2);
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-back-v15:hover {
+    -fx-background-color: #383f44;
+    -fx-border-color: #748087;
+    -fx-text-fill: #ffffff;
+}
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-back-v15:armed,
+.dialog-pane.reservation-close-dialog-v15 .button.reservation-close-back-v15:pressed {
+    -fx-background-color: #22272a;
+    -fx-border-color: #4b555b;
+    -fx-effect: none;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+}
+
+/* excepcion-administrativa-reservas-v6 */
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 { -fx-pref-width: 1050; -fx-min-width: 980; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 > .content.label, .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .dialog-message-label { -fx-min-width: 870; -fx-pref-width: 910; -fx-max-width: 910; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button-bar > .container { -fx-alignment: CENTER; -fx-spacing: 16; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button-bar .button { -fx-min-height: 44; -fx-pref-height: 44; -fx-max-height: 44; -fx-font-family: "Segoe UI"; -fx-font-size: 11px; -fx-font-weight: 900; -fx-background-radius: 10; -fx-border-radius: 10; -fx-text-overrun: CLIP; -fx-wrap-text: false; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6, .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:focused { -fx-min-width: 290; -fx-pref-width: 290; -fx-max-width: 290; -fx-background-color: linear-gradient(to bottom, #3a3427, #302d25); -fx-border-color: #806b45; -fx-text-fill: #efd296; -fx-effect: dropshadow(gaussian, rgba(166,132,76,.20), 8, .10, 0, 2); -fx-focus-color: transparent; -fx-faint-focus-color: transparent; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:hover { -fx-background-color: #473d2b; -fx-border-color: #ad8950; -fx-text-fill: #ffe0a4; -fx-effect: dropshadow(gaussian, rgba(173,137,80,.28), 10, .12, 0, 3); -fx-translate-y: -1; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:armed, .dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-administrative-v6:pressed { -fx-background-color: #2b271f; -fx-border-color: #705c3b; -fx-text-fill: #dfc187; -fx-effect: none; -fx-translate-y: 0; -fx-scale-x: .98; -fx-scale-y: .98; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button.dialog-action-danger { -fx-min-width: 240; -fx-pref-width: 240; -fx-max-width: 240; }
+.dialog-pane.dialog-choice.dialog-late-cancellation-v6 .button:cancel { -fx-min-width: 190; -fx-pref-width: 190; -fx-max-width: 190; }

@@ -34,6 +34,7 @@ import vista.Navegacion;
 public class EditorCuadroTorneoDialog {
     private final PropuestaEtapaEliminatoriaService service =
             new PropuestaEtapaEliminatoriaService();
+    private final PropuestaEtapaEliminatoria inicial;
     private final PropuestaEtapaEliminatoria borrador;
     private final PropuestaEtapaEliminatoria automatica;
     private final Map<String, String> nombres;
@@ -43,10 +44,15 @@ public class EditorCuadroTorneoDialog {
     private VBox vistaCruces;
     private VBox vistaAvanzada;
     private Node botonAplicar;
+    private ScrollPane scrollCrucesSeguro;
+    private final java.util.Set<String> plazasModificadas =
+            new java.util.LinkedHashSet<>();
+    private boolean hayCambiosPendientes;
 
     public EditorCuadroTorneoDialog(PropuestaEtapaEliminatoria origen,
             PropuestaEtapaEliminatoria automatica,
             Map<String, String> nombres) {
+        this.inicial = service.copiar(origen);
         this.borrador = service.copiar(origen);
         this.automatica = service.copiar(automatica);
         this.nombres = Map.copyOf(nombres);
@@ -101,8 +107,19 @@ public class EditorCuadroTorneoDialog {
                     seguro ? vistaAvanzada : vistaCruces);
         });
 
+        Label contextoCompetencia = new Label(cargarContextoCompetencia());
+        contextoCompetencia.getStyleClass().add("bracket-editor-context-v2a");
         estado.getStyleClass().add("bracket-editor-status");
-        VBox raiz = new VBox(10, navegacion, vistas, estado);
+        Label consecuencia = new Label(
+                "Los cambios se aplicarán solamente al borrador de la propuesta.");
+        consecuencia.getStyleClass().add("bracket-editor-consequence-v2a");
+        Region espacioEstado = new Region();
+        HBox.setHgrow(espacioEstado, Priority.ALWAYS);
+        HBox pieBorrador = new HBox(10, estado, espacioEstado, consecuencia);
+        pieBorrador.setAlignment(Pos.CENTER_LEFT);
+        pieBorrador.getStyleClass().add("bracket-editor-draft-bar-v2a");
+        VBox raiz = new VBox(8, contextoCompetencia, navegacion, vistas,
+                pieBorrador);
         VBox.setVgrow(vistas, Priority.ALWAYS);
         raiz.setPadding(new Insets(12, 16, 10, 16));
         raiz.getStyleClass().add("bracket-editor-root");
@@ -110,6 +127,13 @@ public class EditorCuadroTorneoDialog {
         dialogo.getDialogPane().setPrefSize(1240, 800);
         dialogo.getDialogPane().setMinSize(920, 650);
         dialogo.setResizable(true);
+        dialogo.setOnShown(e -> javafx.application.Platform.runLater(() -> {
+            javafx.stage.Window ventana = dialogo.getDialogPane()
+                    .getScene().getWindow();
+            if (ventana instanceof javafx.stage.Stage stage) {
+                stage.setMaximized(true);
+            }
+        }));
         Dialogos.preparar(dialogo, "dialog-bracket-editor-new");
         vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                 Navegacion.getConfiguracionActual());
@@ -122,6 +146,10 @@ public class EditorCuadroTorneoDialog {
                 e.consume();
                 Dialogos.error("Cuadro no válido",
                         "• " + String.join("\n\n• ", errores));
+                return;
+            }
+            if (!confirmarCambios()) {
+                e.consume();
             }
         });
         dialogo.setResultConverter(tipo -> tipo == aplicar
@@ -135,21 +163,29 @@ public class EditorCuadroTorneoDialog {
         Label ajustesTitulo = etiqueta("AJUSTES RÁPIDOS",
                 "bracket-editor-tools-title");
         Button rotar = new Button("ROTAR PRIMEROS");
-        Button iniciales = new Button("ROTAR RIVALES INICIALES");
-        Button restaurar = new Button("RESTAURAR DISTRIBUCIÓN AUTOMÁTICA");
-        rotar.getStyleClass().addAll("bracket-adjustment-button", "bracket-rotation-button");
-        iniciales.getStyleClass().addAll("bracket-adjustment-button", "bracket-rotation-button");
+        Button iniciales = new Button("ROTAR RIVALES");
+        Button restaurar = new Button("RESTABLECER");
+        rotar.getStyleClass().addAll("bracket-adjustment-button",
+                "bracket-rotation-button", "bracket-rotate-first-v3");
+        iniciales.getStyleClass().addAll("bracket-adjustment-button",
+                "bracket-rotation-button", "bracket-rotate-rivals-v3");
         restaurar.getStyleClass().addAll("bracket-adjustment-button",
-                "bracket-restore-button");
-        // revision-final-editor-cuadro-v1
-        for (Button boton : new Button[] { rotar, iniciales }) {
-            boton.setMinSize(225, 38);
-            boton.setPrefSize(225, 38);
-            boton.setMaxSize(225, 38);
-        }
-        restaurar.setMinSize(270, 38);
-        restaurar.setPrefSize(270, 38);
-        restaurar.setMaxSize(270, 38);
+                "bracket-restore-button", "bracket-restore-v3");
+        rotar.setMinSize(145, 36);
+        rotar.setPrefSize(145, 36);
+        rotar.setMaxSize(145, 36);
+        iniciales.setMinSize(155, 36);
+        iniciales.setPrefSize(155, 36);
+        iniciales.setMaxSize(155, 36);
+        restaurar.setMinSize(155, 36);
+        restaurar.setPrefSize(155, 36);
+        restaurar.setMaxSize(155, 36);
+        rotar.setTooltip(new javafx.scene.control.Tooltip(
+                "Rota los primeros clasificados entre las plazas protegidas."));
+        iniciales.setTooltip(new javafx.scene.control.Tooltip(
+                "Intercambia los rivales iniciales sin modificar conexiones protegidas."));
+        restaurar.setTooltip(new javafx.scene.control.Tooltip(
+                "Descarta los cambios del editor y recupera la distribución automática."));
         rotar.setOnAction(e -> {
             service.rotarPrimeros(borrador);
             refrescarCruces();
@@ -163,17 +199,19 @@ public class EditorCuadroTorneoDialog {
                     "Se recuperará la propuesta automática dentro del editor. "
                     + "¿Queres continuar?")) return;
             service.restaurarPropuesta(borrador, automatica);
+            plazasModificadas.clear();
+            hayCambiosPendientes = false;
             refrescarCruces();
+            refrescarVistaAvanzada();
         });
-        Region separador = new Region();
-        HBox.setHgrow(separador, Priority.ALWAYS);
-        HBox acciones = new HBox(9, rotar, iniciales, separador, restaurar);
+        HBox acciones = new HBox(9, rotar, iniciales, restaurar);
         acciones.setAlignment(Pos.CENTER_LEFT);
         acciones.getStyleClass().add("bracket-editor-tools");
         VBox herramientas = new VBox(5, ajustesTitulo, acciones);
 
         VBox lista = crearCrucesAgrupados();
         ScrollPane scroll = new ScrollPane(lista);
+        scrollCrucesSeguro = scroll;
         scroll.setFitToWidth(true);
         scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scroll.getStyleClass().add("bracket-editor-scroll");
@@ -219,8 +257,7 @@ public class EditorCuadroTorneoDialog {
         Label titulo = etiqueta(nombreVisibleFase(fase).toUpperCase(),
                 "bracket-phase-title");
         titulo.getStyleClass().add(claseFase(fase));
-        Label cantidad = etiqueta(cruces.size()
-                + (cruces.size() == 1 ? " PARTIDO" : " PARTIDOS"),
+        Label cantidad = etiqueta(String.valueOf(cruces.size()),
                 "bracket-phase-count");
         Region espacio = new Region();
         HBox.setHgrow(espacio, Priority.ALWAYS);
@@ -229,55 +266,104 @@ public class EditorCuadroTorneoDialog {
         encabezado.getStyleClass().add("bracket-phase-header");
 
         GridPane grilla = new GridPane();
-        grilla.setHgap(10);
-        grilla.setVgap(10);
-        for (int i = 0; i < cruces.size(); i++) {
-            Node tarjeta = crearTarjetaCruce(cruces.get(i));
-            int columna = i % 2;
-            int fila = i / 2;
-            grilla.add(tarjeta, columna, fila);
-            GridPane.setHgrow(tarjeta, Priority.ALWAYS);
-            if (cruces.size() == 1) {
-                GridPane.setColumnSpan(tarjeta, 2);
+        grilla.setHgap(12);
+        grilla.setVgap(12);
+        grilla.setAlignment(Pos.TOP_LEFT);
+        int columnas = columnasParaFase(fase, cruces.size());
+        int maximoColumna = maximoPorColumna(fase, cruces.size());
+        grilla.setMaxWidth(Region.USE_PREF_SIZE);
+        grilla.setPrefWidth(columnas * 720.0
+                + Math.max(0, columnas - 1) * 12.0);
+        for (int indice = 0; indice < cruces.size(); indice++) {
+            Node tarjeta = crearTarjetaCruce(cruces.get(indice));
+            int columna;
+            int fila;
+            if (columnas == 1) {
+                columna = 0;
+                fila = indice;
+            } else if (fase.toLowerCase().contains("octavos")
+                    || fase.toLowerCase().contains("dieciseisavos")) {
+                columna = indice / maximoColumna;
+                fila = indice % maximoColumna;
+            } else {
+                columna = indice % columnas;
+                fila = indice / columnas;
             }
+            grilla.add(tarjeta, columna, fila);
+            GridPane.setHgrow(tarjeta, Priority.NEVER);
+            GridPane.setFillWidth(tarjeta, false);
         }
-        javafx.scene.layout.ColumnConstraints izquierda =
-                new javafx.scene.layout.ColumnConstraints();
-        javafx.scene.layout.ColumnConstraints derecha =
-                new javafx.scene.layout.ColumnConstraints();
-        izquierda.setPercentWidth(50);
-        derecha.setPercentWidth(50);
-        izquierda.setHgrow(Priority.ALWAYS);
-        derecha.setHgrow(Priority.ALWAYS);
-        grilla.getColumnConstraints().setAll(izquierda, derecha);
+        for (int indice = 0; indice < columnas; indice++) {
+            javafx.scene.layout.ColumnConstraints columna =
+                    new javafx.scene.layout.ColumnConstraints();
+            columna.setMinWidth(720);
+            columna.setPrefWidth(720);
+            columna.setMaxWidth(720);
+            columna.setHgrow(Priority.NEVER);
+            grilla.getColumnConstraints().add(columna);
+        }
         VBox seccion = new VBox(7, encabezado, grilla);
         seccion.getStyleClass().add("bracket-phase-section");
         return seccion;
     }
 
+    private int columnasParaFase(String fase, int cantidad) {
+        String valor = fase == null ? "" : fase.toLowerCase();
+        if (valor.equals("final") || valor.contains("semifinal")) return 1;
+        if (valor.contains("cuartos")) return cantidad > 1 ? 2 : 1;
+        if (valor.contains("octavos")) return cantidad > 4 ? 2 : 1;
+        if (valor.contains("dieciseisavos")) return cantidad > 8 ? 2 : 1;
+        return cantidad > 4 ? 2 : 1;
+    }
+
+    private int maximoPorColumna(String fase, int cantidad) {
+        String valor = fase == null ? "" : fase.toLowerCase();
+        if (valor.contains("octavos")) return 4;
+        if (valor.contains("dieciseisavos")) return 8;
+        return Math.max(1, (int) Math.ceil(cantidad / 2.0));
+    }
+
     private Node crearTarjetaCruce(CrucePropuestoTorneo cruce) {
         Label partido = etiqueta("PARTIDO " + cruce.getOrden(),
                 "bracket-editor-match-title");
+        boolean mostrarPartido = !"Final".equalsIgnoreCase(
+                cruce.getInstancia());
+        partido.setVisible(mostrarPartido);
+        partido.setManaged(mostrarPartido);
         HBox cabecera = new HBox(partido);
         cabecera.getStyleClass().add("bracket-match-header");
         GridPane plazas = new GridPane();
         plazas.setHgap(8);
-        plazas.setVgap(7);
-        plazas.setPadding(new Insets(9, 10, 10, 10));
+        plazas.setVgap(5);
+        plazas.setPadding(new Insets(6, 10, 7, 10));
         List<String> referencias = borrador.getClasificados().stream()
                 .map(c -> c.referencia()).toList();
         agregarPlaza(plazas, referencias, cruce, true, 0);
         agregarPlaza(plazas, referencias, cruce, false, 1);
         javafx.scene.layout.ColumnConstraints etiqueta =
                 new javafx.scene.layout.ColumnConstraints();
-        etiqueta.setMinWidth(28);
-        etiqueta.setPrefWidth(28);
+        etiqueta.setMinWidth(76);
+        etiqueta.setPrefWidth(76);
+        etiqueta.setMaxWidth(76);
         javafx.scene.layout.ColumnConstraints control =
                 new javafx.scene.layout.ColumnConstraints();
         control.setHgrow(Priority.ALWAYS);
         plazas.getColumnConstraints().setAll(etiqueta, control);
         VBox tarjeta = new VBox(0, cabecera, plazas);
-        tarjeta.setMaxWidth(Double.MAX_VALUE);
+        String claveCruce = claveCruce(cruce);
+        boolean modificada = plazasModificadas.stream()
+                .anyMatch(clave -> clave.startsWith(claveCruce + "|"));
+        if (modificada) tarjeta.getStyleClass().add("modified");
+        List<String> avisos = advertenciasDelCruce(cruce);
+        if (!avisos.isEmpty()) {
+            Label advertencia = etiqueta(String.join("  ", avisos),
+                    "bracket-match-warning-v2b");
+            tarjeta.getChildren().add(advertencia);
+            tarjeta.getStyleClass().add("warning");
+        }
+        tarjeta.setMinSize(720, 140);
+        tarjeta.setPrefSize(720, 140);
+        tarjeta.setMaxSize(720, 140);
         tarjeta.getStyleClass().add("bracket-editor-match");
         return tarjeta;
     }
@@ -286,7 +372,7 @@ public class EditorCuadroTorneoDialog {
             CrucePropuestoTorneo cruce, boolean primera, int fila) {
         String actual = primera
                 ? cruce.getParticipante1() : cruce.getParticipante2();
-        Label lado = etiqueta(primera ? "P1" : "P2",
+        Label lado = etiqueta(primera ? "PLAZA 1" : "PLAZA 2",
                 "bracket-editor-field-label");
         lado.setAlignment(Pos.CENTER);
         grid.add(lado, 0, fila);
@@ -297,9 +383,22 @@ public class EditorCuadroTorneoDialog {
                     "bracket-protected-badge");
             Region espacioProtegido = new Region();
             HBox.setHgrow(espacioProtegido, Priority.ALWAYS);
-            HBox protegida = new HBox(10, origen, espacioProtegido, insignia);
+            javafx.scene.shape.SVGPath candado = new javafx.scene.shape.SVGPath();
+            candado.setContent("M7 7V5a5 5 0 0 1 10 0v2h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1zm2 0h6V5a3 3 0 0 0-6 0v2z");
+            candado.getStyleClass().add("bracket-protected-lock-v2a");
+            HBox protegida = new HBox(9, candado, origen,
+                    espacioProtegido, insignia);
             protegida.setAlignment(Pos.CENTER_LEFT);
-            protegida.setMaxWidth(Double.MAX_VALUE);
+            protegida.setMinSize(0, 40);
+            protegida.setPrefHeight(40);
+            protegida.setMinWidth(590);
+            protegida.setPrefWidth(590);
+            protegida.setMaxWidth(590);
+            protegida.setCursor(javafx.scene.Cursor.DEFAULT);
+            javafx.scene.control.Tooltip tooltipProtegida =
+                    new javafx.scene.control.Tooltip(
+                            "Esta plaza depende de un partido anterior y no puede modificarse en modo seguro.");
+            javafx.scene.control.Tooltip.install(protegida, tooltipProtegida);
             protegida.getStyleClass().add("bracket-editor-protected");
             grid.add(protegida, 1, fila);
             GridPane.setHgrow(protegida, Priority.ALWAYS);
@@ -308,7 +407,13 @@ public class EditorCuadroTorneoDialog {
         ComboBox<String> combo = new ComboBox<>(
                 FXCollections.observableArrayList(referencias));
         combo.setValue(actual);
-        combo.setMaxWidth(Double.MAX_VALUE);
+        combo.setVisibleRowCount(6);
+        combo.setMinHeight(40);
+        combo.setPrefHeight(40);
+        combo.setMaxHeight(40);
+        combo.setMinWidth(590);
+        combo.setPrefWidth(590);
+        combo.setMaxWidth(590);
         combo.setConverter(new javafx.util.StringConverter<>() {
             @Override public String toString(String valor) {
                 return texto(valor);
@@ -319,10 +424,20 @@ public class EditorCuadroTorneoDialog {
         });
         combo.setCellFactory(lista -> celdaReferencia(false));
         combo.setButtonCell(celdaReferencia(true));
+        String clavePlaza = clavePlaza(cruce, primera);
+        if (plazasModificadas.contains(clavePlaza)) {
+            combo.getStyleClass().add("modified");
+            combo.setPromptText("MODIFICADA");
+        }
         combo.valueProperty().addListener((o, anterior, valor) -> {
-            if (primera) cruce.setParticipante1(valor);
-            else cruce.setParticipante2(valor);
-            actualizarEstado();
+            if (valor == null || java.util.Objects.equals(anterior, valor)) return;
+            if (service.reasignarIntercambiando(
+                    borrador, cruce, primera, valor)) {
+                plazasModificadas.add(clavePlaza);
+                marcarPlazaDe(anterior);
+                hayCambiosPendientes = true;
+                refrescarCruces();
+            }
         });
         combo.getStyleClass().add("bracket-editor-combo");
         grid.add(combo, 1, fila);
@@ -338,10 +453,11 @@ public class EditorCuadroTorneoDialog {
                 setText(vacia || valor == null ? null : texto(valor));
                 setTooltip(vacia || valor == null ? null
                         : new javafx.scene.control.Tooltip(texto(valor)));
-                getStyleClass().removeAll(
-                        "bracket-reference-cell", "button-cell");
+                getStyleClass().removeAll("bracket-reference-cell",
+                        "button-cell", "bracket-popup-row-v4");
                 getStyleClass().add("bracket-reference-cell");
                 if (boton) getStyleClass().add("button-cell");
+                else getStyleClass().add("bracket-popup-row-v4");
             }
         };
     }
@@ -350,9 +466,9 @@ public class EditorCuadroTorneoDialog {
         Label titulo = etiqueta("ESTRUCTURA AVANZADA",
                 "bracket-editor-section");
         Label ayuda = etiqueta(
-                "Modificá fases, partidos y conexiones de la llave. "
-                + "Usá esta herramienta solamente cuando necesites una "
-                + "estructura no estándar.",
+                "Modificá fases, partidos y conexiones solamente cuando "
+                + "necesites una llave no estándar. Los cambios permanecerán "
+                + "en el borrador hasta confirmar la propuesta.",
                 "bracket-editor-help");
 
         VBox resumen = crearResumenEstructura();
@@ -378,9 +494,7 @@ public class EditorCuadroTorneoDialog {
 
         Button abrir = new Button("ABRIR EDITOR ESTRUCTURAL");
         abrir.getStyleClass().add("bracket-advanced-open-button");
-        // Animacion breve para comunicar que el editor estructural es interactivo.
-        abrir.setOnMouseEntered(e -> animarBotonEstructural(abrir, 1.01, -1));
-        abrir.setOnMouseExited(e -> animarBotonEstructural(abrir, 1.0, 0));
+        // La respuesta visual se controla exclusivamente desde CSS.
         abrir.setOnAction(e -> {
             List<CrucePropuestoTorneo> nuevos =
                     new EstructuraManualTorneoDialog(
@@ -388,17 +502,22 @@ public class EditorCuadroTorneoDialog {
             if (nuevos == null) return;
             borrador.setCruces(nuevos);
             borrador.setPases(List.of());
+            hayCambiosPendientes = !mismaEstructuraInicial();
+            plazasModificadas.clear();
             refrescarCruces();
+            refrescarVistaAvanzada();
+            normalizarVistaActiva();
             actualizarEstado();
         });
-        // advanced-layout-panel-v2
         resumen.setMaxWidth(Double.MAX_VALUE);
         resumen.getStyleClass().add("advanced-summary-wide");
 
         aviso.setMaxWidth(Double.MAX_VALUE);
         alternativa.setMaxWidth(Double.MAX_VALUE);
-        aviso.setMinHeight(88);
-        alternativa.setMinHeight(88);
+        aviso.setMinHeight(74);
+        aviso.setPrefHeight(74);
+        alternativa.setMinHeight(74);
+        alternativa.setPrefHeight(74);
         HBox.setHgrow(aviso, Priority.ALWAYS);
         HBox.setHgrow(alternativa, Priority.ALWAYS);
         aviso.getStyleClass().add("advanced-equal-notice");
@@ -410,18 +529,19 @@ public class EditorCuadroTorneoDialog {
         avisos.setMaxWidth(Double.MAX_VALUE);
         avisos.getStyleClass().add("advanced-notices-row");
 
+        Label tituloEditor = etiqueta("EDITOR ESTRUCTURAL",
+                "advanced-editor-action-title-v2c");
         Label ayudaEditor = etiqueta(
-                "Permite agregar, eliminar y reconectar partidos.",
+                "Agregá, eliminá o reconectá partidos. Los cambios quedarán "
+                + "en el borrador hasta confirmar la propuesta.",
                 "advanced-editor-help");
-        VBox bloqueAccion = new VBox(5, ayudaEditor, abrir);
-        bloqueAccion.setAlignment(Pos.CENTER_RIGHT);
-        bloqueAccion.getStyleClass().add("advanced-editor-action");
-
+        VBox textoAccion = new VBox(2, tituloEditor, ayudaEditor);
         Region espacioAccion = new Region();
         HBox.setHgrow(espacioAccion, Priority.ALWAYS);
-        HBox filaAccion = new HBox(12, espacioAccion, bloqueAccion);
-        filaAccion.setAlignment(Pos.CENTER_RIGHT);
+        HBox filaAccion = new HBox(14, textoAccion, espacioAccion, abrir);
+        filaAccion.setAlignment(Pos.CENTER_LEFT);
         filaAccion.setMaxWidth(Double.MAX_VALUE);
+        filaAccion.getStyleClass().add("advanced-editor-action-bar-v2c");
 
         VBox panel = new VBox(14, resumen, avisos, filaAccion);
         panel.setMaxWidth(Double.MAX_VALUE);
@@ -429,15 +549,15 @@ public class EditorCuadroTorneoDialog {
         panel.getStyleClass().add("advanced-operation-panel");
 
         VBox tarjeta = new VBox(8, titulo, ayuda, panel);
-        tarjeta.setMaxWidth(1350);
-        tarjeta.setPrefWidth(1240);
+        tarjeta.setMaxWidth(Double.MAX_VALUE);
+        tarjeta.setPrefWidth(Region.USE_COMPUTED_SIZE);
         tarjeta.setFillWidth(true);
         tarjeta.getStyleClass().add("advanced-structure-card");
         tarjeta.getStyleClass().add("advanced-structure-card-v2");
 
         StackPane centro = new StackPane(tarjeta);
         centro.setAlignment(Pos.TOP_CENTER);
-        centro.setPadding(new Insets(48, 34, 22, 34));
+        centro.setPadding(new Insets(18, 0, 10, 0));
         centro.setMaxHeight(Region.USE_PREF_SIZE);
 
         VBox contenido = new VBox(centro);
@@ -458,9 +578,20 @@ public class EditorCuadroTorneoDialog {
 
         Label titulo = etiqueta("ESTRUCTURA ACTUAL",
                 "bracket-structure-summary-title");
-        Label general = etiqueta(partidos + " partidos   ·   "
-                + fases + (fases == 1 ? " fase" : " fases"),
-                "bracket-structure-summary-main");
+        Label valorPartidos = etiqueta(String.valueOf(partidos),
+                "bracket-structure-metric-number-v2c");
+        Label textoPartidos = etiqueta("PARTIDOS",
+                "bracket-structure-metric-label-v2c");
+        VBox metricaPartidos = new VBox(0, valorPartidos, textoPartidos);
+        Label divisor = etiqueta("·", "bracket-structure-metric-divider-v2c");
+        Label valorFases = etiqueta(String.valueOf(fases),
+                "bracket-structure-metric-number-v2c");
+        Label textoFases = etiqueta("FASES",
+                "bracket-structure-metric-label-v2c");
+        VBox metricaFases = new VBox(0, valorFases, textoFases);
+        HBox general = new HBox(12, metricaPartidos, divisor, metricaFases);
+        general.setAlignment(Pos.CENTER_LEFT);
+        general.getStyleClass().add("bracket-structure-summary-main");
 
         HBox fasesVisuales = new HBox(8);
         fasesVisuales.setAlignment(Pos.CENTER_LEFT);
@@ -477,20 +608,223 @@ public class EditorCuadroTorneoDialog {
         return resumen;
     }
 
+    private String cargarContextoCompetencia() {
+        String sql = "SELECT CONCAT(t.nombre, ' · ', c.nombre) "
+                + "FROM torneo_categorias c "
+                + "INNER JOIN torneos t ON t.id=c.torneo_id "
+                + "WHERE c.id=?";
+        try (java.sql.Connection conexion = config.ConexionBD.obtenerConexion();
+                java.sql.PreparedStatement sentencia =
+                        conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, categoriaId());
+            try (java.sql.ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    String valor = resultado.getString(1);
+                    if (valor != null && !valor.isBlank()) return valor;
+                }
+            }
+        } catch (java.sql.SQLException exception) {
+            return "Editor de propuesta eliminatoria";
+        }
+        return "Editor de propuesta eliminatoria";
+    }
+
+    private long categoriaId() {
+        return borrador.getClasificados().stream()
+                .mapToLong(c -> c.inscripcionId())
+                .findFirst().isPresent() ? buscarCategoriaId() : 0L;
+    }
+
+    private long buscarCategoriaId() {
+        Long inscripcionId = borrador.getClasificados().stream()
+                .map(c -> c.inscripcionId()).findFirst().orElse(null);
+        if (inscripcionId == null) return 0L;
+        String sql = "SELECT torneo_categoria_id FROM torneo_inscripciones "
+                + "WHERE id=?";
+        try (java.sql.Connection conexion = config.ConexionBD.obtenerConexion();
+                java.sql.PreparedStatement sentencia =
+                        conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, inscripcionId);
+            try (java.sql.ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next() ? resultado.getLong(1) : 0L;
+            }
+        } catch (java.sql.SQLException exception) {
+            return 0L;
+        }
+    }
+
+    private String claveCruce(CrucePropuestoTorneo cruce) {
+        return cruce.getInstancia() + "#" + cruce.getOrden();
+    }
+
+    private String clavePlaza(CrucePropuestoTorneo cruce,
+            boolean primera) {
+        return claveCruce(cruce) + "|" + (primera ? "1" : "2");
+    }
+
+    private void marcarPlazaDe(String referencia) {
+        if (referencia == null || referencia.startsWith("Ganador ")) return;
+        for (CrucePropuestoTorneo cruce : borrador.getCruces()) {
+            if (referencia.equals(cruce.getParticipante1())) {
+                plazasModificadas.add(clavePlaza(cruce, true));
+            }
+            if (referencia.equals(cruce.getParticipante2())) {
+                plazasModificadas.add(clavePlaza(cruce, false));
+            }
+        }
+    }
+
+    private List<String> advertenciasDelCruce(
+            CrucePropuestoTorneo cruce) {
+        String prefijo = nombreVisibleFase(cruce.getInstancia())
+                + " #" + cruce.getOrden();
+        return service.advertenciasDeportivas(borrador).stream()
+                .filter(aviso -> aviso.startsWith(prefijo))
+                .map(aviso -> aviso.substring(prefijo.length()).trim())
+                .toList();
+    }
+
+    private boolean mismaEstructuraInicial() {
+        List<String> actual = borrador.getCruces().stream()
+                .map(this::firmaEstructural)
+                .sorted().toList();
+        List<String> original = inicial.getCruces().stream()
+                .map(this::firmaEstructural)
+                .sorted().toList();
+        return actual.equals(original);
+    }
+
+    private String firmaEstructural(CrucePropuestoTorneo cruce) {
+        return cruce.getInstancia() + "|" + cruce.getRonda() + "|"
+                + cruce.getOrden() + "|" + cruce.getParticipante1() + "|"
+                + cruce.getParticipante2();
+    }
+
+    private boolean confirmarCambios() {
+        List<String> cambios = resumenCambios();
+        if (cambios.isEmpty()) {
+            return Dialogos.confirmar("Aplicar cambios",
+                    "No se detectaron modificaciones en los cruces. "
+                            + "¿Querés cerrar el editor igualmente?");
+        }
+        StringBuilder mensaje = new StringBuilder();
+        mensaje.append("Se aplicarán ").append(cambios.size())
+                .append(cambios.size() == 1
+                        ? " cambio al borrador:\n\n"
+                        : " cambios al borrador:\n\n");
+        for (String cambio : cambios) {
+            mensaje.append("• ").append(cambio).append("\n\n");
+        }
+        mensaje.append("La estructura todavía no se generará. "
+                + "¿Deseás confirmar estos cambios?");
+        return Dialogos.confirmar("Confirmar cambios del cuadro",
+                mensaje.toString().trim());
+    }
+
+    private List<String> resumenCambios() {
+        Map<String, CrucePropuestoTorneo> originales = inicial.getCruces()
+                .stream().collect(java.util.stream.Collectors.toMap(
+                        this::claveCruce, cruce -> cruce, (a, b) -> a,
+                        LinkedHashMap::new));
+        List<String> cambios = new java.util.ArrayList<>();
+        for (CrucePropuestoTorneo actual : borrador.getCruces()) {
+            CrucePropuestoTorneo anterior = originales.get(claveCruce(actual));
+            if (anterior == null) {
+                cambios.add(nombreVisibleFase(actual.getInstancia())
+                        + " · Partido " + actual.getOrden()
+                        + ": partido agregado o reestructurado");
+                continue;
+            }
+            if (anterior.getRonda() != actual.getRonda()) {
+                cambios.add(nombreVisibleFase(actual.getInstancia())
+                        + " · Partido " + actual.getOrden()
+                        + ": ronda " + anterior.getRonda()
+                        + " → " + actual.getRonda());
+            }
+            agregarCambioPlaza(cambios, actual, 1,
+                    anterior.getParticipante1(), actual.getParticipante1());
+            agregarCambioPlaza(cambios, actual, 2,
+                    anterior.getParticipante2(), actual.getParticipante2());
+        }
+        for (CrucePropuestoTorneo anterior : inicial.getCruces()) {
+            if (borrador.getCruces().stream()
+                    .noneMatch(actual -> claveCruce(actual)
+                            .equals(claveCruce(anterior)))) {
+                cambios.add(nombreVisibleFase(anterior.getInstancia())
+                        + " · Partido " + anterior.getOrden()
+                        + ": partido eliminado o reestructurado");
+            }
+        }
+        return cambios;
+    }
+
+    private void agregarCambioPlaza(List<String> cambios,
+            CrucePropuestoTorneo cruce, int plaza,
+            String anterior, String actual) {
+        if (java.util.Objects.equals(anterior, actual)) return;
+        cambios.add(nombreVisibleFase(cruce.getInstancia())
+                + " · Partido " + cruce.getOrden()
+                + " · Plaza " + plaza + ":\n    "
+                + texto(anterior) + "\n    → " + texto(actual));
+    }
+
+    private void normalizarVistaActiva() {
+        boolean avanzadaActiva = vistaAvanzada != null
+                && vistaAvanzada.isVisible();
+        if (vistaCruces != null) {
+            vistaCruces.setVisible(!avanzadaActiva);
+            vistaCruces.setManaged(!avanzadaActiva);
+        }
+        if (vistaAvanzada != null) {
+            vistaAvanzada.setVisible(avanzadaActiva);
+            vistaAvanzada.setManaged(avanzadaActiva);
+        }
+    }
+
+    private void refrescarVistaAvanzada() {
+        VBox nueva = crearVistaAvanzada();
+        int indice = vistas.getChildren().indexOf(vistaAvanzada);
+        boolean visible = vistaAvanzada != null && vistaAvanzada.isVisible();
+        boolean managed = vistaAvanzada != null && vistaAvanzada.isManaged();
+        if (indice >= 0) {
+            vistas.getChildren().set(indice, nueva);
+        }
+        nueva.setVisible(visible);
+        nueva.setManaged(managed);
+        vistaAvanzada = nueva;
+    }
+
     private void refrescarCruces() {
+        double posicionVertical = scrollCrucesSeguro == null
+                ? 0.0 : scrollCrucesSeguro.getVvalue();
+        double posicionHorizontal = scrollCrucesSeguro == null
+                ? 0.0 : scrollCrucesSeguro.getHvalue();
+        boolean visible = vistaCruces != null && vistaCruces.isVisible();
+        boolean managed = vistaCruces != null && vistaCruces.isManaged();
         VBox nueva = crearVistaCruces();
+        ScrollPane nuevoScroll = scrollCrucesSeguro;
         int indice = vistas.getChildren().indexOf(vistaCruces);
         if (indice >= 0) vistas.getChildren().set(indice, nueva);
+        nueva.setVisible(visible);
+        nueva.setManaged(managed);
         vistaCruces = nueva;
         actualizarEstado();
+        javafx.application.Platform.runLater(() -> {
+            if (nuevoScroll == null) return;
+            nuevoScroll.applyCss();
+            nuevoScroll.layout();
+            nuevoScroll.setVvalue(posicionVertical);
+            nuevoScroll.setHvalue(posicionHorizontal);
+        });
     }
 
     private void actualizarEstado() {
         List<String> errores = service.validarEdicionManual(borrador);
         boolean valido = errores.isEmpty();
         estado.setText(valido
-                ? "BORRADOR VÁLIDO   ·   " + borrador.getCruces().size()
-                        + " PARTIDOS   ·   0 PROBLEMAS"
+                ? (hayCambiosPendientes ? "CAMBIOS PENDIENTES   ·   " : "")
+                        + "BORRADOR VÁLIDO   ·   "
+                        + borrador.getCruces().size() + " PARTIDOS"
                 : "REQUIERE ATENCIÓN   ·   " + errores.size()
                         + " PROBLEMA(S) PENDIENTE(S)");
         estado.getStyleClass().removeAll("valid", "warning");

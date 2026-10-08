@@ -62,15 +62,16 @@ import vista.Navegacion;
 
 public class TorneoCuadroController {
 
-    // guardar-pdf-cuadro-seguro-v5
 
-    // filtros-opciones-disponibles-cuadro-v1
 
-    // reorganizar-filtros-campeon-cuadro-v1
 
-    // separar-enfrentamiento-cuadro-paso2-v1
 
-    // mejoras-seguras-cuadro-paso1-v1
+
+
+
+
+
+
 
     private static final DateTimeFormatter HORA =
             DateTimeFormatter.ofPattern("HH:mm");
@@ -108,6 +109,7 @@ public class TorneoCuadroController {
     private Torneo torneo;
 
     @FXML private Label etiquetaContexto;
+    @FXML private Label etiquetaModo;
     @FXML private Label etiquetaResumen;
     @FXML private Label etiquetaPartido;
     @FXML private Label etiquetaEnfrentamiento;
@@ -150,6 +152,8 @@ public class TorneoCuadroController {
     @FXML private Button botonImprimir;
     @FXML private javafx.scene.layout.HBox tarjetaCampeona;
     @FXML private javafx.scene.control.ScrollPane scrollHistorial;
+    @FXML private javafx.scene.control.ScrollPane scrollDetallePartido;
+    @FXML private javafx.scene.layout.HBox bloqueCorreccionResultado;
 
     @FXML
     private void initialize() {
@@ -329,6 +333,13 @@ public class TorneoCuadroController {
                     + " · " + categoria.getNombre()
                     + " · " + categoria.getRama());
             torneo = torneoDAO.buscar(categoria.getTorneoId());
+            boolean consulta = !categoria.isActivo()
+                    || torneo != null && torneo.getEstado().esFinal();
+            etiquetaModo.setText(consulta ? "MODO CONSULTA"
+                    : torneo != null && torneo.getEstado() == EstadoTorneo.EN_CURSO
+                        ? "COMPETENCIA EN CURSO" : "PREPARACIÓN");
+            etiquetaModo.getStyleClass().removeAll("bracket-mode-manage-v7", "bracket-mode-readonly-v7");
+            etiquetaModo.getStyleClass().add(consulta ? "bracket-mode-readonly-v7" : "bracket-mode-manage-v7");
             boolean usaGrupos = categoria.usaFaseGrupos();
             botonIrAGrupos.setVisible(usaGrupos);
             botonIrAGrupos.setManaged(usaGrupos);
@@ -342,15 +353,32 @@ public class TorneoCuadroController {
             boolean existeEliminatorio = partidos.stream()
                     .anyMatch(p -> p.getFase() != FaseTorneo.GRUPOS);
             configurarAccionesCuadro(existeEliminatorio);
+            actualizarContextoCuadro(existeEliminatorio);
             long partidosEliminatorios = partidos.stream()
                     .filter(p -> p.getFase() != FaseTorneo.GRUPOS).count();
-            etiquetaResumen.setText(textoPartidos(partidosEliminatorios));
+            actualizarResumenCompetitivo();
             actualizarCampeona();
-            etiquetaMensaje.setText(partidos.isEmpty()
-                    ? "El cuadro todavía no fue generado."
-                    : "Cuadro actualizado correctamente.");
+            if (existeEliminatorio) {
+                etiquetaMensaje.setText("");
+            }
         } catch (RuntimeException exception) {
             mostrarError(exception);
+        }
+    }
+
+    private void actualizarContextoCuadro(boolean existe) {
+        if (existe || categoria == null || torneo == null) return;
+        if (categoria.usaFaseGrupos()
+                && torneo.getEstado() == EstadoTorneo.EN_CURSO) {
+            etiquetaModo.setText("ETAPA ELIMINATORIA");
+            etiquetaMensaje.setText(
+                    "Los grupos finalizaron. Generá la etapa eliminatoria con las posiciones definitivas.");
+        } else if (categoria.usaFaseGrupos()) {
+            etiquetaMensaje.setText(
+                    "Completá los grupos y sus posiciones para generar la etapa eliminatoria.");
+        } else {
+            etiquetaMensaje.setText(
+                    "Generá el cuadro con las parejas confirmadas de la categoría.");
         }
     }
 
@@ -655,26 +683,30 @@ public class TorneoCuadroController {
 
     private void mostrar(TorneoPartido partido) {
         boolean hay = partido != null;
-        botonProgramar.setDisable(!hay || partido.isBye()
+        boolean torneoEnCurso = torneo != null && categoria != null
+                && categoria.isActivo()
+                && torneo.getEstado() == EstadoTorneo.EN_CURSO;
+        botonProgramar.setDisable(!torneoEnCurso || !hay || partido.isBye()
                 || !partido.tieneDosParejas()
                 || (partido.getEstado() != EstadoPartidoTorneo.PENDIENTE
                     && partido.getEstado()
                         != EstadoPartidoTorneo.PROGRAMADO));
-        botonQuitar.setDisable(!hay
+        botonQuitar.setDisable(!torneoEnCurso || !hay
                 || partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO);
-        botonResultado.setDisable(!hay || partido.isBye()
+        botonResultado.setDisable(!torneoEnCurso || !hay || partido.isBye()
                 || !partido.tieneDosParejas()
                 || (partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO
                     && partido.getEstado() != EstadoPartidoTorneo.EN_CURSO));
-        boolean torneoEnCurso = torneo != null
-                && torneo.getEstado() == EstadoTorneo.EN_CURSO;
         botonCorregirResultado.setDisable(!hay || partido.isBye()
                 || partido.getEstado() != EstadoPartidoTorneo.FINALIZADO
                 || !torneoEnCurso);
         panelDetalleVacio.setVisible(!hay);
         panelDetalleVacio.setManaged(!hay);
-        panelGestionPartido.setVisible(hay);
-        panelGestionPartido.setManaged(hay);
+        panelGestionPartido.setVisible(true);
+        panelGestionPartido.setManaged(true);
+        scrollDetallePartido.setVisible(hay);
+        scrollDetallePartido.setManaged(hay);
+        if (hay) scrollDetallePartido.setVvalue(0);
         if (!hay) {
             panelProgramacion.setVisible(false);
             panelProgramacion.setManaged(false);
@@ -703,6 +735,8 @@ public class TorneoCuadroController {
         botonResultado.setManaged(puedeRegistrar);
         botonCorregirResultado.setVisible(finalizado);
         botonCorregirResultado.setManaged(finalizado);
+        bloqueCorreccionResultado.setVisible(finalizado);
+        bloqueCorreccionResultado.setManaged(finalizado);
         scrollHistorial.setVisible(finalizado);
         scrollHistorial.setManaged(finalizado);
         etiquetaPartido.setText(nombreFaseVisible(partido)
@@ -866,10 +900,11 @@ public class TorneoCuadroController {
         etiquetaResultadoFinal.setText(definida
                 ? "Resultado de la final: " + resultado(finalPartido)
                 : "La final todavía no tiene un resultado registrado.");
-        tarjetaCampeona.setVisible(definida);
-        tarjetaCampeona.setManaged(definida);
-        etiquetaTrofeo.setVisible(definida);
-        etiquetaTrofeo.setManaged(definida);
+        tarjetaCampeona.setVisible(false);
+        tarjetaCampeona.setManaged(false);
+        etiquetaTrofeo.setVisible(false);
+        etiquetaTrofeo.setManaged(false);
+        etiquetaTrofeo.setText(definida ? "★" : "○");
         tarjetaCampeona.getStyleClass().removeAll(
                 "bracket-champion-pending-v2",
                 "bracket-champion-defined-v2");
@@ -931,20 +966,57 @@ public class TorneoCuadroController {
                 .filter(p -> p.getFase() != FaseTorneo.GRUPOS).count();
         long visiblesCuadro = filtrados.stream()
                 .filter(p -> p.getFase() != FaseTorneo.GRUPOS).count();
-        etiquetaResumen.setText(visiblesCuadro == totalCuadro
-                ? textoPartidos(totalCuadro)
-                : visiblesCuadro + " de " + textoPartidos(totalCuadro));
+        if (visiblesCuadro == totalCuadro) {
+            actualizarResumenCompetitivo();
+        } else {
+            etiquetaResumen.setText(visiblesCuadro + " de "
+                    + textoPartidos(totalCuadro));
+        }
     }
 
     private void configurarAccionesCuadro(boolean existe) {
-        botonGenerar.setVisible(!existe);
-        botonGenerar.setManaged(!existe);
-        botonGenerar.setDisable(existe);
+        boolean preparacionDirecta = torneo != null && categoria != null
+                && categoria.isActivo() && !categoria.usaFaseGrupos()
+                && torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA;
+        boolean eliminacionDesdeGrupos = torneo != null && categoria != null
+                && categoria.isActivo() && categoria.usaFaseGrupos()
+                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        boolean preparacion = preparacionDirecta || eliminacionDesdeGrupos;
+        botonGenerar.setText(categoria != null && categoria.usaFaseGrupos()
+                ? "GENERAR ETAPA ELIMINATORIA" : "GENERAR CUADRO");
+        botonGenerar.setVisible(!existe && preparacion);
+        botonGenerar.setManaged(!existe && preparacion);
+        botonGenerar.setDisable(existe || !preparacion);
         botonImprimir.setVisible(existe);
         botonImprimir.setManaged(existe);
-        botonInvalidar.setVisible(existe);
-        botonInvalidar.setManaged(existe);
-        botonInvalidar.setDisable(!existe);
+        boolean puedeInvalidar = existe && torneo != null
+                && categoria != null && categoria.isActivo()
+                && torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA;
+        botonInvalidar.setVisible(puedeInvalidar);
+        botonInvalidar.setManaged(puedeInvalidar);
+        botonInvalidar.setDisable(!puedeInvalidar);
+    }
+
+    private void actualizarResumenCompetitivo() {
+        long total = partidos.stream()
+                .filter(p -> p.getFase() != FaseTorneo.GRUPOS).count();
+        long finalizados = partidos.stream()
+                .filter(p -> p.getFase() != FaseTorneo.GRUPOS
+                        && p.getEstado() == EstadoPartidoTorneo.FINALIZADO)
+                .count();
+        long programados = partidos.stream()
+                .filter(p -> p.getFase() != FaseTorneo.GRUPOS
+                        && p.getEstado() == EstadoPartidoTorneo.PROGRAMADO)
+                .count();
+        long pendientes = partidos.stream()
+                .filter(p -> p.getFase() != FaseTorneo.GRUPOS
+                        && p.getEstado() == EstadoPartidoTorneo.PENDIENTE)
+                .count();
+        etiquetaResumen.setText(total + (total == 1 ? " partido" : " partidos")
+                + " · " + finalizados + " finalizados"
+                + " · " + programados + " programados"
+                + " · " + pendientes + " pendientes");
     }
 
     private String textoPartidos(long cantidad) {
@@ -997,7 +1069,6 @@ public class TorneoCuadroController {
         comboFin.getSelectionModel().clearSelection();
     }
 
-    // corregir-cuadro-torneo-v2
     private void mostrarError(RuntimeException exception) {
         String mensaje = exception.getMessage() == null
                 ? "No se pudo completar la operacion."

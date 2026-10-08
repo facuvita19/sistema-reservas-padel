@@ -17,9 +17,7 @@ import javafx.stage.Stage;
 
 public final class Dialogos {
 
-    // dialogos-simples-css-v1
 
-    // modernizar-dialogos-resultado-torneo-v1
 
     private static final String CSS = "/css/dialogos.css";
     private static final String CSS_INTERFAZ = "/css/interfaz-unificada.css";
@@ -39,7 +37,6 @@ public final class Dialogos {
         TemaDinamico.aplicar(panel, Navegacion.getConfiguracionActual());
         dialogo.initModality(Modality.APPLICATION_MODAL);
         dialogo.setResizable(true);
-        // maximizar-dialogos-grandes-v1
         dialogo.setOnShown(evento -> {
             if (dialogo.getDialogPane().getScene() == null
                     || !(dialogo.getDialogPane().getScene().getWindow()
@@ -64,7 +61,6 @@ public final class Dialogos {
         // Alertas, mensajes y confirmaciones siempre conservan tamano normal.
         if (dialogo instanceof Alert) return false;
 
-        // agregar-partido-tamano-normal-v1
         // Este formulario es acotado y debe conservar el marco normal de
         // Windows sin ocupar toda la pantalla.
         String titulo = dialogo.getTitle() == null
@@ -76,7 +72,6 @@ public final class Dialogos {
             return false;
         }
 
-        // corregir-dialogos-torneos-v2
         DialogPane panel = dialogo.getDialogPane();
         boolean formularioAcotado = panel.getStyleClass().stream()
                 .anyMatch(clase -> clase.equals("tournament-editor-dialog")
@@ -135,7 +130,6 @@ public final class Dialogos {
         return confirmar(titulo, mensaje, true);
     }
 
-    // confirmar-peligro-personalizado-v1
     public static boolean confirmarPeligroPersonalizado(
             String titulo,
             String encabezado,
@@ -206,6 +200,15 @@ public final class Dialogos {
                 ? "dialog-action-danger" : "dialog-action-primary");
         botonAlternativa.getStyleClass().add(alternativaPeligrosa
                 ? "dialog-action-danger" : "dialog-action-alternative");
+        boolean excepcionAdministrativa = textoAlternativa != null
+                && textoAlternativa.strip().equalsIgnoreCase(
+                        "EXCEPCION ADMINISTRATIVA");
+        if (excepcionAdministrativa) {
+            alerta.getDialogPane().getStyleClass().add(
+                    "dialog-late-cancellation-v6");
+            botonAlternativa.getStyleClass().add(
+                    "dialog-action-administrative-v6");
+        }
         Optional<ButtonType> resultado = alerta.showAndWait();
         ButtonType elegido = resultado.orElse(volver);
         if (elegido == principal) return Opcion.PRINCIPAL;
@@ -228,9 +231,16 @@ public final class Dialogos {
         alerta.setGraphic(null);
         configurarContenido(alerta, mensaje, 590);
         preparar(alerta, "dialog-custom-action");
+        boolean accionLarga = textoAccion != null
+                && textoAccion.length() >= 24;
         javafx.scene.Node botonAceptar = alerta.getDialogPane()
                 .lookupButton(aceptar);
         botonAceptar.getStyleClass().add("dialog-action-primary");
+        if (accionLarga) {
+            alerta.getDialogPane().getStyleClass().add(
+                    "dialog-custom-action-wide-v15");
+            botonAceptar.getStyleClass().add("dialog-long-primary-v15");
+        }
         return alerta.showAndWait().orElse(volver) == aceptar;
     }
     public static void error(String titulo, String mensaje) {
@@ -258,7 +268,7 @@ public final class Dialogos {
         contenido.setWrapText(true);
         contenido.setMaxWidth(Double.MAX_VALUE);
         contenido.setMinHeight(javafx.scene.layout.Region.USE_PREF_SIZE);
-
+        contenido.getStyleClass().add("dialog-message-label");
 
         int cantidadLineas = mensaje == null || mensaje.isBlank()
                 ? 1 : mensaje.split("\\R", -1).length;

@@ -47,7 +47,6 @@ import vista.Navegacion;
 
 public class LlaveGraficaTorneoView {
     private static final double ANCHO_TARJETA = 380;
-    // tarjetas-participantes-llave-v2
     private static final double ALTO_TARJETA = 126;
     private static final double ANCHO_COLUMNA = 405;
     private static final double MARGEN_X = 28;
@@ -86,7 +85,6 @@ public class LlaveGraficaTorneoView {
                 alAgregarPartido, alCrearNuevoCuadro, alEliminarPartido, false);
     }
 
-    // bracket-readonly-mode-v1
     public LlaveGraficaTorneoView(PropuestaEtapaEliminatoria propuesta,
             Map<String, String> nombres,
             BiConsumer<String, CambioPlaza> alCambiarPlaza,
@@ -234,7 +232,6 @@ public class LlaveGraficaTorneoView {
     }
 
     private HBox crearLeyenda() {
-        // estados-conectores-llave-v1
         HBox leyenda = new HBox(14,
                 itemLeyenda("#65b998", "Valido"),
                 itemLeyenda("#d8b36d", "Requiere atencion"),
@@ -273,7 +270,7 @@ public class LlaveGraficaTorneoView {
                 scroll.getViewportBounds().getWidth() - 24);
         double nuevo = Math.min(1.0,
                 disponibleX / anchoTablero);
-        nuevo = Math.max(0.72, nuevo);
+        nuevo = Math.max(0.85, nuevo);
         cambiarZoom(nuevo, contenedor, porcentaje);
         if (volverAlInicio) {
             scroll.setHvalue(0.5);
@@ -299,7 +296,6 @@ public class LlaveGraficaTorneoView {
 
     private void crearFase(FaseLlaveVisual fase, int indice, double alto) {
         double x = MARGEN_X + indice * ANCHO_COLUMNA;
-        // encabezados-fases-llave-v2
         Label titulo = new Label(nombreFase(fase.nombre()));
         titulo.setStyle("-fx-text-fill:" + colorFase(fase.nombre())
                 + ";-fx-font-weight:900;-fx-font-size:12px;");
@@ -348,9 +344,11 @@ public class LlaveGraficaTorneoView {
     }
 
     private StackPane crearTarjeta(PartidoLlaveVisual partido) {
-        // acciones-llave-estructura-v1
-        Label cabecera = new Label(nombreFase(partido.fase())
-                + "  ·  PARTIDO " + partido.orden());
+        String tituloPartido = "Final".equalsIgnoreCase(partido.fase())
+                ? nombreFase(partido.fase())
+                : nombreFase(partido.fase()) + "  ·  PARTIDO "
+                        + partido.orden();
+        Label cabecera = new Label(tituloPartido);
         cabecera.setMinWidth(0);
         cabecera.setMaxWidth(Double.MAX_VALUE);
         cabecera.setTextOverrun(
@@ -360,9 +358,19 @@ public class LlaveGraficaTorneoView {
         Button intercambiar = new Button("INTERCAMBIAR");
         intercambiar.setFocusTraversable(false);
         aplicarEstiloAccionTarjeta(intercambiar, false);
+        intercambiar.getStyleClass().add("structural-card-swap-v2");
+        intercambiar.setCursor(javafx.scene.Cursor.HAND);
+        intercambiar.setMinSize(104, 28);
+        intercambiar.setPrefSize(104, 28);
+        intercambiar.setMaxSize(104, 28);
         Button eliminar = new Button("ELIMINAR");
         eliminar.setFocusTraversable(false);
         aplicarEstiloAccionTarjeta(eliminar, true);
+        eliminar.getStyleClass().add("structural-card-delete-v2");
+        eliminar.setCursor(javafx.scene.Cursor.HAND);
+        eliminar.setMinSize(76, 28);
+        eliminar.setPrefSize(76, 28);
+        eliminar.setMaxSize(76, 28);
         eliminar.setOnAction(evento -> confirmarEliminacion(partido));
         HBox acciones = new HBox(5, intercambiar, eliminar);
         acciones.setAlignment(Pos.CENTER_RIGHT);
@@ -376,9 +384,9 @@ public class LlaveGraficaTorneoView {
                 espacioCabecera, acciones);
         encabezado.setAlignment(Pos.CENTER_LEFT);
         encabezado.setPadding(new Insets(5, 7, 5, 10));
-        encabezado.setMinHeight(34);
-        encabezado.setPrefHeight(34);
-        encabezado.setMaxHeight(34);
+        encabezado.setMinHeight(38);
+        encabezado.setPrefHeight(38);
+        encabezado.setMaxHeight(38);
         encabezado.setStyle("-fx-background-color:#20262a;"
                 + "-fx-border-color:" + colorFase(partido.fase())
                 + ";-fx-border-width:0 0 2 0;"
@@ -490,6 +498,7 @@ public class LlaveGraficaTorneoView {
         ComboBox<String> selector = new ComboBox<>(
                 FXCollections.observableArrayList(valores));
         selector.setValue(actual);
+        selector.setVisibleRowCount(6);
         selector.setMaxWidth(Double.MAX_VALUE);
         selector.setPrefWidth(620);
         selector.getStyleClass().addAll(
@@ -498,7 +507,6 @@ public class LlaveGraficaTorneoView {
         selector.setCellFactory(lista -> celdaOrigen(false));
         selector.setButtonCell(celdaOrigen(true));
 
-        // cambiar-participante-moderno-v1
         Label insignia = new Label("CAMBIAR PARTICIPANTE");
         insignia.getStyleClass().add("structural-add-badge");
         Label ayuda = new Label(
@@ -519,9 +527,9 @@ public class LlaveGraficaTorneoView {
         VBox contenido = new VBox(10, contexto, campo);
         contenido.getStyleClass().add("structural-add-root");
         dialogo.getDialogPane().setContent(contenido);
-        dialogo.getDialogPane().setPrefWidth(760);
+        dialogo.getDialogPane().setPrefSize(760, 405);
+        dialogo.getDialogPane().setMinSize(700, 385);
         Dialogos.preparar(dialogo, "structural-add-dialog");
-        // participante-dialog-ajuste-final-v1
         dialogo.getDialogPane().getStyleClass().add(
                 "structural-participant-dialog");
         dialogo.setResizable(false);
@@ -534,27 +542,44 @@ public class LlaveGraficaTorneoView {
                 .lookupButton(cancelar);
         botonAplicar.getStyleClass().add(
                 "structural-participant-confirm");
+        botonAplicar.setCursor(javafx.scene.Cursor.HAND);
         botonLimpiar.getStyleClass().add(
                 "structural-participant-clear");
+        botonLimpiar.setCursor(javafx.scene.Cursor.HAND);
         botonCancelar.getStyleClass().add(
                 "structural-add-cancel");
+        botonCancelar.setCursor(javafx.scene.Cursor.HAND);
 
         final String limpiarMarca = "__LIMPIAR_PLAZA__";
+        botonLimpiar.addEventFilter(javafx.event.ActionEvent.ACTION, evento -> {
+            boolean confirmado = Dialogos.confirmarPeligroPersonalizado(
+                    "Limpiar plaza",
+                    "Dejar esta plaza sin participante",
+                    "La plaza quedará sin participante y la estructura "
+                            + "requerirá atención hasta asignar un origen válido."
+                            + "\n\n¿Deseás limpiar esta plaza?",
+                    "LIMPIAR PLAZA",
+                    "CANCELAR");
+            if (!confirmado) evento.consume();
+        });
         dialogo.setResultConverter(tipo -> {
             if (tipo == aplicar) return selector.getValue();
             if (tipo == limpiar) return limpiarMarca;
             return null;
         });
         String elegido = dialogo.showAndWait().orElse(null);
-        if (elegido != null && alCambiarPlaza != null) {
+        if (elegido != null) {
             String referenciaNueva = limpiarMarca.equals(elegido)
                     ? null : elegido;
-            alCambiarPlaza.accept(partidoClave,
-                    new CambioPlaza(posicion, referenciaNueva));
-            actualizarPlazaEnModelo(partidoClave, posicion,
-                    referenciaNueva);
-            actualizarEtiquetaPlaza(etiquetaPlaza, referenciaNueva);
-            dibujarConexiones(constructor.construir(propuesta));
+            if (alCambiarPlaza != null) {
+                alCambiarPlaza.accept(partidoClave,
+                        new CambioPlaza(posicion, referenciaNueva));
+            } else {
+                actualizarPlazaEnModelo(partidoClave, posicion,
+                        referenciaNueva);
+                actualizarEtiquetaPlaza(etiquetaPlaza, referenciaNueva);
+                dibujarConexiones(constructor.construir(propuesta));
+            }
         }
     }
 
@@ -574,7 +599,6 @@ public class LlaveGraficaTorneoView {
                 + "\n\nLa estructura debera quedar valida antes "
                 + "de aplicarla.";
 
-        // eliminar-con-alert-comun-v1
         boolean confirmado = Dialogos.confirmarPeligroPersonalizado(
                 "Eliminar partido",
                 "Eliminar " + partido.fase()
@@ -682,7 +706,6 @@ public class LlaveGraficaTorneoView {
             boolean boton) {
         return new javafx.scene.control.ListCell<>() {
             {
-                // desplegable-participante-grafito-v1
                 getStyleClass().add(boton
                         ? "structural-add-button-cell"
                         : "structural-add-popup-cell");
