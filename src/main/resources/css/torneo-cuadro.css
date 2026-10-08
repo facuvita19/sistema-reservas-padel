@@ -980,3 +980,61 @@
     -fx-translate-x: 0;
     -fx-translate-y: 0;
 }
+
+/* corregir-regresiones-editor-y-horarios-v2 */
+/* Inicio y Fin parten de la misma base flexible y no reclaman ancho por contenido. */
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing {
+    -fx-min-width: 0;
+    -fx-pref-width: 1;
+    -fx-max-width: infinity;
+    -fx-min-height: 44;
+    -fx-pref-height: 44;
+    -fx-max-height: 44;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 1;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing {
+    -fx-border-color: -color-principal;
+    -fx-border-width: 1;
+    -fx-effect: none;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .list-cell,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .list-cell {
+    -fx-min-width: 0;
+    -fx-pref-width: 1;
+    -fx-max-width: infinity;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 12;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+}
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24 > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:hover > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:focused > .arrow-button,
+.bracket-detail-v2 .bracket-input-v2.bracket-reservation-combo-v24:showing > .arrow-button {
+    -fx-min-width: 38;
+    -fx-pref-width: 38;
+    -fx-max-width: 38;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0 1 0 0;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 0 0 0 1;
+}

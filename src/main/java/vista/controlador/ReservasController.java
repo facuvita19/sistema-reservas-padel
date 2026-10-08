@@ -1069,6 +1069,8 @@ public class ReservasController {
         TextInputDialog dialogo = new TextInputDialog();
         dialogo.setTitle("Motivo de reprogramación"); dialogo.setHeaderText("Ingresá el motivo del cambio");
         dialogo.setContentText("Motivo:"); dialogo.getEditor().setPromptText("Ejemplo: solicitud del cliente o problema operativo");
+        Dialogos.preparar(dialogo, "dialog-text-input-v1");
+        dialogo.getEditor().getStyleClass().add("dialog-field");
         dialogo.showAndWait().ifPresent(this::ejecutarReprogramacion);
     }
 
@@ -1260,6 +1262,8 @@ public class ReservasController {
         TextInputDialog dialogo = new TextInputDialog();
         dialogo.setTitle("Cancelación administrativa"); dialogo.setHeaderText("Ingresá el motivo de la cancelación");
         dialogo.setContentText("Motivo:"); dialogo.getEditor().setPromptText("Ejemplo: lluvia, corte de energía o mantenimiento");
+        Dialogos.preparar(dialogo, "dialog-text-input-v1");
+        dialogo.getEditor().getStyleClass().add("dialog-field");
         dialogo.showAndWait().ifPresent(motivo -> {
             if (motivo == null || motivo.isBlank()) { mostrarError("El motivo administrativo es obligatorio."); return; }
             ejecutarCancelacionAdministrativa(motivo, reembolsar);
@@ -1371,3 +1375,4 @@ public class ReservasController {
         etiquetaMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
     }
 }
+// unificar-tipografia-dialogos-base-v1

@@ -242,8 +242,8 @@ public class LlaveGraficaTorneoView {
 
     private HBox itemLeyenda(String color, String texto) {
         Label punto = new Label("●");
-        punto.setStyle("-fx-text-fill:" + color
-                + ";-fx-font-size:11px;-fx-font-weight:900;");
+        punto.getStyleClass().add("structural-legend-dot-v1");
+        punto.setStyle("-fx-text-fill:" + color + ";");
         Label descripcion = new Label(texto);
         descripcion.getStyleClass().add("structural-legend-text");
         HBox item = new HBox(6, punto, descripcion);
@@ -297,15 +297,14 @@ public class LlaveGraficaTorneoView {
     private void crearFase(FaseLlaveVisual fase, int indice, double alto) {
         double x = MARGEN_X + indice * ANCHO_COLUMNA;
         Label titulo = new Label(nombreFase(fase.nombre()));
-        titulo.setStyle("-fx-text-fill:" + colorFase(fase.nombre())
-                + ";-fx-font-weight:900;-fx-font-size:12px;");
+        titulo.getStyleClass().add("structural-phase-title-v1");
+        titulo.setStyle("-fx-text-fill:" + colorFase(fase.nombre()) + ";");
 
         int cantidadPartidosFase = fase.partidos().size();
         Label contador = new Label(cantidadPartidosFase
                 + (cantidadPartidosFase == 1
                         ? " PARTIDO" : " PARTIDOS"));
-        contador.setStyle("-fx-text-fill:#9ba6aa;"
-                + "-fx-font-size:9px;-fx-font-weight:900;");
+        contador.getStyleClass().add("structural-phase-count-v1");
 
         javafx.scene.layout.Region espacioEncabezado =
                 new javafx.scene.layout.Region();
@@ -353,8 +352,8 @@ public class LlaveGraficaTorneoView {
         cabecera.setMaxWidth(Double.MAX_VALUE);
         cabecera.setTextOverrun(
                 javafx.scene.control.OverrunStyle.ELLIPSIS);
-        cabecera.setStyle("-fx-text-fill:" + colorFase(partido.fase())
-                + ";-fx-font-size:10px;-fx-font-weight:900;");
+        cabecera.getStyleClass().add("structural-match-title-v1");
+        cabecera.setStyle("-fx-text-fill:" + colorFase(partido.fase()) + ";");
         Button intercambiar = new Button("INTERCAMBIAR");
         intercambiar.setFocusTraversable(false);
         aplicarEstiloAccionTarjeta(intercambiar, false);
@@ -445,6 +444,7 @@ public class LlaveGraficaTorneoView {
         String nombreCompleto = nombres.get(referencia);
         String visible = nombreCompleto == null ? texto : nombreCompleto;
         Label label = new Label(visible == null ? "Sin asignar" : visible);
+        label.getStyleClass().add("structural-bracket-slot-v1");
         label.setWrapText(false);
         label.setTextOverrun(
                 javafx.scene.control.OverrunStyle.ELLIPSIS);
@@ -872,41 +872,19 @@ public class LlaveGraficaTorneoView {
 
     private void aplicarEstiloAccionTarjeta(
             Button boton, boolean peligrosa) {
-        String normal = peligrosa
-                ? "-fx-background-color:#332427;-fx-border-color:#7d454c;"
-                  + "-fx-text-fill:#e8b0b5;"
-                : "-fx-background-color:#252b2f;-fx-border-color:#515c62;"
-                  + "-fx-text-fill:#d7dddf;";
-        String hover = peligrosa
-                ? "-fx-background-color:#432b2f;-fx-border-color:#a85c65;"
-                  + "-fx-text-fill:#ffd5d8;"
-                : "-fx-background-color:#302a38;-fx-border-color:#78638d;"
-                  + "-fx-text-fill:#eee3f6;";
-        String comun = "-fx-border-radius:6;-fx-background-radius:6;"
-                + "-fx-font-size:8px;-fx-font-weight:900;"
-                + "-fx-padding:4 7;-fx-cursor:hand;";
-        boton.setStyle(normal + comun);
-        boton.setOnMouseEntered(e ->
-                boton.setStyle(hover + comun + "-fx-translate-y:-1;"));
-        boton.setOnMouseExited(e -> boton.setStyle(normal + comun));
-        boton.setOnMousePressed(e -> boton.setStyle(hover + comun));
-        boton.setOnMouseReleased(e ->
-                boton.setStyle(hover + comun + "-fx-translate-y:-1;"));
+        boton.getStyleClass().add(peligrosa
+                ? "structural-card-action-danger-v1"
+                : "structural-card-action-secondary-v1");
     }
     private String estiloPlazaLlave(boolean vacia, boolean activa) {
         if (activa) {
-            return "-fx-text-fill:#ffffff;-fx-font-size:11px;"
-                    + "-fx-font-weight:800;-fx-background-color:#302a38;"
-                    + "-fx-border-color:#78638d;-fx-border-radius:6;"
-                    + "-fx-background-radius:6;-fx-padding:4 7;"
-                    + "-fx-cursor:hand;";
+            return "-fx-text-fill:#ffffff;"
+                    + "-fx-background-color:#302a38;"
+                    + "-fx-border-color:#78638d;";
         }
         return "-fx-text-fill:" + (vacia ? "#d8b36d" : "#e3e8e9")
-                + ";-fx-font-size:11px;-fx-font-weight:700;"
-                + "-fx-background-color:#22292d;"
-                + "-fx-border-color:transparent;-fx-border-radius:6;"
-                + "-fx-background-radius:6;-fx-padding:4 7;"
-                + "-fx-cursor:hand;";
+                + ";-fx-background-color:#22292d;"
+                + "-fx-border-color:transparent;";
     }
 
     private String nombreFase(String fase) {
@@ -944,3 +922,5 @@ public class LlaveGraficaTorneoView {
             double x, double y, double ancho, double alto) {
     }
 }
+
+// limpiar-tipografia-editor-estructural-v1

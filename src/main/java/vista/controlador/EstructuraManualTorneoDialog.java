@@ -1133,13 +1133,15 @@ public class EstructuraManualTorneoDialog {
             protected void updateItem(String valor, boolean vacia) {
                 super.updateItem(valor, vacia);
                 setText(vacia || valor == null ? null : valor);
-                setTextFill(javafx.scene.paint.Color.web("#f4fbff"));
-                setStyle((boton
-                        ? "-fx-background-color:#0a1922;"
-                        : isSelected()
-                            ? "-fx-background-color:#315f79;"
-                            : "-fx-background-color:#102532;")
-                        + "-fx-text-fill:#f4fbff;-fx-padding:7 10;");
+                getStyleClass().removeAll("structural-legacy-button-cell-v1",
+                        "structural-legacy-popup-cell-v1",
+                        "structural-legacy-popup-selected-v1");
+                getStyleClass().add(boton
+                        ? "structural-legacy-button-cell-v1"
+                        : "structural-legacy-popup-cell-v1");
+                if (!boton && isSelected()) {
+                    getStyleClass().add("structural-legacy-popup-selected-v1");
+                }
             }
         };
     }
@@ -1162,14 +1164,17 @@ public class EstructuraManualTorneoDialog {
             protected void updateItem(Integer valor, boolean vacia) {
                 super.updateItem(valor, vacia);
                 setText(vacia || valor == null ? null : valor.toString());
-                setTextFill(javafx.scene.paint.Color.web("#f4fbff"));
-                setStyle((boton
-                        ? "-fx-background-color:#0a1922;"
-                        : isSelected()
-                            ? "-fx-background-color:#315f79;"
-                            : "-fx-background-color:#102532;")
-                        + "-fx-text-fill:#f4fbff;-fx-padding:7 10;"
-                        + "-fx-font-weight:800;");
+                getStyleClass().removeAll("structural-legacy-button-cell-v1",
+                        "structural-legacy-popup-cell-v1",
+                        "structural-legacy-popup-selected-v1",
+                        "structural-legacy-number-cell-v1");
+                getStyleClass().add(boton
+                        ? "structural-legacy-button-cell-v1"
+                        : "structural-legacy-popup-cell-v1");
+                getStyleClass().add("structural-legacy-number-cell-v1");
+                if (!boton && isSelected()) {
+                    getStyleClass().add("structural-legacy-popup-selected-v1");
+                }
             }
         };
     }
@@ -1187,20 +1192,17 @@ public class EstructuraManualTorneoDialog {
     private <T> javafx.scene.control.ListCell<T> celdaSelectorAnimada(
             java.util.function.Function<T, String> textoVisible) {
         return new javafx.scene.control.ListCell<>() {
-            private final String normal = "-fx-background-color:#102532;"
-                    + "-fx-text-fill:#f4fbff;-fx-padding:9 11;"
-                    + "-fx-cursor:hand;";
-            private final String sobre = "-fx-background-color:#214b60;"
-                    + "-fx-text-fill:#ffffff;-fx-padding:9 11;"
-                    + "-fx-font-weight:800;-fx-cursor:hand;";
-            private final String seleccionado =
-                    "-fx-background-color:#376f8e;"
-                    + "-fx-text-fill:#ffffff;-fx-padding:9 11;"
-                    + "-fx-font-weight:800;-fx-cursor:hand;";
+            private boolean punteroEncima;
+
+            {
+                getStyleClass().add("structural-animated-popup-cell-v1");
+            }
 
             {
                 setOnMouseEntered(evento -> actualizarEstilo(true));
                 setOnMouseExited(evento -> actualizarEstilo(false));
+                selectedProperty().addListener((o, anterior, actual) ->
+                        actualizarEstilo(punteroEncima));
             }
 
             @Override
@@ -1212,13 +1214,17 @@ public class EstructuraManualTorneoDialog {
                 actualizarEstilo(false);
             }
 
-            private void actualizarEstilo(boolean punteroEncima) {
+            private void actualizarEstilo(boolean sobre) {
+                punteroEncima = sobre;
+                getStyleClass().removeAll("structural-animated-popup-hover-v1",
+                        "structural-animated-popup-selected-v1",
+                        "structural-animated-popup-empty-v1");
                 if (isEmpty()) {
-                    setStyle("-fx-background-color:#102532;");
+                    getStyleClass().add("structural-animated-popup-empty-v1");
                 } else if (isSelected()) {
-                    setStyle(seleccionado);
-                } else {
-                    setStyle(punteroEncima ? sobre : normal);
+                    getStyleClass().add("structural-animated-popup-selected-v1");
+                } else if (punteroEncima) {
+                    getStyleClass().add("structural-animated-popup-hover-v1");
                 }
             }
         };
@@ -1232,9 +1238,9 @@ public class EstructuraManualTorneoDialog {
                 super.updateItem(valor, vacia);
                 setText(vacia || valor == null
                         ? null : textoVisible.apply(valor));
-                setStyle("-fx-background-color:#0a1922;"
-                        + "-fx-text-fill:#f4fbff;-fx-padding:6 9;"
-                        + "-fx-cursor:hand;");
+                if (!getStyleClass().contains("structural-selector-button-cell-v1")) {
+                    getStyleClass().add("structural-selector-button-cell-v1");
+                }
             }
         };
     }
@@ -1506,3 +1512,5 @@ public class EstructuraManualTorneoDialog {
         }
     }
 }
+
+// limpiar-tipografia-editor-estructural-v1

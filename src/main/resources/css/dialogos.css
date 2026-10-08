@@ -4650,3 +4650,184 @@
     -fx-translate-x: 0;
     -fx-translate-y: 0;
 }
+
+/* limpiar-tipografia-editor-estructural-v1 */
+/* Tipografia y estados reutilizables del editor estructural. */
+.structural-legacy-button-cell-v1,
+.structural-legacy-popup-cell-v1,
+.structural-legacy-number-cell-v1,
+.structural-animated-popup-cell-v1,
+.structural-selector-button-cell-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10.5px;
+    -fx-font-style: normal;
+    -fx-text-fill: #f4fbff;
+}
+.structural-legacy-button-cell-v1 { -fx-background-color: #0a1922; -fx-padding: 7 10; }
+.structural-legacy-popup-cell-v1 { -fx-background-color: #102532; -fx-padding: 7 10; }
+.structural-legacy-popup-selected-v1 { -fx-background-color: #315f79; }
+.structural-legacy-number-cell-v1 { -fx-font-weight: 800; }
+.structural-animated-popup-cell-v1 {
+    -fx-background-color: #102532;
+    -fx-text-fill: #f4fbff;
+    -fx-font-weight: 600;
+    -fx-padding: 9 11;
+    -fx-cursor: hand;
+}
+.structural-animated-popup-hover-v1 {
+    -fx-background-color: #214b60;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+.structural-animated-popup-selected-v1 {
+    -fx-background-color: #376f8e;
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+}
+.structural-animated-popup-empty-v1 { -fx-background-color: #102532; }
+.structural-selector-button-cell-v1 {
+    -fx-background-color: #0a1922;
+    -fx-font-weight: 600;
+    -fx-padding: 6 9;
+    -fx-cursor: hand;
+}
+.structural-legend-dot-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 900;
+}
+.structural-phase-title-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 12px;
+    -fx-font-weight: 900;
+}
+.structural-phase-count-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 9px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #9ba6aa;
+}
+.structural-match-title-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.structural-bracket-slot-v1 {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 7;
+    -fx-cursor: hand;
+}
+.structural-card-action-secondary-v1,
+.structural-card-action-danger-v1,
+.structural-card-action-secondary-v1:hover,
+.structural-card-action-danger-v1:hover,
+.structural-card-action-secondary-v1:pressed,
+.structural-card-action-danger-v1:pressed,
+.structural-card-action-secondary-v1:focused,
+.structural-card-action-danger-v1:focused {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+    -fx-font-style: normal;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 4 7;
+    -fx-cursor: hand;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-y: 0;
+}
+.structural-card-action-secondary-v1 { -fx-background-color:#252b2f; -fx-border-color:#515c62; -fx-text-fill:#d7dddf; }
+.structural-card-action-secondary-v1:hover { -fx-background-color:#302a38; -fx-border-color:#78638d; -fx-text-fill:#eee3f6; -fx-effect: dropshadow(gaussian, rgba(116,89,146,.18), 6, .06, 0, 1); }
+.structural-card-action-secondary-v1:pressed { -fx-background-color:#211e26; -fx-border-color:#5d4d6b; -fx-effect: innershadow(gaussian,rgba(0,0,0,.28),4,.16,0,1); }
+.structural-card-action-danger-v1 { -fx-background-color:#332427; -fx-border-color:#7d454c; -fx-text-fill:#e8b0b5; }
+.structural-card-action-danger-v1:hover { -fx-background-color:#432b2f; -fx-border-color:#a85c65; -fx-text-fill:#ffd5d8; -fx-effect: dropshadow(gaussian, rgba(168,92,101,.18), 6, .06, 0, 1); }
+.structural-card-action-danger-v1:pressed { -fx-background-color:#2b2022; -fx-border-color:#82464e; -fx-effect: innershadow(gaussian,rgba(0,0,0,.28),4,.16,0,1); }
+
+/* corregir-regresiones-editor-y-horarios-v2 */
+/* Restaurar lectura y semantica de acciones dentro de las tarjetas de la llave. */
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1,
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1:hover,
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1:focused {
+    -fx-min-width: 104;
+    -fx-pref-width: 104;
+    -fx-max-width: 104;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 800;
+    -fx-font-style: normal;
+    -fx-padding: 0 7;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+    -fx-border-width: 1;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1 {
+    -fx-background-color: #26343a;
+    -fx-border-color: #4f7381;
+    -fx-text-fill: #dbe9ee;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1:hover {
+    -fx-background-color: #30434b;
+    -fx-border-color: #72a0b0;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(77,132,151,.20), 6, .07, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-swap-v2.structural-card-action-secondary-v1:pressed {
+    -fx-background-color: #202c31;
+    -fx-border-color: #486b78;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
+}
+
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1,
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1:hover,
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1:pressed,
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1:focused {
+    -fx-min-width: 76;
+    -fx-pref-width: 76;
+    -fx-max-width: 76;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 800;
+    -fx-font-style: normal;
+    -fx-padding: 0 6;
+    -fx-background-radius: 7;
+    -fx-border-radius: 7;
+    -fx-border-width: 1;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1 {
+    -fx-background-color: #3a2529;
+    -fx-border-color: #8d4c55;
+    -fx-text-fill: #f0bdc2;
+    -fx-effect: none;
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1:hover {
+    -fx-background-color: #4b2d32;
+    -fx-border-color: #bd6873;
+    -fx-text-fill: #ffe1e4;
+    -fx-effect: dropshadow(gaussian, rgba(189,104,115,.20), 6, .07, 0, 1);
+}
+.dialog-pane.structural-editor-dialog .button.structural-card-delete-v2.structural-card-action-danger-v1:pressed {
+    -fx-background-color: #302124;
+    -fx-border-color: #81464e;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
+}

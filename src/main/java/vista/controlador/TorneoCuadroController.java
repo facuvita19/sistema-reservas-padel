@@ -319,6 +319,16 @@ public class TorneoCuadroController {
         }
         comboInicio.setItems(horas);
         comboFin.setItems(FXCollections.observableArrayList(horas));
+        comboInicio.valueProperty().addListener((o, anterior, actual) -> {
+            actualizarOpcionesFin(actual);
+            actualizarDisponibilidadProgramacion();
+        });
+        comboFin.valueProperty().addListener((o, anterior, actual) ->
+                actualizarDisponibilidadProgramacion());
+        comboCancha.valueProperty().addListener((o, anterior, actual) ->
+                actualizarDisponibilidadProgramacion());
+        selectorFecha.valueProperty().addListener((o, anterior, actual) ->
+                actualizarDisponibilidadProgramacion());
     }
 
     @FXML
@@ -612,6 +622,10 @@ public class TorneoCuadroController {
                 throw new IllegalArgumentException(
                         "Selecciona cancha, fecha y horario completo.");
             }
+            if (!comboFin.getValue().isAfter(comboInicio.getValue())) {
+                throw new IllegalArgumentException(
+                        "La hora de finalizacion debe ser posterior al inicio.");
+            }
             long id = partido.getId();
             programacionService.programar(id,
                     comboCancha.getValue().getId(),
@@ -686,12 +700,16 @@ public class TorneoCuadroController {
         boolean torneoEnCurso = torneo != null && categoria != null
                 && categoria.isActivo()
                 && torneo.getEstado() == EstadoTorneo.EN_CURSO;
-        botonProgramar.setDisable(!torneoEnCurso || !hay || partido.isBye()
+        boolean torneoConfigurable = torneo != null && categoria != null
+                && categoria.isActivo()
+                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        botonProgramar.setDisable(!torneoConfigurable || !hay || partido.isBye()
                 || !partido.tieneDosParejas()
                 || (partido.getEstado() != EstadoPartidoTorneo.PENDIENTE
                     && partido.getEstado()
                         != EstadoPartidoTorneo.PROGRAMADO));
-        botonQuitar.setDisable(!torneoEnCurso || !hay
+        botonQuitar.setDisable(!torneoConfigurable || !hay
                 || partido.getEstado() != EstadoPartidoTorneo.PROGRAMADO);
         botonResultado.setDisable(!torneoEnCurso || !hay || partido.isBye()
                 || !partido.tieneDosParejas()
@@ -751,6 +769,7 @@ public class TorneoCuadroController {
                         : "GUARDAR PROGRAMACIÓN");
         selectorFecha.setValue(partido.getFecha());
         comboInicio.setValue(partido.getHoraInicio());
+        actualizarOpcionesFin(partido.getHoraInicio());
         comboFin.setValue(partido.getHoraFin());
         comboCancha.setValue(partido.getCanchaId() == null ? null
                 : comboCancha.getItems().stream()
@@ -758,6 +777,7 @@ public class TorneoCuadroController {
                     .findFirst().orElse(null));
         mostrarResultado(partido);
         cargarHistorial(partido);
+        actualizarDisponibilidadProgramacion();
     }
 
     private void cargarHistorial(TorneoPartido partido) {
@@ -938,6 +958,46 @@ public class TorneoCuadroController {
                         : partido.getObservaciones());
     }
 
+    private void actualizarOpcionesFin(LocalTime inicio) {
+        LocalTime seleccionAnterior = comboFin.getValue();
+        var opciones = FXCollections.<LocalTime>observableArrayList();
+        if (inicio != null) {
+            comboInicio.getItems().stream()
+                    .filter(hora -> hora.isAfter(inicio))
+                    .forEach(opciones::add);
+        }
+        comboFin.setItems(opciones);
+        if (inicio != null && seleccionAnterior != null
+                && seleccionAnterior.isAfter(inicio)) {
+            comboFin.setValue(seleccionAnterior);
+        } else if (!opciones.isEmpty()) {
+            comboFin.setValue(opciones.get(0));
+        } else {
+            comboFin.getSelectionModel().clearSelection();
+        }
+    }
+
+    private void actualizarDisponibilidadProgramacion() {
+        TorneoPartido partido = tablaPartidos.getSelectionModel()
+                .getSelectedItem();
+        boolean estadoConfigurable = torneo != null && categoria != null
+                && categoria.isActivo()
+                && (torneo.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA
+                    || torneo.getEstado() == EstadoTorneo.EN_CURSO);
+        LocalTime inicio = comboInicio.getValue();
+        LocalTime fin = comboFin.getValue();
+        boolean horarioValido = inicio != null && fin != null
+                && fin.isAfter(inicio);
+        boolean datosCompletos = comboCancha.getValue() != null
+                && selectorFecha.getValue() != null && horarioValido;
+        boolean partidoValido = partido != null && !partido.isBye()
+                && partido.tieneDosParejas()
+                && (partido.getEstado() == EstadoPartidoTorneo.PENDIENTE
+                    || partido.getEstado() == EstadoPartidoTorneo.PROGRAMADO);
+        botonProgramar.setDisable(!estadoConfigurable
+                || !partidoValido || !datosCompletos);
+    }
+
     private String programacion(TorneoPartido partido) {
         if (partido.isBye()) return "Clasifica por BYE";
         if (!partido.estaProgramado()) return "Sin programar";
@@ -1095,3 +1155,6 @@ public class TorneoCuadroController {
         Navegacion.mostrarTorneos();
     }
 }
+// habilitar-programacion-preparacion-y-validar-horarios-v2
+// corregir-estado-programacion-preparacion-v3
+// corregir-dialogo-seleccion-requerida-programacion-v4
