@@ -73,6 +73,7 @@ public class CierreCajaController {
     @FXML private Label etiquetaDatosCierre;
     @FXML private Label etiquetaAdvertenciaPendientes;
     @FXML private Label etiquetaPagosAcreditadosDetalle;
+    @FXML private Label etiquetaPagosAcreditadosVisible;
     @FXML private Label etiquetaCierreEsperado;
     @FXML private Label etiquetaCierreJornada;
     @FXML private Label etiquetaCierreFecha;
@@ -284,11 +285,12 @@ public class CierreCajaController {
         // caja-movimientos-centrados-v1
         for (TableColumn<MovimientoCaja, ?> columna : java.util.List.of(
                 columnaMovimientoFecha, columnaMovimientoTipo,
-                columnaMovimientoConcepto, columnaMovimientoMedio,
+                columnaMovimientoMedio,
                 columnaMovimientoImporte, columnaMovimientoUsuario)) {
             columna.setStyle("-fx-alignment: CENTER;");
             columna.setReorderable(false);
         }
+        columnaMovimientoConcepto.setStyle("-fx-alignment: CENTER-LEFT;");
 }
 
     private <T> TableCell<MovimientoCaja, T> celdaTexto(
@@ -353,6 +355,7 @@ public class CierreCajaController {
     @FXML private void mostrarMovimientosTab() { mostrarPestana(PestanaCaja.MOVIMIENTOS); }
     @FXML private void mostrarCierreTab() { mostrarPestana(PestanaCaja.CIERRE); }    private void mostrarPestana(PestanaCaja pestana) {
         pestanaActiva = pestana;
+        limpiarMensaje();
         mostrar(panelResumen, pestana == PestanaCaja.RESUMEN);
         boolean movimientos = pestana == PestanaCaja.MOVIMIENTOS;
         scrollMovimientos.setVisible(movimientos);
@@ -372,10 +375,16 @@ public class CierreCajaController {
         if (movimientos) {
             scrollMovimientos.setVvalue(0);
             javafx.application.Platform.runLater(() -> {
-                if (contenedorNuevoMovimiento.isVisible()
-                        && !comboTipoMovimiento.isDisabled()) {
-                    comboTipoMovimiento.requestFocus();
-                }
+                scrollMovimientos.applyCss();
+                scrollMovimientos.layout();
+                scrollMovimientos.setVvalue(0);
+                javafx.application.Platform.runLater(() -> {
+                    scrollMovimientos.setVvalue(0);
+                    if (contenedorNuevoMovimiento.isVisible()
+                            && !comboTipoMovimiento.isDisabled()) {
+                        comboTipoMovimiento.requestFocus();
+                    }
+                });
             });
         }
     }    private void configurarValidaciones() {
@@ -424,6 +433,22 @@ public class CierreCajaController {
     }
 
     private void configurarFecha() {
+        selectorFecha.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(LocalDate fecha) {
+                return fecha == null ? "" : fecha.format(FORMATO_FECHA);
+            }
+
+            @Override
+            public LocalDate fromString(String texto) {
+                if (texto == null || texto.isBlank()) return null;
+                try {
+                    return LocalDate.parse(texto.trim(), FORMATO_FECHA);
+                } catch (java.time.format.DateTimeParseException exception) {
+                    return selectorFecha.getValue();
+                }
+            }
+        });
         Usuario usuario = Navegacion.getUsuarioActual();
         selectorFecha.setValue(LocalDate.now());
         selectorFecha.setDisable(usuario == null || !usuario.esAdministrador());
@@ -448,6 +473,10 @@ public class CierreCajaController {
             resumenActual = cierreService.obtenerResumen(fecha, movimientos);
             tablaPagosAcreditados.setItems(FXCollections.observableArrayList(
                     detallePagoService.listarAcreditadosPorFecha(fecha)));
+            int pagosVisibles = tablaPagosAcreditados.getItems().size();
+            etiquetaPagosAcreditadosVisible.setText(
+                    pagosVisibles + (pagosVisibles == 1
+                            ? " pago visible" : " pagos visibles"));
             tablaMovimientos.setItems(FXCollections.observableArrayList(
                     movimientos));
             mostrarResumen(resumenActual);
@@ -576,7 +605,7 @@ public class CierreCajaController {
             actualizarBotonMovimiento();
             mostrarInfo("El movimiento se registró correctamente.");
             javafx.application.Platform.runLater(() -> {
-                scrollMovimientos.setVvalue(1.0);
+                scrollMovimientos.setVvalue(0);
                 tablaMovimientos.scrollTo(
                         Math.max(0, tablaMovimientos.getItems().size() - 1));
             });
@@ -795,4 +824,6 @@ public class CierreCajaController {
     private void mostrarError(String mensaje) { etiquetaMensaje.setText(mensaje == null ? "Ocurrió un error." : mensaje); etiquetaMensaje.getStyleClass().remove("mensaje-exito"); if (!etiquetaMensaje.getStyleClass().contains("mensaje-error")) etiquetaMensaje.getStyleClass().add("mensaje-error"); }
     private void mostrarInfo(String mensaje) { etiquetaMensaje.setText(mensaje); etiquetaMensaje.getStyleClass().remove("mensaje-error"); if (!etiquetaMensaje.getStyleClass().contains("mensaje-exito")) etiquetaMensaje.getStyleClass().add("mensaje-exito"); }
     private void limpiarMensaje() { etiquetaMensaje.setText(""); etiquetaMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito"); }
+    // modernizar-caja-operativa-unificada-v1
+    // cerrar-caja-operativa-v3
 }

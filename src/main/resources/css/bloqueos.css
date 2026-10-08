@@ -76,3 +76,113 @@
     -fx-border-color: transparent transparent #343d42 -color-principal;
     -fx-border-width: 0 0 1 4;
 }
+
+/* unificar-cabeceras-usuarios-canchas-bloqueos-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.blocks-root .blocks-module-header-v1 {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.blocks-root .blocks-title-block-v1 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.blocks-root .blocks-title-block-v1 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* compactar-bloqueos-unificado-v1 */
+/* Densidad interna alineada con Usuarios y Canchas. */
+.blocks-root .blocks-list-v1 {
+    -fx-spacing: 9;
+}
+.blocks-root .modern-table .table-row-cell {
+    -fx-cell-size: 52px;
+}
+.blocks-root .blocks-form-v1 {
+    -fx-spacing: 10;
+}
+.blocks-root .block-detail-header {
+    -fx-padding: 10 12;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.blocks-root .block-detail-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.blocks-root .field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.blocks-root .block-section-header-v1 {
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-padding: 2 0 0 0;
+}
+.blocks-root .block-section-icon-shell-v1 {
+    -fx-min-width: 28;
+    -fx-pref-width: 28;
+    -fx-max-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+.blocks-root .block-section-title-v1 {
+    -fx-font-size: 11px;
+}
+.blocks-root .modern-area {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 96;
+}
+.blocks-root .block-note {
+    -fx-padding: 8 10;
+    -fx-spacing: 5;
+}
+.blocks-root .block-note-text {
+    -fx-font-size: 10px;
+    -fx-line-spacing: 1px;
+}
+.blocks-root .block-actions-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-spacing: 10;
+}
+.blocks-root .block-save-button-v1,
+.blocks-root .block-delete-button-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.blocks-root .block-delete-button-v1 {
+    -fx-min-width: 140;
+    -fx-pref-width: 140;
+    -fx-max-width: 140;
+}
+.blocks-root .block-save-button-v1:hover,
+.blocks-root .block-delete-button-v1:hover {
+    -fx-translate-y: 0;
+}
+.blocks-root .modern-combo > .arrow-button,
+.blocks-root .modern-date > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.blocks-root .modern-combo > .arrow-button > .arrow,
+.blocks-root .modern-date > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}

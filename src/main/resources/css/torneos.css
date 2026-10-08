@@ -579,3 +579,66 @@
     -fx-pref-width: 187;
     -fx-max-width: 187;
 }
+
+/* alinear-titulos-torneos-solicitudes-v1 */
+/* Centrado vertical definitivo del titulo respecto del icono de 42 px. */
+.tournaments-root-v2 .tournaments-title-block-v3 {
+    -fx-alignment: CENTER_LEFT;
+    -fx-translate-y: 0;
+}
+
+/* refinar-densidad-torneos-v1 */
+/* Torneos ya era compacto: se normalizan filtros y geometria operativa. */
+.tournaments-root-v2 .tournaments-search-v2,
+.tournaments-root-v2 .tournaments-filter-v2,
+.tournaments-root-v2 .tournaments-clear-v2,
+.tournaments-root-v2 .tournaments-refresh-v4 {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.tournaments-root-v2 .tournaments-clear-v2 {
+    -fx-min-width: 108;
+    -fx-pref-width: 108;
+    -fx-max-width: 108;
+    -fx-padding: 0 11;
+}
+.tournaments-root-v2 .tournaments-refresh-v4 {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+    -fx-padding: 0 14;
+}
+.tournaments-root-v2 .tournaments-filter-v2 > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.tournaments-root-v2 .tournaments-filter-v2 > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.tournaments-root-v2 .tournaments-list-v2 .table-row-cell {
+    -fx-cell-size: 52px;
+}
+.tournaments-root-v2 .tournaments-categories-table-v2 .table-row-cell {
+    -fx-cell-size: 46px;
+}
+.tournaments-root-v2 .tournaments-category-actions-stable {
+    -fx-min-height: 52;
+    -fx-pref-height: 52;
+    -fx-max-height: 52;
+}
+.tournaments-root-v2 .tournaments-action-primary,
+.tournaments-root-v2 .tournaments-action-secondary,
+.tournaments-root-v2 .tournaments-action-danger,
+.tournaments-root-v2 .tournaments-action-danger-outline {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-translate-y: 0;
+}

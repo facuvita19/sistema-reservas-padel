@@ -1102,3 +1102,93 @@
     -fx-font-size: 10px;
     -fx-font-weight: 900;
 }
+
+/* alinear-titulos-torneos-solicitudes-v1 */
+/* Centrado vertical definitivo del titulo respecto del icono de 42 px. */
+.web-root-v2 .web-title-block-v3 {
+    -fx-alignment: CENTER_LEFT;
+    -fx-translate-y: 0;
+}
+
+/* refinar-densidad-solicitudes-web-v1 */
+/* Solicitudes web ya era compacta: se normalizan flecha, filas y acciones. */
+.web-root-v2 .web-metric-button {
+    -fx-min-height: 58;
+    -fx-pref-height: 58;
+    -fx-max-height: 58;
+    -fx-padding: 5 11;
+    -fx-translate-y: 0;
+}
+.web-root-v2 .web-search,
+.web-root-v2 .web-state-filter,
+.web-root-v2 .web-filter-clear,
+.web-root-v2 .web-refresh-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.web-root-v2 .web-filter-clear {
+    -fx-min-width: 108;
+    -fx-pref-width: 108;
+    -fx-max-width: 108;
+}
+.web-root-v2 .web-refresh-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+}
+.web-root-v2 .web-state-filter > .arrow-button,
+.web-root-v2 .web-state-filter > .arrow-button:hover {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.web-root-v2 .web-state-filter > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.web-root-v2 .web-table-v2 .table-row-cell {
+    -fx-cell-size: 48px;
+    -fx-cursor: hand;
+}
+.web-root-v2 .web-detail-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.web-root-v2 .web-detail-group,
+.web-root-v2 .web-finance-v2,
+.web-root-v2 .web-client-card-v6 {
+    -fx-padding: 10 12;
+}
+.web-root-v2 .web-action-primary,
+.web-root-v2 .web-action-secondary,
+.web-root-v2 .web-action-whatsapp {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.web-root-v2 .web-action-primary:hover,
+.web-root-v2 .web-action-secondary:hover,
+.web-root-v2 .web-action-whatsapp:hover {
+    -fx-translate-y: 0;
+}
+
+/* unificar-color-iconos-agenda-solicitudes-v1 */
+/* Identidad verde comun para los iconos de cabecera administrativos. */
+.web-root-v2 .web-module-icon-shell-v3 {
+    -fx-background-color: #1b2926;
+    -fx-border-color: #3d6b5b;
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+}
+.web-root-v2 .web-module-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #89c8ab;
+    -fx-stroke-width: 1.5;
+}

@@ -8,6 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.SVGPath?>
+<!-- refinar-densidad-reservas-v1 -->
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.ReservasController" styleClass="module-root, reservations-root">
     <top>
@@ -57,7 +58,7 @@
             </VBox>
             <ScrollPane fx:id="scrollFormulario" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
                 <VBox spacing="10" styleClass="form-card, reservation-form-compact">
-                    <padding><Insets top="14" right="18" bottom="30" left="18" /></padding>
+                    <padding><Insets top="14" right="18" bottom="22" left="18" /></padding>
                     <VBox fx:id="avisoModoReprogramacion"
                           visible="false" managed="false" spacing="5"
                           styleClass="reservation-reprogram-banner">
@@ -166,9 +167,9 @@
                                    styleClass="small-caption" />
                         </HBox>
                         <ListView fx:id="listaAuditoria"
-                                  prefHeight="250"
-                                  minHeight="250"
-                                  maxHeight="250"
+                                  prefHeight="210"
+                                  minHeight="190"
+                                  maxHeight="230"
                                   maxWidth="Infinity"
                                   styleClass="audit-list" />
                     </VBox>

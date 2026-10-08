@@ -159,8 +159,8 @@ public class ConfiguracionController {
                         Button boton = new Button();
                         boton.setGraphic(contenido);
                         boton.setUserData(acento.color());
-                        boton.setPrefWidth(136);
-                        boton.setMaxWidth(136);
+                        boton.setPrefWidth(210);
+                        boton.setMaxWidth(210);
                         boton.getProperties().put(
                                         "marcaAcento", marca);
                         boton.getStyleClass().add("config-accent-option");
@@ -468,4 +468,6 @@ public class ConfiguracionController {
         private void volver() {
 		Navegacion.mostrarDashboard(Navegacion.getUsuarioActual());
 	}
+        // modernizar-configuracion-unificada-v1
+        // cerrar-configuracion-unificada-v5
 }

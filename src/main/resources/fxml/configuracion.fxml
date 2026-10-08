@@ -3,39 +3,34 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 
+<!-- modernizar-configuracion-unificada-v1 -->
+<!-- corregir-cierre-top-configuracion-v4 -->
+<!-- cerrar-configuracion-unificada-v5 -->
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.ConfiguracionController"
             styleClass="config-root">
     <top>
-        <HBox alignment="CENTER_LEFT"
-              spacing="16"
-              styleClass="module-header">
-            <padding>
-                <Insets top="18" right="26" bottom="18" left="26" />
-            </padding>
-            <children>
-                <Button text="INICIO"
-                        onAction="#volver"
-                        styleClass="admin-home-button" />
-                <VBox spacing="2">
-                    <children>
-                        <Label text="Configuración del complejo"
-                               styleClass="page-title" />
-                        <Label text="Personalizá la identidad y las políticas comerciales de esta instalación."
-                               styleClass="page-subtitle" />
-                    </children>
-                </VBox>
-                <Region HBox.hgrow="ALWAYS" />
-                <ProgressIndicator fx:id="indicadorCarga"
-                                   visible="false"
-                                   maxWidth="18"
-                                   maxHeight="18" />
-                <Button text="RECARGAR"
-                        onAction="#cargarConfiguracion"
-                        styleClass="secondary-button" />
-            </children>
+        <HBox alignment="CENTER_LEFT" spacing="14" styleClass="config-header-v6">
+            <padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
+            <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42"
+                    minHeight="42" prefHeight="42" maxHeight="42"
+                    styleClass="config-back-button-v6">
+                <tooltip><Tooltip text="Volver a Inicio"/></tooltip>
+                <graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="config-back-icon-v6"/></graphic>
+            </Button>
+            <StackPane minWidth="42" prefWidth="42" maxWidth="42"
+                       minHeight="42" prefHeight="42" maxHeight="42"
+                       styleClass="config-module-icon-shell-v6">
+                <SVGPath content="M12 3 L14 6 L18 6 L19 10 L22 12 L19 14 L18 18 L14 18 L12 21 L10 18 L6 18 L5 14 L2 12 L5 10 L6 6 L10 6 Z M12 9 C10.3 9 9 10.3 9 12 C9 13.7 10.3 15 12 15 C13.7 15 15 13.7 15 12 C15 10.3 13.7 9 12 9 Z" styleClass="config-module-icon-v6"/>
+            </StackPane>
+            <VBox alignment="CENTER_LEFT" spacing="2" styleClass="config-title-block-v6">
+                <Label text="Configuración del complejo" styleClass="config-page-title-v6"/>
+                <Label text="Personalizá la identidad y las políticas comerciales de esta instalación." styleClass="config-page-subtitle-v6"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
         </HBox>
     </top>
 
@@ -45,12 +40,20 @@
                     vbarPolicy="AS_NEEDED"
                     styleClass="config-scroll">
             <content>
-                <VBox spacing="16" styleClass="config-content">
-                    <padding>
-                        <Insets top="18" right="28" bottom="28" left="28" />
-                    </padding>
+                <VBox spacing="14" styleClass="config-content-v6">
+                    <padding><Insets top="14" right="20" bottom="20" left="20"/></padding>
                     <children>
-                        <GridPane hgap="16" vgap="16">
+                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="config-toolbar-v6">
+                            <VBox spacing="1" HBox.hgrow="ALWAYS">
+                                <Label text="CONFIGURACIÓN GENERAL" styleClass="config-toolbar-eyebrow-v6"/>
+                                <Label text="Los cambios se aplican después de guardar la configuración." styleClass="config-toolbar-copy-v6"/>
+                            </VBox>
+                            <ProgressIndicator fx:id="indicadorCarga" visible="false" maxWidth="18" maxHeight="18"/>
+                            <Button text="RECARGAR" onAction="#cargarConfiguracion" styleClass="config-refresh-button-v6">
+                                <graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath content="M19 8 A8 8 0 1 0 20 13 M19 4 L19 8 L15 8" styleClass="config-action-icon-v6"/></StackPane></graphic>
+                            </Button>
+                        </HBox>
+                        <GridPane hgap="14" vgap="14">
                             <columnConstraints>
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                 <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
@@ -84,9 +87,10 @@
                                                            promptText="Sin logo seleccionado"
                                                            HBox.hgrow="ALWAYS"
                                                            styleClass="modern-field" />
-                                                <Button text="Seleccionar"
-                                                        onAction="#seleccionarLogo"
-                                                        styleClass="secondary-button" />
+                                                <Button text="SELECCIONAR" onAction="#seleccionarLogo"
+                                                        styleClass="secondary-button, config-select-logo-v6">
+                                                    <graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M7 15 L10 12 L13 15 L16 10 L20 15 M8 9 C8 8.4 8.4 8 9 8 C9.6 8 10 8.4 10 9 C10 9.6 9.6 10 9 10 C8.4 10 8 9.6 8 9 Z" styleClass="config-secondary-icon-v5"/></StackPane></graphic>
+                                                </Button>
                                             </children>
                                         </HBox>
                                         <Label text="La ruta del logo corresponde a este equipo."
@@ -215,7 +219,7 @@
                                         <Label text="Color de acento" styleClass="field-label" />
                                         <Label text="Elegí un acento para botones, foco y elementos activos. Los estados conservan sus colores semánticos."
                                                wrapText="true" styleClass="config-note-text" />
-                                        <FlowPane fx:id="contenedorPaleta" hgap="8" vgap="8" prefWrapLength="430" />
+                                        <FlowPane fx:id="contenedorPaleta" hgap="8" vgap="8" prefWrapLength="850" styleClass="config-palette-v6" />
                                         <Label text="Color personalizado" styleClass="field-label" />
                                         <ColorPicker fx:id="selectorColor" maxWidth="Infinity" />
                                         <VBox fx:id="vistaPreviaAcento" spacing="9" styleClass="config-accent-preview">
@@ -232,7 +236,9 @@
                                                 </HBox>
                                             </children>
                                         </VBox>
-                                        <Button text="Restaurar acento predeterminado" onAction="#restaurarColor" styleClass="secondary-button" />
+                                        <Button text="RESTAURAR ACENTO" onAction="#restaurarColor" styleClass="secondary-button, config-restore-accent-v6">
+                                            <graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18"><SVGPath content="M19 8 A8 8 0 1 0 20 13 M19 4 L19 8 L15 8" styleClass="config-secondary-icon-v5"/></StackPane></graphic>
+                                        </Button>
                                         <Label fx:id="etiquetaAparienciaPendiente"
                                                text="Vista previa actualizada. Pulsá GUARDAR CONFIGURACIÓN para aplicar el acento en todo el sistema."
                                                visible="false" managed="false" wrapText="true"
@@ -252,7 +258,7 @@
                                 <VBox spacing="6" GridPane.columnIndex="2"><Label text="Entidad o medio" styleClass="field-label"/><TextField fx:id="campoPagoEntidad" promptText="Banco o billetera" styleClass="modern-field"/></VBox>
                             </GridPane>
                             <Label text="Instrucciones adicionales" styleClass="field-label"/>
-                            <TextArea fx:id="campoPagoInstrucciones" prefRowCount="3" wrapText="true" promptText="Ejemplo: transferí el importe exacto y enviá el comprobante por WhatsApp." styleClass="modern-area"/>
+                            <TextArea fx:id="campoPagoInstrucciones" prefRowCount="2" minHeight="76" prefHeight="76" maxHeight="86" wrapText="true" promptText="Ejemplo: transferí el importe exacto y enviá el comprobante por WhatsApp." styleClass="modern-area"/>
                         </VBox>
                     </children>
                 </VBox>
@@ -264,20 +270,20 @@
         <HBox alignment="CENTER_LEFT" spacing="12"
               styleClass="config-save-bar">
             <padding>
-                <Insets top="11" right="28" bottom="11" left="28" />
+                <Insets top="10" right="24" bottom="10" left="24" />
             </padding>
             <children>
                 <Label text="CONFIGURACIÓN" styleClass="config-save-overline" />
-                <Label fx:id="etiquetaMensaje"
-                       text="Sin cambios pendientes."
-                       maxWidth="Infinity"
-                       wrapText="true"
-                       HBox.hgrow="ALWAYS"
-                       styleClass="config-save-message" />
+                <HBox alignment="CENTER_LEFT" spacing="7" HBox.hgrow="ALWAYS">
+                    <StackPane minWidth="8" prefWidth="8" maxWidth="8" minHeight="8" prefHeight="8" maxHeight="8" styleClass="config-status-dot-v5"/>
+                    <Label fx:id="etiquetaMensaje" text="Sin cambios pendientes."
+                           maxWidth="Infinity" wrapText="true" HBox.hgrow="ALWAYS"
+                           styleClass="config-save-message"/>
+                </HBox>
                 <Button fx:id="botonGuardar"
                         text="GUARDAR CONFIGURACIÓN"
                         onAction="#guardar"
-                        minWidth="235"
+                        minWidth="270" prefWidth="270" maxWidth="270"
                         styleClass="primary-button, config-save-button" />
             </children>
         </HBox>

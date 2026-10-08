@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.SVGPath?>
+<!-- compactar-clientes-unificado-v1 -->
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="vista.controlador.ClientesController" styleClass="module-root, clients-root">
   <top><HBox alignment="CENTER_LEFT" spacing="16" styleClass="module-header, clients-module-header"><padding><Insets top="12" right="24" bottom="12" left="24"/></padding>
   <Button onAction="#volver" accessibleText="Volver al inicio" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="clients-back-button"><tooltip><Tooltip text="Volver al inicio"/></tooltip><graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="clients-back-icon-v9"/></graphic></Button>
@@ -26,7 +27,7 @@
     <TableColumn fx:id="columnaEmail" text="EMAIL" visible="false"/>
     <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="105" minWidth="95" maxWidth="115"/></columns><placeholder><Label text="Todavía no hay clientes registrados." styleClass="empty-state"/></placeholder></TableView>
   </VBox>
-  <ScrollPane fx:id="scrollDetalleCliente" fitToWidth="true" styleClass="form-scroll"><VBox spacing="16" styleClass="form-card"><padding><Insets top="24" right="28" bottom="28" left="28"/></padding>
+  <ScrollPane fx:id="scrollDetalleCliente" fitToWidth="true" styleClass="form-scroll"><VBox spacing="12" styleClass="form-card, clients-form-v1"><padding><Insets top="18" right="24" bottom="24" left="24"/></padding>
    <VBox spacing="7" styleClass="client-detail-header">
     <HBox alignment="CENTER_LEFT" spacing="10">
      <StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="client-detail-icon-box"><SVGPath content="M12 12 C9.2 12 7 9.8 7 7 C7 4.2 9.2 2 12 2 C14.8 2 17 4.2 17 7 C17 9.8 14.8 12 12 12 Z M4 22 C4 16.5 7.5 14 12 14 C16.5 14 20 16.5 20 22" styleClass="client-detail-icon"/></StackPane>
@@ -49,7 +50,7 @@
    </GridPane>
    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="next-reservation-card"><StackPane styleClass="next-reservation-icon-box"><SVGPath content="M5 3 L5 7 M19 3 L19 7 M3 9 L21 9 M4 5 L20 5 L20 21 L4 21 Z" styleClass="next-reservation-icon"/></StackPane><VBox spacing="1"><Label text="PRÓXIMA RESERVA" styleClass="history-metric-label"/><Label fx:id="etiquetaProximaReserva" text="Seleccioná un cliente" styleClass="next-reservation-value"/></VBox></HBox>
    <HBox alignment="CENTER_LEFT" spacing="10" styleClass="clients-history-header"><StackPane styleClass="clients-section-icon-box"><SVGPath content="M5 3 L5 7 M19 3 L19 7 M3 9 L21 9 M4 5 L20 5 L20 21 L4 21 Z M8 13 L11 16 L16 11" styleClass="clients-section-icon"/></StackPane><VBox spacing="1"><Label text="Reservas del cliente" styleClass="section-title"/><Label text="Seleccioná una reserva o hacé doble clic para abrirla" styleClass="small-caption"/></VBox><Region HBox.hgrow="ALWAYS"/><Button fx:id="botonAbrirReserva" text="ABRIR RESERVA" onAction="#abrirReservaSeleccionada" disable="true" styleClass="client-open-reservation-button"><graphic><SVGPath content="M4 5 L12 5 L14 7 L20 7 L20 20 L4 20 Z M12 11 L17 11 L17 16 M17 11 L10 18" styleClass="clients-button-icon"/></graphic></Button></HBox>
-   <TableView fx:id="tablaHistorial" prefHeight="285" minHeight="230" styleClass="modern-table, client-history-table"><columns><TableColumn fx:id="columnaHistorialFecha" text="FECHA" prefWidth="90"/><TableColumn fx:id="columnaHistorialHorario" text="HORARIO" prefWidth="112"/><TableColumn fx:id="columnaHistorialCancha" text="CANCHA" prefWidth="120"/><TableColumn fx:id="columnaHistorialEstado" text="ESTADO" prefWidth="128" minWidth="120" maxWidth="140"/><TableColumn fx:id="columnaHistorialPrecio" text="PRECIO" prefWidth="100"/><TableColumn fx:id="columnaHistorialAcreditado" text="ACREDITADO" prefWidth="105"/><TableColumn fx:id="columnaHistorialSaldo" text="SALDO" prefWidth="100"/></columns><placeholder><Label text="Seleccioná un cliente para consultar el historial." styleClass="empty-state"/></placeholder></TableView>
+   <TableView fx:id="tablaHistorial" prefHeight="265" minHeight="220" styleClass="modern-table, client-history-table"><columns><TableColumn fx:id="columnaHistorialFecha" text="FECHA" prefWidth="90"/><TableColumn fx:id="columnaHistorialHorario" text="HORARIO" prefWidth="112"/><TableColumn fx:id="columnaHistorialCancha" text="CANCHA" prefWidth="120"/><TableColumn fx:id="columnaHistorialEstado" text="ESTADO" prefWidth="128" minWidth="120" maxWidth="140"/><TableColumn fx:id="columnaHistorialPrecio" text="PRECIO" prefWidth="100"/><TableColumn fx:id="columnaHistorialAcreditado" text="ACREDITADO" prefWidth="105"/><TableColumn fx:id="columnaHistorialSaldo" text="SALDO" prefWidth="100"/></columns><placeholder><Label text="Seleccioná un cliente para consultar el historial." styleClass="empty-state"/></placeholder></TableView>
   </VBox></ScrollPane>
  </SplitPane></center>
 </BorderPane>

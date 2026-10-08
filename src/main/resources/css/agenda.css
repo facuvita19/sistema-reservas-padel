@@ -719,3 +719,98 @@
     -fx-effect: none;
     -fx-cursor: default;
 }
+
+/* unificar-cabecera-agenda-v1 */
+/* Agenda conserva sus dos niveles, pero adopta la escala comun de cabeceras. */
+.agenda-root .agenda-header-shell {
+    -fx-spacing: 7;
+    -fx-padding: 12 20 10 20;
+}
+.agenda-root .agenda-title-block-v19 {
+    -fx-alignment: CENTER_LEFT;
+    -fx-translate-y: 0;
+}
+.agenda-root .agenda-page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.agenda-root .agenda-page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* Navegacion temporal alineada con los controles operativos del sistema. */
+.agenda-root .agenda-date-controls {
+    -fx-padding: 4;
+    -fx-spacing: 7;
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+}
+.agenda-root .agenda-nav-button,
+.agenda-root .agenda-today-button,
+.agenda-root .agenda-update-button,
+.agenda-root .agenda-date-picker {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.agenda-root .agenda-nav-button {
+    -fx-min-width: 40;
+    -fx-pref-width: 40;
+    -fx-max-width: 40;
+    -fx-padding: 0;
+}
+.agenda-root .agenda-today-button {
+    -fx-min-width: 100;
+    -fx-pref-width: 100;
+    -fx-padding: 0 13;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.agenda-root .agenda-update-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+    -fx-padding: 0 15;
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.agenda-root .agenda-date-picker {
+    -fx-min-width: 190;
+    -fx-pref-width: 190;
+    -fx-max-width: 190;
+}
+.agenda-root .agenda-date-picker > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.agenda-root .agenda-date-picker > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+
+/* La meta barra conserva su densidad y no altera la grilla. */
+.agenda-root .agenda-meta-bar {
+    -fx-padding: 6 10;
+}
+
+/* unificar-color-iconos-agenda-solicitudes-v1 */
+/* Identidad verde comun para los iconos de cabecera administrativos. */
+.agenda-root .agenda-module-icon-shell-v19 {
+    -fx-background-color: #1b2926;
+    -fx-border-color: #3d6b5b;
+    -fx-background-radius: 11;
+    -fx-border-radius: 11;
+}
+.agenda-root .agenda-module-icon-v19 {
+    -fx-fill: transparent;
+    -fx-stroke: #89c8ab;
+    -fx-stroke-width: 1.5;
+}

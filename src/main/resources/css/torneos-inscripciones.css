@@ -902,3 +902,124 @@
     -fx-translate-y: 0;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
 }
+
+/* mover-actualizar-pagos-inscripciones-v4 */
+.tournaments-root .inscriptions-refresh-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-padding: 0 15;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+
+/* igualar-filtros-pagos-inscripciones-v5 */
+/* Mismas dimensiones que Reservas y Pagos. */
+.tournaments-root .inscriptions-search-with-icon-v4,
+.tournaments-root .inscriptions-state-filter,
+.tournaments-root .inscriptions-clear-button,
+.tournaments-root .inscriptions-refresh-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.tournaments-root .inscriptions-clear-button {
+    -fx-min-width: 108;
+    -fx-pref-width: 108;
+    -fx-max-width: 108;
+    -fx-padding: 0 11;
+}
+.tournaments-root .inscriptions-refresh-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+    -fx-padding: 0 14;
+}
+.tournaments-root .inscriptions-clear-button,
+.tournaments-root .inscriptions-refresh-button {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+
+/* unificar-cabeceras-clientes-reservas-inscripciones-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.tournaments-root .module-header {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.tournaments-root .inscriptions-title-block-v4 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.tournaments-root .inscriptions-title-block-v4 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* refinar-densidad-inscripciones-v1 */
+/* Inscripciones ya era compacta: se refinan solo controles y pie fijo. */
+.tournaments-root .inscriptions-state-filter > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.tournaments-root .inscriptions-state-filter > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.tournaments-root .inscription-detail-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.tournaments-root .tournament-detail .field-label {
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}
+.tournaments-root .inscription-observation-compact-v1 {
+    -fx-min-height: 76;
+    -fx-pref-height: 76;
+    -fx-max-height: 92;
+}
+.tournaments-root .management-actions-fixed {
+    -fx-spacing: 7;
+    -fx-padding: 10 16 12 16;
+}
+.tournaments-root .inscription-save-note,
+.tournaments-root .tournament-action-confirm,
+.tournaments-root .tournament-action-wait,
+.tournaments-root .tournament-action-reject,
+.tournaments-root .tournament-action-cancel {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-padding: 0 11;
+    -fx-translate-y: 0;
+}
+.tournaments-root .management-actions-fixed .button:hover {
+    -fx-translate-y: 0;
+}
+.tournaments-root .inscriptions-table {
+    -fx-fixed-cell-size: 48;
+}
+.tournaments-root .inscriptions-table .table-row-cell {
+    -fx-cell-size: 48;
+}

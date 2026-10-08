@@ -522,3 +522,132 @@
     -fx-scale-x: .78;
     -fx-scale-y: .78;
 }
+
+/* unificar-cabeceras-usuarios-canchas-bloqueos-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.courts-root .courts-module-header-v1 {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.courts-root .courts-title-block-v1 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.courts-root .courts-title-block-v1 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* compactar-canchas-unificado-v1 */
+/* Densidad interna alineada con Usuarios y el patron compacto administrativo. */
+.courts-root .courts-list-v1 {
+    -fx-spacing: 9;
+}
+.courts-root .modern-table .table-row-cell {
+    -fx-cell-size: 52px;
+}
+.courts-root .courts-form-v1 {
+    -fx-spacing: 10;
+}
+.courts-root .court-detail-header {
+    -fx-padding: 10 12;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.courts-root .court-detail-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.courts-root .field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.courts-root .court-section-header-v1 {
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-padding: 2 0 0 0;
+}
+.courts-root .court-section-icon-shell-v1 {
+    -fx-min-width: 28;
+    -fx-pref-width: 28;
+    -fx-max-width: 28;
+    -fx-min-height: 28;
+    -fx-pref-height: 28;
+    -fx-max-height: 28;
+}
+.courts-root .court-section-title-v1 {
+    -fx-font-size: 11px;
+}
+.courts-root .court-lighting-check-v1 {
+    -fx-padding: 7 10;
+}
+.courts-root .day-check {
+    -fx-min-width: 72;
+    -fx-pref-width: 72;
+    -fx-max-width: 72;
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+    -fx-max-height: 36;
+    -fx-padding: 0 9;
+}
+.courts-root .court-order-panel {
+    -fx-padding: 8 10;
+}
+.courts-root .court-order-button {
+    -fx-min-height: 34;
+    -fx-pref-height: 34;
+    -fx-max-height: 34;
+}
+.courts-root .court-actions-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-spacing: 10;
+}
+.courts-root .court-save-button-v1,
+.courts-root .court-deactivate-button-v1,
+.courts-root .court-reactivate-button-v3,
+.courts-root .reactivate-button,
+.courts-root .delete-court-button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.courts-root .court-deactivate-button-v1,
+.courts-root .court-reactivate-button-v3,
+.courts-root .reactivate-button {
+    -fx-min-width: 170;
+    -fx-pref-width: 170;
+    -fx-max-width: 170;
+}
+.courts-root .delete-court-button {
+    -fx-min-width: 130;
+    -fx-pref-width: 130;
+    -fx-max-width: 130;
+}
+.courts-root .court-save-button-v1:hover,
+.courts-root .court-deactivate-button-v1:hover,
+.courts-root .court-reactivate-button-v3:hover,
+.courts-root .reactivate-button:hover,
+.courts-root .delete-court-button:hover,
+.courts-root .court-order-button:hover {
+    -fx-translate-y: 0;
+}
+.courts-root .modern-combo > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.courts-root .modern-combo > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}

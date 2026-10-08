@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.SVGPath?>
 
+<!-- compactar-canchas-unificado-v1 -->
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.CanchasController"
@@ -52,8 +53,8 @@
 
                 <ScrollPane fx:id="scrollDetalleCancha" fitToWidth="true" hbarPolicy="NEVER" styleClass="form-scroll">
                     <content>
-                        <VBox spacing="13" styleClass="form-card, courts-form-v1">
-                            <padding><Insets top="18" right="24" bottom="28" left="24" /></padding>
+                        <VBox spacing="10" styleClass="form-card, courts-form-v1">
+                            <padding><Insets top="16" right="22" bottom="22" left="22" /></padding>
                             <children>
                                 <VBox spacing="6" styleClass="court-detail-header">
                                     <HBox alignment="CENTER_LEFT" spacing="10"><StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="court-detail-icon-shell-v1"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M12 5 L12 19 M4 12 L20 12" styleClass="court-detail-icon-v1"/></StackPane><VBox spacing="1"><Label fx:id="etiquetaModoCancha" text="NUEVA CANCHA" styleClass="court-detail-eyebrow-v1"/><Label fx:id="tituloFormulario" text="Nueva cancha" styleClass="section-title"/></VBox><Region HBox.hgrow="ALWAYS"/><Label fx:id="insigniaEstadoCancha" text="ACTIVA" visible="false" managed="false" styleClass="court-detail-status"/></HBox>
@@ -72,14 +73,14 @@
                                         <ColumnConstraints percentWidth="50" hgrow="ALWAYS" />
                                     </columnConstraints>
                                     <children>
-                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                        <VBox spacing="6" GridPane.columnIndex="0">
                                             <children>
                                                 <Label text="Tipo *" styleClass="field-label" />
                                                 <ComboBox fx:id="comboTipo" maxWidth="Infinity"
                                                           styleClass="modern-combo" />
                                             </children>
                                         </VBox>
-                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                        <VBox spacing="6" GridPane.columnIndex="1">
                                             <children>
                                                 <Label text="Superficie" styleClass="field-label" />
                                                 <TextField fx:id="campoSuperficie"
@@ -100,21 +101,21 @@
                                         <ColumnConstraints percentWidth="33.34" hgrow="ALWAYS" />
                                     </columnConstraints>
                                     <children>
-                                        <VBox spacing="7" GridPane.columnIndex="0">
+                                        <VBox spacing="6" GridPane.columnIndex="0">
                                             <children>
                                                 <Label text="Apertura *" styleClass="field-label" />
                                                 <ComboBox fx:id="comboApertura" maxWidth="Infinity"
                                                           styleClass="modern-combo" />
                                             </children>
                                         </VBox>
-                                        <VBox spacing="7" GridPane.columnIndex="1">
+                                        <VBox spacing="6" GridPane.columnIndex="1">
                                             <children>
                                                 <Label text="Cierre *" styleClass="field-label" />
                                                 <ComboBox fx:id="comboCierre" maxWidth="Infinity"
                                                           styleClass="modern-combo" />
                                             </children>
                                         </VBox>
-                                        <VBox spacing="7" GridPane.columnIndex="2">
+                                        <VBox spacing="6" GridPane.columnIndex="2">
                                             <children>
                                                 <Label text="Duración (min) *" styleClass="field-label" />
                                                 <ComboBox fx:id="comboDuracion" maxWidth="Infinity"

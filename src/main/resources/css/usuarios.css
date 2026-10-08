@@ -167,3 +167,103 @@
 .dialog-password-eye-plain-v8.dialog-password-eye-visible-v8:hover .dialog-password-eye-icon-v3 {
     -fx-stroke: #82d1aa;
 }
+
+/* unificar-cabeceras-usuarios-canchas-bloqueos-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.users-root .users-module-header-v1 {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.users-root .users-title-block-v1 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.users-root .users-title-block-v1 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* compactar-usuarios-unificado-v1 */
+/* Densidad interna alineada con Pagos, Caja y Solicitudes web. */
+.users-root .users-list-v1 {
+    -fx-spacing: 9;
+}
+.users-root .users-table-v1 .table-row-cell {
+    -fx-cell-size: 52px;
+}
+.users-root .users-form-v1 {
+    -fx-spacing: 10;
+}
+.users-root .user-detail-header {
+    -fx-padding: 10 12;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.users-root .user-detail-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.users-root .field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.users-root .user-role-note {
+    -fx-padding: 9 11;
+}
+.users-root .user-role-copy {
+    -fx-font-size: 11px;
+    -fx-line-spacing: 2px;
+}
+.users-root .user-password-note {
+    -fx-padding: 8 10;
+    -fx-font-size: 10px;
+}
+.users-root .user-primary-actions-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+.users-root .user-save-button-v1,
+.users-root .user-state-button-v1,
+.users-root .user-reactivate-button-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.users-root .user-state-button-v1,
+.users-root .user-reactivate-button-v1 {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+}
+.users-root .user-reset-button-v1 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.users-root .user-save-button-v1:hover,
+.users-root .user-state-button-v1:hover,
+.users-root .user-reactivate-button-v1:hover,
+.users-root .user-reset-button-v1:hover {
+    -fx-translate-y: 0;
+}
+.users-root .modern-combo > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.users-root .modern-combo > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}

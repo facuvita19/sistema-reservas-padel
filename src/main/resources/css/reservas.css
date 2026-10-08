@@ -1266,3 +1266,106 @@
     -fx-translate-y: 0;
     -fx-cursor: default;
 }
+
+/* unificar-cabeceras-clientes-reservas-inscripciones-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.reservations-root .module-header {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.reservations-root .reservation-title-block-v8 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.reservations-root .reservation-title-block-v8 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* refinar-densidad-reservas-v1 */
+/* Reservas ya era compacta: solo se normalizan controles y acceso a acciones. */
+.reservations-root .reservation-filter-stack .reservation-date-button,
+.reservations-root .reservation-filter-stack .secondary-button,
+.reservations-root .reservation-filter-stack .modern-date,
+.reservations-root .reservation-search-compact,
+.reservations-root .reservation-state-compact,
+.reservations-root .reservation-clear-compact,
+.reservations-root .reservation-refresh-compact {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.reservations-root .reservation-date-button {
+    -fx-min-width: 40;
+    -fx-pref-width: 40;
+    -fx-max-width: 40;
+}
+.reservations-root .reservation-clear-compact {
+    -fx-min-width: 108;
+    -fx-pref-width: 108;
+    -fx-max-width: 108;
+}
+.reservations-root .reservation-refresh-compact {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+}
+.reservations-root .reservation-form-compact {
+    -fx-spacing: 8;
+}
+.reservations-root .reservation-form-compact .field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.reservations-root .reservation-form-compact .modern-combo,
+.reservations-root .reservation-form-compact .modern-date,
+.reservations-root .reservation-form-compact .spinner {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.reservations-root .combo-box-base > .arrow-button,
+.reservations-root .date-picker > .arrow-button {
+    -fx-min-width: 36;
+    -fx-pref-width: 36;
+    -fx-max-width: 36;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+}
+.reservations-root .combo-box-base > .arrow-button > .arrow,
+.reservations-root .date-picker > .arrow-button > .arrow {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+}
+.reservations-root .reservation-area-compact {
+    -fx-min-height: 54;
+    -fx-pref-height: 54;
+    -fx-max-height: 54;
+}
+.reservations-root .audit-panel {
+    -fx-padding: 10;
+}
+.reservations-root .audit-list {
+    -fx-min-height: 190;
+    -fx-pref-height: 210;
+    -fx-max-height: 230;
+}
+.reservations-root .audit-card {
+    -fx-padding: 8 10;
+}
+.reservations-root .reservation-save-button-final-v14 {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+}
+.reservations-root .reservation-secondary-actions .button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-font-size: 10px;
+}

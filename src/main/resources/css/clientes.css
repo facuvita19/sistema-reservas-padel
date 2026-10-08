@@ -303,3 +303,143 @@
     -fx-scale-x: .67;
     -fx-scale-y: .67;
 }
+
+/* unificar-cabeceras-clientes-reservas-inscripciones-v1 */
+/* Escala comun de cabeceras administrativas: 82 / 42 / 24 / 11. */
+.clients-root .clients-module-header {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+}
+.clients-root .clients-title-block-v9 .page-title {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #f2f4f5;
+}
+.clients-root .clients-title-block-v9 .page-subtitle {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: #8b999f;
+}
+
+/* compactar-clientes-unificado-v1 */
+/* Compactacion moderada: Clientes conserva su jerarquia como pantalla de referencia. */
+.clients-root .list-panel {
+    -fx-spacing: 9;
+}
+.clients-root .modern-table .table-row-cell {
+    -fx-cell-size: 54px;
+}
+.clients-root .clients-form-v1 {
+    -fx-spacing: 12;
+}
+.clients-root .client-detail-header {
+    -fx-padding: 10 12;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+.clients-root .client-detail-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.clients-root .field-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+}
+.clients-root .client-reservation-button {
+    -fx-min-height: 38;
+    -fx-pref-height: 38;
+    -fx-max-height: 38;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.clients-root .client-actions-bar {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-spacing: 10;
+}
+.clients-root .client-save-button,
+.clients-root .client-deactivate-button,
+.clients-root .reactivate-button,
+.clients-root .delete-client-button {
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-font-size: 10px;
+    -fx-translate-y: 0;
+}
+.clients-root .client-deactivate-button,
+.clients-root .reactivate-button {
+    -fx-min-width: 180;
+    -fx-pref-width: 180;
+    -fx-max-width: 180;
+}
+.clients-root .delete-client-button {
+    -fx-min-width: 120;
+    -fx-pref-width: 120;
+    -fx-max-width: 120;
+}
+.clients-root .client-save-button:hover,
+.clients-root .client-deactivate-button:hover,
+.clients-root .reactivate-button:hover,
+.clients-root .delete-client-button:hover,
+.clients-root .client-reservation-button:hover,
+.clients-root .client-open-reservation-button:hover {
+    -fx-translate-y: 0;
+}
+.clients-root .clients-section-header,
+.clients-root .clients-history-header {
+    -fx-min-height: 36;
+    -fx-pref-height: 36;
+}
+.clients-root .clients-section-header .section-title,
+.clients-root .clients-history-header .section-title {
+    -fx-font-size: 17px;
+    -fx-font-weight: 900;
+}
+.clients-root .clients-section-icon-box {
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+    -fx-min-height: 30;
+    -fx-pref-height: 30;
+    -fx-max-height: 30;
+}
+.clients-root .history-metric {
+    -fx-min-height: 68;
+    -fx-pref-height: 68;
+    -fx-max-height: 68;
+    -fx-padding: 7 5;
+}
+.clients-root .history-metric:hover {
+    -fx-translate-y: 0;
+}
+.clients-root .history-metric-value {
+    -fx-font-size: 19px;
+}
+.clients-root .next-reservation-card {
+    -fx-min-height: 52;
+    -fx-pref-height: 52;
+    -fx-padding: 8 12;
+}
+.clients-root .next-reservation-icon-box {
+    -fx-min-width: 32;
+    -fx-pref-width: 32;
+    -fx-max-width: 32;
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+    -fx-max-height: 32;
+}
+.clients-root .client-open-reservation-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+    -fx-translate-y: 0;
+}
+.clients-root .client-history-table {
+    -fx-min-height: 220;
+    -fx-pref-height: 265;
+}
