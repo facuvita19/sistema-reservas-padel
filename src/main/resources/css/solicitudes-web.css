@@ -735,3 +735,370 @@
     -fx-border-color: #4d8e6f;
     -fx-effect: none;
 }
+
+/* solicitudes-web-experiencia-moderna-v3 */
+/* Cabecera de modulo */
+.web-header-v2 { -fx-min-height: 82; -fx-pref-height: 82; }
+.web-module-icon-shell-v3 {
+    -fx-background-color: #202038;
+    -fx-background-radius: 11;
+    -fx-border-color: #504b73;
+    -fx-border-radius: 11;
+}
+.web-module-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #c7c0eb;
+    -fx-stroke-width: 1.55;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .78;
+    -fx-scale-y: .78;
+}
+.web-title-block-v3 { -fx-translate-y: 1; }
+.web-home-button-v3, .web-refresh-button, .web-filter-clear,
+.web-action-primary, .web-action-secondary, .web-action-whatsapp {
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+.web-icon-slot-v3 { -fx-alignment: CENTER; }
+.web-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #aebbc1;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .70;
+    -fx-scale-y: .70;
+}
+.web-home-button-v3 .web-icon-v3 { -fx-stroke: #9db0b8; }
+.web-refresh-button .web-icon-v3 { -fx-stroke: #d7dfe2; }
+.web-action-primary .web-icon-v3 { -fx-stroke: #ffffff; }
+.web-action-whatsapp .web-icon-v3 { -fx-stroke: #bff0d2; }
+
+/* Metricas */
+.web-metric-button { -fx-min-height: 66; -fx-pref-height: 66; -fx-max-height: 66; }
+.web-metric-icon-slot-v3 { -fx-alignment: CENTER; }
+.web-metric-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke-width: 1.45;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .58;
+    -fx-scale-y: .58;
+}
+.web-metric-icon-total-v3 { -fx-stroke: #9ebbc9; }
+.web-metric-icon-active-v3 { -fx-stroke: #76caa0; }
+.web-metric-icon-warning-v3 { -fx-stroke: #efac50; }
+.web-metric-icon-expired-v3 { -fx-stroke: #dc8490; }
+
+/* Busqueda */
+.web-search-shell-v3 { -fx-alignment: CENTER_LEFT; }
+.web-search-shell-v3 .web-search { -fx-padding: 0 11 0 36; }
+.web-search-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #73858e;
+    -fx-stroke-width: 1.45;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .68;
+    -fx-scale-y: .68;
+    -fx-translate-x: 11;
+}
+/* Tabla y estados vacios */
+.web-root-v2 .web-table-v2 .web-col-cliente,
+.web-root-v2 .web-table-v2 .web-col-cliente .label {
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 0 8 0 14;
+}
+.web-empty-state-v3 { -fx-padding: 24; }
+.web-empty-icon-shell-v3,
+.web-detail-empty-icon-shell-v3 {
+    -fx-background-color: #1d2428;
+    -fx-background-radius: 24;
+    -fx-border-color: #3a464c;
+    -fx-border-radius: 24;
+}
+.web-empty-icon-v3,
+.web-detail-empty-icon-v3 {
+    -fx-fill: transparent;
+    -fx-stroke: #738790;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .82;
+    -fx-scale-y: .82;
+}
+.web-detail-empty-icon-shell-v3 {
+    -fx-background-radius: 28;
+    -fx-border-radius: 28;
+}
+.web-detail-empty-icon-v3 { -fx-stroke: #958db8; -fx-scale-x: .90; -fx-scale-y: .90; }
+
+/* Detalle y acciones */
+.web-detail-shell { -fx-background-color: linear-gradient(to bottom, #12191d, #10161a); }
+.web-detail-group, .web-finance-v2 { -fx-effect: none; }
+.web-action-primary, .web-action-secondary, .web-action-whatsapp {
+    -fx-alignment: CENTER;
+}
+.web-filter-clear { -fx-alignment: CENTER; }
+
+/* cabecera-unificada-solicitudes-web-v4 */
+/* Patron comun: volver compacto + identidad del modulo + titulo. */
+.web-back-button-v4 {
+    -fx-min-width: 42;
+    -fx-pref-width: 42;
+    -fx-max-width: 42;
+    -fx-min-height: 42;
+    -fx-pref-height: 42;
+    -fx-max-height: 42;
+    -fx-padding: 0;
+    -fx-alignment: CENTER;
+    -fx-content-display: GRAPHIC_ONLY;
+    -fx-background-color: #20272b;
+    -fx-background-radius: 10;
+    -fx-border-color: #465158;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-cursor: hand;
+}
+.web-back-button-v4:hover {
+    -fx-background-color: #26342f;
+    -fx-border-color: -color-principal;
+    -fx-effect: dropshadow(gaussian, -color-principal-transparente, 8, .08, 0, 1);
+}
+.web-back-button-v4:pressed {
+    -fx-background-color: #1a211e;
+    -fx-border-color: -color-principal-presionado;
+    -fx-effect: none;
+}
+.web-back-icon-v4 {
+    -fx-fill: transparent;
+    -fx-stroke: #b7c3c8;
+    -fx-stroke-width: 1.7;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .78;
+    -fx-scale-y: .78;
+}
+.web-back-button-v4:hover .web-back-icon-v4 {
+    -fx-stroke: #ffffff;
+}
+/* Limpiar conserva texto e icono sin truncado. */
+.web-root-v2 .web-filter-clear {
+    -fx-min-width: 108;
+    -fx-pref-width: 108;
+    -fx-max-width: 108;
+    -fx-graphic-text-gap: 7;
+    -fx-padding: 0 11;
+}
+/* El titulo aprovecha el espacio recuperado, sin perder alineacion vertical. */
+.web-title-block-v3 {
+    -fx-translate-y: 1;
+}
+
+/* solicitudes-web-feedback-pulsacion-v5 */
+/* Hover estable: ilumina sin cambiar geometria. */
+.web-root-v2 .button:hover {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+/* Pulsacion breve y perceptible. */
+.web-root-v2 .button:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: .985;
+    -fx-scale-y: .985;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,.20), 4, .08, 0, 0);
+}
+
+/* La flecha compacta admite una respuesta levemente mayor. */
+.web-root-v2 .web-back-button-v4:pressed {
+    -fx-scale-x: .97;
+    -fx-scale-y: .97;
+    -fx-background-color: #1e2427;
+    -fx-border-color: #5f6d74;
+}
+
+/* Los controles deshabilitados nunca reaccionan. */
+.web-root-v2 .button:disabled,
+.web-root-v2 .button:disabled:hover,
+.web-root-v2 .button:disabled:pressed {
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-effect: none;
+}
+
+/* cerrar-solicitudes-web-referencia-v6 */
+.web-header-v2 {
+    -fx-min-height: 82;
+    -fx-pref-height: 82;
+    -fx-max-height: 82;
+    -fx-padding: 12 24;
+}
+.web-page-title { -fx-font-size: 24px; }
+.web-page-subtitle { -fx-font-size: 11px; }
+.web-root-v2 .web-metric-button {
+    -fx-min-height: 58;
+    -fx-pref-height: 58;
+    -fx-max-height: 58;
+    -fx-padding: 5 11;
+}
+.web-root-v2 .web-metric-value { -fx-font-size: 17px; }
+.web-root-v2 .web-search,
+.web-root-v2 .web-state-filter,
+.web-root-v2 .web-filter-clear,
+.web-root-v2 .web-refresh-button {
+    -fx-min-height: 40;
+    -fx-pref-height: 40;
+    -fx-max-height: 40;
+}
+.web-root-v2 .web-refresh-button {
+    -fx-min-width: 124;
+    -fx-pref-width: 124;
+    -fx-max-width: 124;
+}
+.web-root-v2 .web-state-filter .arrow-button,
+.web-root-v2 .web-state-filter .arrow-button:hover {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-min-width: 30;
+    -fx-pref-width: 30;
+    -fx-max-width: 30;
+}
+.web-root-v2 .web-state-filter:focused,
+.web-root-v2 .web-state-filter:showing {
+    -fx-padding: 0;
+}
+.web-root-v2 .web-results-strip { -fx-spacing: 14; }
+.web-root-v2 .web-table-v2 .table-row-cell {
+    -fx-cell-size: 40px;
+    -fx-cursor: hand;
+}
+.web-root-v2 .web-table-v2 .table-cell.web-col-cliente {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 0 10 0 14;
+}
+.web-detail-empty {
+    -fx-padding: 120 26 26 26;
+}
+.web-detail-empty-icon-shell-v3 {
+    -fx-background-color: #202038;
+    -fx-border-color: #504b73;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+}
+.web-detail-header-v6 { -fx-padding: 0 0 2 0; }
+.web-detail-icon-shell-v6,
+.web-client-icon-shell-v6 {
+    -fx-background-color: #202038;
+    -fx-border-color: #504b73;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+}
+.web-detail-icon-v6,
+.web-client-icon-v6 {
+    -fx-fill: transparent;
+    -fx-stroke: #c7c0eb;
+    -fx-stroke-width: 1.5;
+    -fx-stroke-line-cap: round;
+    -fx-stroke-line-join: round;
+    -fx-scale-x: .72;
+    -fx-scale-y: .72;
+}
+.web-detail-eyebrow-v6 {
+    -fx-text-fill: #7d8a90;
+    -fx-font-size: 8px;
+    -fx-font-weight: 900;
+}
+.web-client-card-v6 {
+    -fx-background-color: #171d21;
+    -fx-border-color: #364148;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10 12;
+}
+.web-client-icon-shell-v6 {
+    -fx-background-color: #1c3028;
+    -fx-border-color: #3d6f59;
+}
+.web-client-icon-v6 { -fx-stroke: #7ccaa5; }
+.web-payment-progress-v6 {
+    -fx-min-height: 6;
+    -fx-pref-height: 6;
+    -fx-max-height: 6;
+}
+.web-payment-progress-v6 .track {
+    -fx-background-color: #293137;
+    -fx-background-radius: 6;
+}
+.web-payment-progress-v6 .bar {
+    -fx-background-color: -color-principal;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-padding: 0;
+}
+.web-payment-percent-v6 {
+    -fx-text-fill: #82958b;
+    -fx-font-size: 8.5px;
+    -fx-font-weight: 800;
+}
+.web-secondary-actions .web-action-whatsapp,
+.web-secondary-actions .web-action-secondary {
+    -fx-min-width: 0;
+    -fx-pref-width: -1;
+    -fx-max-width: Infinity;
+}
+
+/* corregir-filtros-solicitudes-web-v7 */
+.web-root-v2 .web-filter-clear,
+.web-root-v2 .web-filter-clear:focused {
+    -fx-background-color: linear-gradient(to bottom, #30363a, #282e32);
+    -fx-border-color: #59636a;
+    -fx-text-fill: #eef2f3;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+.web-root-v2 .web-filter-clear:hover {
+    -fx-background-color: #384146;
+    -fx-border-color: -color-principal;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.web-root-v2 .web-filter-clear:pressed {
+    -fx-background-color: #23292d;
+    -fx-border-color: #4b585e;
+    -fx-text-fill: white;
+    -fx-effect: none;
+}
+.web-root-v2 .web-state-filter > .list-cell,
+.web-root-v2 .web-state-filter:focused > .list-cell,
+.web-root-v2 .web-state-filter:showing > .list-cell {
+    -fx-text-fill: #e2e7e9;
+    -fx-background-color: transparent;
+    -fx-padding: 0 10;
+}
+.web-root-v2 .web-state-filter > .list-cell:empty {
+    -fx-text-fill: #aeb9be;
+}
+
+/* unificar-tipografia-filtros-solicitudes-web-v8 */
+.web-root-v2 .web-filter-clear,
+.web-root-v2 .web-refresh-button,
+.web-root-v2 .web-filter-clear:focused,
+.web-root-v2 .web-refresh-button:focused {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+    -fx-font-smoothing-type: lcd;
+    -fx-alignment: CENTER;
+    -fx-content-display: LEFT;
+    -fx-graphic-text-gap: 8;
+}
+.web-root-v2 .web-filter-clear .text,
+.web-root-v2 .web-refresh-button .text {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10px;
+    -fx-font-weight: 900;
+}

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- solicitudes-web-ajuste-final-v1 -->
+
+
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.SVGPath?>
 
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="vista.controlador.SolicitudesWebController" styleClass="web-root-v2">
- <!-- solicitudes-web-cierre-administrativo-v1 -->
- <!-- solicitudes-web-inconsistencias-v2 -->
+
+
  <top>
   <HBox alignment="CENTER_LEFT" spacing="14" styleClass="web-header-v2">
    <padding><Insets top="16" right="22" bottom="16" left="22"/></padding>
-   <Button text="INICIO" onAction="#volver" styleClass="admin-home-button"/>
-   <VBox spacing="2"><Label text="Solicitudes web" styleClass="web-page-title"/><Label text="Seguimiento de solicitudes, señas y vencimientos del canal web." styleClass="web-page-subtitle"/></VBox>
+   <Button onAction="#volver" minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="web-back-button-v4">
+    <tooltip><Tooltip text="Volver a Inicio"/></tooltip>
+    <graphic><SVGPath content="M14 6 L8 12 L14 18 M8 12 L20 12" styleClass="web-back-icon-v4"/></graphic>
+   </Button>
+   <StackPane minWidth="42" prefWidth="42" maxWidth="42" minHeight="42" prefHeight="42" maxHeight="42" styleClass="web-module-icon-shell-v3"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M4 9 L9 14 L15 14 L20 9" styleClass="web-module-icon-v3"/></StackPane>
+   <VBox spacing="2" styleClass="web-title-block-v3"><Label text="Solicitudes web" styleClass="web-page-title"/><Label text="Seguimiento de solicitudes, señas y vencimientos del canal web." styleClass="web-page-subtitle"/></VBox>
    <Region HBox.hgrow="ALWAYS"/>
-   <VBox alignment="CENTER_RIGHT" spacing="1"><Label fx:id="etiquetaActualizacion" text="Sin actualizar" styleClass="web-updated"/><Label fx:id="etiquetaEstadoCarga" text="" styleClass="web-load-status"/></VBox>
-   <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarSolicitudes" styleClass="web-refresh-button"/>
   </HBox>
  </top>
  <center>
@@ -23,47 +27,48 @@
    <VBox spacing="10" HBox.hgrow="ALWAYS" styleClass="web-list-pane, web-list-pane-compact">
     <padding><Insets top="16" right="16" bottom="18" left="22"/></padding>
     <HBox spacing="8" styleClass="web-metrics-row-compact">
-     <Button fx:id="tarjetaTotal" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarTodas" styleClass="web-metric-button,web-metric-total"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="SOLICITUDES WEB" styleClass="web-metric-label"/><Label fx:id="etiquetaTotal" text="0" styleClass="web-metric-value"/><Label text="Total registrado" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button fx:id="tarjetaVigentes" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarVigentes" styleClass="web-metric-button,web-metric-active"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="VIGENTES" styleClass="web-metric-label"/><Label fx:id="etiquetaVigentes" text="0" styleClass="web-metric-value"/><Label text="Esperando acreditación" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button fx:id="tarjetaProximas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarProximas" styleClass="web-metric-button,web-metric-upcoming"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="PRÓXIMAS A VENCER" styleClass="web-metric-label"/><Label fx:id="etiquetaProximas" text="0" styleClass="web-metric-value"/><Label text="Dentro de 5 minutos" styleClass="web-metric-detail"/></VBox></graphic></Button>
-     <Button fx:id="tarjetaExpiradas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarExpiradas" styleClass="web-metric-button,web-metric-expired"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><Label text="EXPIRADAS" styleClass="web-metric-label"/><Label fx:id="etiquetaExpiradas" text="0" styleClass="web-metric-value"/><Label text="Turnos liberados" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaTotal" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarTodas" styleClass="web-metric-button,web-metric-total"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><HBox alignment="CENTER_LEFT" spacing="8"><StackPane minWidth="15" prefWidth="15" minHeight="15" prefHeight="15" styleClass="web-metric-icon-slot-v3"><SVGPath content="M5 5 L19 5 M5 12 L19 12 M5 19 L19 19 M2 5 L2.1 5 M2 12 L2.1 12 M2 19 L2.1 19" styleClass="web-metric-icon-v3, web-metric-icon-total-v3"/></StackPane><Label text="SOLICITUDES WEB" styleClass="web-metric-label"/></HBox><Label fx:id="etiquetaTotal" text="0" styleClass="web-metric-value"/><Label text="Total registrado" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaVigentes" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarVigentes" styleClass="web-metric-button,web-metric-active"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><HBox alignment="CENTER_LEFT" spacing="8"><StackPane minWidth="15" prefWidth="15" minHeight="15" prefHeight="15" styleClass="web-metric-icon-slot-v3"><SVGPath content="M12 4 C16.4 4 20 7.6 20 12 C20 16.4 16.4 20 12 20 C7.6 20 4 16.4 4 12 C4 7.6 7.6 4 12 4 Z M8.5 12 L11 14.5 L16 9" styleClass="web-metric-icon-v3, web-metric-icon-active-v3"/></StackPane><Label text="VIGENTES" styleClass="web-metric-label"/></HBox><Label fx:id="etiquetaVigentes" text="0" styleClass="web-metric-value"/><Label text="Esperando acreditación" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaProximas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarProximas" styleClass="web-metric-button,web-metric-upcoming"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><HBox alignment="CENTER_LEFT" spacing="8"><StackPane minWidth="15" prefWidth="15" minHeight="15" prefHeight="15" styleClass="web-metric-icon-slot-v3"><SVGPath content="M12 4 L21 20 L3 20 Z M12 9 L12 14 M12 17 L12.1 17" styleClass="web-metric-icon-v3, web-metric-icon-warning-v3"/></StackPane><Label text="PRÓXIMAS A VENCER" styleClass="web-metric-label"/></HBox><Label fx:id="etiquetaProximas" text="0" styleClass="web-metric-value"/><Label text="Dentro de 5 minutos" styleClass="web-metric-detail"/></VBox></graphic></Button>
+     <Button fx:id="tarjetaExpiradas" maxWidth="Infinity" HBox.hgrow="ALWAYS" onAction="#mostrarExpiradas" styleClass="web-metric-button,web-metric-expired"><graphic><VBox alignment="CENTER_LEFT" spacing="3"><HBox alignment="CENTER_LEFT" spacing="8"><StackPane minWidth="15" prefWidth="15" minHeight="15" prefHeight="15" styleClass="web-metric-icon-slot-v3"><SVGPath content="M12 4 C16.4 4 20 7.6 20 12 C20 16.4 16.4 20 12 20 C7.6 20 4 16.4 4 12 C4 7.6 7.6 4 12 4 Z M9 9 L15 15 M15 9 L9 15" styleClass="web-metric-icon-v3, web-metric-icon-expired-v3"/></StackPane><Label text="EXPIRADAS" styleClass="web-metric-label"/></HBox><Label fx:id="etiquetaExpiradas" text="0" styleClass="web-metric-value"/><Label text="Turnos liberados" styleClass="web-metric-detail"/></VBox></graphic></Button>
     </HBox>
     <HBox spacing="9">
-     <TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha, estado o número" HBox.hgrow="ALWAYS" styleClass="modern-field, web-search"/>
+     <StackPane HBox.hgrow="ALWAYS" styleClass="web-search-shell-v3"><TextField fx:id="campoBuscar" promptText="Buscar por cliente, cancha, estado o número" maxWidth="Infinity" styleClass="modern-field, web-search, web-search-with-icon-v3"/><SVGPath content="M10.5 4 C6.9 4 4 6.9 4 10.5 C4 14.1 6.9 17 10.5 17 C14.1 17 17 14.1 17 10.5 C17 6.9 14.1 4 10.5 4 Z M15.5 15.5 L21 21" mouseTransparent="true" StackPane.alignment="CENTER_LEFT" styleClass="web-search-icon-v3"/></StackPane>
      <ComboBox fx:id="filtroEstado" promptText="Todos los estados" prefWidth="168" minWidth="168" maxWidth="168" styleClass="modern-combo, web-state-filter"/>
-     <Button fx:id="botonLimpiar" text="LIMPIAR" minWidth="82" prefWidth="82" maxWidth="82" onAction="#limpiarFiltros" styleClass="web-filter-clear"/>
+     <Button fx:id="botonLimpiar" text="LIMPIAR" minWidth="108" prefWidth="108" maxWidth="108" onAction="#limpiarFiltros" styleClass="web-filter-clear"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="web-icon-slot-v3"><SVGPath content="M6 6 L18 18 M18 6 L6 18" styleClass="web-icon-v3"/></StackPane></graphic></Button>
+     <Button fx:id="botonActualizar" text="ACTUALIZAR" onAction="#cargarSolicitudes" styleClass="web-refresh-button"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="web-icon-slot-v3"><SVGPath content="M19 8 A8 8 0 1 0 20 13 M19 4 L19 8 L15 8" styleClass="web-icon-v3"/></StackPane></graphic></Button>
     </HBox>
-    <HBox alignment="CENTER_LEFT" minHeight="24" prefHeight="24" maxHeight="24" styleClass="web-results-strip"><Label fx:id="etiquetaMensaje" text="Preparando solicitudes..." styleClass="web-result-count"/><Region HBox.hgrow="ALWAYS"/><Label text="Doble clic para abrir" styleClass="web-table-help"/></HBox>
+    <HBox alignment="CENTER_LEFT" minHeight="24" prefHeight="24" maxHeight="24" styleClass="web-results-strip"><Label fx:id="etiquetaMensaje" text="Preparando solicitudes..." styleClass="web-result-count"/><Region HBox.hgrow="ALWAYS"/><VBox alignment="CENTER_RIGHT" spacing="0"><Label fx:id="etiquetaActualizacion" text="Sin actualizar" styleClass="web-updated"/><Label fx:id="etiquetaEstadoCarga" text="" styleClass="web-load-status"/></VBox><Label text="Doble clic para consultar la reserva" styleClass="web-table-help"/></HBox>
     <TableView fx:id="tablaSolicitudes" focusTraversable="false" VBox.vgrow="ALWAYS" styleClass="modern-table web-table-v2">
      <columns>
       <TableColumn fx:id="columnaId" text="#" prefWidth="58" minWidth="58" maxWidth="58" styleClass="web-col-id"/>
       <TableColumn fx:id="columnaCliente" text="CLIENTE" prefWidth="190" minWidth="190" styleClass="web-col-cliente"/>
       <TableColumn fx:id="columnaTurno" text="TURNO" prefWidth="155" minWidth="155" styleClass="web-col-turno"/>
       <TableColumn fx:id="columnaCancha" text="CANCHA" prefWidth="135" minWidth="135" styleClass="web-col-cancha"/>
-      <TableColumn fx:id="columnaEstado" text="ESTADO" prefWidth="135" minWidth="135" styleClass="web-col-estado"/>
+      <TableColumn fx:id="columnaEstado" text="PAGO" prefWidth="135" minWidth="135" styleClass="web-col-estado"/>
       <TableColumn fx:id="columnaVencimiento" text="VENCIMIENTO" prefWidth="155" minWidth="155" styleClass="web-col-vencimiento"/>
-      <TableColumn fx:id="columnaTiempo" text="SITUACIÓN" prefWidth="125" minWidth="125" styleClass="web-col-situacion"/>
+      <TableColumn fx:id="columnaTiempo" text="TURNO" prefWidth="125" minWidth="125" styleClass="web-col-situacion"/>
      </columns>
-     <placeholder><VBox alignment="CENTER" spacing="5"><Label text="Sin solicitudes para mostrar" styleClass="web-empty-title"/><Label text="Probá cambiar los filtros o actualizar la información." styleClass="web-empty-copy"/></VBox></placeholder>
+     <placeholder><VBox alignment="CENTER" spacing="7" styleClass="web-empty-state-v3"><StackPane minWidth="46" prefWidth="46" minHeight="46" prefHeight="46" styleClass="web-empty-icon-shell-v3"><SVGPath content="M4 6 L20 6 L20 18 L4 18 Z M4 10 L9 14 L15 14 L20 10" styleClass="web-empty-icon-v3"/></StackPane><Label text="Sin solicitudes para mostrar" styleClass="web-empty-title"/><Label text="Probá cambiar los filtros o actualizar la información." styleClass="web-empty-copy"/></VBox></placeholder>
     </TableView>
    </VBox>
 
    <StackPane prefWidth="340" minWidth="320" maxWidth="350" styleClass="web-detail-shell, web-detail-shell-compact">
-    <VBox fx:id="panelDetalleVacio" alignment="CENTER" spacing="8" styleClass="web-detail-empty">
+    <VBox fx:id="panelDetalleVacio" alignment="TOP_CENTER" spacing="9" styleClass="web-detail-empty"><StackPane minWidth="48" prefWidth="48" maxWidth="48" minHeight="48" prefHeight="48" maxHeight="48" styleClass="web-detail-empty-icon-shell-v3"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M4 9 L9 14 L15 14 L20 9" styleClass="web-detail-empty-icon-v3"/></StackPane>
      <Label text="SELECCIONÁ UNA SOLICITUD" styleClass="web-detail-empty-title"/>
      <Label text="Elegí una fila del listado para consultar el turno, el pago y las acciones disponibles." wrapText="true" maxWidth="260" styleClass="web-detail-empty-copy"/>
     </VBox>
     <VBox fx:id="panelDetalle" visible="false" managed="false" spacing="10" styleClass="web-detail-v2, web-detail-compact">
      <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
-     <VBox spacing="4"><Label fx:id="detalleTitulo" text="Solicitud web" styleClass="web-detail-title"/><HBox spacing="7"><Label fx:id="detalleEstado" text="Estado" styleClass="web-status-badge"/><Label fx:id="detalleSituacion" text="Situación" styleClass="web-situation-badge"/></HBox></VBox>
+     <VBox spacing="7" styleClass="web-detail-header-v6"><HBox alignment="CENTER_LEFT" spacing="10"><StackPane minWidth="36" prefWidth="36" maxWidth="36" minHeight="36" prefHeight="36" maxHeight="36" styleClass="web-detail-icon-shell-v6"><SVGPath content="M4 5 L20 5 L20 19 L4 19 Z M4 9 L9 14 L15 14 L20 9" styleClass="web-detail-icon-v6"/></StackPane><VBox spacing="1"><Label text="SOLICITUD SELECCIONADA" styleClass="web-detail-eyebrow-v6"/><Label fx:id="detalleTitulo" text="Solicitud web" styleClass="web-detail-title"/></VBox></HBox><HBox spacing="7"><Label fx:id="detalleEstado" text="Estado" styleClass="web-status-badge"/><Label fx:id="detalleSituacion" text="Situación" styleClass="web-situation-badge"/></HBox></VBox>
      <Separator/>
-     <VBox spacing="4" styleClass="web-client-block"><Label text="CLIENTE" styleClass="web-detail-label"/><Label fx:id="detalleCliente" text="-" wrapText="true" styleClass="web-detail-main"/><Label text="TELÉFONO" styleClass="web-detail-label-inline"/><Label fx:id="detalleTelefono" text="-" styleClass="web-detail-secondary"/></VBox>
+     <HBox alignment="CENTER_LEFT" spacing="10" styleClass="web-client-block, web-client-card-v6"><StackPane minWidth="32" prefWidth="32" maxWidth="32" minHeight="32" prefHeight="32" maxHeight="32" styleClass="web-client-icon-shell-v6"><SVGPath content="M12 3 C9.8 3 8 4.8 8 7 C8 9.2 9.8 11 12 11 C14.2 11 16 9.2 16 7 C16 4.8 14.2 3 12 3 Z M5 21 C5 16 8 13 12 13 C16 13 19 16 19 21" styleClass="web-client-icon-v6"/></StackPane><VBox spacing="2" HBox.hgrow="ALWAYS"><Label text="CLIENTE" styleClass="web-detail-label"/><Label fx:id="detalleCliente" text="-" wrapText="true" styleClass="web-detail-main"/><Label fx:id="detalleTelefono" text="-" styleClass="web-detail-secondary"/></VBox></HBox>
      <VBox spacing="5" styleClass="web-detail-group"><Label text="TURNO" styleClass="web-detail-label"/><Label fx:id="detalleTurno" wrapText="true" styleClass="web-detail-main"/><Label fx:id="detalleCancha" styleClass="web-detail-secondary"/><HBox spacing="6"><Label text="ORIGEN" styleClass="web-detail-label-inline"/><Label fx:id="detalleOrigen" styleClass="web-origin"/></HBox></VBox>
-     <VBox spacing="6" styleClass="web-finance-v2"><Label text="RESUMEN DEL PAGO" styleClass="web-detail-label"/><GridPane hgap="12" vgap="8"><Label text="Precio" styleClass="web-finance-label"/><Label fx:id="detallePrecio" GridPane.columnIndex="1" styleClass="web-finance-value"/><Label text="Acreditado" GridPane.rowIndex="1" styleClass="web-finance-label"/><Label fx:id="detalleAcreditado" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="web-paid"/><Label text="Saldo" GridPane.rowIndex="2" styleClass="web-finance-label"/><Label fx:id="detalleSaldo" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="web-balance"/></GridPane></VBox>
+     <VBox spacing="7" styleClass="web-finance-v2"><Label text="RESUMEN DEL PAGO" styleClass="web-detail-label"/><GridPane hgap="12" vgap="8"><Label text="Precio" styleClass="web-finance-label"/><Label fx:id="detallePrecio" GridPane.columnIndex="1" styleClass="web-finance-value"/><Label text="Acreditado" GridPane.rowIndex="1" styleClass="web-finance-label"/><Label fx:id="detalleAcreditado" GridPane.rowIndex="1" GridPane.columnIndex="1" styleClass="web-paid"/><Label text="Saldo" GridPane.rowIndex="2" styleClass="web-finance-label"/><Label fx:id="detalleSaldo" GridPane.rowIndex="2" GridPane.columnIndex="1" styleClass="web-balance"/></GridPane><HBox alignment="CENTER_LEFT" spacing="8"><ProgressBar fx:id="detalleProgresoPago" progress="0" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="web-payment-progress-v6"/><Label fx:id="detallePorcentajePago" text="0 %" styleClass="web-payment-percent-v6"/></HBox></VBox>
      <VBox spacing="4"><Label text="SITUACIÓN DEL TURNO" styleClass="web-detail-label"/><Label fx:id="detalleVencimiento" text="-" styleClass="web-detail-main"/><Label fx:id="detalleAyudaSituacion" wrapText="true" styleClass="web-detail-note"/></VBox>
      <Region prefHeight="8" minHeight="8"/>
-     <Button fx:id="botonReserva" text="ABRIR RESERVA" onAction="#abrirReserva" maxWidth="Infinity" styleClass="web-action-primary"/>
-     <HBox fx:id="panelAccionesSecundarias" alignment="CENTER_RIGHT" spacing="9" styleClass="web-secondary-actions"><Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="web-action-secondary"/><Button fx:id="botonWhatsApp" text="WHATSAPP" onAction="#abrirWhatsApp" minWidth="150" prefWidth="170" maxWidth="190" styleClass="web-action-whatsapp"/></HBox>
+     <Button fx:id="botonReserva" text="ABRIR RESERVA" onAction="#abrirReserva" maxWidth="Infinity" styleClass="web-action-primary"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="web-icon-slot-v3"><SVGPath content="M5 6 L19 6 L19 20 L5 20 Z M8 3 L8 8 M16 3 L16 8 M5 10 L19 10" styleClass="web-icon-v3"/></StackPane></graphic></Button>
+     <HBox fx:id="panelAccionesSecundarias" alignment="CENTER_RIGHT" spacing="9" styleClass="web-secondary-actions"><Button fx:id="botonPagos" text="ABRIR PAGOS" onAction="#abrirPagos" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="web-action-secondary"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="web-icon-slot-v3"><SVGPath content="M4 6 L20 6 L20 18 L4 18 Z M4 10 L20 10 M7 15 L11 15" styleClass="web-icon-v3"/></StackPane></graphic></Button><Button fx:id="botonWhatsApp" text="WHATSAPP" onAction="#abrirWhatsApp" HBox.hgrow="ALWAYS" maxWidth="Infinity" styleClass="web-action-whatsapp"><graphic><StackPane minWidth="18" prefWidth="18" maxWidth="18" minHeight="18" prefHeight="18" maxHeight="18" styleClass="web-icon-slot-v3"><SVGPath content="M12 3 C7 3 3 6.8 3 11.5 C3 13.4 3.7 15.2 5 16.6 L4 21 L8.7 19.4 C9.7 19.8 10.8 20 12 20 C17 20 21 16.2 21 11.5 C21 6.8 17 3 12 3 Z M8.5 8.5 C9.5 12 12 14.5 15.5 15.5" styleClass="web-icon-v3"/></StackPane></graphic></Button></HBox>
     </VBox>
    </StackPane>
   </HBox>

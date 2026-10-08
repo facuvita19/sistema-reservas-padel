@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 import javafx.animation.KeyFrame;
-import javafx.animation.ScaleTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -21,6 +20,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -68,40 +68,18 @@ public class SolicitudesWebController {
     @FXML private TableColumn<Reserva,Long> columnaId;
     @FXML private TableColumn<Reserva,String> columnaCliente,columnaTurno,columnaCancha;
     @FXML private TableColumn<Reserva,EstadoReserva> columnaEstado;
-    @FXML private TableColumn<Reserva,LocalDateTime> columnaVencimiento;
+    @FXML private TableColumn<Reserva,Reserva> columnaVencimiento;
     @FXML private TableColumn<Reserva,Reserva> columnaTiempo;
-    @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo;
+    @FXML private Label etiquetaTotal,etiquetaVigentes,etiquetaProximas,etiquetaExpiradas,etiquetaMensaje,etiquetaActualizacion,etiquetaEstadoCarga,detalleTitulo,detalleCliente,detalleTelefono,detalleTurno,detalleCancha,detalleEstado,detalleOrigen,detalleSituacion,detalleVencimiento,detalleAyudaSituacion,detallePrecio,detalleAcreditado,detalleSaldo,detallePorcentajePago;
+    @FXML private ProgressBar detalleProgresoPago;
     @FXML private Button botonReserva,botonPagos,botonWhatsApp,botonLimpiar,botonActualizar,tarjetaTotal,tarjetaVigentes,tarjetaProximas,tarjetaExpiradas;
     @FXML private VBox panelDetalle,panelDetalleVacio;
     @FXML private HBox panelAccionesSecundarias;
 
-    @FXML private void initialize(){configurarTabla();configurarFiltros();configurarAnimaciones();mostrarDetalleVacio();cargarSolicitudes();iniciarReloj();Platform.runLater(this::configurarDeseleccion);}
-
-    private void configurarAnimaciones(){
-        for(Button boton:java.util.List.of(
-                botonActualizar,botonLimpiar,botonReserva,
-                botonPagos,botonWhatsApp,tarjetaTotal,tarjetaVigentes,
-                tarjetaProximas,tarjetaExpiradas)){
-            animarBoton(boton);
-        }
-    }
-    private void animarBoton(Button boton){
-        boton.getStyleClass().add("web-animated-button");
-        boton.setOnMouseEntered(e->{if(!boton.isDisabled())animarEscala(boton,1.015,105);});
-        boton.setOnMouseExited(e->animarEscala(boton,1.0,125));
-        boton.setOnMousePressed(e->{if(!boton.isDisabled())animarEscala(boton,.978,65);});
-        boton.setOnMouseReleased(e->{if(!boton.isDisabled())animarEscala(boton,boton.isHover()?1.015:1.0,90);});
-        boton.disabledProperty().addListener((o,a,deshabilitado)->{
-            if(deshabilitado){boton.setScaleX(1);boton.setScaleY(1);}
-        });
-    }
-    private void animarEscala(Button boton,double escala,double milisegundos){
-        ScaleTransition animacion=new ScaleTransition(
-                javafx.util.Duration.millis(milisegundos),boton);
-        animacion.setToX(escala);animacion.setToY(escala);animacion.play();
-    }
+    @FXML private void initialize(){configurarTabla();configurarFiltros();mostrarDetalleVacio();cargarSolicitudes();iniciarReloj();Platform.runLater(this::configurarDeseleccion);}
 
     private void configurarTabla(){
+        tablaSolicitudes.setFixedCellSize(40);
         columnaId.setCellValueFactory(new PropertyValueFactory<>("id"));
         columnaId.setStyle("-fx-alignment: CENTER;");
         columnaId.setCellFactory(c->new TableCell<>(){
@@ -112,8 +90,8 @@ public class SolicitudesWebController {
             }
         });
         columnaCliente.setCellValueFactory(new PropertyValueFactory<>("nombreCliente"));
-        columnaCliente.setStyle("-fx-alignment: CENTER;");
-        columnaCliente.setCellFactory(c->celdaTextoCentrada());
+        columnaCliente.setStyle("-fx-alignment: CENTER-LEFT;");
+        columnaCliente.setCellFactory(c->celdaTextoIzquierda());
         columnaCancha.setCellValueFactory(new PropertyValueFactory<>("nombreCancha"));
         columnaCancha.setStyle("-fx-alignment: CENTER;");
         columnaCancha.setCellFactory(c->celdaTextoCentrada());
@@ -124,13 +102,46 @@ public class SolicitudesWebController {
         columnaTurno.setCellValueFactory(d->new javafx.beans.property.SimpleStringProperty(d.getValue().getFecha().format(FECHA)+" "+d.getValue().getHoraInicio().format(HORA)));
         columnaTurno.setCellFactory(c->celdaTextoCentrada());
         columnaVencimiento.setStyle("-fx-alignment: CENTER;");
-        columnaVencimiento.setCellValueFactory(new PropertyValueFactory<>("fechaVencimiento"));
-        columnaVencimiento.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(LocalDateTime f,boolean vacia){super.updateItem(f,vacia);setAlignment(Pos.CENTER);setText(vacia||f==null?null:f.format(FECHA_HORA));}});
+        columnaVencimiento.setCellValueFactory(d->new javafx.beans.property.SimpleObjectProperty<>(d.getValue()));
+        columnaVencimiento.setCellFactory(c->new TableCell<>(){
+            @Override protected void updateItem(Reserva r,boolean vacia){
+                super.updateItem(r,vacia);
+                setAlignment(Pos.CENTER);
+                setText(vacia||r==null?null:textoVencimiento(r));
+                getStyleClass().removeAll("web-time-ok","web-time-warning","web-time-expired");
+                if(!vacia&&r!=null)getStyleClass().add(claseTiempo(r));
+            }
+        });
         columnaTiempo.setStyle("-fx-alignment: CENTER;");
         columnaTiempo.setCellValueFactory(d->new javafx.beans.property.SimpleObjectProperty<>(d.getValue()));
         columnaTiempo.setCellFactory(c->new TableCell<>(){@Override protected void updateItem(Reserva r,boolean vacia){super.updateItem(r,vacia);setAlignment(Pos.CENTER);setText(vacia||r==null?null:textoSituacion(r));getStyleClass().removeAll("web-time-ok","web-time-warning","web-time-expired");setStyle("");if(!vacia&&r!=null){getStyleClass().add(claseTiempo(r));setStyle("-fx-text-fill:"+colorSituacion(r)+";-fx-font-weight:900;");}}});
         tablaSolicitudes.getSelectionModel().selectedItemProperty().addListener((o,a,n)->{if(n!=null)mostrarDetalle(n);});
-        tablaSolicitudes.setRowFactory(t->{TableRow<Reserva> fila=new TableRow<>();fila.setOnMouseClicked(e->{if(e.getButton()==MouseButton.PRIMARY&&e.getClickCount()==2&&!fila.isEmpty()){detenerReloj();Navegacion.mostrarReservaDesdeAgenda(fila.getItem().getId());}});return fila;});
+        tablaSolicitudes.setRowFactory(t->{
+            TableRow<Reserva> fila=new TableRow<>();
+            fila.setOnMousePressed(e->{
+                if(!fila.isEmpty()&&fila.getItem()!=null){
+                    tablaSolicitudes.getSelectionModel().select(fila.getItem());
+                    tablaSolicitudes.requestFocus();
+                }
+            });
+            fila.setOnMouseClicked(e->{
+                if(e.getButton()==MouseButton.PRIMARY&&e.getClickCount()==2&&!fila.isEmpty()){
+                    detenerReloj();
+                    Navegacion.mostrarReservaDesdeAgenda(fila.getItem().getId());
+                }
+            });
+            return fila;
+        });
+    }
+
+    private TableCell<Reserva,String> celdaTextoIzquierda(){
+        return new TableCell<>(){
+            @Override protected void updateItem(String valor,boolean vacia){
+                super.updateItem(valor,vacia);
+                setAlignment(Pos.CENTER_LEFT);
+                setText(vacia||valor==null?null:valor);
+            }
+        };
     }
 
     private TableCell<Reserva,String> celdaTextoCentrada(){
@@ -144,10 +155,36 @@ public class SolicitudesWebController {
     }
 
     private void configurarFiltros(){
-        filtroEstado.setItems(FXCollections.observableArrayList(EstadoReserva.PENDIENTE,EstadoReserva.CONFIRMADA,EstadoReserva.EXPIRADA,EstadoReserva.CANCELADA,EstadoReserva.COMPLETADA,EstadoReserva.AUSENTE));
-        solicitudesFiltradas=new FilteredList<>(solicitudes,v->true);tablaSolicitudes.setItems(solicitudesFiltradas);
-        campoBuscar.textProperty().addListener((o,a,n)->aplicarFiltros());filtroEstado.valueProperty().addListener((o,a,n)->aplicarFiltros());
-        campoBuscar.setOnKeyPressed(e->{if(e.getCode()==KeyCode.ESCAPE)limpiarFiltros();});
+        filtroEstado.setItems(FXCollections.observableArrayList(
+                EstadoReserva.PENDIENTE,EstadoReserva.CONFIRMADA,
+                EstadoReserva.EXPIRADA,EstadoReserva.CANCELADA,
+                EstadoReserva.COMPLETADA,EstadoReserva.AUSENTE));
+        filtroEstado.setCellFactory(lista->crearCeldaEstadoFiltro(false));
+        filtroEstado.setButtonCell(crearCeldaEstadoFiltro(true));
+        solicitudesFiltradas=new FilteredList<>(solicitudes,v->true);
+        tablaSolicitudes.setItems(solicitudesFiltradas);
+        campoBuscar.textProperty().addListener((o,a,n)->aplicarFiltros());
+        filtroEstado.valueProperty().addListener((o,a,n)->aplicarFiltros());
+        campoBuscar.setOnKeyPressed(e->{
+            if(e.getCode()==KeyCode.ESCAPE)limpiarFiltros();
+        });
+        botonLimpiar.setDisable(false);
+    }
+
+    private javafx.scene.control.ListCell<EstadoReserva> crearCeldaEstadoFiltro(
+            boolean boton){
+        return new javafx.scene.control.ListCell<>(){
+            @Override protected void updateItem(
+                    EstadoReserva estado,boolean vacia){
+                super.updateItem(estado,vacia);
+                if(vacia||estado==null){
+                    setText(boton?"Todos los estados":null);
+                }else{
+                    setText(nombreEstado(estado));
+                }
+                setGraphic(null);
+            }
+        };
     }
 
     @FXML public void cargarSolicitudes(){
@@ -157,9 +194,17 @@ public class SolicitudesWebController {
         finally{botonActualizar.setDisable(false);}
     }
 
-    private void aplicarFiltros(){if(solicitudesFiltradas==null)return;String texto=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);EstadoReserva estado=filtroEstado.getValue();solicitudesFiltradas.setPredicate(r->(estado==null||r.getEstado()==estado)&&(texto.isBlank()||contiene(r.getNombreCliente(),texto)||contiene(r.getNombreCancha(),texto)||contiene(nombreEstado(r.getEstado()),texto)||String.valueOf(r.getId()).contains(texto)));actualizarMensajeResultados();botonLimpiar.setDisable(texto.isBlank()&&estado==null);}
+    private void aplicarFiltros(){if(solicitudesFiltradas==null)return;String texto=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);EstadoReserva estado=filtroEstado.getValue();solicitudesFiltradas.setPredicate(r->(estado==null||r.getEstado()==estado)&&(texto.isBlank()||contiene(r.getNombreCliente(),texto)||contiene(r.getNombreCancha(),texto)||contiene(nombreEstado(r.getEstado()),texto)||String.valueOf(r.getId()).contains(texto)));actualizarMensajeResultados();}
     private boolean contiene(String v,String f){return v!=null&&v.toLowerCase(Locale.ROOT).contains(f);}
-    private void actualizarMensajeResultados(){int n=solicitudesFiltradas==null?0:solicitudesFiltradas.size();etiquetaMensaje.setText(n+" "+(n==1?"solicitud encontrada":"solicitudes encontradas"));}
+    private void actualizarMensajeResultados(){
+        int n=solicitudesFiltradas==null?0:solicitudesFiltradas.size();
+        String busqueda=campoBuscar.getText()==null?"":campoBuscar.getText().trim();
+        EstadoReserva estado=filtroEstado.getValue();
+        String texto=n+" "+(n==1?"solicitud visible":"solicitudes visibles");
+        if(estado!=null)texto+=" · "+nombreEstado(estado);
+        if(!busqueda.isBlank())texto+=" para \""+busqueda+"\"";
+        etiquetaMensaje.setText(texto);
+    }
     @FXML private void limpiarFiltros(){campoBuscar.clear();filtroEstado.getSelectionModel().clearSelection();}
     @FXML private void mostrarTodas(){limpiarFiltros();}
     @FXML private void mostrarVigentes(){campoBuscar.clear();filtroEstado.setValue(EstadoReserva.PENDIENTE);}
@@ -171,13 +216,38 @@ public class SolicitudesWebController {
 
     private void iniciarReloj(){reloj=new Timeline(new KeyFrame(javafx.util.Duration.seconds(1),e->{tablaSolicitudes.refresh();actualizarResumen();if(seleccionada!=null)actualizarSituacionDetalle();}));reloj.setCycleCount(Timeline.INDEFINITE);reloj.play();}
     private void detenerReloj(){if(reloj!=null)reloj.stop();}
+    private String textoVencimiento(Reserva r){
+        if(r==null)return "-";
+        if(r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null){
+            Duration d=Duration.between(LocalDateTime.now(),r.getFechaVencimiento());
+            if(d.isNegative()||d.isZero())return "Vencida";
+            long m=d.toMinutes(),s=d.minusMinutes(m).getSeconds();
+            return String.format("%02d:%02d",m,s);
+        }
+        return switch(r.getEstado()){
+            case CONFIRMADA->"Acreditada";
+            case EXPIRADA->"Vencida";
+            case CANCELADA->"Cancelada";
+            case COMPLETADA->"Cerrada";
+            case AUSENTE->"Cerrada";
+            case PENDIENTE->"Sin plazo";
+        };
+    }
     private String textoSituacion(Reserva r){if(r.getEstado()==EstadoReserva.EXPIRADA)return "Expirada";if(r.getEstado()==EstadoReserva.PENDIENTE&&r.getFechaVencimiento()!=null){Duration d=Duration.between(LocalDateTime.now(),r.getFechaVencimiento());if(d.isNegative()||d.isZero())return "Venciendo...";long m=d.toMinutes(),s=d.minusMinutes(m).getSeconds();return String.format("%02d:%02d",m,s);}LocalDateTime i=LocalDateTime.of(r.getFecha(),r.getHoraInicio()),f=LocalDateTime.of(r.getFecha(),r.getHoraFin()),a=LocalDateTime.now();if(a.isBefore(i))return "Próxima";if(a.isBefore(f))return "En curso";return "Finalizada";}
     private String claseTiempo(Reserva r){if(r.getEstado()==EstadoReserva.EXPIRADA)return "web-time-expired";if(proximaAVencer(r))return "web-time-warning";return "web-time-ok";}
     private String claseEstado(EstadoReserva e){return switch(e){case PENDIENTE->"web-state-pending";case CONFIRMADA->"web-state-confirmed";case EXPIRADA->"web-state-expired";case CANCELADA->"web-state-cancelled";case COMPLETADA->"web-state-completed";case AUSENTE->"web-state-absent";};}
     private String colorEstado(EstadoReserva e){return switch(e){case PENDIENTE->"#e0b75e";case CONFIRMADA->"#82c5aa";case EXPIRADA->"#d9828d";case CANCELADA->"#e0777f";case COMPLETADA->"#71b9a0";case AUSENTE->"#de9f69";};}
     private String colorSituacion(Reserva r){String s=textoSituacion(r);if("Expirada".equals(s))return "#d9828d";if("Venciendo...".equals(s)||s.matches("\\d{2}:\\d{2}"))return proximaAVencer(r)?"#efbc60":"#82c5aa";if("En curso".equals(s))return "#82c5aa";if("Próxima".equals(s))return "#8fbed1";return "#aebbc1";}
 
-    private void mostrarDetalle(Reserva r){seleccionada=r;Cliente c=clienteService.buscar(r.getClienteId());panelDetalleVacio.setVisible(false);panelDetalleVacio.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Solicitud web #"+r.getId());detalleCliente.setText(r.getNombreCliente());detalleTelefono.setText(c==null||c.getTelefono()==null||c.getTelefono().isBlank()?"Sin teléfono registrado":c.getTelefono());detalleTurno.setText(r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA)+" a "+r.getHoraFin().format(HORA));detalleCancha.setText(r.getNombreCancha());detalleEstado.setText(nombreEstado(r.getEstado()));detalleEstado.getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");detalleEstado.getStyleClass().add(claseEstado(r.getEstado()));detalleEstado.setStyle("-fx-text-fill:"+colorEstado(r.getEstado())+";-fx-font-weight:900;");detalleOrigen.setText(r.getOrigen().toString());BigDecimal acreditado=pagoService.totalAcreditado(r.getId()),saldo=pagoService.calcularSaldo(r.getId());detallePrecio.setText(moneda(r.getPrecioTotal()));detalleAcreditado.setText(moneda(acreditado));detalleSaldo.setText(moneda(saldo));actualizarSituacionDetalle();botonReserva.setVisible(true);botonReserva.setManaged(true);configurarBoton(botonPagos,r.getEstado()==EstadoReserva.PENDIENTE||r.getEstado()==EstadoReserva.CONFIRMADA||r.getEstado()==EstadoReserva.COMPLETADA);configurarBoton(botonWhatsApp,c!=null&&c.getTelefono()!=null&&!c.getTelefono().isBlank());actualizarAlineacionAccionesSecundarias();}
+    private void mostrarDetalle(Reserva r){seleccionada=r;Cliente c=clienteService.buscar(r.getClienteId());panelDetalleVacio.setVisible(false);panelDetalleVacio.setManaged(false);panelDetalle.setVisible(true);panelDetalle.setManaged(true);detalleTitulo.setText("Solicitud web #"+r.getId());detalleCliente.setText(r.getNombreCliente());detalleTelefono.setText(c==null||c.getTelefono()==null||c.getTelefono().isBlank()?"Sin teléfono registrado":formatearTelefonoVisual(c.getTelefono()));detalleTurno.setText(r.getFecha().format(FECHA)+" · "+r.getHoraInicio().format(HORA)+" a "+r.getHoraFin().format(HORA));detalleCancha.setText(r.getNombreCancha());detalleEstado.setText(nombreEstado(r.getEstado()));detalleEstado.getStyleClass().removeAll("web-state-pending","web-state-confirmed","web-state-expired","web-state-cancelled","web-state-completed","web-state-absent");detalleEstado.getStyleClass().add(claseEstado(r.getEstado()));detalleEstado.setStyle("-fx-text-fill:"+colorEstado(r.getEstado())+";-fx-font-weight:900;");detalleOrigen.setText(r.getOrigen().toString());BigDecimal acreditado=pagoService.totalAcreditado(r.getId()),saldo=pagoService.calcularSaldo(r.getId());detallePrecio.setText(moneda(r.getPrecioTotal()));detalleAcreditado.setText(moneda(acreditado));detalleSaldo.setText(moneda(saldo));
+        BigDecimal precio=r.getPrecioTotal()==null?BigDecimal.ZERO:r.getPrecioTotal();
+        double progreso=precio.signum()<=0?0:acreditado.divide(precio,4,java.math.RoundingMode.HALF_UP).doubleValue();
+        progreso=Math.max(0,Math.min(1,progreso));
+        detalleProgresoPago.setProgress(progreso);
+        detallePorcentajePago.setText(Math.round(progreso*100)+" % acreditado");
+        actualizarSituacionDetalle();
+        botonReserva.setText(r.getEstado()==EstadoReserva.EXPIRADA||r.getEstado()==EstadoReserva.CANCELADA?"VER RESERVA":"ABRIR RESERVA");
+        botonReserva.setVisible(true);botonReserva.setManaged(true);configurarBoton(botonPagos,r.getEstado()==EstadoReserva.PENDIENTE||r.getEstado()==EstadoReserva.CONFIRMADA||r.getEstado()==EstadoReserva.COMPLETADA);configurarBoton(botonWhatsApp,c!=null&&c.getTelefono()!=null&&!c.getTelefono().isBlank());actualizarAlineacionAccionesSecundarias();}
     private void actualizarSituacionDetalle(){
         if(seleccionada==null)return;
         String situacion=textoSituacion(seleccionada);
@@ -236,11 +306,22 @@ public class SolicitudesWebController {
 
     private String nombreEstado(EstadoReserva e){return switch(e){case PENDIENTE->"Esperando seña";case CONFIRMADA->"Confirmada";case EXPIRADA->"Expirada";case CANCELADA->"Cancelada";case COMPLETADA->"Completada";case AUSENTE->"Ausente";};}
     private String moneda(BigDecimal v){return FormateadorMoneda.pesos(v);}
+    private String formatearTelefonoVisual(String telefono){
+        if(telefono==null)return "";
+        String limpio=telefono.replaceAll("\\D","");
+        if(limpio.length()==10)return limpio.substring(0,4)+" "+limpio.substring(4);
+        if(limpio.length()>6)return limpio.substring(0,limpio.length()-6)+" "+limpio.substring(limpio.length()-6);
+        return telefono.trim();
+    }
     private void actualizarAlineacionAccionesSecundarias(){
         if(panelAccionesSecundarias==null)return;
+        panelAccionesSecundarias.setAlignment(Pos.CENTER);
         boolean pagosVisible=botonPagos.isManaged()&&botonPagos.isVisible();
-        panelAccionesSecundarias.setAlignment(
-                pagosVisible?Pos.CENTER_RIGHT:Pos.CENTER);
+        boolean whatsappVisible=botonWhatsApp.isManaged()&&botonWhatsApp.isVisible();
+        botonPagos.setMaxWidth(Double.MAX_VALUE);
+        botonWhatsApp.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(botonPagos,pagosVisible?javafx.scene.layout.Priority.ALWAYS:javafx.scene.layout.Priority.NEVER);
+        HBox.setHgrow(botonWhatsApp,whatsappVisible?javafx.scene.layout.Priority.ALWAYS:javafx.scene.layout.Priority.NEVER);
     }
     private void configurarBoton(Button b,boolean visible){b.setVisible(visible);b.setManaged(visible);}
     @FXML private void abrirReserva(){if(seleccionada!=null){detenerReloj();Navegacion.mostrarReservaDesdeAgenda(seleccionada.getId());}}
