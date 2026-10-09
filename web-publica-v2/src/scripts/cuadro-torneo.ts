@@ -11,6 +11,12 @@ let observador: ResizeObserver | null = null;
 let zoomEnCurso = false;
 let zoomFrame = 0;
 let entradasPendientes = new Map<string,string>();
+// cuadro-por-rondas-movil-v36
+// pulido-torneos-movil-v37
+let indiceRondaMovil=0;
+const esVistaMovil=()=>window.matchMedia('(max-width: 760px)').matches;
+const movimientoReducido=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 
 const escapeHtml = (valor: unknown) => String(valor ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c] || c));
 const faseColor = (fase: string) => fase.startsWith('ACCESO_') ? 'access' : fase === 'DIECISEISAVOS' ? 'round32' : fase === 'OCTAVOS' ? 'round16' : fase === 'CUARTOS' ? 'quarter' : fase === 'SEMIFINAL' ? 'semi' : 'final';
@@ -78,7 +84,7 @@ function controles() {
 function render(cuadro: CuadroCategoriaPublico) {
   escala = 1;
   if (titulo) titulo.textContent = `${cuadro.categoria.nombre} · ${etiqueta(cuadro.categoria.rama)}`;
-  if (subtitulo) subtitulo.textContent = `${cuadro.torneo.nombre} · ${rangoFechas(cuadro.torneo.fechaInicio,cuadro.torneo.fechaFin)}`;
+  if (subtitulo) subtitulo.innerHTML = `<span class="bracket-tournament-name">${escapeHtml(cuadro.torneo.nombre)}</span><span class="bracket-tournament-dates">${escapeHtml(rangoFechas(cuadro.torneo.fechaInicio,cuadro.torneo.fechaFin))}</span>`;
   if (!contenido) return;
   const fases = cuadro.fases.filter(f => f.nombre !== 'GRUPOS');
   const limpio = { ...cuadro, fases };
@@ -87,9 +93,39 @@ function render(cuadro: CuadroCategoriaPublico) {
     contenido.innerHTML = `${campeones(limpio)}<div class="bracket-empty">El cuadro eliminatorio todavía no fue generado.</div>`;
     return;
   }
-  contenido.innerHTML = `${campeones(limpio)}<div class="bracket-canvas-wrap">${controles()}<div class="bracket-viewport"><div class="bracket-size-shell"><div class="bracket-stage"><svg class="bracket-links" aria-hidden="true"></svg><div class="bracket-columns">${columnas(limpio)}</div></div></div></div></div><div class="bracket-mobile">${fases.map((f,i) => `<button type="button" class="${i===0?'active':''}" data-mobile-round="${escapeHtml(f.nombre)}">${escapeHtml(faseTitulo(f.nombre))}</button>`).join('')}</div>`;
+  contenido.innerHTML = `${campeones(limpio)}<div class="bracket-mobile-toolbar"><button id="alternarVistaCuadroMovil" type="button">Ver llave completa</button></div><div class="bracket-mobile" role="tablist" aria-label="Rondas del cuadro">${fases.map((f,i) => `<button type="button" role="tab" aria-selected="${i===0}" class="${i===0?'active':''}" data-mobile-round="${escapeHtml(f.nombre)}">${escapeHtml(faseTitulo(f.nombre))}</button>`).join('')}</div><div class="bracket-canvas-wrap">${controles()}<div class="bracket-viewport"><div class="bracket-size-shell"><div class="bracket-stage"><svg class="bracket-links" aria-hidden="true"></svg><div class="bracket-columns">${columnas(limpio)}</div></div></div></div></div><nav class="bracket-round-navigation" aria-label="Navegacion entre rondas"><button id="rondaAnterior" type="button">‹ Anterior</button><span id="estadoRondaMovil" aria-live="polite"></span><button id="rondaSiguiente" type="button">Siguiente ›</button></nav>`;
   configurarInteracciones();
   requestAnimationFrame(() => { distribuirEstructuralmente(); dibujarConexiones(); ajustar(true); });
+}
+
+function activarRondaMovil(indice:number,enfocar=false){
+  if(!contenido)return;
+  const botones=[...contenido.querySelectorAll<HTMLButtonElement>('[data-mobile-round]')];
+  if(!botones.length)return;
+  indiceRondaMovil=Math.max(0,Math.min(botones.length-1,indice));
+  botones.forEach((boton,i)=>{const activo=i===indiceRondaMovil;boton.classList.toggle('active',activo);boton.setAttribute('aria-selected',String(activo))});
+  const nombre=botones[indiceRondaMovil].dataset.mobileRound;
+  contenido.querySelectorAll<HTMLElement>('.bracket-round').forEach(r=>r.classList.toggle('mobile-hidden',r.dataset.round!==nombre));
+  contenido.querySelector<HTMLButtonElement>('#rondaAnterior')!.disabled=indiceRondaMovil===0;
+  contenido.querySelector<HTMLButtonElement>('#rondaSiguiente')!.disabled=indiceRondaMovil===botones.length-1;
+  const estado=contenido.querySelector<HTMLElement>('#estadoRondaMovil');if(estado)estado.textContent=botones[indiceRondaMovil].textContent||'';
+  botones[indiceRondaMovil].scrollIntoView({behavior:movimientoReducido()?'auto':'smooth',block:'nearest',inline:'center'});
+  if(enfocar)botones[indiceRondaMovil].focus();
+}
+function mostrarAyudaArrastre(){
+  if(!contenido)return;
+  contenido.querySelector('.bracket-drag-hint')?.remove();
+  const ayuda=document.createElement('div');ayuda.className='bracket-drag-hint';ayuda.textContent='Arrastra para recorrer la llave';
+  contenido.querySelector('.bracket-canvas-wrap')?.appendChild(ayuda);
+  requestAnimationFrame(()=>ayuda.classList.add('visible'));
+  window.setTimeout(()=>{ayuda.classList.remove('visible');window.setTimeout(()=>ayuda.remove(),220)},2400);
+}
+function alternarVistaMovil(){
+  if(!contenido)return;
+  const completa=contenido.classList.toggle('mobile-full-bracket');
+  contenido.classList.toggle('mobile-round-bracket',!completa);
+  const boton=contenido.querySelector<HTMLButtonElement>('#alternarVistaCuadroMovil');if(boton)boton.textContent=completa?'Volver a vista por rondas':'Ver llave completa';
+  if(completa){requestAnimationFrame(()=>{distribuirEstructuralmente();dibujarConexiones();ajustar(true);requestAnimationFrame(()=>{centrarVista();mostrarAyudaArrastre()})})}else{aplicarEscala(1,false);activarRondaMovil(indiceRondaMovil)}
 }
 
 function configurarInteracciones() {
@@ -107,11 +143,15 @@ function configurarInteracciones() {
   contenido?.addEventListener('click',cerrarPanel);
   configurarArrastre();
   contenido?.querySelector('#enfocarFinal')?.addEventListener('click', () => contenido?.querySelector('[data-round="FINAL"]')?.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' }));
-  contenido?.querySelectorAll<HTMLButtonElement>('[data-mobile-round]').forEach(b => b.addEventListener('click', () => {
-    contenido.querySelectorAll('[data-mobile-round]').forEach(x => x.classList.remove('active'));
-    b.classList.add('active');
-    contenido.querySelectorAll<HTMLElement>('.bracket-round').forEach(r => r.classList.toggle('mobile-hidden', r.dataset.round !== b.dataset.mobileRound));
-  }));
+  const botonesRonda=[...contenido?.querySelectorAll<HTMLButtonElement>('[data-mobile-round]')||[]];
+  botonesRonda.forEach((b,i)=>b.addEventListener('click',()=>activarRondaMovil(i)));
+  contenido?.querySelector('#rondaAnterior')?.addEventListener('click',()=>activarRondaMovil(indiceRondaMovil-1,true));
+  contenido?.querySelector('#rondaSiguiente')?.addEventListener('click',()=>activarRondaMovil(indiceRondaMovil+1,true));
+  contenido?.querySelector('#alternarVistaCuadroMovil')?.addEventListener('click',alternarVistaMovil);
+  const canvas=contenido?.querySelector<HTMLElement>('.bracket-canvas-wrap');let inicioToque=0;
+  canvas?.addEventListener('touchstart',e=>{if(contenido?.classList.contains('mobile-round-bracket'))inicioToque=e.touches[0]?.clientX||0},{passive:true});
+  canvas?.addEventListener('touchend',e=>{if(!contenido?.classList.contains('mobile-round-bracket')||!inicioToque)return;const delta=(e.changedTouches[0]?.clientX||0)-inicioToque;if(Math.abs(delta)>65)activarRondaMovil(indiceRondaMovil+(delta<0?1:-1),true);inicioToque=0},{passive:true});
+  if(esVistaMovil()){contenido?.classList.add('mobile-round-bracket');contenido?.classList.remove('mobile-full-bracket');activarRondaMovil(0)}else{contenido?.classList.remove('mobile-round-bracket','mobile-full-bracket')}
   observador?.disconnect();
   const viewport = contenido?.querySelector('.bracket-viewport');
   if (viewport) {
@@ -312,4 +352,4 @@ function dibujarConexiones() {
 
 export async function abrirCuadroTorneo(categoriaId:number,disparador?:HTMLElement){if(!modal||!contenido)return;ultimoFoco=disparador||null;contenido.innerHTML='<div class="bracket-loading">Cargando cuadro...</div>';modal.classList.remove('hidden');modal.classList.add('flex');document.body.style.overflow='hidden';try{render(await api<CuadroCategoriaPublico>(`/torneos/categorias/${categoriaId}/cuadro`));}catch(error){contenido.innerHTML=`<div class="bracket-error">${escapeHtml(error instanceof Error?error.message:'No se pudo cargar el cuadro.')}</div>`;}}
 function cerrar(){if(!modal)return;observador?.disconnect();modal.classList.add('hidden');modal.classList.remove('flex');document.body.style.overflow='';ultimoFoco?.focus();}
-document.getElementById('cerrarCuadroTorneo')?.addEventListener('click',cerrar);modal?.addEventListener('click',e=>{if(e.target===modal)cerrar();});document.addEventListener('keydown',e=>{if(e.key!=='Escape'||!modal||modal.classList.contains('hidden'))return;const panel=contenido?.querySelector<HTMLElement>('#panelControlesLlave');const toggle=contenido?.querySelector<HTMLButtonElement>('#alternarControlesLlave');if(panel&&!panel.classList.contains('hidden')){panel.classList.add('hidden');toggle?.setAttribute('aria-expanded','false');toggle?.focus();return;}cerrar();});
+document.getElementById('cerrarCuadroTorneo')?.addEventListener('click',cerrar);document.addEventListener('keydown',e=>{if(e.key!=='Escape'||!modal||modal.classList.contains('hidden'))return;const panel=contenido?.querySelector<HTMLElement>('#panelControlesLlave');const toggle=contenido?.querySelector<HTMLButtonElement>('#alternarControlesLlave');if(panel&&!panel.classList.contains('hidden')){panel.classList.add('hidden');toggle?.setAttribute('aria-expanded','false');toggle?.focus();return;}cerrar();});
