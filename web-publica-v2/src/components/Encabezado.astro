@@ -1,27 +1,40 @@
 ---
-interface Props { actual?: 'inicio' | 'reservar' | 'torneos' | 'reservas' | 'cuenta'; }
-const { actual = 'inicio' } = Astro.props;
-const enlaces = [['inicio','/','Inicio'],['reservar','/reservar','Reservar'],['torneos','/torneos','Torneos'],['reservas','/mis-reservas','Mis reservas']] as const;
+interface Props { actual?: 'inicio'|'reservar'|'torneos'|'reservas'|'cuenta'; }
+const { actual='inicio' }=Astro.props;
+const enlaces=[['inicio','/','Inicio'],['torneos','/torneos','Torneos'],['reservas','/mis-reservas','Mis reservas']] as const;
 ---
-<header class="sticky top-0 z-50 border-b border-ink-700/80 bg-ink-950/90 backdrop-blur-xl">
-  <nav class="container-site flex min-h-20 items-center gap-6" aria-label="Navegación principal">
-    <a href="/" class="focus-ring flex items-center gap-3 rounded-xl"><span class="grid size-11 place-items-center rounded-xl border border-brand-300/50 bg-brand-500/20 text-xl font-black text-brand-100">P</span><span class="hidden sm:block"><strong id="marcaNombre" class="block text-base">Pádel Reservas</strong><small class="text-xs text-slate-400">Reservas online</small></span></a>
-    <button id="menuButton" class="focus-ring ml-auto rounded-lg border border-ink-700 px-3 py-2 text-sm font-bold lg:hidden" type="button" aria-expanded="false" aria-controls="mainMenu">Menú</button>
-    <div id="mainMenu" class="hidden absolute left-4 right-4 top-[74px] flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-3 shadow-2xl lg:static lg:ml-auto lg:flex lg:flex-row lg:items-center lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none">
-      {enlaces.map(([id,href,texto]) => <a href={href} class:list={['focus-ring rounded-lg px-4 py-2.5 text-sm font-extrabold uppercase tracking-wide transition',actual===id?'bg-brand-500 text-white':'text-slate-300 hover:bg-ink-800 hover:text-white']} aria-current={actual===id?'page':undefined}>{texto}</a>)}
-      <button id="abrirAutenticacion" class="focus-ring rounded-lg border border-ink-700 px-4 py-2.5 text-sm font-extrabold uppercase text-slate-200 transition hover:border-brand-300 hover:bg-ink-800" type="button">Ingresar</button>
+<header class="sticky top-0 z-50 border-b border-white/8 bg-ink-950/88 backdrop-blur-2xl">
+  <nav class="container-site flex min-h-[76px] items-center gap-4" aria-label="Navegación principal">
+    <a href="/" class="focus-ring flex min-w-0 items-center gap-3 rounded-xl" aria-label="Ir al inicio">
+      <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-brand-300/45 bg-brand-500/16 font-black text-brand-100 shadow-lg shadow-brand-700/15">P</span>
+      <span class="hidden min-w-0 sm:block"><strong id="marcaNombre" class="block truncate text-base text-white">Pádel Reservas</strong><small class="block text-xs text-slate-500">Jugá. Competí. Volvé.</small></span>
+    </a>
+    <div class="ml-auto hidden items-center gap-1 lg:flex">
+      {enlaces.map(([id,href,texto])=><a href={href} class:list={['focus-ring rounded-xl px-4 py-2.5 text-sm font-extrabold transition',actual===id?'bg-white/8 text-white':'text-slate-400 hover:bg-white/5 hover:text-white']} aria-current={actual===id?'page':undefined}>{texto}</a>)}
+      <a href="/reservar" class:list={['btn ml-2',actual==='reservar'?'btn-secondary':'btn-primary']}>Reservar cancha</a>
+      <button id="abrirAutenticacion" class="btn btn-secondary ml-1" type="button">Ingresar</button>
       <div id="menuUsuario" class="relative hidden">
-        <button id="botonUsuario" class="focus-ring rounded-lg border border-brand-500/50 bg-brand-500/10 px-4 py-2.5 text-sm font-extrabold uppercase text-brand-100" type="button" aria-expanded="false" aria-controls="desplegableUsuario"><span id="nombreUsuario">Cuenta</span> ▾</button>
-        <div id="desplegableUsuario" class="absolute right-0 top-[calc(100%+.6rem)] hidden min-w-52 rounded-xl border border-ink-700 bg-ink-900 p-2 shadow-2xl">
-          <a class="block rounded-lg px-4 py-3 text-sm font-bold hover:bg-ink-800" href="/mis-datos">Mis datos</a>
-          <button id="cerrarSesion" class="w-full rounded-lg px-4 py-3 text-left text-sm font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
+        <button id="botonUsuario" class="btn btn-secondary ml-1" type="button" aria-expanded="false" aria-controls="desplegableUsuario"><span id="nombreUsuario">Cuenta</span><span aria-hidden="true">⌄</span></button>
+        <div id="desplegableUsuario" class="absolute right-0 top-[calc(100%+.65rem)] hidden min-w-60 rounded-2xl border border-ink-700 bg-ink-900 p-2 shadow-2xl shadow-black/40">
+          <a class="block rounded-xl px-4 py-3 text-sm font-bold text-slate-200 hover:bg-ink-800" href="/mis-reservas">Mis reservas</a>
+          <a class="block rounded-xl px-4 py-3 text-sm font-bold text-slate-200 hover:bg-ink-800" href="/mis-datos">Mis datos</a>
+          <div class="my-1 border-t border-ink-700"></div>
+          <button id="cerrarSesion" class="w-full rounded-xl px-4 py-3 text-left text-sm font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
         </div>
       </div>
+    </div>
+    <button id="menuButton" class="btn btn-secondary ml-auto lg:hidden" type="button" aria-expanded="false" aria-controls="mainMenu"><span>Menú</span><span aria-hidden="true">☰</span></button>
+    <div id="mainMenu" class="site-mobile-panel absolute left-3 right-3 top-[82px] hidden flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-3 shadow-2xl shadow-black/50 lg:hidden">
+      <a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/">Inicio</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/torneos">Torneos</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/mis-reservas">Mis reservas</a><a class="btn btn-primary mt-1" href="/reservar">Reservar cancha</a>
+      <button id="abrirAutenticacionMovil" class="btn btn-secondary" type="button">Ingresar o crear cuenta</button>
     </div>
   </nav>
 </header>
 <script>
-  const button=document.querySelector<HTMLButtonElement>('#menuButton');
-  const menu=document.querySelector<HTMLElement>('#mainMenu');
-  button?.addEventListener('click',()=>{const open=button.getAttribute('aria-expanded')==='true';button.setAttribute('aria-expanded',String(!open));menu?.classList.toggle('hidden',open);menu?.classList.toggle('flex',!open);});
+ const menuButton=document.querySelector<HTMLButtonElement>('#menuButton'); const mainMenu=document.querySelector<HTMLElement>('#mainMenu');
+ const closeMenu=()=>{mainMenu?.classList.remove('site-menu-open');menuButton?.setAttribute('aria-expanded','false');document.body.classList.remove('no-scroll')};
+ menuButton?.addEventListener('click',()=>{const abrir=menuButton.getAttribute('aria-expanded')!=='true';menuButton.setAttribute('aria-expanded',String(abrir));mainMenu?.classList.toggle('site-menu-open',abrir);document.body.classList.toggle('no-scroll',abrir)});
+ mainMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu)); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
+ document.addEventListener('click',e=>{const t=e.target as Node;if(mainMenu&&!mainMenu.contains(t)&&menuButton&&!menuButton.contains(t))closeMenu()});
+ document.querySelector('#abrirAutenticacionMovil')?.addEventListener('click',()=>{closeMenu();(document.querySelector('#abrirAutenticacion') as HTMLButtonElement)?.click()});
 </script>
