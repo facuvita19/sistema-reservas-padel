@@ -38,6 +38,8 @@ public class TorneoPublicoService {
         LocalDateTime ahora = LocalDateTime.now();
         return torneoDAO.listarActivos().stream()
                 .filter(this::esPublico)
+                .filter(torneo -> !categoriaDAO
+                        .listarActivasPorTorneo(torneo.getId()).isEmpty())
                 .map(torneo -> convertirResumen(torneo, ahora))
                 .toList();
     }
@@ -109,7 +111,11 @@ public class TorneoPublicoService {
                 categoria.getPremioCampeon(),
                 categoria.getPremioSubcampeon(),
                 categoria.getPremioDescripcion(),
-                disponible);
+                disponible,
+                categoria.getFormatoCompetencia().name(),
+                categoria.getCantidadGruposTres(),
+                categoria.getCantidadGruposCuatro(),
+                categoria.getClasificadosProyectados());
     }
 
     private boolean esPublico(Torneo torneo) {

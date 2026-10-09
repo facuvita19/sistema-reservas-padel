@@ -48,6 +48,10 @@ public final class TorneoPublicoDTO {
             BigDecimal premioCampeon,
             BigDecimal premioSubcampeon,
             String premioDescripcion,
-            boolean disponible) {
+            boolean disponible,
+            String formatoCompetencia,
+            int cantidadGruposTres,
+            int cantidadGruposCuatro,
+            int clasificadosProyectados) {
     }
 }

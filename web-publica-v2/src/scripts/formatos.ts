@@ -18,3 +18,14 @@ export const etiqueta = (valor: string) => valor.toLowerCase().replaceAll('_', '
   .replace(/^./, letra => letra.toUpperCase());
 
 export const hora = (valor: string) => valor?.slice(0, 5) || '-';
+export function rangoFechas(inicio:string,fin:string){
+  const a=new Date(inicio+'T00:00:00');
+  const b=new Date(fin+'T00:00:00');
+  if(Number.isNaN(a.getTime())||Number.isNaN(b.getTime()))return `${fecha(inicio)} al ${fecha(fin)}`;
+  const mismoAnio=a.getFullYear()===b.getFullYear();
+  const mismoMes=mismoAnio&&a.getMonth()===b.getMonth();
+  const mes=valor=>new Intl.DateTimeFormat('es-AR',{month:'long'}).format(valor);
+  if(mismoMes)return `${a.getDate()} al ${b.getDate()} de ${mes(b)} de ${b.getFullYear()}`;
+  if(mismoAnio)return `${a.getDate()} de ${mes(a)} al ${b.getDate()} de ${mes(b)} de ${b.getFullYear()}`;
+  return `${a.getDate()} de ${mes(a)} de ${a.getFullYear()} al ${b.getDate()} de ${mes(b)} de ${b.getFullYear()}`;
+}

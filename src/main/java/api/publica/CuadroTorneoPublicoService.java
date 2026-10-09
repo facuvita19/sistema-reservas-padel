@@ -98,6 +98,7 @@ public class CuadroTorneoPublicoService {
                 categoria.getId());
         Map<FaseTorneo, List<Partido>> agrupados = new LinkedHashMap<>();
         partidos.stream()
+                .filter(partido -> partido.getFase() != FaseTorneo.GRUPOS)
                 .sorted(Comparator
                         .comparingInt((TorneoPartido p) ->
                                 p.getFase().ordinal())
@@ -145,7 +146,10 @@ public class CuadroTorneoPublicoService {
                 partido.getHoraFin(),
                 partido.getCanchaId(),
                 cancha == null ? null : cancha.getNombre(),
-                partido.getFechaFinalizacion());
+                partido.getFechaFinalizacion(),
+                partido.getPartidoSiguienteId(),
+                partido.getPosicionSiguiente() == null ? null
+                        : partido.getPosicionSiguiente().name());
     }
 
     private Set convertirSet(TorneoPartidoSet set) {

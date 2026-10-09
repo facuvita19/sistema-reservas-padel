@@ -1,1 +1,83 @@
-<div id="modalInscripcion" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/78 p-2 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-labelledby="tituloInscripcion"><section class="modal-shell max-w-3xl"><header class="modal-header"><div><p class="site-kicker">Inscripción de pareja</p><h2 id="tituloInscripcion" class="site-title mt-2 text-2xl font-black">Completar inscripción</h2><p id="resumenInscripcion" class="mt-1 text-sm text-slate-400"></p></div><button id="cerrarInscripcion" class="modal-close" type="button" aria-label="Cerrar inscripción">×</button></header><form id="formInscripcion" class="modal-body space-y-7 p-5 sm:p-8" novalidate><input id="torneoCategoriaId" type="hidden"/><div class="rounded-2xl border border-brand-500/30 bg-brand-500/10 p-4 text-sm text-slate-300">La solicitud quedará <strong class="text-white">pendiente de revisión</strong>. Los dos integrantes deben usar teléfonos diferentes.</div><fieldset class="space-y-4"><legend class="text-lg font-black text-white">Responsable</legend><div class="grid gap-4 sm:grid-cols-2"><label><span class="etiqueta-web">Nombre *</span><input id="responsableNombre" class="field-web" maxlength="100" autocomplete="given-name"/></label><label><span class="etiqueta-web">Apellido *</span><input id="responsableApellido" class="field-web" maxlength="100" autocomplete="family-name"/></label><label class="sm:col-span-2"><span class="etiqueta-web">Teléfono *</span><input id="responsableTelefono" class="field-web" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="Ejemplo: 11 5555-5555"/></label></div></fieldset><fieldset class="space-y-4 border-t border-ink-700 pt-6"><legend class="text-lg font-black text-white">Segundo integrante</legend><div class="grid gap-4 sm:grid-cols-2"><label><span class="etiqueta-web">Nombre *</span><input id="parejaNombre" class="field-web" maxlength="100"/></label><label><span class="etiqueta-web">Apellido *</span><input id="parejaApellido" class="field-web" maxlength="100"/></label><label class="sm:col-span-2"><span class="etiqueta-web">Teléfono *</span><input id="parejaTelefono" class="field-web" maxlength="30" inputmode="tel" placeholder="Debe ser diferente al responsable"/></label></div></fieldset><label class="block border-t border-ink-700 pt-6"><span class="etiqueta-web">Comentarios opcionales</span><textarea id="comentariosInscripcion" class="field-web min-h-28 resize-y" maxlength="500" placeholder="Información adicional para la organización"></textarea><small id="contadorComentarios" class="mt-2 block text-right text-xs text-slate-500">0 / 500</small></label><div id="errorInscripcion" class="hidden rounded-xl border border-rose-500/30 bg-rose-500/10 p-4 text-sm font-bold text-rose-200" role="alert"></div><div id="exitoInscripcion" class="hidden rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-5 text-emerald-100" role="status"></div><div class="sticky bottom-0 -mx-5 flex flex-col-reverse gap-3 border-t border-ink-700 bg-ink-900/96 px-5 py-4 backdrop-blur sm:-mx-8 sm:flex-row sm:justify-end sm:px-8"><button id="cancelarInscripcion" class="btn btn-secondary" type="button">Cancelar</button><button id="enviarInscripcion" class="btn btn-primary" type="submit">Enviar inscripción</button></div></form></section></div>
+<div id="modalInscripcion" class="fixed inset-0 z-[80] hidden items-center justify-center bg-black/78 p-2 backdrop-blur-md sm:p-4" role="dialog" aria-modal="true" aria-labelledby="tituloInscripcion" aria-describedby="resumenInscripcion">
+  <section class="modal-shell registration-modal-shell max-w-3xl">
+    <header class="modal-header registration-modal-header">
+      <div>
+        <p class="site-kicker">Inscripción de pareja</p>
+        <h2 id="tituloInscripcion" class="site-title">Completar inscripción</h2>
+        <p id="resumenInscripcion" class="registration-summary"></p>
+      </div>
+      <button id="cerrarInscripcion" class="modal-close" type="button" aria-label="Cerrar inscripción">×</button>
+    </header>
+
+    <form id="formInscripcion" class="modal-body registration-modal-body" novalidate>
+      <input id="torneoCategoriaId" type="hidden"/>
+
+      <div id="contenidoFormularioInscripcion" class="registration-form-content">
+        <div class="registration-notice" role="note">
+          <span aria-hidden="true">i</span>
+          <p><strong>La inscripción quedará pendiente de revisión.</strong> La organización confirmará la solicitud después de revisar los datos.</p>
+        </div>
+
+        <fieldset class="registration-person-card">
+          <legend><b>1</b><span>Primer integrante<small>Recibirá las comunicaciones relacionadas con la solicitud.</small></span></legend>
+          <div class="registration-fields">
+            <label for="responsableNombre">
+              <span class="etiqueta-web">Nombre *</span>
+              <input id="responsableNombre" class="field-web" maxlength="100" autocomplete="given-name" aria-describedby="error-responsableNombre"/>
+              <small id="error-responsableNombre" class="registration-field-error hidden"></small>
+            </label>
+            <label for="responsableApellido">
+              <span class="etiqueta-web">Apellido *</span>
+              <input id="responsableApellido" class="field-web" maxlength="100" autocomplete="family-name" aria-describedby="error-responsableApellido"/>
+              <small id="error-responsableApellido" class="registration-field-error hidden"></small>
+            </label>
+            <label class="registration-field-wide" for="responsableTelefono">
+              <span class="etiqueta-web">Teléfono *</span>
+              <input id="responsableTelefono" class="field-web" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="Ejemplo: 11 5555-5555" aria-describedby="ayuda-responsableTelefono error-responsableTelefono"/>
+              <small id="ayuda-responsableTelefono" class="registration-field-help">Se usará para contactar a la pareja.</small>
+              <small id="error-responsableTelefono" class="registration-field-error hidden"></small>
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="registration-person-card">
+          <legend><b>2</b><span>Segundo integrante<small>Completá los datos de la otra persona que integra la pareja.</small></span></legend>
+          <div class="registration-fields">
+            <label for="parejaNombre">
+              <span class="etiqueta-web">Nombre *</span>
+              <input id="parejaNombre" class="field-web" maxlength="100" autocomplete="given-name" aria-describedby="error-parejaNombre"/>
+              <small id="error-parejaNombre" class="registration-field-error hidden"></small>
+            </label>
+            <label for="parejaApellido">
+              <span class="etiqueta-web">Apellido *</span>
+              <input id="parejaApellido" class="field-web" maxlength="100" autocomplete="family-name" aria-describedby="error-parejaApellido"/>
+              <small id="error-parejaApellido" class="registration-field-error hidden"></small>
+            </label>
+            <label class="registration-field-wide" for="parejaTelefono">
+              <span class="etiqueta-web">Teléfono *</span>
+              <input id="parejaTelefono" class="field-web" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="Ejemplo: 11 4444-4444" aria-describedby="ayuda-parejaTelefono error-parejaTelefono"/>
+              <small id="ayuda-parejaTelefono" class="registration-field-help">Debe ser diferente al teléfono del primer integrante.</small>
+              <small id="error-parejaTelefono" class="registration-field-error hidden"></small>
+            </label>
+          </div>
+        </fieldset>
+
+        <label class="registration-comments" for="comentariosInscripcion">
+          <span><b class="etiqueta-web">Comentarios opcionales</b><small id="contadorComentarios">0/500</small></span>
+          <textarea id="comentariosInscripcion" class="field-web" maxlength="500" rows="3" placeholder="Información adicional para la organización" aria-describedby="error-comentariosInscripcion"></textarea>
+          <small id="error-comentariosInscripcion" class="registration-field-error hidden"></small>
+        </label>
+
+        <div id="errorInscripcion" class="registration-global-error hidden" role="alert" tabindex="-1"></div>
+      </div>
+
+      <section id="exitoInscripcion" class="registration-success hidden" role="status" aria-live="polite" tabindex="-1"></section>
+
+      <footer class="registration-footer">
+        <button id="cancelarInscripcion" class="btn btn-secondary" type="button">Cancelar</button>
+        <button id="enviarInscripcion" class="btn btn-primary" type="submit">Enviar inscripción</button>
+        <button id="cerrarExitoInscripcion" class="btn btn-primary hidden" type="button">Cerrar</button>
+      </footer>
+    </form>
+  </section>
+</div>

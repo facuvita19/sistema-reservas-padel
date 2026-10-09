@@ -5,8 +5,12 @@ import ModalCuadroTorneo from '../components/ModalCuadroTorneo.astro';
 
 ---
 <LayoutPrincipal titulo="Torneos | Pádel Reservas" actual="torneos">
-  <section class="border-b border-ink-700 bg-ink-900"><div class="container-site py-16"><p class="text-xs font-black uppercase tracking-[.2em] text-brand-300">Competencias</p><h1 class="mt-3 text-5xl font-black">Torneos disponibles</h1><p class="mt-4 max-w-2xl text-lg text-slate-400">Consultá fechas, categorías, cupos y enviá la solicitud de tu pareja.</p></div></section>
-  <section class="container-site py-14"><div id="listaTorneos" class="grid gap-6"></div></section>
+  <section class="tournaments-hero"><div class="container-site tournaments-hero-grid"><div><p class="site-kicker">Competencia pública</p><h1>Viví cada etapa del torneo</h1><p>Inscribí tu pareja, seguí los grupos, consultá posiciones y recorré el cuadro eliminatorio desde un único lugar.</p></div><div class="tournaments-hero-flow"><span><b>01</b> Inscripción</span><span><b>02</b> Grupos</span><span><b>03</b> Eliminatorias</span></div></div></section>
+  <section class="container-site tournaments-shell">
+    <div id="resumenTorneos" class="tournaments-metrics hidden"></div>
+    <div class="tournaments-heading"><div><p class="site-kicker">Calendario competitivo</p><h2>Torneos publicados</h2></div><p>La información se actualiza con los resultados y la programación registrada por la organización.</p></div>
+    <div id="listaTorneos" class="tournaments-list"></div>
+  </section>
   <ModalInscripcionTorneo />
   <ModalCuadroTorneo />
 

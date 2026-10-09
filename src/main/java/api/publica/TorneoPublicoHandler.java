@@ -24,6 +24,7 @@ public final class TorneoPublicoHandler {
 
     private final TorneoPublicoService torneoService;
     private final CuadroTorneoPublicoService cuadroService;
+    private final CompetenciaTorneoPublicaService competenciaService;
     private final InscripcionTorneoWebService inscripcionService;
     private final SeguridadApiPublica seguridad;
     private final ObjectMapper mapper;
@@ -40,6 +41,7 @@ public final class TorneoPublicoHandler {
         }
         this.torneoService = torneoService;
         this.cuadroService = new CuadroTorneoPublicoService();
+        this.competenciaService = new CompetenciaTorneoPublicaService();
         this.inscripcionService = inscripcionService;
         this.seguridad = seguridad;
         this.mapper = mapper;
@@ -81,6 +83,14 @@ public final class TorneoPublicoHandler {
             }
             String prefijoCategoria = PREFIJO + "/categorias/";
             if (ruta.startsWith(prefijoCategoria)
+                    && ruta.endsWith("/competencia")) {
+                String valor = ruta.substring(prefijoCategoria.length(),
+                        ruta.length() - "/competencia".length());
+                responder(intercambio, 200,
+                        competenciaService.buscar(parsearId(valor)));
+                return;
+            }
+            if (ruta.startsWith(prefijoCategoria)
                     && ruta.endsWith("/cuadro")) {
                 String valor = ruta.substring(prefijoCategoria.length(),
                         ruta.length() - "/cuadro".length());
@@ -98,6 +108,9 @@ public final class TorneoPublicoHandler {
             }
             long id = parsearId(relativo);
             responder(intercambio, 200, torneoService.buscar(id));
+        } catch (CompetenciaTorneoPublicaService.CompetenciaNoEncontradaException exception) {
+            error(intercambio, 404, "COMPETENCIA_NO_ENCONTRADA",
+                    exception.getMessage(), operacionId);
         } catch (CuadroTorneoPublicoService.CuadroNoEncontradoException exception) {
             error(intercambio, 404, "CUADRO_NO_ENCONTRADO",
                     exception.getMessage(), operacionId);

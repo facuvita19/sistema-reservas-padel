@@ -52,7 +52,9 @@ public final class CuadroTorneoPublicoDTO {
             LocalTime horaFin,
             Long canchaId,
             String cancha,
-            LocalDateTime fechaFinalizacion) {
+            LocalDateTime fechaFinalizacion,
+            Long partidoSiguienteId,
+            String posicionSiguiente) {
     }
 
     public record Fase(
