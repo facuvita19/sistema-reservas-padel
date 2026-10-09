@@ -1,32 +1,39 @@
 ---
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
-<LayoutPrincipal titulo="Mis datos | Pádel Reservas" actual="cuenta">
-  <section class="border-b border-ink-700 bg-ink-900"><div class="container-site py-14"><p class="text-xs font-black uppercase tracking-[.2em] text-brand-300">Cuenta de cliente</p><h1 class="mt-3 text-5xl font-black">Mis datos</h1><p class="mt-4 max-w-2xl text-lg text-slate-400">Actualizá tu información personal y tu posición preferida en la cancha.</p></div></section>
-  <section class="container-site py-12">
-    <div id="cargandoDatos" class="surface-card p-8 text-slate-400">Cargando tus datos...</div>
-    <div id="contenidoDatos" class="hidden grid gap-6 lg:grid-cols-2">
-      <form id="formDatos" class="surface-card p-6 sm:p-8" novalidate>
-        <p class="text-xs font-black uppercase tracking-widest text-brand-300">Perfil</p><h2 class="mt-2 text-3xl font-black">Información personal</h2>
-        <div class="mt-7 grid gap-4 sm:grid-cols-2">
-          <label><span class="etiqueta-web">Nombre *</span><input id="datosNombre" class="field-web" maxlength="100" autocomplete="given-name" /></label>
-          <label><span class="etiqueta-web">Apellido *</span><input id="datosApellido" class="field-web" maxlength="100" autocomplete="family-name" /></label>
-          <label><span class="etiqueta-web">Documento</span><input id="datosDocumento" class="field-web opacity-70" disabled /></label>
-          <label><span class="etiqueta-web">Teléfono *</span><input id="datosTelefono" class="field-web" maxlength="30" inputmode="tel" autocomplete="tel" /></label>
-          <label class="sm:col-span-2"><span class="etiqueta-web">Correo electrónico *</span><input id="datosEmail" class="field-web" type="email" maxlength="150" autocomplete="email" /></label>
-        </div>
-        <fieldset class="mt-7 border-t border-ink-700 pt-6"><legend class="text-lg font-black">Posición preferida</legend><p class="mt-2 text-sm text-slate-400">Podés cambiarla cuando quieras.</p><div class="mt-4 grid gap-3 sm:grid-cols-3"><label class="opcion-posicion"><input type="radio" name="posicionPreferida" value="" /><span>Sin preferencia</span></label><label class="opcion-posicion"><input type="radio" name="posicionPreferida" value="DRIVE" /><span>Drive</span></label><label class="opcion-posicion"><input type="radio" name="posicionPreferida" value="REVES" /><span>Revés</span></label></div></fieldset>
-        <div id="mensajeDatos" class="mt-5 hidden rounded-xl p-4 text-sm font-bold" role="status"></div>
-        <button id="guardarDatos" class="mt-6 w-full rounded-xl bg-brand-500 px-6 py-3 font-black text-white transition hover:bg-brand-600 disabled:cursor-wait disabled:opacity-60" type="submit">Guardar cambios</button>
-      </form>
-      <form id="formPassword" class="surface-card self-start p-6 sm:p-8" novalidate>
-        <p class="text-xs font-black uppercase tracking-widest text-brand-300">Seguridad</p><h2 class="mt-2 text-3xl font-black">Cambiar contraseña</h2><p class="mt-3 text-slate-400">La nueva contraseña debe tener al menos 8 caracteres.</p>
-        <div class="mt-7 space-y-4"><label class="block"><span class="etiqueta-web">Contraseña actual</span><input id="passwordActual" class="field-web" type="password" autocomplete="current-password" /></label><label class="block"><span class="etiqueta-web">Nueva contraseña</span><input id="passwordNuevo" class="field-web" type="password" minlength="8" autocomplete="new-password" /></label><label class="block"><span class="etiqueta-web">Repetir nueva contraseña</span><input id="passwordRepetido" class="field-web" type="password" minlength="8" autocomplete="new-password" /></label></div>
-        <div id="mensajePassword" class="mt-5 hidden rounded-xl p-4 text-sm font-bold" role="status"></div>
-        <button id="guardarPassword" class="mt-6 w-full rounded-xl border border-brand-300 px-6 py-3 font-black text-brand-100 transition hover:bg-brand-500/15 disabled:cursor-wait disabled:opacity-60" type="submit">Actualizar contraseña</button>
-      </form>
+<LayoutPrincipal titulo="Mi cuenta | Pádel Reservas" descripcion="Administrá tus datos personales, preferencias y seguridad." actual="cuenta">
+  <section class="account-hero"><div class="container-site account-hero-grid"><div><p class="site-kicker">Cuenta de cliente</p><h1>Tu perfil, listo para jugar</h1><p>Mantené actualizados tus datos de contacto, elegí tu posición preferida y administrá la seguridad de la cuenta.</p></div><a class="btn btn-secondary account-hero-action" href="/mis-reservas">Ver mis reservas</a></div></section>
+  <section class="container-site account-shell">
+    <div id="cargandoDatos" class="account-loading"><span></span><div><strong>Cargando tu perfil</strong><p>Estamos recuperando la información de tu cuenta.</p></div></div>
+    <div id="contenidoDatos" class="hidden account-layout">
+      <aside class="account-summary"><div class="account-avatar" id="inicialesCuenta">PR</div><p class="site-kicker">Tu cuenta</p><h2 id="nombreResumenCuenta">Perfil de cliente</h2><p id="correoResumenCuenta">Información de contacto</p><dl><div><dt>Documento</dt><dd id="documentoResumenCuenta">-</dd></div><div><dt>Posición</dt><dd id="posicionResumenCuenta">Sin preferencia</dd></div></dl><div class="account-summary-note"><b>Información protegida</b><span>El documento identifica tu ficha y no puede modificarse desde la web.</span></div></aside>
+      <main class="account-content">
+        <form id="formDatos" class="account-card" novalidate>
+          <header class="account-card-head"><div><p class="site-kicker">Perfil</p><h2>Información personal</h2><p>Usamos estos datos para identificar tus reservas y comunicarnos con vos.</p></div><span class="account-state">Datos editables</span></header>
+          <div class="account-form-grid">
+            <label><span class="etiqueta-web">Nombre *</span><input id="datosNombre" class="field-web" maxlength="100" autocomplete="given-name" /><small class="account-field-error" data-error="datosNombre"></small></label>
+            <label><span class="etiqueta-web">Apellido *</span><input id="datosApellido" class="field-web" maxlength="100" autocomplete="family-name" /><small class="account-field-error" data-error="datosApellido"></small></label>
+            <label><span class="etiqueta-web">Documento</span><input id="datosDocumento" class="field-web account-readonly" disabled /><small class="account-field-help">Este dato no puede modificarse.</small></label>
+            <label><span class="etiqueta-web">Teléfono *</span><input id="datosTelefono" class="field-web" maxlength="30" inputmode="tel" autocomplete="tel" placeholder="Ej. 11 1234 5678" /><small class="account-field-help">Solo números, espacios y los signos + ( ) -.</small><small class="account-field-error" data-error="datosTelefono"></small></label>
+            <label class="full"><span class="etiqueta-web">Correo electrónico *</span><input id="datosEmail" class="field-web" type="email" maxlength="150" autocomplete="email" /><small class="account-field-help">También será tu correo para iniciar sesión. Debe tener un formato como nombre@dominio.com.</small><small class="account-field-error" data-error="datosEmail"></small></label>
+          </div>
+          <fieldset class="account-position"><legend>Posición preferida</legend><p>Esta preferencia ayuda a completar inscripciones y organizar parejas.</p><div><label><input type="radio" name="posicionPreferida" value="" /><span><b>Sin preferencia</b><small>Cualquiera de los dos lados</small></span></label><label><input type="radio" name="posicionPreferida" value="DRIVE" /><span><b>Drive</b><small>Lado derecho de la cancha</small></span></label><label><input type="radio" name="posicionPreferida" value="REVES" /><span><b>Revés</b><small>Lado izquierdo de la cancha</small></span></label></div></fieldset>
+          <div id="mensajeDatos" class="account-message hidden" role="status"></div>
+          <footer class="account-actions"><span>Los cambios se aplican inmediatamente a tu cuenta.</span><button id="guardarDatos" class="btn btn-primary" type="submit">Guardar cambios</button></footer>
+        </form>
+        <form id="formPassword" class="account-card account-security" novalidate>
+          <header class="account-card-head"><div><p class="site-kicker">Seguridad</p><h2>Cambiar contraseña</h2><p>Usá al menos 8 caracteres y evitá reutilizar una contraseña anterior.</p></div><span class="account-state secure">Acceso protegido</span></header>
+          <div class="account-password-grid">
+            <label><span class="etiqueta-web">Contraseña actual</span><span class="account-password"><input id="passwordActual" class="field-web" type="password" autocomplete="current-password" /><button data-password="passwordActual" type="button" tabindex="-1" aria-label="Mostrar contraseña actual">Ver</button></span><small class="account-field-error" data-error="passwordActual"></small></label>
+            <label><span class="etiqueta-web">Nueva contraseña</span><span class="account-password"><input id="passwordNuevo" class="field-web" type="password" minlength="8" autocomplete="new-password" /><button data-password="passwordNuevo" type="button" tabindex="-1" aria-label="Mostrar contraseña nueva">Ver</button></span><small class="account-field-error" data-error="passwordNuevo"></small></label>
+            <label><span class="etiqueta-web">Repetir nueva contraseña</span><span class="account-password"><input id="passwordRepetido" class="field-web" type="password" minlength="8" autocomplete="new-password" /><button data-password="passwordRepetido" type="button" tabindex="-1" aria-label="Mostrar confirmación">Ver</button></span><small class="account-field-error" data-error="passwordRepetido"></small></label>
+          </div>
+          <div id="mensajePassword" class="account-message hidden" role="status"></div>
+          <footer class="account-actions"><span>La sesión actual seguirá activa después del cambio.</span><button id="guardarPassword" class="btn btn-secondary" type="submit">Actualizar contraseña</button></footer>
+        </form>
+      </main>
     </div>
-    <div id="sinSesionDatos" class="surface-card hidden p-8"><h2 class="text-2xl font-black">Necesitás iniciar sesión</h2><p class="mt-3 text-slate-400">Ingresá desde el botón del encabezado para consultar y editar tus datos.</p><a class="mt-5 inline-flex rounded-xl bg-brand-500 px-6 py-3 font-black text-white" href="/">Volver al inicio</a></div>
+    <div id="sinSesionDatos" class="hidden account-no-session"><span>Cuenta protegida</span><h2>Necesitás iniciar sesión</h2><p>Ingresá con tu cuenta para consultar y editar la información personal.</p><button id="abrirSesionDatos" class="btn btn-primary" type="button">Ingresar o crear cuenta</button><a class="btn btn-ghost" href="/">Volver al inicio</a></div>
   </section>
   <script>import '../scripts/mis-datos';</script>
 </LayoutPrincipal>
