@@ -892,3 +892,37 @@
     -fx-border-color: #343d42 transparent transparent transparent;
     -fx-border-width: 1 0 0 0;
 }
+
+/* dialogos-geometria-estable-defensiva-v1 */
+/* La respuesta visual se comunica con color, borde y sombra, nunca moviendo el control. */
+.dialog-pane.admin-dialog .button-bar .button,
+.dialog-pane.admin-dialog .button-bar .button:hover,
+.dialog-pane.admin-dialog .button-bar .button:focused,
+.dialog-pane.admin-dialog .button-bar .button:armed,
+.dialog-pane.admin-dialog .button-bar .button:pressed,
+.dialog-pane.admin-dialog .button-bar .button:disabled,
+.dialog-pane.dialog-confirm .button-bar .button,
+.dialog-pane.dialog-confirm .button-bar .button:hover,
+.dialog-pane.dialog-confirm .button-bar .button:focused,
+.dialog-pane.dialog-confirm .button-bar .button:armed,
+.dialog-pane.dialog-confirm .button-bar .button:pressed,
+.dialog-pane.dialog-danger .button-bar .button,
+.dialog-pane.dialog-danger .button-bar .button:hover,
+.dialog-pane.dialog-danger .button-bar .button:focused,
+.dialog-pane.dialog-danger .button-bar .button:armed,
+.dialog-pane.dialog-danger .button-bar .button:pressed,
+.dialog-pane.dialog-choice .button-bar .button,
+.dialog-pane.dialog-choice .button-bar .button:hover,
+.dialog-pane.dialog-choice .button-bar .button:focused,
+.dialog-pane.dialog-choice .button-bar .button:armed,
+.dialog-pane.dialog-choice .button-bar .button:pressed,
+.dialog-pane.dialog-custom-action .button-bar .button,
+.dialog-pane.dialog-custom-action .button-bar .button:hover,
+.dialog-pane.dialog-custom-action .button-bar .button:focused,
+.dialog-pane.dialog-custom-action .button-bar .button:armed,
+.dialog-pane.dialog-custom-action .button-bar .button:pressed {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}

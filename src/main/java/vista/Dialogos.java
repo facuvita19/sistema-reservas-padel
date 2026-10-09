@@ -45,7 +45,15 @@ public final class Dialogos {
             }
             stage.setMinWidth(Math.min(stage.getWidth(), 520));
             if (!esDialogoDeTrabajoGrande(dialogo)) {
-                stage.centerOnScreen();
+                // dialogos-pequenos-desmaximizar-v1
+                // Un dialogo auxiliar no debe heredar el estado maximizado
+                // de una herramienta grande propietaria.
+                Platform.runLater(() -> {
+                    stage.setFullScreen(false);
+                    stage.setMaximized(false);
+                    stage.sizeToScene();
+                    stage.centerOnScreen();
+                });
                 return;
             }
             // Los Dialog crean el Stage al mostrarse. Se maximiza en el
@@ -57,48 +65,29 @@ public final class Dialogos {
         });
     }
 
-    private static boolean esDialogoDeTrabajoGrande(Dialog<?> dialogo) {
-        // Alertas, mensajes y confirmaciones siempre conservan tamano normal.
+        private static boolean esDialogoDeTrabajoGrande(Dialog<?> dialogo) {
+        // dialogos-maximizacion-explicita-v1
+        // Solo herramientas visuales complejas usan el espacio completo.
+        // Alertas y formularios administrativos conservan tamaño normal.
         if (dialogo instanceof Alert) return false;
 
-        // Este formulario es acotado y debe conservar el marco normal de
-        // Windows sin ocupar toda la pantalla.
-        String titulo = dialogo.getTitle() == null
-                ? "" : dialogo.getTitle().trim().toLowerCase();
-        if (titulo.contains("agregar partido")
-                || titulo.contains("nuevo partido")
-                || titulo.contains("registrar resultado")
-                || titulo.contains("corregir resultado")) {
-            return false;
-        }
-
         DialogPane panel = dialogo.getDialogPane();
-        boolean formularioAcotado = panel.getStyleClass().stream()
-                .anyMatch(clase -> clase.equals("tournament-editor-dialog")
-                        || clase.equals("category-editor-dialog"));
-        if (formularioAcotado) return false;
 
-        // Las vistas operativas conocidas se maximizan aunque su tamano
-        // preferido todavia no haya sido calculado por JavaFX.
-        boolean claseGrande = panel.getStyleClass().stream().anyMatch(clase ->
-                clase.contains("proposal-review")
-                || clase.contains("proposal-preview")
-                || clase.contains("structural-editor")
-                || clase.contains("tournament")
-                || clase.contains("torneo")
-                || clase.contains("bracket")
-                || clase.contains("group")
-                || clase.contains("grupo")
-                || clase.contains("inscription")
-                || clase.contains("inscripcion")
-                || clase.contains("management")
-                || clase.contains("gestion"));
-        if (claseGrande) return true;
+        // dialogos-auxiliares-estructura-v2
+        // Los formularios auxiliares de la estructura conservan tamaño normal,
+        // aunque reutilicen una clase visual de la herramienta principal.
+        boolean auxiliarEstructura = panel.getStyleClass().stream()
+                .anyMatch(clase -> clase.equals("structural-add-dialog")
+                        || clase.equals("structural-participant-dialog"));
+        if (auxiliarEstructura) return false;
 
-        // Regla general para cualquier nueva ventana de trabajo amplia.
-        double ancho = Math.max(panel.getPrefWidth(), panel.getWidth());
-        double alto = Math.max(panel.getPrefHeight(), panel.getHeight());
-        return ancho >= 850 || alto >= 600;
+        return panel.getStyleClass().stream().anyMatch(clase ->
+                clase.equals("dialog-bracket-editor-new")
+                || clase.equals("structural-editor-dialog")
+                || clase.equals("dialog-tournament-bracket-manual")
+                || clase.equals("dialog-tournament-bracket-proposal")
+                || clase.equals("proposal-review-dialog")
+                || clase.equals("proposal-preview-dialog"));
     }
 
     private static void agregarEstilo(DialogPane panel, String recurso) {
