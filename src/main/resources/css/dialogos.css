@@ -5003,3 +5003,111 @@
 .dialog-pane.category-editor-dialog.category-elimination-compact-v2 .tournament-dialog-section-v1 {
     -fx-padding: 10 14 10 14;
 }
+
+
+/* pulido-dialogo-agregar-partido-v1 */
+.dialog-pane.structural-add-dialog {
+    -fx-pref-width: 840;
+    -fx-min-width: 800;
+    -fx-pref-height: 500;
+    -fx-min-height: 480;
+    -fx-max-height: 540;
+}
+.dialog-pane.structural-add-dialog .structural-add-capacity {
+    -fx-font-size: 10px;
+}
+
+
+/* pulido-dialogo-agregar-partido-v2 */
+/* Leyenda apoyada sobre el borde superior, no dentro del contenido. */
+.dialog-pane.structural-add-dialog .structural-add-context {
+    -fx-padding: 0;
+    -fx-background-color: #181d21;
+    -fx-background-radius: 10;
+    -fx-border-color: #5f496f;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+}
+.dialog-pane.structural-add-dialog .structural-add-context-content-v2 {
+    -fx-padding: 20 14 12 14;
+    -fx-spacing: 7;
+}
+.dialog-pane.structural-add-dialog .structural-add-badge {
+    -fx-translate-x: 14;
+    -fx-translate-y: -11;
+    -fx-background-color: #181d21;
+    -fx-border-color: #765d89;
+    -fx-border-width: 1;
+    -fx-padding: 3 10;
+}
+/* Controles mas proporcionados al contenido. */
+.dialog-pane.structural-add-dialog .combo-box.structural-add-phase {
+    -fx-min-width: 430;
+    -fx-pref-width: 430;
+    -fx-max-width: 430;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number {
+    -fx-min-width: 112;
+    -fx-pref-width: 112;
+    -fx-max-width: 112;
+}
+
+
+/* pulido-agregar-partido-v3 */
+.dialog-pane.structural-add-dialog .combo-box.structural-add-phase,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-phase:focused,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-phase:showing {
+    -fx-min-width: 380;
+    -fx-pref-width: 380;
+    -fx-max-width: 380;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:focused,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:showing {
+    -fx-min-width: 96;
+    -fx-pref-width: 96;
+    -fx-max-width: 96;
+}
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number > .list-cell,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:focused > .list-cell,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:showing > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-padding: 0 4 0 30;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell {
+    -fx-alignment: center-left;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell.structural-add-number-popup-v3 {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+/* corregir-selectores-numericos-agregar-partido-v4 */
+/* Ancho legible y estable para Ronda y Numero de partido. */
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:focused,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:showing {
+    -fx-min-width: 112;
+    -fx-pref-width: 112;
+    -fx-max-width: 112;
+}
+
+/* El valor cerrado se centra naturalmente en el area anterior a la flecha. */
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number > .list-cell,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:focused > .list-cell,
+.dialog-pane.structural-add-dialog .combo-box.structural-add-number:showing > .list-cell {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-padding: 0;
+}
+
+/* Solo las filas numericas del popup se centran; Fase sigue a la izquierda. */
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell.structural-add-number-cell-v4 {
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+    -fx-padding: 0 8;
+}
+.combo-box-popup .list-view .list-cell.structural-add-popup-cell.structural-add-number-cell-v4 .text {
+    -fx-text-alignment: center;
+}

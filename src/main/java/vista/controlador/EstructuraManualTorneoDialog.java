@@ -427,14 +427,15 @@ public class EstructuraManualTorneoDialog {
         fase.setConverter(new javafx.util.StringConverter<>() {
             @Override
             public String toString(String valor) {
-                return valor == null ? "" : textoCapacidadFase(valor);
+                return valor == null ? "" : valor;
             }
             @Override
             public String fromString(String texto) {
                 return texto;
             }
         });
-        estiloCombo(fase, 370);
+        // pulido-dialogo-agregar-partido-v2
+        estiloCombo(fase, 430);
         javafx.scene.control.CheckBox incluirPrevias =
                 new javafx.scene.control.CheckBox("INCLUIR FASES PREVIAS");
         incluirPrevias.setFocusTraversable(false);
@@ -465,7 +466,7 @@ public class EstructuraManualTorneoDialog {
                 java.util.stream.IntStream.rangeClosed(1, 10)
                         .boxed().toList()));
         rondaNueva.setVisibleRowCount(6);
-        estiloComboNumerico(rondaNueva, 130);
+        estiloComboNumerico(rondaNueva, 112);
         rondaNueva.setCellFactory(lista -> celdaAgregarPartido(
                 valor -> String.valueOf(valor), false));
         rondaNueva.setButtonCell(celdaAgregarPartido(
@@ -476,7 +477,7 @@ public class EstructuraManualTorneoDialog {
                 java.util.stream.IntStream.rangeClosed(1, 32)
                         .boxed().toList()));
         ordenNuevo.setVisibleRowCount(6);
-        estiloComboNumerico(ordenNuevo, 130);
+        estiloComboNumerico(ordenNuevo, 112);
         ordenNuevo.setCellFactory(lista -> celdaAgregarPartido(
                 valor -> String.valueOf(valor), false));
         ordenNuevo.setButtonCell(celdaAgregarPartido(
@@ -508,8 +509,8 @@ public class EstructuraManualTorneoDialog {
         campos.getStyleClass().add("structural-add-fields");
         javafx.scene.layout.ColumnConstraints etiquetasColumna =
                 new javafx.scene.layout.ColumnConstraints();
-        etiquetasColumna.setMinWidth(145);
-        etiquetasColumna.setPrefWidth(145);
+        etiquetasColumna.setMinWidth(125);
+        etiquetasColumna.setPrefWidth(125);
         javafx.scene.layout.ColumnConstraints controlesColumna =
                 new javafx.scene.layout.ColumnConstraints();
         controlesColumna.setHgrow(Priority.ALWAYS);
@@ -525,12 +526,15 @@ public class EstructuraManualTorneoDialog {
         campos.add(ordenNuevo, 1, 3);
 
         Label aviso = etiqueta(
-                "Las dos plazas se agregaran sin asignar y deberan "
-                + "completarse antes de aplicar la estructura.",
+                "El nuevo partido se agregara con sus dos plazas sin asignar. "
+                + "Completalas antes de aplicar la estructura.",
                 "#d8b36d", 11, true);
         aviso.getStyleClass().add("structural-add-note");
-        VBox contexto = new VBox(6, insigniaAgregar, ayuda, capacidad);
+        VBox contextoContenido = new VBox(6, ayuda, capacidad);
+        contextoContenido.getStyleClass().add("structural-add-context-content-v2");
+        StackPane contexto = new StackPane(contextoContenido, insigniaAgregar);
         contexto.getStyleClass().add("structural-add-context");
+        StackPane.setAlignment(insigniaAgregar, javafx.geometry.Pos.TOP_LEFT);
         fase.setStyle("");
         rondaNueva.setStyle("");
         ordenNuevo.setStyle("");
@@ -543,8 +547,9 @@ public class EstructuraManualTorneoDialog {
         VBox contenidoNuevo = new VBox(12, contexto, campos, aviso);
         contenidoNuevo.getStyleClass().add("structural-add-root");
         dialogoNuevo.getDialogPane().setContent(contenidoNuevo);
-        dialogoNuevo.getDialogPane().setPrefSize(760, 470);
-        dialogoNuevo.getDialogPane().setMinSize(700, 450);
+        // pulido-dialogo-agregar-partido-v1
+        dialogoNuevo.getDialogPane().setPrefSize(840, 500);
+        dialogoNuevo.getDialogPane().setMinSize(800, 480);
         dialogoNuevo.setResizable(false);
         Dialogos.preparar(dialogoNuevo,
                 "dialog-tournament-bracket-manual");
@@ -1261,6 +1266,11 @@ public class EstructuraManualTorneoDialog {
                 setText(vacia || valor == null
                         ? null : textoVisible.apply(valor));
                 setGraphic(null);
+                // structural-add-number-cell-v4
+                getStyleClass().remove("structural-add-number-cell-v4");
+                if (!vacia && valor instanceof Number) {
+                    getStyleClass().add("structural-add-number-cell-v4");
+                }
             }
         };
     }
