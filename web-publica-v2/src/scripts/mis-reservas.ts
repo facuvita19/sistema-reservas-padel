@@ -1,141 +1,22 @@
 import { api, type Complejo } from './api';
 import { etiqueta, fecha, fechaHora, hora, moneda } from './formatos';
-
-type Reserva = {
-  reservaId?: number; solicitudId?: number; codigoSeguimiento: string; estado: string; cancha: string;
-  fecha: string; horaInicio: string; horaFin: string; precioTotal: number; totalAcreditado: number;
-  importeSenia: number; saldoPendiente: number; vencimiento?: string | null; fechaExpiracion?: string | null;
-  fechaCancelacion?: string | null; pendiente: boolean; confirmada: boolean; expirada: boolean; moneda: string; mensaje: string;
-};
-type Historial = { proximas: Reserva[]; anteriores: Reserva[]; total: number };
-type Perfil = { clienteId: number; nombre: string; apellido: string; documento: string; telefono: string; email?: string };
-
-const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
-let complejo: Complejo | null = null;
-
-const escapeHtml = (valor: unknown) => String(valor ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c] || c));
-
-function estadoVisual(reserva: Reserva) {
-  if (reserva.confirmada) return { texto: 'Confirmada', clase: 'border-emerald-500/30 bg-emerald-500/10 text-emerald-300' };
-  if (reserva.expirada || reserva.estado === 'EXPIRADA') return { texto: 'Expirada', clase: 'border-slate-500/30 bg-slate-500/10 text-slate-300' };
-  if (reserva.estado === 'CANCELADA') return { texto: 'Cancelada', clase: 'border-rose-500/30 bg-rose-500/10 text-rose-300' };
-  if (reserva.pendiente) return { texto: 'Pendiente de seña', clase: 'border-amber-500/30 bg-amber-500/10 text-amber-200' };
-  return { texto: etiqueta(reserva.estado), clase: 'border-brand-500/30 bg-brand-500/10 text-brand-300' };
-}
-
-function pagoHtml(reserva: Reserva) {
-  if (!reserva.pendiente || !complejo?.pagoTransferenciaDisponible) return '';
-  const whatsapp = (complejo.whatsapp || '').replace(/\D/g, '');
-  const texto = encodeURIComponent(`Hola, informo el pago de la seña. Solicitud #${reserva.solicitudId || reserva.reservaId}. ${reserva.cancha}, ${reserva.fecha}, ${hora(reserva.horaInicio)}. Importe: ${moneda(reserva.importeSenia, reserva.moneda)}.`);
-  return `<div class="mt-6 rounded-2xl border border-brand-500/30 bg-brand-500/10 p-5">
-    <h3 class="text-lg font-black">Datos para acreditar la seña</h3>
-    <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      <div><small class="text-slate-400">Importe</small><strong class="block">${moneda(reserva.importeSenia, reserva.moneda)}</strong></div>
-      <div><small class="text-slate-400">Alias</small><strong class="block">${escapeHtml(complejo.pagoAlias || '-')}</strong></div>
-      <div><small class="text-slate-400">Titular</small><strong class="block">${escapeHtml(complejo.pagoTitular || '-')}</strong></div>
-      <div><small class="text-slate-400">Entidad</small><strong class="block">${escapeHtml(complejo.pagoEntidad || '-')}</strong></div>
-    </div>
-    <div class="mt-5 flex flex-wrap gap-3"><button class="copiar-codigo rounded-lg border border-brand-300 px-4 py-2 font-black" data-copiar="${escapeHtml(complejo.pagoAlias || '')}" type="button">Copiar alias</button>${whatsapp ? `<a class="rounded-lg bg-emerald-600 px-4 py-2 font-black text-white hover:bg-emerald-500" target="_blank" rel="noopener" href="https://wa.me/${whatsapp}?text=${texto}">Informar por WhatsApp</a>` : ''}</div>
-  </div>`;
-}
-
-function tarjeta(reserva: Reserva, compacta = false) {
-  const estado = estadoVisual(reserva);
-  return `<article class="surface-card p-6 sm:p-7">
-    <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between"><div><span class="inline-flex rounded-full border px-3 py-1.5 text-xs font-black ${estado.clase}">${estado.texto}</span><h3 class="mt-4 text-2xl font-black">${escapeHtml(reserva.cancha)}</h3><p class="mt-2 text-slate-400">${fecha(reserva.fecha)} · ${hora(reserva.horaInicio)} a ${hora(reserva.horaFin)}</p></div><div class="text-left sm:text-right"><small class="text-slate-500">Código</small><strong class="block font-mono text-sm">${escapeHtml(reserva.codigoSeguimiento)}</strong><button class="copiar-codigo mt-2 text-xs font-black text-brand-300" data-copiar="${escapeHtml(reserva.codigoSeguimiento)}" type="button">Copiar código</button></div></div>
-    <div class="mt-6 grid gap-4 border-t border-ink-700 pt-5 sm:grid-cols-2 lg:grid-cols-4"><div><small class="text-slate-500">Total</small><strong class="block">${moneda(reserva.precioTotal, reserva.moneda)}</strong></div><div><small class="text-slate-500">Acreditado</small><strong class="block">${moneda(reserva.totalAcreditado, reserva.moneda)}</strong></div><div><small class="text-slate-500">Seña</small><strong class="block">${moneda(reserva.importeSenia, reserva.moneda)}</strong></div><div><small class="text-slate-500">Saldo</small><strong class="block">${moneda(reserva.saldoPendiente, reserva.moneda)}</strong></div></div>
-    ${reserva.vencimiento && reserva.pendiente ? `<p class="mt-4 text-sm text-amber-200">Vencimiento de la reserva temporal: ${fechaHora(reserva.vencimiento)}</p>` : ''}
-    <p class="mt-4 text-sm text-slate-400">${escapeHtml(reserva.mensaje || '')}</p>
-    ${compacta ? '' : pagoHtml(reserva)}
-  </article>`;
-}
-
-function enlazarCopias(contenedor: HTMLElement) {
-  contenedor.querySelectorAll<HTMLButtonElement>('.copiar-codigo').forEach(b => b.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(b.dataset.copiar || '');
-      const original = b.textContent;
-      b.textContent = 'Copiado';
-      b.classList.remove('error-copia');
-      b.classList.add('copiado');
-      window.setTimeout(() => {
-        b.textContent = original;
-        b.classList.remove('copiado');
-      }, 1400);
-    } catch {
-      const original = b.textContent;
-      b.textContent = 'No se pudo copiar';
-      b.classList.remove('copiado');
-      b.classList.add('error-copia');
-      window.setTimeout(() => {
-        b.textContent = original;
-        b.classList.remove('error-copia');
-      }, 1600);
-    }
-  }));
-}
-
-async function consultarCodigo(codigo: string) {
-  const resultado = el('resultadoSeguimiento');
-  resultado.classList.remove('hidden');
-  resultado.innerHTML = '<div class="surface-card p-7 text-slate-400">Consultando reserva...</div>';
-  try {
-    const reserva = await api<Reserva>(`/solicitudes/${encodeURIComponent(codigo)}`);
-    localStorage.setItem('padel.solicitud.codigo', codigo);
-    resultado.innerHTML = tarjeta(reserva);
-    enlazarCopias(resultado);
-  } catch (error) {
-    resultado.innerHTML = `<div class="surface-card border-rose-500/30 p-7 text-rose-200">${escapeHtml(error instanceof Error ? error.message : 'No se pudo consultar la reserva.')}</div>`;
-  }
-}
-
-async function cargarCuenta() {
-  const estado = el('estadoCuenta');
-  try {
-    const [perfil, historial] = await Promise.all([api<Perfil>('/cliente/perfil'), api<Historial>('/cliente/reservas')]);
-    estado.classList.add('hidden');
-    el('modoVisitante').classList.add('hidden');
-    el('modoAutenticado').classList.remove('hidden');
-    el('consultaCodigoSiempre').classList.remove('hidden');
-    el('saludoCliente').textContent = `Reservas de ${perfil.nombre}`;
-    const contenedor = el('reservasCuenta');
-    contenedor.innerHTML = `${historial.proximas.length ? `<div><h3 class="mb-4 text-xl font-black">Próximas</h3><div class="grid gap-5">${historial.proximas.map(r => tarjeta(r)).join('')}</div></div>` : '<div class="surface-card p-7 text-slate-400">No tenés reservas próximas.</div>'}${historial.anteriores.length ? `<div class="mt-8"><h3 class="mb-4 text-xl font-black">Anteriores</h3><div class="grid gap-5">${historial.anteriores.map(r => tarjeta(r, true)).join('')}</div></div>` : ''}`;
-    enlazarCopias(contenedor);
-  } catch {
-    estado.classList.add('hidden');
-    el('modoAutenticado').classList.add('hidden');
-    el('consultaCodigoSiempre').classList.add('hidden');
-    el('modoVisitante').classList.remove('hidden');
-    const guardado = localStorage.getItem('padel.solicitud.codigo');
-    if (guardado) { el<HTMLInputElement>('codigoSeguimiento').value = guardado; consultarCodigo(guardado); }
-  }
-}
-
-el<HTMLFormElement>('formSeguimiento').addEventListener('submit', evento => {
-  evento.preventDefault();
-  const codigo = el<HTMLInputElement>('codigoSeguimiento').value.trim();
-  const error = el('errorSeguimiento');
-  if (!codigo) { error.textContent = 'Ingresá el código de seguimiento.'; error.classList.remove('hidden'); return; }
-  error.classList.add('hidden');
-  consultarCodigo(codigo);
-});
-
-el<HTMLFormElement>('formSeguimientoCuenta').addEventListener('submit', evento => {
-  evento.preventDefault();
-  const codigo = el<HTMLInputElement>('codigoSeguimientoCuenta').value.trim();
-  const error = el('errorSeguimientoCuenta');
-  if (!codigo) {
-    error.textContent = 'Ingresá el código de seguimiento.';
-    error.classList.remove('hidden');
-    return;
-  }
-  error.classList.add('hidden');
-  consultarCodigo(codigo);
-});
-
-el('actualizarReservas').addEventListener('click', cargarCuenta);
-
-(async () => {
-  try { complejo = await api<Complejo>('/complejo'); } catch { complejo = null; }
-  await cargarCuenta();
-})();
+type Reserva={reservaId?:number;solicitudId?:number;codigoSeguimiento?:string|null;estado:string;cancha:string;fecha:string;horaInicio:string;horaFin:string;precioTotal:number;totalAcreditado:number;importeSenia:number;saldoPendiente:number;vencimiento?:string|null;fechaExpiracion?:string|null;fechaCancelacion?:string|null;fechaCreacion?:string|null;pendiente:boolean;confirmada:boolean;expirada:boolean;moneda:string;mensaje:string};
+type Historial={proximas:Reserva[];anteriores:Reserva[];total:number};type Perfil={clienteId:number;nombre:string;apellido:string;documento:string;telefono:string;email?:string};
+const el=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;let complejo:Complejo|null=null;let historialActual:Historial={proximas:[],anteriores:[],total:0};let tabActual:'proximas'|'anteriores'='proximas';
+const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
+function estadoVisual(r:Reserva){const e=r.estado;const mapa:Record<string,[string,string,string]>= {PENDIENTE:['Pendiente de seña','pending','Falta acreditar la seña dentro del plazo.'],CONFIRMADA:['Confirmada','confirmed','Tu cancha está reservada.'],COMPLETADA:['Completada','completed','El turno finalizó correctamente.'],CANCELADA:['Cancelada','cancelled','La reserva fue cancelada.'],EXPIRADA:['Expirada','expired','El plazo venció y el turno fue liberado.'],AUSENTE:['Ausente','absent','La reserva fue cerrada como ausencia.']};const x=mapa[e]||[etiqueta(e),'neutral',r.mensaje||''];return{texto:x[0],clase:x[1],ayuda:x[2]}}
+function pago(r:Reserva){if(!r.pendiente||!complejo?.pagoTransferenciaDisponible)return'';const alias=complejo.pagoAlias||'';const wa=(complejo.whatsapp||'').replace(/\D/g,'');const texto=encodeURIComponent(`Hola, informo el pago de la seña. Solicitud #${r.solicitudId||r.reservaId}. ${r.cancha}, ${fecha(r.fecha)}, ${hora(r.horaInicio)}. Importe: ${moneda(r.importeSenia,r.moneda)}.`);return `<section class="booking-payment"><header><div><small>Acción necesaria</small><h4>Acreditá la seña para confirmar</h4></div><strong>${moneda(r.importeSenia,r.moneda)}</strong></header><div class="booking-payment-grid"><span><small>Alias</small><b>${esc(alias||'-')}</b></span><span><small>Titular</small><b>${esc(complejo.pagoTitular||'-')}</b></span><span><small>Entidad</small><b>${esc(complejo.pagoEntidad||'-')}</b></span></div>${complejo.pagoInstrucciones?`<p>${esc(complejo.pagoInstrucciones)}</p>`:''}<div class="booking-payment-actions"><button class="copiar-codigo" data-copiar="${esc(alias)}" data-texto="Alias copiado" type="button">Copiar alias</button>${wa?`<a href="https://wa.me/${wa}?text=${texto}" target="_blank" rel="noopener">Informar por WhatsApp</a>`:''}</div></section>`}
+function progreso(r:Reserva){const total=Number(r.precioTotal||0),acred=Number(r.totalAcreditado||0);return total<=0?0:Math.max(0,Math.min(100,Math.round(acred/total*100)))}
+function tarjeta(r:Reserva,compacta=false){const s=estadoVisual(r),codigo=r.codigoSeguimiento||'';return `<article class="booking-card ${compacta?'compact':''}" data-state="${s.clase}"><div class="booking-card-accent"></div><header><div><span class="booking-status ${s.clase}">${s.texto}</span><h3>${esc(r.cancha)}</h3><p>${fecha(r.fecha)} · ${hora(r.horaInicio)} a ${hora(r.horaFin)}</p></div><div class="booking-code"><small>${codigo?'Código de seguimiento':'Reserva administrativa'}</small>${codigo?`<strong>${esc(codigo)}</strong><button class="copiar-codigo" data-copiar="${esc(codigo)}" data-texto="Código copiado" type="button">Copiar código</button>`:`<strong>#${r.reservaId||'-'}</strong>`}</div></header><div class="booking-money"><span><small>Total</small><strong>${moneda(r.precioTotal,r.moneda)}</strong></span><span><small>Acreditado</small><strong>${moneda(r.totalAcreditado,r.moneda)}</strong></span><span><small>Seña requerida</small><strong>${moneda(r.importeSenia,r.moneda)}</strong></span><span><small>Saldo</small><strong>${moneda(r.saldoPendiente,r.moneda)}</strong></span></div>${!compacta?`<div class="booking-progress"><div><span style="width:${progreso(r)}%"></span></div><small>${progreso(r)} % del total acreditado</small></div>`:''}${r.vencimiento&&r.pendiente?`<div class="booking-expiry"><span>Reserva temporal activa</span><strong>Vence ${fechaHora(r.vencimiento)}</strong></div>`:''}<div class="booking-message"><b>${s.ayuda}</b><span>${esc(r.mensaje||'')}</span></div>${compacta?'':pago(r)}</article>`}
+function enlazarCopias(c:HTMLElement){c.querySelectorAll<HTMLButtonElement>('.copiar-codigo').forEach(b=>b.addEventListener('click',async()=>{const original=b.textContent;try{await navigator.clipboard.writeText(b.dataset.copiar||'');b.textContent=b.dataset.texto||'Copiado';b.classList.add('copiado')}catch{b.textContent='No se pudo copiar';b.classList.add('error-copia')}setTimeout(()=>{b.textContent=original;b.classList.remove('copiado','error-copia')},1500)}))}
+function error(id:string,texto=''){const n=el(id);n.textContent=texto;n.classList.toggle('hidden',!texto)}
+async function consultar(codigo:string,boton?:HTMLButtonElement){const r=el('resultadoSeguimiento');r.classList.remove('hidden');r.innerHTML='<div class="bookings-loading"><span></span><div><strong>Consultando reserva</strong><p>Buscando el estado más reciente.</p></div></div>';r.scrollIntoView({behavior:'smooth',block:'start'});try{if(boton){boton.disabled=true;boton.textContent='Consultando...'}const reserva=await api<Reserva>(`/solicitudes/${encodeURIComponent(codigo)}`);r.innerHTML=tarjeta(reserva);enlazarCopias(r)}catch(e){r.innerHTML=`<div class="bookings-query-failed"><strong>No pudimos encontrar la reserva</strong><p>${esc(e instanceof Error?e.message:'Revisá el código e intentá nuevamente.')}</p></div>`}finally{if(boton){boton.disabled=false;boton.textContent=boton.id==='consultarSeguimiento'?'Consultar reserva':'Consultar'}}}
+function metricas(h:Historial){const pendientes=h.proximas.filter(x=>x.pendiente).length,confirmadas=h.proximas.filter(x=>x.confirmada).length;el('metricasReservas').innerHTML=`<article><small>Próximas</small><strong>${h.proximas.length}</strong><span>turnos por jugar</span></article><article><small>Pendientes</small><strong>${pendientes}</strong><span>requieren seguimiento</span></article><article><small>Confirmadas</small><strong>${confirmadas}</strong><span>listas para jugar</span></article><article><small>Historial</small><strong>${h.anteriores.length}</strong><span>reservas anteriores</span></article>`;el('cantidadProximas').textContent=String(h.proximas.length);el('cantidadAnteriores').textContent=String(h.anteriores.length)}
+function renderLista(){const lista=tabActual==='proximas'?historialActual.proximas:historialActual.anteriores;const c=el('reservasCuenta');if(!lista.length){c.innerHTML=`<div class="bookings-empty"><span>${tabActual==='proximas'?'⌁':'✓'}</span><h3>${tabActual==='proximas'?'No tenés próximas reservas':'Todavía no hay historial'}</h3><p>${tabActual==='proximas'?'Cuando reserves una cancha, aparecerá acá con su seguimiento y pago.':'Las reservas finalizadas, canceladas o expiradas aparecerán en esta sección.'}</p>${tabActual==='proximas'?'<a class="btn btn-primary" href="/reservar">Reservar cancha</a>':''}</div>`;return}c.innerHTML=lista.map(r=>tarjeta(r,tabActual==='anteriores')).join('');enlazarCopias(c)}
+async function cargarCuenta(){const estado=el('estadoCuenta');estado.classList.remove('hidden');try{const [perfil,h]=await Promise.all([api<Perfil>('/cliente/perfil'),api<Historial>('/cliente/reservas')]);historialActual=h;estado.classList.add('hidden');el('modoVisitante').classList.add('hidden');el('modoAutenticado').classList.remove('hidden');el('consultaCodigoSiempre').classList.remove('hidden');el('saludoCliente').textContent=`Reservas de ${perfil.nombre}`;el('resumenCuenta').textContent=h.total===1?'Tenés 1 reserva registrada.':`Tenés ${h.total} reservas registradas.`;metricas(h);if(!h.proximas.length&&h.anteriores.length)tabActual='anteriores';actualizarTabs();renderLista()}catch{estado.classList.add('hidden');el('modoAutenticado').classList.add('hidden');el('consultaCodigoSiempre').classList.add('hidden');el('modoVisitante').classList.remove('hidden');const guardado=localStorage.getItem('padel.solicitud.codigo');el<HTMLInputElement>('codigoSeguimiento').value='';el('resultadoSeguimiento').classList.add('hidden');el('resultadoSeguimiento').innerHTML=''}finally{estado.classList.add('hidden')}}
+function actualizarTabs(){document.querySelectorAll<HTMLButtonElement>('.bookings-tabs button').forEach(b=>{const a=b.dataset.tab===tabActual;b.classList.toggle('activo',a);b.setAttribute('aria-selected',String(a))});el('tituloVistaReservas').textContent=tabActual==='proximas'?'Próximas reservas':'Historial de reservas';el('ayudaVistaReservas').textContent=tabActual==='proximas'?'Turnos pendientes o confirmados que todavía no finalizaron.':'Reservas completadas, canceladas, expiradas o marcadas como ausencia.'}
+document.querySelectorAll<HTMLButtonElement>('.bookings-tabs button').forEach(b=>b.addEventListener('click',()=>{tabActual=b.dataset.tab as typeof tabActual;actualizarTabs();renderLista()}));
+el<HTMLFormElement>('formSeguimiento').addEventListener('submit',e=>{e.preventDefault();const c=el<HTMLInputElement>('codigoSeguimiento').value.trim();if(!c)return error('errorSeguimiento','Ingresá el código de seguimiento.');error('errorSeguimiento');consultar(c,el<HTMLButtonElement>('consultarSeguimiento'))});
+el<HTMLFormElement>('formSeguimientoCuenta').addEventListener('submit',e=>{e.preventDefault();const c=el<HTMLInputElement>('codigoSeguimientoCuenta').value.trim();if(!c)return error('errorSeguimientoCuenta','Ingresá el código de seguimiento.');error('errorSeguimientoCuenta');consultar(c,el<HTMLButtonElement>('consultarSeguimientoCuenta'))});
+el('abrirAccesoCliente').addEventListener('click',()=>el<HTMLButtonElement>('abrirAutenticacion').click());
+(async()=>{try{complejo=await api<Complejo>('/complejo')}catch{complejo=null}await cargarCuenta()})();
