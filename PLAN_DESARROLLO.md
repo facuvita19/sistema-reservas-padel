@@ -2,35 +2,32 @@
 
 ## 0. Resumen de continuidad inmediata
 
+<!-- actualizacion-continuidad-2026-10-09-v1 -->
+
 Este documento es la fuente principal de continuidad del proyecto `sistema-reservas-padel`. Permite retomar el desarrollo en otra conversación sin reconstruir desde cero la arquitectura, las decisiones funcionales ni la metodología de trabajo.
 
-Estado estable al 6 de octubre de 2026:
+Estado documentado al 9 de octubre de 2026:
+
+- La modernización visual principal de la aplicación administrativa está terminada en sus módulos principales.
+- Reservas, Solicitudes web, Clientes, Canchas, Pagos, Caja, Estadísticas, Torneos, Grupos, Cuadro e Inscripciones recibieron revisiones visuales y funcionales.
+- Inscripciones quedó validada en estados Pendiente, Confirmada y En espera, con acciones contextuales, filtros por métricas, alta administrativa y vinculación de clientes.
+- La prevención de participación duplicada quedó verificada por cliente, categoría y estados activos. El conflicto informa el integrante afectado y la inscripción existente.
+- La confirmación de una inscripción Pendiente o En espera solicita autorización contextual antes de ocupar un cupo.
+- El botón Buscar cliente del alta administrativa quedó estabilizado sin escalado ni desplazamiento geométrico.
+- La base tipográfica común de diálogos ya existe. La auditoría pendiente no debe repetir esa unificación ni agregar capas generales sin necesidad.
+- `TemaDinamico.java` solo administra variables cromáticas y no sobrescribe familia, tamaño, peso ni geometría.
+- Antes de aplicar una estabilización transversal de diálogos se debe revisar Git y comparar los cambios actuales con el último estado publicado.
+
+Último estado de Git documentado, no asumido como estado actual:
 
 ```text
+Estado histórico confirmado al 6 de octubre de 2026:
 Rama: master
-HEAD: 3f35847
-origin/master: 3f35847
-Estado esperado: directorio de trabajo limpio
-Último commit: Mejorar gestión y registro de pagos
+HEAD y origin/master: 3f35847
+Último commit documentado: Mejorar gestión y registro de pagos
 ```
 
-Últimos bloques cerrados y publicados:
-
-```text
-5d09fe8 Mejorar distribución y formulario de reservas
-094e820 Mejorar diseño y detalle de solicitudes web
-a7345ae Mejorar diseño y acciones de torneos
-4d9c163 Mejorar inscripciones y alta administrativa
-3f35847 Mejorar gestión y registro de pagos
-```
-
-Situación actual:
-
-- La aplicación administrativa está modernizada en sus módulos principales.
-- La web pública, la API y Docker están operativos según las validaciones de los bloques correspondientes.
-- Reservas, Solicitudes web, Torneos, Grupos, Inscripciones y Pagos recibieron una revisión visual y funcional reciente.
-- Los cambios recientes fueron compilados, probados manualmente, confirmados y publicados.
-- El próximo trabajo recomendado es una revisión funcional integral, permisos por rol y limpieza técnica controlada.
+Los cambios posteriores realizados entre el 7 y el 9 de octubre de 2026 deben verificarse con Git antes de actualizar hashes, afirmar que el directorio está limpio o crear un nuevo commit.
 
 Primeros comandos al retomar:
 
@@ -39,12 +36,19 @@ git status -sb
 git log -1 --oneline
 git rev-parse HEAD
 git rev-parse origin/master
+git --no-pager diff --stat
 mvn clean test
 ```
 
-Antes de modificar cualquier función se deben inspeccionar los archivos reales. Este documento orienta, pero no reemplaza al código actual.
+Siguiente bloque recomendado:
 
----
+1. Confirmar el estado real de Git y revisar el diff acumulado.
+2. Validar visualmente los diálogos comunes ya existentes.
+3. Corregir solo residuos demostrables, principalmente maximización demasiado amplia y movimiento geométrico global.
+4. Probar ADMIN y OPERADOR.
+5. Actualizar este documento con el commit real después de cerrar y publicar el bloque.
+
+Antes de modificar cualquier función se deben inspeccionar los archivos reales. Este documento orienta, pero no reemplaza al código actual.
 
 ## 1. Propósito del documento
 
@@ -612,14 +616,14 @@ Ancho: 10 px
 
 ### 8.2 Interacciones
 
-- Escala leve en hover.
-- Elevación de un píxel.
-- Iluminación contextual.
-- Reducción al presionar.
-- Retorno suave.
-- Sin efectos activos en controles deshabilitados.
-- Los estados `focused` y `showing` no deben alterar la geometría de ComboBox.
-- Los cambios de modo deben ser visualmente evidentes.
+- La geometría de botones y controles debe permanecer estable en reposo, hover, focused, showing, armed, pressed y disabled.
+- Hover debe comunicarse mediante color, borde, iluminación o sombra, sin desplazar ni escalar el control.
+- Pressed puede usar cambio cromático o sombra interior, sin reducir el tamaño.
+- Los controles deshabilitados no deben conservar efectos activos.
+- Los estados `focused` y `showing` no deben alterar la geometría de ComboBox, Spinner, DatePicker o campos.
+- Los cambios de modo deben ser visualmente evidentes mediante más de una señal.
+- Las animaciones geométricas solo se admiten como excepción local, justificada y probada; no deben imponerse desde una regla global.
+- Los diálogos comunes deben abrir centrados y con tamaño normal. Solo las herramientas de trabajo grandes explícitamente identificadas pueden maximizarse.
 
 ### 8.3 Roles
 
@@ -701,26 +705,54 @@ Resultado:
 
 ### 9.4 Inscripciones y alta administrativa
 
-Commit:
+Base publicada documentada:
 
 ```text
 4d9c163 Mejorar inscripciones y alta administrativa
 ```
 
-Resultado:
+Mejoras posteriores revisadas entre el 7 y el 9 de octubre de 2026, pendientes de asociar al commit real después de revisar Git:
 
-- detalle derecho más ancho;
-- métricas, filtros y contador compactos;
+- detalle derecho más ancho y jerarquizado;
+- métricas compactas, clickeables y con estado activo visible;
+- filtro compuesto Finalizadas para Rechazadas y Canceladas;
+- filtros, contador y limpieza sincronizados;
 - tabla proporcional sin desplazamiento horizontal;
 - columnas Responsable y Segundo integrante priorizadas;
-- selección automática coherente con filtros;
+- tooltips para textos truncados;
+- selección automática y restauración de fila coherentes con los filtros;
 - scrollbars grafito;
+- estados Pendiente, Confirmada, En espera, Rechazada y Cancelada con color semántico;
+- acciones contextuales correctas según el estado;
+- confirmación contextual antes de pasar de Pendiente o En espera a Confirmada;
+- Cancelar y Rechazar diferenciados semánticamente;
 - acciones de vinculación jerarquizadas;
-- comentario vacío compacto;
-- alta administrativa con clientes registrados reutilizables;
-- campos manuales ocultos cuando hay cliente seleccionado;
+- estado Sin vincular destacado en ámbar;
+- comentarios recibidos y observaciones internas diferenciados;
+- precio cero presentado como Sin cargo;
+- alta administrativa centrada, no maximizada y con contexto de cupos;
+- selección independiente de Responsable y Segundo integrante;
+- búsqueda y reutilización de clientes registrados;
+- campos manuales ocultos cuando existe cliente seleccionado;
 - acción `USAR DATOS MANUALES` para volver al modo manual;
-- formulario más corto y sin scroll innecesario.
+- botón Buscar/Cambiar cliente estable, sin escalado ni desplazamiento;
+- botón Agregar inscripción condicionado por datos mínimos válidos;
+- prevención de la misma persona como su propia pareja;
+- prevención de participación duplicada limitada a la misma categoría;
+- bloqueo para estados Pendiente, Confirmada y Lista de espera;
+- Rechazada y Cancelada no bloquean una nueva participación;
+- diagnóstico del integrante conflictivo y consulta de la inscripción activa existente;
+- validación manual confirmada con un cliente que ya participaba en otra pareja de la misma categoría;
+- una persona puede participar en categorías diferentes.
+
+Regla funcional confirmada:
+
+```text
+Un cliente puede participar en categorías distintas.
+Un cliente no puede integrar dos parejas activas en la misma categoría.
+Estados activos para esta regla: PENDIENTE, CONFIRMADA y LISTA_ESPERA.
+Estados finales que no bloquean: RECHAZADA y CANCELADA.
+```
 
 ### 9.5 Gestión de pagos
 
@@ -838,17 +870,21 @@ Los aplicadores `.mjs` se entregan dentro de un ZIP listo para extraer en la ra�
 
 Deben:
 
-- validar precondiciones;
-- identificar versión;
+- validar precondiciones antes de escribir;
+- identificar nombre y versión;
 - evitar doble aplicación;
 - crear respaldos;
-- restaurar si falla la escritura;
+- restaurar si falla una escritura;
 - no escribir si falla una validación;
 - mostrar versión de Node, error y traza;
 - ser compatibles con CRLF y LF;
 - delimitar métodos Java de forma estructural;
+- validar sintaxis JavaScript con `node --check`;
+- validar XML/FXML después de modificar atributos;
+- comprobar llaves o estructura Java cuando corresponda;
 - validar el resultado antes de escribir;
-- modificar únicamente los archivos previstos.
+- modificar únicamente los archivos previstos;
+- ser autónomos cuando sea posible, sin depender de metacorrectores encadenados.
 
 Formato esperado de error:
 
@@ -863,12 +899,26 @@ No se aplicaron cambios nuevos.
 Evitar:
 
 - anclas genéricas con varias coincidencias;
-- dependencia de espacios o saltos exactos;
+- dependencia de espacios, indentación o saltos exactos;
 - reemplazos literales frágiles en Java;
+- expresiones regulares que intenten abarcar métodos completos sin límites estructurales;
+- interpolación anidada al generar otro aplicador;
+- variables del aplicador original evaluadas por un corrector externo;
+- localizar contenedores FXML mediante aperturas textuales completas;
+- agregar atributos FXML sin comprobar si ya existen;
 - marcadores verificados en el archivo incorrecto;
 - escapes Java incorrectos;
 - capturar y ocultar la traza real;
-- escribir archivos antes de completar todas las validaciones.
+- escribir archivos antes de completar todas las validaciones;
+- entregar una cadena de correctores para reparar un aplicador anterior.
+
+Aprendizajes específicos del cierre de Inscripciones:
+
+- Un reemplazo debe tolerar distintas distribuciones de líneas en listeners JavaFX.
+- Al sustituir una validación antigua, se debe eliminar todo el bloque anterior para no dejar sentencias fuera de métodos.
+- Los cambios FXML deben asegurar exactamente un atributo por elemento.
+- Si un aplicador falla antes de escribir, debe informarse explícitamente que el proyecto no fue modificado.
+- Después de varios fallos de anclas, se debe abandonar el metacorrector y reconstruir un aplicador autónomo sobre el estado real.
 
 ### 11.3 Aprendizajes de los bloques recientes
 
@@ -879,6 +929,10 @@ Evitar:
 - Ocultar un scrollbar no reemplaza el ajuste correcto de anchos. Las columnas deben sumar el ancho disponible.
 - Un cambio de modo debe ser perceptible mediante más de una señal visual.
 - Las búsquedas del aplicador deben contemplar que un patrón legítimo puede aparecer varias veces.
+- Los botones de diálogos no deben cambiar de posición ni escala durante hover o pressed.
+- Las confirmaciones de acciones que cambian estado u ocupan cupo deben ser contextuales y previas a la operación.
+- Antes de una corrección transversal se debe comprobar si el problema ya fue resuelto por capas CSS posteriores.
+- TemaDinamico administra exclusivamente variables cromáticas; la tipografía pertenece a las hojas CSS de diálogos.
 
 ---
 
@@ -970,9 +1024,42 @@ El push nunca se ejecuta dentro de un aplicador.
 
 ## 14. Próximas etapas
 
-La modernización visual principal y el bloque deportivo de torneos están cerrados. Las próximas etapas deben trabajarse en bloques pequeños.
+La modernización visual principal y el bloque deportivo están cerrados. El trabajo siguiente debe evitar repetir mejoras ya realizadas y concentrarse en validación integral, permisos y residuos técnicos demostrables.
 
-### Etapa A: revisión funcional integral
+### Etapa A: verificar estado real y cerrar documentación
+
+- Consultar Git antes de asumir hashes, limpieza o sincronización.
+- Revisar el diff acumulado desde el último commit documentado.
+- Confirmar qué cambios del 7 al 9 de octubre de 2026 están pendientes de commit.
+- Ejecutar `mvn clean test`.
+- Actualizar hashes y commits de este plan solamente después de publicar el bloque.
+
+### Etapa B: estabilización defensiva de diálogos
+
+La base tipográfica ya está implementada y no debe reconstruirse.
+
+Revisar únicamente:
+
+- maximización automática demasiado amplia en `Dialogos.java`;
+- criterios explícitos para herramientas grandes;
+- escalado y desplazamiento geométrico residual en botones comunes;
+- conflicto de responsabilidades entre `interfaz-unificada.css` y `dialogos-simples.css`;
+- diálogos comunes centrados y con tamaño normal;
+- confirmaciones, peligros, elecciones y acciones largas.
+
+Conservar sin cambios generales:
+
+- Torneo y Categoría;
+- alta administrativa de Inscripciones;
+- editor de cuadro;
+- estructura manual;
+- propuesta eliminatoria;
+- ayuda de Estadísticas;
+- geometrías especializadas ya validadas.
+
+`TemaDinamico.java` no requiere cambios: solo define variables de color.
+
+### Etapa C: revisión funcional integral
 
 Recorrido sugerido:
 
@@ -1002,18 +1089,19 @@ Login
 Verificar:
 
 - acciones por estado;
-- alta, edición, cancelación y reprogramación;
+- alta, edición, cancelación, confirmación y reprogramación;
 - navegación de ida y vuelta;
-- apertura maximizada;
+- aplicación principal maximizada después del login;
+- diálogos comunes no maximizados;
 - controles recortados;
-- botones con estilo nativo;
+- botones con estilo nativo inesperado;
 - scrollbars no normalizados;
 - saltos de layout;
 - errores de consola;
 - conservación de selección;
 - permisos por rol.
 
-### Etapa B: permisos y seguridad funcional
+### Etapa D: permisos y seguridad funcional
 
 - Probar ADMIN y OPERADOR.
 - Confirmar restricciones de Estadísticas y finanzas.
@@ -1021,16 +1109,16 @@ Verificar:
 - Verificar que ocultar una acción no sea la única protección.
 - Revisar sesiones, expiración y revocación.
 
-### Etapa C: limpieza técnica
+### Etapa E: limpieza técnica controlada
 
-- Consolidar CSS duplicado.
+- Consolidar CSS duplicado solo después de identificar reglas dominantes.
 - Revisar marcadores históricos en FXML, CSS y Java.
-- Unificar componentes reutilizables.
+- Migrar estilos inline fijos a clases; conservar valores realmente dinámicos.
 - Evaluar helpers para tablas, scrollbars, ComboBox y botones.
 - Eliminar código obsoleto únicamente con pruebas.
 - Evitar una limpieza masiva sin validación por módulo.
 
-### Etapa D: estabilización y pruebas
+### Etapa F: estabilización y pruebas ampliadas
 
 - Ampliar pruebas automatizadas.
 - Probar reservas simultáneas.
@@ -1041,7 +1129,7 @@ Verificar:
 - Probar escenarios del motor eliminatorio.
 - Revisar consola JavaFX, navegador y red.
 
-### Etapa E: despliegue y seguridad operativa
+### Etapa G: despliegue y seguridad operativa
 
 - Separar desarrollo y producción.
 - Verificar migraciones.
@@ -1050,15 +1138,13 @@ Verificar:
 - Configurar dominio, HTTPS, correo y monitoreo.
 - Mantener secretos fuera del repositorio.
 
-### Etapa F: aplicación móvil
+### Etapa H: aplicación móvil
 
 - Elegir tecnología.
 - Reutilizar la API.
 - Implementar registro, reservas, historial y perfil.
 - Incorporar torneos, cuadros y resultados.
 - Evaluar notificaciones.
-
----
 
 ## 15. Guía para retomar en una conversación nueva
 
@@ -1084,8 +1170,9 @@ Mensaje de continuidad recomendado:
 Estamos trabajando en sistema-reservas-padel.
 Leé PLAN_DESARROLLO.md como contexto general, pero verificá siempre el código actual.
 La rama estable es master y debe estar sincronizada con origin/master.
-El último commit documentado es 3f35847 Mejorar gestión y registro de pagos.
-La modernización principal está cerrada. El próximo bloque recomendado es la revisión funcional integral y de permisos.
+El último commit confirmado en este documento es 3f35847 Mejorar gestión y registro de pagos, pero debe verificarse Git antes de asumir que sigue siendo HEAD.
+Entre el 7 y el 9 de octubre de 2026 se cerraron mejoras adicionales de Inscripciones y se auditó la base de diálogos.
+La modernización principal está cerrada. El próximo bloque recomendado es verificar Git y realizar una estabilización defensiva de diálogos, seguida de revisión funcional y permisos.
 No prepares cambios por suposición. Localizá y revisá primero los archivos reales.
 Los aplicadores deben entregarse dentro de un ZIP listo para extraer en la raíz.
 ```
@@ -1098,17 +1185,21 @@ Los aplicadores deben entregarse dentro de un ZIP listo para extraer en la raíz
 - API pública operativa.
 - Aplicación administrativa modernizada.
 - Reservas y Solicitudes web revisadas.
-- Clientes, canchas y módulos operativos disponibles.
+- Gestión de clientes terminada y definida como referencia visual.
+- Canchas, bloqueos, Caja, Usuarios, Configuración y Estadísticas disponibles.
 - Gestión de pagos modernizada y validada.
-- Inscripciones y alta administrativa terminadas.
+- Inscripciones y alta administrativa terminadas, con filtros por métricas, cupos, vinculación y validación detallada de duplicados.
+- Confirmación contextual incorporada para inscripciones Pendientes y En espera.
 - Vinculación de clientes terminada.
 - Torneos, grupos, partidos, posiciones, cuadro y resultados desarrollados.
 - Exportación y PDF disponibles.
-- Cambios recientes confirmados y publicados.
-- Repositorio limpio y sincronizado al cerrar el último bloque.
+- La base tipográfica de diálogos ya existe y no debe rehacerse.
+- `TemaDinamico.java` solo administra variables cromáticas.
+- La auditoría de diálogos detectó como residuos principales la maximización automática amplia y el movimiento geométrico global de botones.
+- El último estado Git confirmado sigue siendo el histórico del 6 de octubre de 2026 hasta ejecutar una verificación actual.
 
 Próximo bloque recomendado:
 
 ```text
-Revisión funcional integral, permisos ADMIN/OPERADOR y limpieza técnica posterior a la modernización
+Verificar Git, estabilizar de forma defensiva los diálogos comunes y realizar la revisión funcional ADMIN/OPERADOR
 ```

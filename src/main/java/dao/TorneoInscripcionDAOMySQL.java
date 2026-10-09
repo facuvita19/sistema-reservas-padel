@@ -271,6 +271,46 @@ public class TorneoInscripcionDAOMySQL
     }
 
     @Override
+    public TorneoInscripcion buscarParticipacionActivaEnCategoria(
+            Connection conexion,
+            long torneoCategoriaId,
+            long clienteId,
+            Long inscripcionExcluidaId) {
+        validarConexion(conexion);
+        validarCategoriaId(torneoCategoriaId);
+        validarClienteId(clienteId);
+        if (inscripcionExcluidaId != null && inscripcionExcluidaId <= 0) {
+            throw new IllegalArgumentException(
+                    "La inscripcion excluida no es valida.");
+        }
+        String sql = "SELECT ti.id "
+                + "FROM torneo_inscripciones ti "
+                + "INNER JOIN torneo_inscripcion_jugadores tij "
+                + "ON tij.inscripcion_id = ti.id "
+                + "WHERE ti.torneo_categoria_id = ? "
+                + "AND tij.cliente_id = ? "
+                + "AND ti.estado IN ('PENDIENTE', 'CONFIRMADA', 'LISTA_ESPERA')"
+                + (inscripcionExcluidaId == null ? "" : " AND ti.id <> ?")
+                + " ORDER BY CASE ti.estado WHEN 'CONFIRMADA' THEN 0 "
+                + "WHEN 'PENDIENTE' THEN 1 ELSE 2 END, ti.id DESC LIMIT 1";
+        try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setLong(1, torneoCategoriaId);
+            sentencia.setLong(2, clienteId);
+            if (inscripcionExcluidaId != null) {
+                sentencia.setLong(3, inscripcionExcluidaId);
+            }
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                return resultado.next()
+                        ? buscar(conexion, resultado.getLong(1)) : null;
+            }
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudo recuperar la participacion activa del cliente.",
+                    exception);
+        }
+    }
+
+    @Override
     public boolean clienteParticipaEnCategoria(
             Connection conexion,
             long torneoCategoriaId,

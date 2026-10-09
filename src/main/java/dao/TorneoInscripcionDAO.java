@@ -34,6 +34,14 @@ public interface TorneoInscripcionDAO {
             long torneoCategoriaId,
             List<EstadoInscripcionTorneo> estados);
 
+    default TorneoInscripcion buscarParticipacionActivaEnCategoria(
+            Connection conexion,
+            long torneoCategoriaId,
+            long clienteId,
+            Long inscripcionExcluidaId) {
+        return null;
+    }
+
     boolean clienteParticipaEnCategoria(
             Connection conexion,
             long torneoCategoriaId,

@@ -92,7 +92,7 @@ public class AltaAdministrativaInscripcionTorneoService {
                 JugadorResuelto pareja = resolver(
                         conexion, solicitud.pareja());
                 validarIntegrantes(conexion, categoria.getId(),
-                        responsable, pareja);
+                        categoria, responsable, pareja);
 
                 if (solicitud.estado() == EstadoInscripcionTorneo.CONFIRMADA) {
                     int confirmadas = inscripcionDAO.contarPorCategoriaYEstados(
@@ -233,23 +233,55 @@ public class AltaAdministrativaInscripcionTorneoService {
     private void validarIntegrantes(
             Connection conexion,
             long categoriaId,
+            TorneoCategoria categoria,
             JugadorResuelto responsable,
             JugadorResuelto pareja) {
+        validarParticipacion(conexion, categoriaId, categoria,
+                responsable, "El responsable");
+        validarParticipacion(conexion, categoriaId, categoria,
+                pareja, "El segundo integrante");
         Long id1 = responsable.vinculacion().clienteId();
         Long id2 = pareja.vinculacion().clienteId();
         if (id1 != null && id1.equals(id2)) {
             throw new IllegalArgumentException(
                     "Una persona no puede inscribirse como su propia pareja.");
         }
-        Set<Long> ids = new HashSet<>();
-        if (id1 != null) ids.add(id1);
-        if (id2 != null) ids.add(id2);
-        for (Long id : ids) {
-            if (inscripcionDAO.clienteParticipaEnCategoria(
-                    conexion, categoriaId, id, null)) {
-                throw new IllegalArgumentException(
-                        "Uno de los integrantes ya participa en esta categoria.");
-            }
+    }
+
+    private void validarParticipacion(
+            Connection conexion,
+            long categoriaId,
+            TorneoCategoria categoria,
+            JugadorResuelto jugador,
+            String rol) {
+        Long clienteId = jugador.vinculacion().clienteId();
+        if (clienteId == null) return;
+        TorneoInscripcion conflicto =
+                inscripcionDAO.buscarParticipacionActivaEnCategoria(
+                        conexion, categoriaId, clienteId, null);
+        boolean participa = conflicto != null
+                || inscripcionDAO.clienteParticipaEnCategoria(
+                        conexion, categoriaId, clienteId, null);
+        if (participa) {
+            String categoriaVisible = categoria.getNombre() + " - "
+                    + categoria.getRama();
+            String detalle = conflicto == null
+                    ? "Existe una inscripción activa en esta categoría."
+                    : "Inscripción existente: #" + conflicto.getId()
+                            + " · Estado: " + conflicto.getEstado();
+            String parejaActual = conflicto == null ? ""
+                    : conflicto.getJugadores().stream()
+                            .map(j -> j.getNombre() + " " + j.getApellido())
+                            .map(String::trim)
+                            .filter(nombre -> !nombre.isBlank())
+                            .reduce((a, b) -> a + " / " + b)
+                            .map(nombres -> " · Pareja: " + nombres)
+                            .orElse("");
+            throw new IllegalArgumentException(rol + ", "
+                    + jugador.nombre() + " " + jugador.apellido()
+                    + " (cliente #" + clienteId + "), ya participa en "
+                    + categoriaVisible + ".\n\n" + detalle + parejaActual
+                    + "\n\nBuscá la inscripción por número, nombre o teléfono antes de crear otra.");
         }
     }
 

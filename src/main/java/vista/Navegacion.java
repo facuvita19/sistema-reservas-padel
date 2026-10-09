@@ -41,6 +41,7 @@ public final class Navegacion {
 	private static Usuario usuarioActual;
 	private static Object controladorActual;
 	private static long categoriaCuadroTorneoId;
+	private static SeleccionTorneo seleccionTorneo;
         private static long categoriaGruposTorneoId;
 
 	private Navegacion() {
@@ -191,6 +192,18 @@ public final class Navegacion {
 		verificarSesion();
 		mostrarVista("/fxml/solicitudes-web.fxml", 1400, 840, true);
 		escenario.setTitle("Padel Reservas - Solicitudes web");
+	}
+
+	public static record SeleccionTorneo(long torneoId, long categoriaId) {}
+
+	public static void recordarSeleccionTorneo(long torneoId, long categoriaId) {
+		seleccionTorneo = torneoId > 0 ? new SeleccionTorneo(torneoId, categoriaId) : null;
+	}
+
+	public static SeleccionTorneo consumirSeleccionTorneo() {
+		SeleccionTorneo valor = seleccionTorneo;
+		seleccionTorneo = null;
+		return valor;
 	}
 
 	public static void mostrarTorneos() {

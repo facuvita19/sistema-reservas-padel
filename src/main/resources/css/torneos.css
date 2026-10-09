@@ -642,3 +642,84 @@
     -fx-max-height: 42;
     -fx-translate-y: 0;
 }
+
+
+/* torneos-fase1-operativa-v1 */
+.tournaments-occupancy-v1 { -fx-text-fill:#8fd2b0; -fx-font-size:10px; -fx-font-weight:900; }
+.tournaments-category-podium-v1 { -fx-text-fill:#e0bf72; -fx-font-size:9px; -fx-font-weight:900; }
+.tournaments-category-podium-secondary-v1 { -fx-text-fill:#9aacb4; -fx-font-size:8.5px; -fx-font-weight:800; }
+.tournaments-category-actions-v2 { -fx-min-height:66; -fx-pref-height:66; -fx-max-height:66; }
+.tournaments-root-v2 .button:disabled { -fx-opacity:1; -fx-background-color:#1b2226; -fx-border-color:#3e494f; -fx-text-fill:#8f9da3; }
+.tournaments-root-v2 .button:disabled .tournaments-icon-v3 { -fx-stroke:#738188; }
+
+
+/* torneos-cierre-integral-v2 */
+.tournaments-competition-row-v2 {
+    -fx-min-height: 72; -fx-pref-height: 72; -fx-padding: 9 11;
+    -fx-background-color: #161d21; -fx-background-radius: 9;
+    -fx-border-color: #354047; -fx-border-radius: 9;
+}
+.tournaments-podium-card-v2 {
+    -fx-min-width: 410; -fx-pref-width: 410; -fx-padding: 7 10;
+    -fx-background-color: #1d1b16; -fx-background-radius: 8;
+    -fx-border-color: #554827; -fx-border-radius: 8;
+}
+.tournaments-podium-key-v2, .tournaments-podium-key-secondary-v2 {
+    -fx-min-width: 92; -fx-font-size: 8px; -fx-font-weight: 900;
+}
+.tournaments-podium-key-v2 { -fx-text-fill: #d9b85f; }
+.tournaments-podium-key-secondary-v2 { -fx-text-fill: #82939a; }
+.tournaments-category-podium-v1 { -fx-font-size: 10px; -fx-text-fill: #f0d589; }
+.tournaments-category-podium-secondary-v1 { -fx-font-size: 9.5px; -fx-text-fill: #bdc8cc; }
+.tournaments-competition-pending-v2 { -fx-text-fill: #e0b75e; -fx-font-size: 10px; -fx-font-weight: 900; }
+.tournaments-competition-ready-v2 { -fx-text-fill: #8ebfd5; -fx-font-size: 10px; -fx-font-weight: 900; }
+.tournaments-competition-complete-v2 { -fx-text-fill: #78c99f; -fx-font-size: 10px; -fx-font-weight: 900; }
+.tournaments-category-actions-v2 { -fx-min-height: 58; -fx-pref-height: 58; -fx-max-height: 58; }
+.tournaments-next-final-v2 { -fx-min-height: 66; -fx-pref-height: 66; -fx-max-height: 66; -fx-padding: 9 14; }
+.tournaments-occupancy-low-v2 { -fx-text-fill: #91a7b1; }
+.tournaments-occupancy-medium-v2 { -fx-text-fill: #79c9a3; }
+.tournaments-occupancy-full-v2 { -fx-text-fill: #e0bf72; }
+.tournaments-categories-table-v2 .table-row-cell:inactive .table-cell { -fx-text-fill: #718087; }
+.tournaments-categories-table-v2 .table-row-cell:inactive { -fx-opacity: .72; }
+
+
+/* torneos-cierre-final-v3 */
+.tournaments-cupos-neutral-v3 { -fx-text-fill: #8a989f; }
+.tournaments-competition-cancelled-v3 { -fx-text-fill: #a58d93; -fx-font-size: 10px; -fx-font-weight: 900; }
+.tournaments-podium-card-v2 .tournaments-category-podium-v1,
+.tournaments-podium-card-v2 .tournaments-category-podium-secondary-v1 {
+    -fx-font-size: 10.5px;
+    -fx-text-fill: #e7ecee;
+}
+.tournaments-podium-key-v2 { -fx-text-fill: #d9b85f; }
+.tournaments-podium-key-secondary-v2 { -fx-text-fill: #93a2a8; }
+.tournaments-root-v2 .tournaments-category-actions-v2 .button:disabled {
+    -fx-opacity: 1; -fx-background-color: #1a2023; -fx-border-color: #30383d; -fx-text-fill: #718087;
+}
+
+
+/* pulido-final-torneos-v5 */
+.tournaments-cupos-complete-v5 {
+    -fx-text-fill: #e0bf72;
+}
+.tournaments-competition-cancelled-v3 {
+    -fx-text-fill: #c7a9b0;
+}
+.tournaments-podium-card-v2 {
+    -fx-min-width: 500;
+    -fx-pref-width: 512;
+}
+.tournaments-podium-card-v2 .tournaments-podium-key-v2,
+.tournaments-podium-card-v2 .tournaments-podium-key-secondary-v2 {
+    -fx-min-width: 116;
+    -fx-pref-width: 116;
+    -fx-max-width: 116;
+}
+.tournaments-podium-card-v2 .tournaments-category-podium-v1,
+.tournaments-podium-card-v2 .tournaments-category-podium-secondary-v1 {
+    -fx-text-fill: #edf1f2;
+    -fx-font-size: 10.5px;
+}
+.tournaments-root-v2 .tournaments-categories-table-v2 {
+    -fx-background-insets: 0;
+}

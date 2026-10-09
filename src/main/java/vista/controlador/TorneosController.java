@@ -3,12 +3,17 @@ package vista.controlador;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.Locale;
 
 import dao.TorneoCategoriaDAO;
 import dao.TorneoCategoriaDAOMySQL;
 import dao.TorneoDAO;
 import dao.TorneoDAOMySQL;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoInscripcionDAOMySQL;
+import dao.TorneoPartidoDAO;
+import dao.TorneoPartidoDAOMySQL;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,8 +43,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import negocio.EstadoPartidoTorneo;
 import negocio.EstadoTorneo;
+import negocio.FaseTorneo;
 import negocio.Torneo;
+import negocio.TorneoInscripcion;
+import negocio.TorneoPartido;
 import negocio.TorneoCategoria;
 import servicio.GestionTorneoService;
 import util.FormateadorMoneda;
@@ -47,6 +56,9 @@ import vista.Dialogos;
 import vista.Navegacion;
 
 public class TorneosController {
+    // torneos-fase1-operativa-v1
+    // torneos-cierre-integral-v2
+    // torneos-cierre-final-v3
     // corregir-tooltip-categoria-deshabilitada-v10
     // corregir-compilacion-torneos-v6
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -55,6 +67,8 @@ public class TorneosController {
     private final TorneoDAO torneoDAO = new TorneoDAOMySQL();
     private final TorneoCategoriaDAO categoriaDAO = new TorneoCategoriaDAOMySQL();
     private final GestionTorneoService gestionService = new GestionTorneoService();
+    private final TorneoPartidoDAO partidoDAO = new TorneoPartidoDAOMySQL();
+    private final TorneoInscripcionDAO inscripcionDAO = new TorneoInscripcionDAOMySQL();
     private final ObservableList<Torneo> torneos = FXCollections.observableArrayList();
     private final ObservableList<TorneoCategoria> categorias = FXCollections.observableArrayList();
     private FilteredList<Torneo> filtrados;
@@ -89,6 +103,13 @@ public class TorneosController {
     @FXML private Label etiquetaCategoriaSeleccionada;
     @FXML private Label etiquetaFormatoCategoria;
     @FXML private Label etiquetaPreparacion;
+    @FXML private Label detalleOcupacion;
+    @FXML private Label etiquetaCampeonesCategoria;
+    @FXML private Label etiquetaSubcampeonesCategoria;
+    @FXML private Label etiquetaEstadoCompetitivo;
+    @FXML private VBox tarjetaResultadoCategoria;
+    @FXML private HBox panelEstadoCompetitivo;
+    @FXML private VBox panelSiguientePaso;
     @FXML private Button botonLimpiar;
     @FXML private Button botonActualizar;
     @FXML private VBox panelSinSeleccion;
@@ -113,7 +134,8 @@ public class TorneosController {
         configurarTablas();
         configurarFiltros();
         cargarTorneos();
-        mostrarSinSeleccion();
+        restaurarSeleccionNavegacion();
+        if (seleccionado == null) mostrarSinSeleccion();
         javafx.application.Platform.runLater(this::configurarDeseleccion);
     }
 
@@ -230,7 +252,10 @@ public class TorneosController {
                 });
             }
         });
-        tablaCategorias.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> actualizarBotonesCategoria());
+        tablaCategorias.getSelectionModel().selectedItemProperty().addListener((o, a, n) -> {
+            actualizarBotonesCategoria();
+            actualizarPodioCategoria(n);
+        });
     }
 
     private void configurarCeldaFecha(TableColumn<Torneo, LocalDate> columna) {
@@ -306,11 +331,32 @@ public class TorneosController {
         try {
             long id = seleccionado == null ? 0 : seleccionado.getId();
             torneos.setAll(torneoDAO.listar());
+            torneos.sort(comparadorOperativo());
             aplicarFiltros();
             if (id > 0) torneos.stream().filter(t -> t.getId() == id).findFirst()
                     .ifPresent(t -> tablaTorneos.getSelectionModel().select(t));
             actualizarMensajeResultados();
         } catch (RuntimeException ex) { mostrarError(ex); }
+    }
+
+    private Comparator<Torneo> comparadorOperativo() {
+        return Comparator.comparingInt((Torneo t) -> prioridadEstado(t.getEstado()))
+                .thenComparing(Torneo::getFechaInicio, Comparator.nullsLast(Comparator.naturalOrder()))
+                .thenComparing(Torneo::getNombre, Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER))
+                .thenComparingLong(Torneo::getId);
+    }
+
+    private int prioridadEstado(EstadoTorneo estado) {
+        if (estado == null) return 99;
+        return switch (estado) {
+            case EN_CURSO -> 0;
+            case INSCRIPCION_ABIERTA -> 1;
+            case INSCRIPCION_CERRADA -> 2;
+            case PUBLICADO -> 3;
+            case BORRADOR -> 4;
+            case FINALIZADO -> 5;
+            case CANCELADO -> 6;
+        };
     }
 
     private void aplicarFiltros() {
@@ -377,14 +423,25 @@ public class TorneosController {
         detalleCantidadCategorias.setText(String.valueOf(activas));
         detalleParejas.setText(String.valueOf(parejas));
         detalleCupos.setText(String.valueOf(cupos));
+        int capacidad = categorias.stream().filter(TorneoCategoria::isActivo)
+                .mapToInt(TorneoCategoria::getCupoParejas).sum();
+        int porcentaje = capacidad == 0 ? 0 : (int) Math.round(parejas * 100.0 / capacidad);
+        detalleOcupacion.setText(porcentaje + "% · " + parejas + " de " + capacidad);
+        detalleOcupacion.getStyleClass().removeAll("tournaments-occupancy-low-v2",
+                "tournaments-occupancy-medium-v2", "tournaments-occupancy-full-v2");
+        detalleOcupacion.getStyleClass().add(capacidad > 0 && parejas >= capacidad
+                ? "tournaments-occupancy-full-v2"
+                : porcentaje >= 50 ? "tournaments-occupancy-medium-v2"
+                : "tournaments-occupancy-low-v2");
         detalleCupos.getStyleClass().removeAll("tournaments-cupos-ok-v4",
                 "tournaments-cupos-low-v4", "tournaments-cupos-full-v4");
-        detalleCupos.getStyleClass().add(cupos == 0
-                ? "tournaments-cupos-full-v4"
+        detalleCupos.getStyleClass().add(capacidad == 0
+                ? "tournaments-cupos-neutral-v3"
+                : cupos == 0 ? "tournaments-cupos-complete-v5"
                 : cupos <= 2 ? "tournaments-cupos-low-v4"
                 : "tournaments-cupos-ok-v4");
-        int filas = Math.max(2, Math.min(6, categorias.size()));
-        double alto = 38 + filas * 46;
+        int filas = Math.max(1, Math.min(6, categorias.size()));
+        double alto = categorias.isEmpty() ? 160 : 38 + filas * 46;
         tablaCategorias.setMinHeight(alto);
         tablaCategorias.setPrefHeight(alto);
         tablaCategorias.setMaxHeight(alto);
@@ -437,6 +494,10 @@ public class TorneosController {
             case FINALIZADO -> { etiquetaAccionTitulo.setText("Torneo finalizado"); etiquetaAccionAyuda.setText("El ciclo competitivo está completo y no requiere más acciones."); }
             case CANCELADO -> { etiquetaAccionTitulo.setText("Torneo cancelado"); etiquetaAccionAyuda.setText("El torneo quedó cerrado y no admite nuevas modificaciones."); }
         }
+        boolean finalHistorico = estado == EstadoTorneo.FINALIZADO
+                || estado == EstadoTorneo.CANCELADO;
+        panelSiguientePaso.getStyleClass().remove("tournaments-next-final-v2");
+        if (finalHistorico) panelSiguientePaso.getStyleClass().add("tournaments-next-final-v2");
     }
 
     private void actualizarBotones() {
@@ -494,64 +555,280 @@ public class TorneosController {
                         && r.categoriasConCuadro() == r.categoriasCompetitivas()
                         && r.partidosPendientes() == 0
                         && r.categoriasConCampeona() == r.categoriasCompetitivas();
-                if (!finalizable) bloqueoFinal = r.partidosPendientes() > 0
-                        ? "Todavía hay " + r.partidosPendientes() + " partido(s) pendientes."
-                        : "Definí los campeones de todas las categorías antes de finalizar.";
+                if (!finalizable) {
+                    if (r.partidosPendientes() > 0) {
+                        bloqueoFinal = "Todavía hay " + r.partidosPendientes()
+                                + " partido(s) pendientes.";
+                    } else if (r.categoriasConCampeona() < r.categoriasCompetitivas()) {
+                        bloqueoFinal = "Campeón pendiente: ingresá al cuadro de la categoría y registrá el resultado final.";
+                        etiquetaAccionTitulo.setText("Campeón pendiente");
+                        etiquetaAccionAyuda.setText("Todos los partidos están resueltos, pero falta definir el resultado de la final. Seleccioná la categoría e ingresá a Cuadro.");
+                    } else {
+                        bloqueoFinal = "Completá la estructura competitiva antes de finalizar.";
+                    }
+                }
             } catch (RuntimeException ex) { bloqueoFinal = "No se pudo validar el cierre competitivo."; }
         }
         botonFinalizar.setDisable(!finalizable);
         botonFinalizar.setTooltip(bloqueoFinal == null ? null : new Tooltip(bloqueoFinal));
         botonCancelar.setDisable(!hay || e.esFinal());
+        botonCancelar.setText(e == EstadoTorneo.BORRADOR ? "DESCARTAR TORNEO" : "CANCELAR TORNEO");
         if (hay) configurarAccionContextual();
         actualizarBotonesCategoria();
     }
 
     private void actualizarBotonesCategoria() {
         TorneoCategoria c = tablaCategorias.getSelectionModel().getSelectedItem();
-        boolean editable = seleccionado != null && c != null && c.isActivo()
-                && seleccionado.getEstado() != EstadoTorneo.INSCRIPCION_CERRADA
-                && seleccionado.getEstado() != EstadoTorneo.EN_CURSO
-                && !seleccionado.getEstado().esFinal();
-        botonEditarCategoria.setDisable(c == null || !editable);
-        botonDesactivarCategoria.setDisable(c == null || !c.isActivo() || !editable);
-        botonEditarCategoria.setTooltip(c != null && !editable
-                ? new Tooltip("No se puede editar una categoría en este estado del torneo.") : null);
-        botonDesactivarCategoria.setTooltip(c != null && !editable
-                ? new Tooltip("No se puede desactivar una categoría en este estado del torneo.") : null);
-        botonGestionarGrupos.setDisable(c == null || !c.isActivo() || seleccionado == null || !c.usaFaseGrupos()
-                || seleccionado.getEstado() == EstadoTorneo.BORRADOR
-                || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
-                || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
-                || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
-        panelAccionesCategoria.setVisible(c != null);
-        panelAccionesCategoria.setManaged(true);
-        etiquetaCategoriaSeleccionada.setText(
-                c == null ? "ACCIONES DE CATEGORÍA"
-                        : "ACCIONES PARA: " + c.getNombre());
-        etiquetaFormatoCategoria.setText(c == null
-                ? "Seleccioná una categoría"
-                : "Formato: " + (c.usaFaseGrupos()
-                        ? "Grupos + eliminación" : "Eliminación directa"));
+        EstadoTorneo estado = seleccionado == null ? null : seleccionado.getEstado();
+        EstadoCompetitivo competitivo = analizarEstadoCompetitivo(c);
+        boolean hayCategoria = c != null;
+        boolean activa = hayCategoria && c.isActivo();
+        boolean editable = activa && estado != EstadoTorneo.INSCRIPCION_CERRADA
+                && estado != EstadoTorneo.EN_CURSO && !estado.esFinal();
+        boolean historico = estado != null && estado.esFinal();
+
+        panelEstadoCompetitivo.setVisible(hayCategoria);
+        panelEstadoCompetitivo.setManaged(hayCategoria);
+        panelAccionesCategoria.setVisible(hayCategoria);
+        panelAccionesCategoria.setManaged(hayCategoria);
+        tarjetaResultadoCategoria.setVisible(hayCategoria);
+        tarjetaResultadoCategoria.setManaged(hayCategoria);
+        if (!hayCategoria) return;
+
+        botonEditarCategoria.setDisable(!editable);
+        botonDesactivarCategoria.setDisable(!editable);
+        botonEditarCategoria.setTooltip(!editable
+                ? new Tooltip("La categoría es de solo lectura en el estado actual del torneo.") : null);
+        botonDesactivarCategoria.setTooltip(!c.isActivo()
+                ? new Tooltip("La categoría ya está inactiva.")
+                : !editable ? new Tooltip("No se puede desactivar una categoría en este estado del torneo.")
+                : new Tooltip("La operación se bloqueará si existen inscripciones activas."));
+
+        boolean puedePreparar = activa && estado == EstadoTorneo.INSCRIPCION_CERRADA;
+        boolean gruposConsultables = activa && c.usaFaseGrupos() && competitivo.tieneGrupos();
+        boolean cuadroConsultable = activa && competitivo.tieneEliminacion();
+        boolean generarCuadroEnCurso = activa && estado == EstadoTorneo.EN_CURSO
+                && c.usaFaseGrupos() && competitivo.gruposCompletos()
+                && !competitivo.tieneEliminacion();
+
+        botonGestionarGrupos.setVisible(c.usaFaseGrupos()
+                && (!historico || competitivo.tieneGrupos()));
+        botonGestionarGrupos.setManaged(botonGestionarGrupos.isVisible());
+        botonGestionarGrupos.setDisable(!(gruposConsultables || puedePreparar));
+
+        boolean mostrarCuadro = !historico || competitivo.tieneEliminacion();
+        botonGestionarCuadro.setVisible(mostrarCuadro);
+        botonGestionarCuadro.setManaged(mostrarCuadro);
+        botonGestionarCuadro.setDisable(!(cuadroConsultable || puedePreparar
+                || generarCuadroEnCurso));
+
+        botonGestionarGrupos.setText(historico ? "VER GRUPOS" : "GRUPOS");
+        botonGestionarCuadro.setText(historico ? "VER CUADRO"
+                : generarCuadroEnCurso ? "GENERAR CUADRO" : "CUADRO");
+        botonGestionarGrupos.setTooltip(botonGestionarGrupos.isDisable()
+                ? new Tooltip(motivoBloqueoGrupos(c, estado, competitivo)) : null);
+        botonGestionarCuadro.setTooltip(botonGestionarCuadro.isDisable()
+                ? new Tooltip(motivoBloqueoCuadro(c, estado, competitivo))
+                : generarCuadroEnCurso
+                        ? new Tooltip("Generá la fase eliminatoria con las parejas clasificadas.") : null);
+
         botonGestionarGrupos.getStyleClass().remove("tournaments-category-primary-v4");
         botonGestionarCuadro.getStyleClass().remove("tournaments-category-primary-v4");
-        if (c != null) {
-            if (c.usaFaseGrupos()
-                    && seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_CERRADA) {
-                botonGestionarGrupos.getStyleClass().add("tournaments-category-primary-v4");
-            } else {
-                botonGestionarCuadro.getStyleClass().add("tournaments-category-primary-v4");
+        if (c.usaFaseGrupos() && !competitivo.tieneGrupos()) {
+            botonGestionarGrupos.getStyleClass().add("tournaments-category-primary-v4");
+        } else if (generarCuadroEnCurso || !competitivo.tieneEliminacion()
+                || competitivo.finalPendiente() || historico) {
+            botonGestionarCuadro.getStyleClass().add("tournaments-category-primary-v4");
+        } else {
+            botonGestionarCuadro.getStyleClass().add("tournaments-category-primary-v4");
+        }
+
+        etiquetaCategoriaSeleccionada.setText("ACCIONES PARA: " + c.getNombre());
+        etiquetaFormatoCategoria.setText("Formato: " + (c.usaFaseGrupos()
+                ? "Grupos + eliminación" : "Eliminación directa"));
+        actualizarEstadoCompetitivo(competitivo, c, estado);
+        actualizarPodioCategoria(c, competitivo, estado);
+        actualizarSiguientePasoCompetitivo(c, competitivo, estado);
+    }
+
+    private EstadoCompetitivo analizarEstadoCompetitivo(TorneoCategoria categoria) {
+        if (categoria == null) return EstadoCompetitivo.vacio();
+        try {
+            java.util.List<TorneoPartido> partidos = partidoDAO.listarPorCategoria(categoria.getId());
+            boolean grupos = partidos.stream().anyMatch(p -> p.getFase() == FaseTorneo.GRUPOS);
+            boolean eliminacion = partidos.stream().anyMatch(p -> p.getFase() != FaseTorneo.GRUPOS);
+            long pendientesGrupos = partidos.stream().filter(p -> p.getFase() == FaseTorneo.GRUPOS)
+                    .filter(p -> !p.getEstado().esFinal()).count();
+            long pendientesEliminacion = partidos.stream().filter(p -> p.getFase() != FaseTorneo.GRUPOS)
+                    .filter(p -> !p.getEstado().esFinal()).count();
+            TorneoPartido finalPartido = partidos.stream().filter(p -> p.getFase() == FaseTorneo.FINAL)
+                    .findFirst().orElse(null);
+            boolean campeona = finalPartido != null
+                    && finalPartido.getEstado() == EstadoPartidoTorneo.FINALIZADO
+                    && finalPartido.getGanadoraInscripcionId() != null;
+            return new EstadoCompetitivo(grupos, eliminacion, pendientesGrupos,
+                    pendientesEliminacion, finalPartido != null, campeona);
+        } catch (RuntimeException ex) {
+            return EstadoCompetitivo.vacio();
+        }
+    }
+
+    private void actualizarEstadoCompetitivo(
+            EstadoCompetitivo e, TorneoCategoria categoria, EstadoTorneo estado) {
+        etiquetaEstadoCompetitivo.getStyleClass().removeAll("tournaments-competition-pending-v2",
+                "tournaments-competition-ready-v2", "tournaments-competition-complete-v2",
+                "tournaments-competition-cancelled-v3");
+        if (estado == EstadoTorneo.CANCELADO) {
+            etiquetaEstadoCompetitivo.setText(e.tieneGrupos() || e.tieneEliminacion()
+                    ? "Competencia cancelada · estructura disponible para consulta"
+                    : "Competencia cancelada antes de generar la estructura");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-cancelled-v3");
+        } else if (e.campeona()) {
+            etiquetaEstadoCompetitivo.setText("Podio definido · competencia finalizada");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-complete-v2");
+        } else if (e.finalPendiente()) {
+            etiquetaEstadoCompetitivo.setText("Campeón pendiente · registrá el resultado de la final en Cuadro");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-pending-v2");
+        } else if (e.tieneEliminacion()) {
+            long pendientes = e.pendientesEliminacion();
+            etiquetaEstadoCompetitivo.setText(pendientes == 0
+                    ? "Cuadro completo · final todavía no definida"
+                    : pendientes == 1 ? "1 partido pendiente en el cuadro"
+                    : pendientes + " partidos pendientes en el cuadro");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-ready-v2");
+        } else if (categoria.usaFaseGrupos() && e.gruposCompletos()) {
+            etiquetaEstadoCompetitivo.setText("Grupos finalizados · generá el cuadro eliminatorio");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-pending-v2");
+        } else if (categoria.usaFaseGrupos() && e.tieneGrupos()) {
+            etiquetaEstadoCompetitivo.setText(e.pendientesGrupos() == 1
+                    ? "1 partido pendiente en la fase de grupos"
+                    : e.pendientesGrupos() + " partidos pendientes en la fase de grupos");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-ready-v2");
+        } else if (categoria.usaFaseGrupos()) {
+            etiquetaEstadoCompetitivo.setText("Grupos pendientes de configuración");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-pending-v2");
+        } else {
+            etiquetaEstadoCompetitivo.setText("Cuadro pendiente de generación");
+            etiquetaEstadoCompetitivo.getStyleClass().add("tournaments-competition-pending-v2");
+        }
+    }
+
+    private String motivoBloqueoGrupos(TorneoCategoria c, EstadoTorneo estado, EstadoCompetitivo e) {
+        if (c == null) return "Seleccioná una categoría.";
+        if (!c.isActivo()) return "La categoría está inactiva.";
+        if (!c.usaFaseGrupos()) return "La categoría utiliza eliminación directa.";
+        if (estado == EstadoTorneo.BORRADOR || estado == EstadoTorneo.PUBLICADO
+                || estado == EstadoTorneo.INSCRIPCION_ABIERTA) return "Disponible después de cerrar las inscripciones.";
+        if (!e.tieneGrupos() && estado != EstadoTorneo.INSCRIPCION_CERRADA) return "La estructura de grupos no fue creada.";
+        return "Grupos no disponibles en este momento.";
+    }
+
+    private String motivoBloqueoCuadro(TorneoCategoria c, EstadoTorneo estado, EstadoCompetitivo e) {
+        if (c == null) return "Seleccioná una categoría.";
+        if (!c.isActivo()) return "La categoría está inactiva.";
+        if (estado == EstadoTorneo.BORRADOR || estado == EstadoTorneo.PUBLICADO
+                || estado == EstadoTorneo.INSCRIPCION_ABIERTA) return "Disponible después de cerrar las inscripciones.";
+        if (!e.tieneEliminacion() && estado != EstadoTorneo.INSCRIPCION_CERRADA) return "El cuadro eliminatorio todavía no fue generado.";
+        return "Cuadro no disponible en este momento.";
+    }
+
+    private record EstadoCompetitivo(boolean tieneGrupos, boolean tieneEliminacion,
+            long pendientesGrupos, long pendientesEliminacion,
+            boolean tieneFinal, boolean campeona) {
+        static EstadoCompetitivo vacio() {
+            return new EstadoCompetitivo(false, false, 0, 0, false, false);
+        }
+        boolean gruposCompletos() { return tieneGrupos && pendientesGrupos == 0; }
+        boolean finalPendiente() { return tieneFinal && !campeona && pendientesEliminacion == 0; }
+    }
+
+    // corregir-firma-podio-torneos-v4
+    // pulido-final-torneos-v5
+    private void actualizarPodioCategoria(TorneoCategoria categoria) {
+        EstadoCompetitivo competitivo = analizarEstadoCompetitivo(categoria);
+        EstadoTorneo estado = seleccionado == null ? null : seleccionado.getEstado();
+        actualizarPodioCategoria(categoria, competitivo, estado);
+    }
+
+    private void actualizarPodioCategoria(
+            TorneoCategoria categoria, EstadoCompetitivo competitivo, EstadoTorneo estado) {
+        if (categoria == null) return;
+        String campeones;
+        String subcampeones;
+        if (estado == EstadoTorneo.CANCELADO && !competitivo.campeona()) {
+            campeones = "Sin resultado competitivo";
+            subcampeones = "Competencia cancelada";
+        } else if (!competitivo.tieneFinal()) {
+            campeones = "El podio se definirá al completar la final";
+            subcampeones = "Todavía no existe una final";
+        } else {
+            campeones = "Campeones por definir";
+            subcampeones = "Subcampeones por definir";
+            try {
+                java.util.List<TorneoPartido> partidos = partidoDAO.listarPorCategoria(categoria.getId());
+                TorneoPartido finalPartido = partidos.stream()
+                        .filter(p -> p.getFase() == FaseTorneo.FINAL).findFirst().orElse(null);
+                if (finalPartido != null && finalPartido.getGanadoraInscripcionId() != null
+                        && finalPartido.getEstado() == EstadoPartidoTorneo.FINALIZADO) {
+                    Long campeona = finalPartido.getGanadoraInscripcionId();
+                    Long subcampeona = campeona.equals(finalPartido.getPareja1InscripcionId())
+                            ? finalPartido.getPareja2InscripcionId()
+                            : finalPartido.getPareja1InscripcionId();
+                    campeones = nombrePareja(campeona);
+                    subcampeones = nombrePareja(subcampeona);
+                }
+            } catch (RuntimeException ex) {
+                campeones = "Resultado no disponible";
+                subcampeones = "Resultado no disponible";
             }
         }
-        botonGestionarGrupos.setVisible(c != null && c.usaFaseGrupos());
-        botonGestionarGrupos.setManaged(botonGestionarGrupos.isVisible());
-        boolean historico = seleccionado != null && seleccionado.getEstado().esFinal();
-        botonGestionarGrupos.setText(historico ? "VER GRUPOS" : "GRUPOS");
-        botonGestionarCuadro.setText(historico ? "VER CUADRO" : "CUADRO");
-        botonGestionarCuadro.setDisable(c == null || !c.isActivo() || seleccionado == null
-                || seleccionado.getEstado() == EstadoTorneo.BORRADOR
-                || seleccionado.getEstado() == EstadoTorneo.PUBLICADO
-                || seleccionado.getEstado() == EstadoTorneo.INSCRIPCION_ABIERTA
-                || seleccionado.getEstado() == EstadoTorneo.CANCELADO);
+        etiquetaCampeonesCategoria.setText(campeones);
+        etiquetaSubcampeonesCategoria.setText(subcampeones);
+        etiquetaCampeonesCategoria.setTooltip(new Tooltip(campeones));
+        etiquetaSubcampeonesCategoria.setTooltip(new Tooltip(subcampeones));
+    }
+
+    private void actualizarSiguientePasoCompetitivo(
+            TorneoCategoria categoria, EstadoCompetitivo e, EstadoTorneo estado) {
+        if (estado != EstadoTorneo.EN_CURSO) return;
+        if (categoria.usaFaseGrupos() && e.gruposCompletos() && !e.tieneEliminacion()) {
+            etiquetaAccionTitulo.setText("Cuadro eliminatorio pendiente");
+            etiquetaAccionAyuda.setText("Los grupos finalizaron. Generá el cuadro para continuar con la fase eliminatoria.");
+        } else if (e.finalPendiente()) {
+            etiquetaAccionTitulo.setText("Campeón pendiente");
+            etiquetaAccionAyuda.setText("Todos los partidos terminaron. Registrá el resultado de la final desde Cuadro.");
+        } else if (e.pendientesEliminacion() > 0) {
+            etiquetaAccionTitulo.setText("Torneo en curso");
+            etiquetaAccionAyuda.setText(e.pendientesEliminacion() == 1
+                    ? "Queda 1 partido por disputar en el cuadro."
+                    : "Quedan " + e.pendientesEliminacion() + " partidos por disputar en el cuadro.");
+        }
+    }
+
+    private String nombrePareja(Long inscripcionId) {
+        if (inscripcionId == null) return "por definir";
+        TorneoInscripcion inscripcion = inscripcionDAO.buscar(inscripcionId);
+        if (inscripcion == null) return "Inscripcion #" + inscripcionId;
+        return inscripcion.getJugadores().stream()
+                .map(j -> j.getNombreCompleto())
+                .filter(nombre -> nombre != null && !nombre.isBlank())
+                .reduce((a, b) -> a + " / " + b)
+                .orElse("Inscripcion #" + inscripcionId);
+    }
+
+    private void restaurarSeleccionNavegacion() {
+        Navegacion.SeleccionTorneo seleccion = Navegacion.consumirSeleccionTorneo();
+        if (seleccion == null || seleccion.torneoId() <= 0) return;
+        torneos.stream().filter(t -> t.getId() == seleccion.torneoId()).findFirst().ifPresent(t -> {
+            tablaTorneos.getSelectionModel().select(t);
+            int indice = torneos.indexOf(t);
+            javafx.application.Platform.runLater(() -> tablaTorneos.scrollTo(Math.max(0, indice - 2)));
+            seleccionar(t);
+            if (seleccion.categoriaId() > 0) {
+                categorias.stream().filter(cat -> cat.getId() == seleccion.categoriaId()).findFirst()
+                        .ifPresent(cat -> { tablaCategorias.getSelectionModel().select(cat); tablaCategorias.scrollTo(cat); });
+            }
+        });
     }
 
     @FXML private void nuevoTorneo() {
@@ -673,7 +950,10 @@ public class TorneosController {
 
     @FXML private void gestionarGrupos() {
         TorneoCategoria categoria = tablaCategorias.getSelectionModel().getSelectedItem();
-        if (categoria != null) Navegacion.mostrarGruposTorneo(categoria.getId());
+        if (categoria != null) {
+            Navegacion.recordarSeleccionTorneo(seleccionado.getId(), categoria.getId());
+            Navegacion.mostrarGruposTorneo(categoria.getId());
+        }
     }
 
     @FXML private void gestionarCuadro() {
@@ -683,6 +963,7 @@ public class TorneosController {
                     "Selecciona una categoria para gestionar su cuadro.");
             return;
         }
+        Navegacion.recordarSeleccionTorneo(seleccionado.getId(), categoria.getId());
         Navegacion.mostrarCuadroTorneo(categoria.getId());
     }
 

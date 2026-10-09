@@ -20,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
 import servicio.ConsultaInscripcionTorneoService;
@@ -53,6 +54,7 @@ public class TorneosInscripcionesController {
             FXCollections.observableArrayList();
     private FilteredList<InscripcionResumen> filtradas;
     private InscripcionResumen seleccionada;
+    private boolean filtroFinalizadasActivo;
 
     @FXML private TextField campoBuscar;
     @FXML private ComboBox<EstadoInscripcionTorneo> filtroEstado;
@@ -69,6 +71,11 @@ public class TorneosInscripcionesController {
     @FXML private Label etiquetaConfirmadas;
     @FXML private Label etiquetaEspera;
     @FXML private Label etiquetaFinalizadas;
+    @FXML private javafx.scene.layout.VBox metricaTotal;
+    @FXML private javafx.scene.layout.VBox metricaPendientes;
+    @FXML private javafx.scene.layout.VBox metricaConfirmadas;
+    @FXML private javafx.scene.layout.VBox metricaEspera;
+    @FXML private javafx.scene.layout.VBox metricaFinalizadas;
     @FXML private Label etiquetaMensaje;
     @FXML private Label detalleTitulo;
     @FXML private Label detalleTorneo;
@@ -102,7 +109,14 @@ public class TorneosInscripcionesController {
     private void initialize() {
         configurarTabla();
         configurarFiltros();
+        campoBuscar.setOnKeyPressed(evento -> {
+            if (evento.getCode() == KeyCode.ESCAPE) limpiarFiltros();
+        });
         detalleObservaciones.textProperty().addListener((o, a, actual) -> actualizarBotonObservacion());
+        botonRechazar.setTooltip(new Tooltip("Deniega la solicitud. La pareja no será incorporada."));
+        botonCancelar.setTooltip(new Tooltip("Cancela administrativamente la inscripción y conserva el registro histórico."));
+        botonGuardarObservacion.setTooltip(new Tooltip("Modificá la observación interna para habilitar el guardado."));
+        // tooltips-acciones-inscripciones-v2
         cargarInscripciones();
     }
 
@@ -218,7 +232,7 @@ public class TorneosInscripcionesController {
                 seleccionarPorId(seleccionada.id());
             } else if (!filtradas.isEmpty()) {
                 tablaInscripciones.getSelectionModel().selectFirst();
-                tablaInscripciones.scrollTo(0);
+                javafx.application.Platform.runLater(() -> tablaInscripciones.scrollTo(tablaInscripciones.getSelectionModel().getSelectedIndex()));
             }
         } catch (RuntimeException exception) {
             etiquetaMensaje.setText(exception.getMessage());
@@ -230,7 +244,8 @@ public class TorneosInscripcionesController {
         String texto = campoBuscar.getText() == null ? ""
                 : campoBuscar.getText().trim().toLowerCase(Locale.ROOT);
         EstadoInscripcionTorneo estado = filtroEstado.getValue();
-        filtradas.setPredicate(valor -> (estado == null || valor.estado() == estado)
+        filtradas.setPredicate(valor -> (!filtroFinalizadasActivo || valor.estado().esFinal())
+                && (estado == null || valor.estado() == estado)
                 && (texto.isBlank()
                 || contiene(String.valueOf(valor.id()), texto)
                 || contiene(valor.torneo(), texto)
@@ -240,10 +255,18 @@ public class TorneosInscripcionesController {
                 || contiene(valor.responsable().telefono(), texto)
                 || contiene(valor.pareja().telefono(), texto)));
         mantenerSeleccionVisible();
-        etiquetaMensaje.setText(filtradas.size()
+        actualizarMensajeResultados();
+    }
+
+    private void actualizarMensajeResultados() {
+        if (filtradas == null) return;
+        String texto = filtradas.size()
                 + (filtradas.size() == 1
-                        ? " inscripción encontrada"
-                        : " inscripciones encontradas"));
+                        ? " inscripción encontrada" : " inscripciones encontradas");
+        if (filtroEstado.getValue() != null) texto += " · " + textoEstado(filtroEstado.getValue());
+        String busqueda = campoBuscar.getText() == null ? "" : campoBuscar.getText().trim();
+        if (!busqueda.isBlank()) texto += " para \"" + busqueda + "\"";
+        etiquetaMensaje.setText(texto);
     }
 
     private void mantenerSeleccionVisible() {
@@ -277,8 +300,33 @@ public class TorneosInscripcionesController {
 
     @FXML private void limpiarFiltros() {
         campoBuscar.clear();
+        filtroFinalizadasActivo = false;
+        actualizarMetricaActiva(null);
         filtroEstado.getSelectionModel().clearSelection();
     }
+    @FXML private void filtrarTotal() { aplicarFiltroMetrica(null, false, metricaTotal); }
+    @FXML private void filtrarPendientes() { aplicarFiltroMetrica(EstadoInscripcionTorneo.PENDIENTE, false, metricaPendientes); }
+    @FXML private void filtrarConfirmadas() { aplicarFiltroMetrica(EstadoInscripcionTorneo.CONFIRMADA, false, metricaConfirmadas); }
+    @FXML private void filtrarEspera() { aplicarFiltroMetrica(EstadoInscripcionTorneo.LISTA_ESPERA, false, metricaEspera); }
+    @FXML private void filtrarFinalizadas() { aplicarFiltroMetrica(null, true, metricaFinalizadas); }
+
+    private void aplicarFiltroMetrica(EstadoInscripcionTorneo estado, boolean finales, javafx.scene.layout.VBox tarjeta) {
+        boolean repetir = tarjeta != null && tarjeta.getStyleClass().contains("metric-filter-active-v2");
+        filtroFinalizadasActivo = !repetir && finales;
+        filtroEstado.setValue(repetir || finales ? null : estado);
+        actualizarMetricaActiva(repetir ? null : tarjeta);
+        aplicarFiltros();
+    }
+
+    private void actualizarMetricaActiva(javafx.scene.layout.VBox activa) {
+        for (javafx.scene.layout.VBox tarjeta : java.util.List.of(
+                metricaTotal, metricaPendientes, metricaConfirmadas, metricaEspera, metricaFinalizadas)) {
+            if (tarjeta != null) tarjeta.getStyleClass().remove("metric-filter-active-v2");
+        }
+        if (activa != null) activa.getStyleClass().add("metric-filter-active-v2");
+    }
+
+
 
     private void actualizarMetricas() {
         etiquetaTotal.setText(String.valueOf(inscripciones.size()));
@@ -303,7 +351,10 @@ public class TorneosInscripcionesController {
         aplicarEstiloEstadoDetalle(valor.estado());
         detalleOrigen.setText(valor.origen());
         detalleFecha.setText(valor.fechaSolicitud() == null ? "-" : valor.fechaSolicitud().format(FECHA_HORA));
-        detallePrecio.setText(FormateadorMoneda.pesos(valor.precioInscripcion()));
+        detallePrecio.setText(valor.precioInscripcion() == null
+                || valor.precioInscripcion().signum() == 0
+                        ? "Sin cargo"
+                        : FormateadorMoneda.pesos(valor.precioInscripcion()));
         cargarJugador(valor.responsable(), responsableNombre, responsableTelefono,
                 responsableVinculacion, botonWhatsappResponsable,
                 botonVincularResponsable, botonDesvincularResponsable);
@@ -341,16 +392,32 @@ public class TorneosInscripcionesController {
     private void cargarJugador(JugadorResumen jugador, Label nombre, Label telefono,
             Label vinculacion, Button whatsapp, Button vincular, Button desvincular) {
         nombre.setText(jugador.nombreCompleto());
-        telefono.setText(jugador.telefono());
+        telefono.setText(formatearTelefonoVisible(jugador.telefono()));
         vinculacion.setText(jugador.vinculado()
                 ? "Cliente registrado #" + jugador.clienteId()
-                : jugador.estadoVinculacion());
+                : "Sin vincular");
+        vinculacion.getStyleClass().removeAll("link-status-linked", "link-status-pending");
+        vinculacion.getStyleClass().add(jugador.vinculado()
+                ? "link-status-linked" : "link-status-pending");
         whatsapp.setVisible(jugador.telefono() != null && !jugador.telefono().isBlank());
         whatsapp.setManaged(whatsapp.isVisible());
         vincular.setText(jugador.vinculado()
                 ? "CAMBIAR VINCULACIÓN" : "VINCULAR CLIENTE");
+        vincular.getStyleClass().removeAll("tournament-link-primary", "tournament-link-secondary");
+        vincular.getStyleClass().add(jugador.vinculado()
+                ? "tournament-link-secondary" : "tournament-link-primary");
         desvincular.setVisible(jugador.vinculado());
         desvincular.setManaged(jugador.vinculado());
+    }
+
+    private String formatearTelefonoVisible(String telefono) {
+        if (telefono == null) return "";
+        String digitos = telefono.replaceAll("\\D", "");
+        if (digitos.length() == 10 && digitos.startsWith("11")) {
+            return digitos.substring(0, 2) + " "
+                    + digitos.substring(2, 6) + "-" + digitos.substring(6);
+        }
+        return telefono;
     }
 
     private void seleccionarPorId(long id) {
@@ -404,7 +471,23 @@ public class TorneosInscripcionesController {
     }
 
     @FXML private void confirmarInscripcion() {
-        gestionar(EstadoInscripcionTorneo.CONFIRMADA);
+        // confirmar-inscripcion-contextual-v1
+        if (seleccionada == null) {
+            etiquetaMensaje.setText("Seleccioná una inscripción para confirmarla.");
+            return;
+        }
+        String estadoActual = textoEstado(seleccionada.estado());
+        String mensaje = "La inscripción #" + seleccionada.id()
+                + " pasará de " + estadoActual + " a Confirmada.\n\n"
+                + "Torneo: " + seleccionada.torneo() + "\n"
+                + "Categoría: " + seleccionada.categoriaCompleta() + "\n"
+                + "Pareja: " + seleccionada.responsableNombre()
+                + " / " + seleccionada.parejaNombre() + "\n\n"
+                + "La confirmación ocupará un cupo de la categoría.\n"
+                + "¿Querés confirmar la inscripción?";
+        if (Dialogos.confirmar("Confirmar inscripción", mensaje)) {
+            gestionar(EstadoInscripcionTorneo.CONFIRMADA);
+        }
     }
 
     @FXML private void enviarAListaEspera() {
@@ -468,7 +551,14 @@ public class TorneosInscripcionesController {
     private boolean confirmarAccion(
             String titulo,
             String mensaje) {
-        return Dialogos.confirmar(titulo, mensaje);
+        if (seleccionada == null) return false;
+        String detalle = "Inscripción #" + seleccionada.id()
+                + "\nTorneo: " + seleccionada.torneo()
+                + "\nCategoría: " + seleccionada.categoriaCompleta()
+                + "\nPareja: " + seleccionada.responsableNombre()
+                + " / " + seleccionada.parejaNombre()
+                + "\n\n" + mensaje;
+        return Dialogos.confirmarPeligro(titulo, detalle);
     }
     @FXML private void vincularResponsable() {
         vincular(seleccionada == null ? null : seleccionada.responsable());

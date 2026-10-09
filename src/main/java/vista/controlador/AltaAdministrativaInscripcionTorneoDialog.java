@@ -62,6 +62,8 @@ public class AltaAdministrativaInscripcionTorneoDialog {
         private final SeleccionJugador seleccionResponsable = new SeleccionJugador("RESPONSABLE", n1, a1, t1);
         private final SeleccionJugador seleccionPareja = new SeleccionJugador("SEGUNDO INTEGRANTE", n2, a2, t2);
         private Long creadaId;
+        private javafx.scene.Node botonGuardarAlta;
+        private final Label contextoCategoria = new Label("Seleccioná torneo y categoría para ver cupos y alcance del estado inicial.");
 
         public AltaAdministrativaInscripcionTorneoDialog() {
                 construir();
@@ -90,11 +92,13 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 vista.TemaDinamico.aplicar(dialogo.getDialogPane(),
                                 Navegacion.getConfiguracionActual());
                 dialogo.setResizable(true);
-                dialogo.getDialogPane().setPrefSize(980, 760);
+                dialogo.getDialogPane().setPrefSize(1280, 780);
                 dialogo.setOnShown(evento -> {
                         Stage ventana = (Stage) dialogo.getDialogPane()
                                         .getScene().getWindow();
-                        ventana.setMaximized(true);
+                        ventana.setMaximized(false);
+                        ventana.sizeToScene();
+                        ventana.centerOnScreen();
                 });
 
                 List<Torneo> administrables = torneoDAO.listarActivos().stream()
@@ -124,18 +128,30 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                         }
                 });
                 torneo.valueProperty()
-                                .addListener((obs, anterior,
-                                                actual) -> categoria.setItems(FXCollections.observableArrayList(
-                                                                actual == null ? List.of()
-                                                                                : categoriaDAO.listarActivasPorTorneo(
-                                                                                                actual.getId()))));
+                                .addListener((obs, anterior, actual) -> {
+                                        categoria.setItems(FXCollections.observableArrayList(
+                                                        actual == null ? List.of()
+                                                                : categoriaDAO.listarActivasPorTorneo(actual.getId())));
+                                        categoria.getSelectionModel().clearSelection();
+                                        actualizarContextoCategoria();
+                                });
                 estado.setItems(FXCollections.observableArrayList(
                                 EstadoInscripcionTorneo.CONFIRMADA,
                                 EstadoInscripcionTorneo.PENDIENTE,
                                 EstadoInscripcionTorneo.LISTA_ESPERA));
                 estado.setValue(EstadoInscripcionTorneo.CONFIRMADA);
+                categoria.valueProperty().addListener((o, a, n) -> actualizarContextoCategoria());
+                estado.valueProperty().addListener((o, a, n) -> actualizarContextoCategoria());
 
                 var boton = dialogo.getDialogPane().lookupButton(guardar);
+                botonGuardarAlta = boton;
+                torneo.valueProperty().addListener((o, a, n) -> actualizarEstadoGuardarAlta());
+                categoria.valueProperty().addListener((o, a, n) -> actualizarEstadoGuardarAlta());
+                estado.valueProperty().addListener((o, a, n) -> actualizarEstadoGuardarAlta());
+                for (TextField campo : List.of(n1, a1, t1, n2, a2, t2)) {
+                        campo.textProperty().addListener((o, a, n) -> actualizarEstadoGuardarAlta());
+                }
+                actualizarEstadoGuardarAlta();
                 boton.addEventFilter(javafx.event.ActionEvent.ACTION, evento -> {
                         try {
                                 if (torneo.getValue() == null
@@ -173,8 +189,10 @@ public class AltaAdministrativaInscripcionTorneoDialog {
         private ScrollPane contenido() {
                 prepararControles();
 
+                contextoCategoria.getStyleClass().add("admin-registration-context");
+                contextoCategoria.setWrapText(true);
                 VBox tarjetaTorneo = tarjeta("TORNEO Y CATEGORÍA",
-                                camposTorneo());
+                                camposTorneo(), contextoCategoria);
                 VBox responsable = seleccionResponsable.tarjeta();
                 VBox segundo = seleccionPareja.tarjeta();
                 HBox jugadores = new HBox(12, responsable, segundo);
@@ -199,7 +217,8 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 scroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
                 scroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
                 scroll.getStyleClass().add("admin-registration-scroll");
-                scroll.setPrefViewportHeight(630);
+                scroll.setPrefViewportHeight(620);
+                scroll.setMaxHeight(620);
                 return scroll;
         }
 
@@ -217,6 +236,35 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 campoEstado.setPrefWidth(205);
                 campoEstado.setMaxWidth(220);
                 return fila;
+        }
+
+        private void actualizarContextoCategoria() {
+                TorneoCategoria seleccion = categoria.getValue();
+                EstadoInscripcionTorneo estadoInicial = estado.getValue();
+                if (seleccion == null) {
+                        contextoCategoria.setText("Seleccioná torneo y categoría para ver cupos y alcance del estado inicial.");
+                        return;
+                }
+                int confirmadas = seleccion.getParejasConfirmadas();
+                int cupo = seleccion.getCupoParejas();
+                int libres = Math.max(0, cupo - confirmadas);
+                String alcance = estadoInicial == EstadoInscripcionTorneo.CONFIRMADA
+                                ? "Ocupa un cupo inmediatamente."
+                                : estadoInicial == EstadoInscripcionTorneo.PENDIENTE
+                                        ? "Queda pendiente de aprobación y no ocupa cupo."
+                                        : "Queda en espera y no ocupa cupo confirmado.";
+                contextoCategoria.setText("Cupos: " + confirmadas + " de " + cupo
+                                + " confirmados · " + libres + " libres. " + alcance);
+        }
+
+        private void actualizarEstadoGuardarAlta() {
+                if (botonGuardarAlta == null) return;
+                boolean seleccionBase = torneo.getValue() != null
+                                && categoria.getValue() != null
+                                && estado.getValue() != null;
+                botonGuardarAlta.setDisable(!seleccionBase
+                                || !seleccionResponsable.completa()
+                                || !seleccionPareja.completa());
         }
 
         private HBox camposAdicionales() {
@@ -272,23 +320,12 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                 control.setMaxWidth(Double.MAX_VALUE);
                 return new VBox(4, texto, control);
         }
-
+        // estabilizar-botones-alta-inscripcion-v1
         private void animarBoton(Button boton) {
-                boton.getStyleClass().add("admin-registration-animated-button");
-                boton.setOnMouseEntered(evento -> animarEscala(boton, 1.018, 110));
-                boton.setOnMouseExited(evento -> animarEscala(boton, 1.0, 125));
-                boton.setOnMousePressed(evento -> animarEscala(boton, .975, 70));
-                boton.setOnMouseReleased(evento -> animarEscala(
-                                boton, boton.isHover() ? 1.018 : 1.0, 90));
-        }
-
-        private void animarEscala(
-                        Button boton, double escala, double milisegundos) {
-                ScaleTransition transicion = new ScaleTransition(
-                                Duration.millis(milisegundos), boton);
-                transicion.setToX(escala);
-                transicion.setToY(escala);
-                transicion.play();
+                boton.getStyleClass().add("admin-registration-stable-button");
+                boton.setScaleX(1.0);
+                boton.setScaleY(1.0);
+                boton.setTranslateY(0.0);
         }
 
         private final class SeleccionJugador {
@@ -413,6 +450,14 @@ public class AltaAdministrativaInscripcionTorneoDialog {
                         divisorManual.setManaged(!seleccionado);
                         bloqueManual.setVisible(!seleccionado);
                         bloqueManual.setManaged(!seleccionado);
+                        actualizarEstadoGuardarAlta();
+                }
+
+                private boolean completa() {
+                        if (cliente != null) return true;
+                        return !nombre.getText().isBlank()
+                                        && !apellido.getText().isBlank()
+                                        && !telefono.getText().isBlank();
                 }
 
                 private DatosJugador datos() {

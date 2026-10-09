@@ -4831,3 +4831,175 @@
     -fx-border-color: #81464e;
     -fx-effect: innershadow(gaussian, rgba(0,0,0,.28), 4, .16, 0, 1);
 }
+
+
+/* torneos-dialogos-reconstruccion-limpia-v1 */
+
+.dialog-pane.tournament-editor-dialog,
+.dialog-pane.category-editor-dialog {
+    -fx-pref-width: 820px;
+    -fx-background-color: #171c20;
+}
+.dialog-pane.tournament-editor-dialog > .content,
+.dialog-pane.category-editor-dialog > .content {
+    -fx-padding: 14 18 12 18;
+}
+.dialog-pane.tournament-editor-dialog .dialog-field,
+.dialog-pane.category-editor-dialog .dialog-field {
+    -fx-pref-height: 40px;
+    -fx-min-height: 40px;
+    -fx-max-height: 40px;
+}
+.dialog-pane.tournament-editor-dialog .text-area.dialog-field,
+.dialog-pane.category-editor-dialog .text-area.dialog-field {
+    -fx-pref-height: 66px;
+    -fx-min-height: 58px;
+    -fx-max-height: 72px;
+}
+.dialog-pane.tournament-editor-dialog > .button-bar,
+.dialog-pane.category-editor-dialog > .button-bar {
+    -fx-padding: 10 18 12 18;
+    -fx-min-height: 64px;
+    -fx-pref-height: 64px;
+    -fx-max-height: 64px;
+}
+.dialog-pane.tournament-editor-dialog > .button-bar .button,
+.dialog-pane.category-editor-dialog > .button-bar .button {
+    -fx-min-height: 42px;
+    -fx-pref-height: 42px;
+    -fx-min-width: 190px;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll {
+    -fx-padding: 8 10 6 12;
+    -fx-background-color: #171c20;
+    -fx-border-color: transparent;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll > .viewport {
+    -fx-background-color: #171c20;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll .scroll-bar:vertical {
+    -fx-pref-width: 8px;
+    -fx-background-color: transparent;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll .scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll .scroll-bar:vertical .thumb {
+    -fx-background-color: #4a555b;
+    -fx-background-radius: 8px;
+}
+.dialog-pane.category-editor-dialog .category-editor-scroll .scroll-bar .increment-button,
+.dialog-pane.category-editor-dialog .category-editor-scroll .scroll-bar .decrement-button {
+    -fx-pref-height: 0;
+    -fx-padding: 0;
+}
+.dialog-pane.tournament-editor-dialog .button:default:disabled,
+.dialog-pane.category-editor-dialog .button:default:disabled {
+    -fx-opacity: 1;
+    -fx-background-color: #20352c;
+    -fx-border-color: #365947;
+    -fx-text-fill: #8fb5a2;
+    -fx-effect: none;
+}
+
+/* dialogos-torneos-layout-final-v1:start */
+.tournament-layout-final-v1 > .content,
+.category-layout-final-v1 > .content { -fx-padding: 12 16 12 16; }
+.tournament-layout-final-v1 .tournament-dialog-section-v1,
+.category-layout-final-v1 .tournament-dialog-section-v1 {
+    -fx-background-color: #151b1f;
+    -fx-border-color: #364148;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 11 13;
+}
+.tournament-layout-final-v1 .tournament-dialog-section-title-v1,
+.category-layout-final-v1 .tournament-dialog-section-title-v1 {
+    -fx-text-fill: #dce4e7;
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 10.5px;
+    -fx-font-weight: 800;
+}
+.tournament-layout-final-v1 .dialog-field,
+.category-layout-final-v1 .dialog-field { -fx-pref-height: 40; -fx-min-height: 40; }
+.tournament-layout-final-v1 .text-area.dialog-field,
+.category-layout-final-v1 .text-area.dialog-field { -fx-pref-height: 64; -fx-min-height: 64; -fx-max-height: 70; }
+.tournament-layout-final-v1 > .button-bar,
+.category-layout-final-v1 > .button-bar { -fx-padding: 11 16 13 16; }
+.tournament-layout-final-v1 > .button-bar .button,
+.category-layout-final-v1 > .button-bar .button { -fx-min-height: 42; -fx-pref-height: 42; -fx-min-width: 210; }
+.category-layout-final-v1 .category-groups-panel-v1 {
+    -fx-background-color: #18221e;
+    -fx-border-color: #355846;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}
+.tournament-layout-final-v1 .button:default:disabled,
+.category-layout-final-v1 .button:default:disabled {
+    -fx-opacity: 1;
+    -fx-background-color: #24362e;
+    -fx-border-color: #3d6653;
+    -fx-text-fill: #8fb8a4;
+    -fx-effect: none;
+}
+/* dialogos-torneos-layout-final-v1:end */
+
+/* categoria-layout-scroll-final-v3:start */
+/* El ScrollPane real del dialogo usa category-layout-scroll-v2. */
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2,
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 > .viewport,
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .corner {
+    -fx-background-color: #171c20;
+    -fx-background-insets: 0;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-padding: 8 5 6 10;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 > .viewport {
+    -fx-padding: 0;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical {
+    -fx-pref-width: 9px;
+    -fx-background-color: #171c20;
+    -fx-padding: 1px;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .track,
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .track-background {
+    -fx-background-color: #1a2024;
+    -fx-background-radius: 8px;
+    -fx-border-color: transparent;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .thumb {
+    -fx-background-color: #465158;
+    -fx-background-insets: 2px;
+    -fx-background-radius: 8px;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #5a676e;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #3d8b68;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .increment-button,
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .decrement-button {
+    -fx-pref-height: 0;
+    -fx-min-height: 0;
+    -fx-max-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .increment-arrow,
+.dialog-pane.category-editor-dialog .category-layout-scroll-v2 .scroll-bar:vertical .decrement-arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+/* categoria-layout-scroll-final-v3:end */
+
+
+/* compactar-solo-eliminacion-directa-v2 */
+.dialog-pane.category-editor-dialog.category-elimination-compact-v2 .tournament-dialog-section-v1 {
+    -fx-padding: 10 14 10 14;
+}

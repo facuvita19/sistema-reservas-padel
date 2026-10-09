@@ -1023,3 +1023,25 @@
 .tournaments-root .inscriptions-table .table-row-cell {
     -fx-cell-size: 48;
 }
+
+/* inscripciones-integral-final-v1 */
+.metric-filter-card { -fx-cursor: hand; }
+.metric-filter-card:hover { -fx-border-color: #6f8c7f; -fx-effect: dropshadow(gaussian, rgba(62,144,105,.22), 10, .12, 0, 1); }
+.link-status-pending { -fx-text-fill: #e0ad59; }
+.link-status-linked { -fx-text-fill: #72c59a; }
+.tournament-link-primary { -fx-background-color: #337d5d; -fx-border-color: #4b9874; -fx-text-fill: white; }
+.inscription-received-comment { -fx-border-color: #3b464c; -fx-background-color: #171d21; }
+.inscription-internal-note { -fx-border-color: #486154; }
+.tournament-action-cancel { -fx-background-color: #33262a; -fx-border-color: #80515b; -fx-text-fill: #ffd7dd; }
+.inscription-save-note:disabled, .tournament-action-confirm:disabled, .tournament-action-wait:disabled, .tournament-action-reject:disabled, .tournament-action-cancel:disabled { -fx-opacity: 1; -fx-background-color: #20272b; -fx-border-color: #3b474d; -fx-text-fill: #78878e; }
+
+/* inscripciones-cierre-incremental-v1 */
+.metric-filter-card:focused, .metric-filter-card:selected { -fx-border-width: 2 2 2 5; -fx-effect: dropshadow(gaussian, rgba(73,157,116,.26), 10, .16, 0, 1); }
+
+/* inscripciones-pulido-final-v2 */
+.tournaments-root .tournament-metric { -fx-cursor: hand; }
+.tournaments-root .tournament-metric:hover { -fx-border-color: #668b79; -fx-effect: dropshadow(gaussian, rgba(62,144,105,.20), 10, .12, 0, 1); }
+.tournaments-root .metric-filter-active-v2 { -fx-border-width: 1 1 3 4; -fx-border-color: #62b58e; -fx-background-color: #203129; }
+.tournaments-root .inscription-field-help-v2 { -fx-font-family: "Segoe UI"; -fx-font-size: 9.5px; -fx-text-fill: #788991; }
+.tournaments-root .tournament-action-reject { -fx-background-color: #6f303b; -fx-border-color: #aa5361; -fx-text-fill: #ffe9ec; }
+.tournaments-root .tournament-action-cancel { -fx-background-color: #34282c; -fx-border-color: #76505a; -fx-text-fill: #f4dbe0; }

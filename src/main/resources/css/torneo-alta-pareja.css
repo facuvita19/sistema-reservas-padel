@@ -290,3 +290,31 @@
 .dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .increment-button, .dialog-tournament-registration .admin-registration-scroll > .scroll-bar:vertical .decrement-button { -fx-min-height: 0; -fx-pref-height: 0; -fx-max-height: 0; -fx-padding: 0; -fx-opacity: 0; }
 .dialog-tournament-registration > .button-bar > .container { -fx-padding: 10 18 12 18; }
 .dialog-tournament-registration > .button-bar .button { -fx-min-height: 46; -fx-pref-height: 46; }
+
+/* alta-inscripcion-compacta-contextual-v1 */
+.dialog-tournament-registration { -fx-pref-width: 1280; }
+.dialog-tournament-registration .admin-registration-context { -fx-background-color: #17231e; -fx-border-color: #3b6854; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8 10; -fx-text-fill: #b9ddca; -fx-font-size: 10.5px; -fx-font-weight: 700; }
+.dialog-tournament-registration .admin-registration-card { -fx-padding: 11 13; -fx-spacing: 6; }
+.dialog-tournament-registration .admin-registration-area { -fx-min-height: 58; -fx-pref-height: 58; -fx-max-height: 66; }
+.dialog-tournament-registration > .button-bar > .container { -fx-padding: 10 18 12 18; }
+
+/* inscripciones-cierre-incremental-v1 */
+.admin-registration-context { -fx-font-size: 10.5px; -fx-font-weight: 700; }
+.dialog-tournament-registration .admin-registration-selected-card { -fx-min-height: 96; }
+.dialog-tournament-registration .button:default:disabled { -fx-opacity: 1; -fx-background-color: #203129; -fx-border-color: #365947; -fx-text-fill: #789488; }
+
+/* estabilizar-botones-alta-inscripcion-v1 */
+.dialog-tournament-registration .admin-registration-search-button,
+.dialog-tournament-registration .admin-registration-search-button:hover,
+.dialog-tournament-registration .admin-registration-search-button:focused,
+.dialog-tournament-registration .admin-registration-search-button:pressed,
+.dialog-tournament-registration .admin-registration-clear-button,
+.dialog-tournament-registration .admin-registration-clear-button:hover,
+.dialog-tournament-registration .admin-registration-clear-button:focused,
+.dialog-tournament-registration .admin-registration-clear-button:pressed,
+.dialog-tournament-registration .admin-registration-stable-button {
+    -fx-translate-x: 0;
+    -fx-translate-y: 0;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
