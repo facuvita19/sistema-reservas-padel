@@ -378,7 +378,7 @@ public final class ApiPublicaServer {
             valor = System.getProperty("api.web.publica.url");
         }
         return valor == null || valor.isBlank()
-                ? "http://localhost:5173/"
+                ? "http://localhost:4321/"
                 : valor.trim();
     }
 

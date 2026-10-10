@@ -45,4 +45,10 @@ if ($ip) {
 }
 Write-Host "Manten esta ventana abierta. Para detener: Ctrl + C"
 
+# Fuente unica para los enlaces reales enviados por correo.
+# La variable se fija al iniciar para no depender de clases compiladas antiguas,
+# configuraciones heredadas de Eclipse ni variables externas de otra sesion.
+$env:API_WEB_PUBLICA_URL = "http://localhost:4321/"
+Write-Host "Web publica para correos: $env:API_WEB_PUBLICA_URL" -ForegroundColor Cyan
+
 java -cp $classPathText api.publica.ApiPublicaApp

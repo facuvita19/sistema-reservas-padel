@@ -41,7 +41,7 @@ public class CorreoRecuperacionPasswordService {
                     "El token y su vencimiento son obligatorios.");
         }
 
-        String enlace = urlPublica + "?recuperar="
+        String enlace = urlPublica + "restablecer?token="
                 + URLEncoder.encode(token, StandardCharsets.UTF_8);
         String vence = FECHA.format(vencimiento);
 
@@ -83,10 +83,10 @@ public class CorreoRecuperacionPasswordService {
 
     private String normalizarUrl(String valor) {
         String limpia = valor.trim();
-        while (limpia.endsWith("?")) {
+        while (limpia.endsWith("?") || limpia.endsWith("/")) {
             limpia = limpia.substring(0, limpia.length() - 1);
         }
-        return limpia;
+        return limpia + "/";
     }
 
     private String escaparAtributo(String valor) {

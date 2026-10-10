@@ -36,7 +36,7 @@ services:
       DB_PASSWORD: "${MYSQL_PASSWORD}"
       VENCIMIENTOS_INTERVALO_SEGUNDOS: "30"
       API_RECUPERACION_MOSTRAR_TOKEN: "false"
-      API_WEB_PUBLICA_URL: "http://localhost:5173/"
+      API_WEB_PUBLICA_URL: "http://localhost:4321/"
       SMTP_HOST: "${SMTP_HOST}"
       SMTP_PORT: "${SMTP_PORT}"
       SMTP_USER: "${SMTP_USER}"
