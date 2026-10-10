@@ -2,32 +2,29 @@
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
 <LayoutPrincipal titulo="Mis reservas | Pádel Reservas" descripcion="Consultá próximas reservas, pagos y seguimiento de solicitudes." actual="reservas">
-  <section class="bookings-hero">
-    <div class="container-site bookings-hero-grid">
-      <div><p class="site-kicker">Seguimiento online</p><h1>Tus partidos, siempre a mano</h1><p>Revisá próximas reservas, pagos acreditados y solicitudes anteriores desde un solo lugar.</p></div>
-      <a class="btn btn-primary bookings-hero-action" href="/reservar">Reservar otra cancha</a>
+  <section class="bookings-v2-hero">
+    <div class="container-site bookings-v2-hero-grid">
+      <div><p class="site-kicker">Seguimiento y autogestión</p><h1>Tus reservas, <strong>siempre claras.</strong></h1><p>Consultá estados, pagos y próximos turnos desde un solo lugar.</p></div>
+      <div class="bookings-v2-hero-actions"><button id="accesoHeroReservas" class="btn btn-secondary hidden" type="button">Ingresar para ver mi historial</button></div>
     </div>
   </section>
-  <section class="container-site bookings-shell">
-    <div id="estadoCuenta" class="bookings-loading" aria-live="polite"><span></span><div><strong>Preparando tus reservas</strong><p>Estamos comprobando la sesión y el historial disponible.</p></div></div>
+  <main class="container-site bookings-v2-shell">
+    <div id="estadoCuenta" class="bookings-loading hidden" aria-live="polite"><span></span><div><strong>Preparando tus reservas</strong><p>Estamos comprobando la sesión y el historial disponible.</p></div></div>
 
-    <section id="modoVisitante" class="hidden bookings-guest">
-      <div class="bookings-guest-copy"><p class="site-kicker">Consulta rápida</p><h2>Seguí una reserva sin iniciar sesión</h2><p>Ingresá el código recibido al crear la solicitud. Podrás consultar el estado, el vencimiento, el saldo y los datos para acreditar la seña.</p><div class="bookings-benefits"><span><b>01</b> Estado actualizado</span><span><b>02</b> Datos de transferencia</span><span><b>03</b> Consulta privada por código</span></div></div>
-      <form id="formSeguimiento" class="bookings-code-card" novalidate><label for="codigoSeguimiento"><span class="etiqueta-web">Código de seguimiento</span><input id="codigoSeguimiento" class="field-web bookings-code-input" autocomplete="off" spellcheck="false" placeholder="Pegá el código completo" /></label><div id="errorSeguimiento" class="bookings-error hidden" role="alert"></div><button id="consultarSeguimiento" class="btn btn-primary" type="submit">Consultar reserva</button><p>¿Querés ver todas tus reservas? <button id="abrirAccesoCliente" class="bookings-inline-action" type="button">Ingresá o creá tu cuenta</button></p></form>
+    <section id="modoVisitante" class="hidden bookings-v2-guest">
+      <div class="bookings-v2-intro"><p class="site-kicker">Consulta rápida</p><h2>Seguí una reserva sin iniciar sesión</h2><p>Usá el código recibido al reservar. La consulta es privada y muestra el estado más reciente, el plazo y los datos necesarios para la seña.</p><div class="bookings-v2-steps"><span><b>01</b> Pegá el código</span><span><b>02</b> Revisá el estado</span><span><b>03</b> Actualizá cuando quieras</span></div></div>
+      <form id="formSeguimiento" class="bookings-v2-code" novalidate><label for="codigoSeguimiento"><span class="etiqueta-web">Código de seguimiento</span><input id="codigoSeguimiento" class="field-web bookings-code-input" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" aria-describedby="ayudaCodigo errorSeguimiento" /></label><small id="ayudaCodigo">Lo encontrás en la confirmación de la reserva.</small><div id="errorSeguimiento" class="bookings-error hidden" role="alert"></div><button id="consultarSeguimiento" class="btn btn-primary" type="submit">Consultar reserva</button><p>Ingresá para ver las reservas vinculadas a tu cuenta. <button id="abrirAccesoCliente" class="bookings-inline-action" type="button">Ingresar o crear cuenta</button></p></form>
     </section>
 
-    <section id="consultaCodigoSiempre" class="hidden bookings-lookup-account">
-      <form id="formSeguimientoCuenta" class="bookings-lookup-form" novalidate><div><p class="site-kicker">Consulta por código</p><h2>Buscar otra solicitud</h2><p>También podés consultar una reserva que no figure en el historial de la cuenta.</p></div><div class="bookings-lookup-controls"><input id="codigoSeguimientoCuenta" class="field-web bookings-code-input" autocomplete="off" spellcheck="false" placeholder="Código de seguimiento" /><button id="consultarSeguimientoCuenta" class="btn btn-secondary" type="submit">Consultar</button></div><div id="errorSeguimientoCuenta" class="bookings-error hidden" role="alert"></div></form>
-    </section>
+    <section id="resultadoSeguimiento" class="hidden bookings-v2-result" aria-live="polite"></section>
 
-    <section id="resultadoSeguimiento" class="hidden bookings-result" aria-live="polite"></section>
-
-    <section id="modoAutenticado" class="hidden bookings-account">
-      <header class="bookings-account-head"><div><p class="site-kicker">Tu cuenta</p><h2 id="saludoCliente">Tus reservas</h2><p id="resumenCuenta">Consultando actividad...</p></div></header>
-      <div id="metricasReservas" class="bookings-metrics"></div>
+    <section id="modoAutenticado" class="hidden bookings-v2-account">
+      <header class="bookings-v2-account-head"><div><p class="site-kicker">Tu cuenta</p><h2 id="saludoCliente">Tus reservas</h2><p id="resumenCuenta">Consultando actividad...</p></div><div class="bookings-v2-account-actions"><span id="ultimaActualizacionCuenta" class="bookings-v2-updated">Actualizando…</span><a class="btn btn-primary" href="/reservar">Reservar otra cancha</a></div></header>
+      <div id="metricasReservas" class="bookings-v2-metrics"></div>
       <section class="bookings-section-switch"><div class="bookings-section-heading"><p class="site-kicker">Reservas</p><h3 id="tituloVistaReservas">Próximas reservas</h3><p id="ayudaVistaReservas">Turnos pendientes o confirmados que todavía no finalizaron.</p></div><div class="bookings-tabs" role="tablist" aria-label="Secciones de reservas"><button class="activo" data-tab="proximas" type="button" role="tab" aria-selected="true"><span>Próximas</span><b id="cantidadProximas">0</b></button><button data-tab="anteriores" type="button" role="tab" aria-selected="false"><span>Historial</span><b id="cantidadAnteriores">0</b></button></div></section>
-      <div id="reservasCuenta" class="bookings-list"></div>
+      <div id="filtrosHistorial" class="hidden bookings-v2-history-tools"><label><span>Filtrar historial</span><select id="filtroEstadoHistorial" class="field-web"><option value="TODOS">Todos los estados</option><option value="COMPLETADA">Completadas</option><option value="CANCELADA">Canceladas</option><option value="EXPIRADA">Expiradas</option><option value="AUSENTE">Ausencias</option><option value="CONFIRMADA">Confirmadas</option><option value="PENDIENTE">Esperando seña</option></select></label><label><span>Buscar por cancha</span><input id="buscarCanchaHistorial" class="field-web" type="search" placeholder="Nombre de la cancha" /></label><div class="bookings-v2-history-results"><small>Resultados</small><strong id="cantidadResultadosHistorial">0</strong></div></div><div id="reservasCuenta" class="bookings-v2-list"></div><div id="accionesHistorial" class="hidden bookings-v2-history-more"><button id="mostrarMasHistorial" class="btn btn-secondary" type="button">Mostrar más</button><span id="resumenHistorialVisible"></span></div>
+      <details id="consultaCodigoSiempre" class="hidden bookings-v2-lookup"><summary><span>¿No encontrás una reserva?</span><b><span class="label-closed">Consultar mediante código</span><span class="label-open">Ocultar consulta</span><i aria-hidden="true"></i></b></summary><form id="formSeguimientoCuenta" novalidate><div><p class="site-kicker">Consulta adicional</p><h2>Buscar otra solicitud</h2><p>Consultá un código que no figure en el historial de esta cuenta.</p></div><label><span class="etiqueta-web">Código de seguimiento</span><div class="bookings-v2-lookup-controls"><input id="codigoSeguimientoCuenta" class="field-web bookings-code-input" autocomplete="off" spellcheck="false" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button id="consultarSeguimientoCuenta" class="btn btn-secondary" type="submit">Consultar</button></div></label><div id="errorSeguimientoCuenta" class="bookings-error hidden" role="alert"></div></form></details>
     </section>
-  </section>
+  </main>
   <script>import '../scripts/mis-reservas';</script>
 </LayoutPrincipal>

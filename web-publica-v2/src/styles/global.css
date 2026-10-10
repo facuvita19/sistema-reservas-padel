@@ -1695,3 +1695,439 @@ html,body{max-width:100%;overflow-x:clip}
 .reserve-consent-invalid .reserve-consent strong{color:#ffd5da}
 .reserve-consent input.field-invalid{outline:2px solid #e46f7f;outline-offset:3px}
 @media(max-width:760px){.reserve-email-label{align-items:flex-start}.reserve-optional{min-height:19px;padding:.17rem .45rem;font-size:.58rem}.reserve-consent-wrap{margin-top:.7rem}}
+
+/* mis-reservas-premium-v2-20261010 */
+.bookings-v2-hero{border-bottom:1px solid rgba(91,111,119,.28);background:radial-gradient(circle at 82% 15%,rgba(61,155,112,.15),transparent 25rem),linear-gradient(145deg,#080d0f,#0d1719 66%,#10231b)}.bookings-v2-hero-grid{display:flex;align-items:end;justify-content:space-between;gap:2rem;padding-block:3rem}.bookings-v2-hero h1{max-width:850px;margin:.55rem 0 .8rem;font-size:clamp(2.55rem,5vw,4.5rem);letter-spacing:-.055em;line-height:.96}.bookings-v2-hero h1 strong{color:#80d2a6}.bookings-v2-hero p:last-child{max-width:720px;margin:0;color:#9fb1aa;line-height:1.65}.bookings-v2-hero-actions{display:flex;flex:none;gap:.6rem}.bookings-v2-shell{padding-block:1.5rem 5rem}.bookings-v2-guest{display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.72fr);gap:1rem}.bookings-v2-intro,.bookings-v2-code,.bookings-v2-lookup form,.bookings-v2-account{border:1px solid rgba(91,111,119,.38);border-radius:22px;background:linear-gradient(145deg,#131d20,#0d1518);box-shadow:0 22px 60px rgba(0,0,0,.22)}.bookings-v2-intro,.bookings-v2-code{padding:1.65rem}.bookings-v2-intro h2{margin:.5rem 0 .8rem;font-size:clamp(1.9rem,3vw,2.8rem)}.bookings-v2-intro>p:last-of-type{color:#91a39c;line-height:1.65}.bookings-v2-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:1.5rem}.bookings-v2-steps span{border-top:1px solid #34483f;padding-top:.8rem;color:#aabbb4;font-size:.74rem}.bookings-v2-steps b{display:block;margin-bottom:.35rem;color:#71cc9b;font-size:.62rem}.bookings-v2-code{display:flex;flex-direction:column;justify-content:center}.bookings-v2-code>small{margin-top:.4rem;color:#71857d;font-size:.68rem}.bookings-v2-code .btn{width:100%;margin-top:.9rem}.bookings-v2-code>p{margin:1rem 0 0;color:#768880;font-size:.72rem;text-align:center}.bookings-v2-lookup{margin-top:1rem}.bookings-v2-lookup form{display:grid;grid-template-columns:1fr minmax(360px,.8fr);align-items:end;gap:1rem;padding:1.2rem}.bookings-v2-lookup h2{margin:.3rem 0}.bookings-v2-lookup p:last-child{margin:.2rem 0 0;color:#80938b}.bookings-v2-lookup-controls{display:flex;gap:.55rem}.bookings-v2-lookup .bookings-error{grid-column:1/-1;margin:0}.bookings-v2-result{scroll-margin-top:90px;margin-top:1rem}.bookings-v2-account{margin-top:1rem;padding:1.25rem}.bookings-v2-account-head{display:flex;align-items:start;justify-content:space-between;gap:1rem}.bookings-v2-account-head h2{margin:.35rem 0;font-size:1.9rem}.bookings-v2-account-head p:last-child{margin:0;color:#879a92}.bookings-v2-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:1rem}.bookings-v2-metrics article{border:1px solid #2c3c42;border-radius:13px;background:#0c1417;padding:.85rem}.bookings-v2-metrics article.attention{border-left:3px solid #d5a94f}.bookings-v2-metrics small,.bookings-v2-metrics span{display:block;color:#71857d;font-size:.62rem}.bookings-v2-metrics small{text-transform:uppercase}.bookings-v2-metrics strong{display:block;margin:.25rem 0;font-size:1.4rem}.bookings-v2-list{display:grid;gap:.8rem}.booking-v2-card{position:relative;overflow:hidden;border:1px solid #2b3b40;border-radius:18px;background:linear-gradient(145deg,#0e171a,#0b1215);padding:1.15rem}.booking-v2-card-accent{position:absolute;inset:0 auto 0 0;width:3px;background:#63756e}.booking-v2-card[data-state=pending] .booking-v2-card-accent{background:#d5a94f}.booking-v2-card[data-state=confirmed] .booking-v2-card-accent,.booking-v2-card[data-state=completed] .booking-v2-card-accent{background:#4ab57e}.booking-v2-card[data-state=cancelled] .booking-v2-card-accent{background:#d26876}.booking-v2-card>header{display:flex;align-items:start;justify-content:space-between;gap:1.2rem}.booking-v2-card h3{margin:.65rem 0 .2rem;font-size:1.45rem}.booking-v2-card header p{margin:0;color:#92a59d}.booking-v2-code{max-width:350px;text-align:right}.booking-v2-code small{display:block;color:#71857d;font-size:.58rem;text-transform:uppercase}.booking-v2-code strong{display:block;max-width:350px;margin-top:.25rem;overflow:hidden;text-overflow:ellipsis;font-family:ui-monospace,monospace;color:#bccbc5;font-size:.72rem;white-space:nowrap}.booking-v2-code button{margin-top:.3rem;border:0;background:transparent;color:#78d3a1;font-weight:850}.booking-v2-countdown{display:grid;grid-template-columns:1fr auto;align-items:center;gap:.2rem 1rem;margin-top:.85rem;border:1px solid rgba(213,169,79,.35);border-radius:12px;background:rgba(213,169,79,.08);padding:.75rem}.booking-v2-countdown small{color:#dfb95f;font-weight:900;text-transform:uppercase}.booking-v2-countdown strong{grid-row:1/3;grid-column:2;font-size:1.55rem;color:#f0c66b}.booking-v2-countdown span{color:#a99870;font-size:.67rem}.booking-v2-countdown.expired-local{border-color:#75414a;background:rgba(117,65,74,.1)}.booking-v2-finance{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.85rem;border-top:1px solid #27363b;padding-top:.85rem}.booking-v2-finance.pending{grid-template-columns:repeat(4,1fr)}.booking-v2-finance span{display:flex;flex-direction:column;border-radius:10px;background:#111b1e;padding:.7rem}.booking-v2-finance span.priority{border:1px solid #896c33;background:#241d11}.booking-v2-finance small{color:#71857d;font-size:.58rem;text-transform:uppercase}.booking-v2-finance strong{margin-top:.25rem}.booking-v2-finance .priority strong{color:#e7c16d}.booking-v2-progress{display:flex;align-items:center;gap:.7rem;margin-top:.65rem}.booking-v2-progress>div{flex:1;height:6px;overflow:hidden;border-radius:99px;background:#1c2a2e}.booking-v2-progress>div span{display:block;height:100%;border-radius:inherit;background:#55b984}.booking-v2-progress small{color:#7d9088;font-size:.64rem}.booking-v2-message{display:flex;flex-direction:column;margin-top:.75rem;border-radius:10px;background:#111b1e;padding:.7rem}.booking-v2-message b{font-size:.73rem}.booking-v2-message span{margin-top:.16rem;color:#81948c;font-size:.68rem}.booking-v2-payment{margin-top:.75rem;border:1px solid rgba(61,155,112,.32);border-radius:13px;background:rgba(61,155,112,.08);padding:.85rem}.booking-v2-payment>header{display:flex;align-items:center;justify-content:space-between;gap:1rem}.booking-v2-payment h4{margin:.2rem 0}.booking-v2-payment header>strong{color:#96dfb8;font-size:1.15rem}.booking-v2-payment-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;margin-top:.7rem}.booking-v2-payment-grid span{display:flex;flex-direction:column}.booking-v2-payment small{color:#71857d;font-size:.58rem;text-transform:uppercase}.booking-v2-payment-grid b{margin-top:.2rem}.booking-v2-payment>p{color:#9baca5;font-size:.72rem}.booking-v2-payment-actions{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.65rem}.booking-v2-payment-actions button,.booking-v2-payment-actions a,.booking-v2-actions button,.booking-v2-actions a{display:inline-flex;min-height:38px;align-items:center;border:1px solid #3e7259;border-radius:9px;background:#13241c;padding:.45rem .75rem;color:#a4dfbd;font-weight:850}.booking-v2-payment-actions a{background:#1c6b48;color:white}.booking-v2-payment-note{margin:.65rem 0 0!important;border-top:1px solid rgba(85,185,132,.2);padding-top:.6rem}.booking-v2-actions{display:flex;align-items:center;gap:.55rem;margin-top:.75rem}.booking-v2-actions span{margin-right:auto;color:#71857d;font-size:.62rem}.booking-v2-actions a{border-color:#35474d;background:#111b1e;color:#c4d2cc}.booking-v2-card.compact{padding-block:.9rem}.booking-v2-card.compact .booking-v2-message span{display:none}.booking-v2-history-money{display:flex;gap:1rem;margin-top:.7rem;border-top:1px solid #27363b;padding-top:.7rem;color:#7f928a;font-size:.68rem}.booking-v2-history-money b{margin-left:.3rem;color:#dce8e2}.booking-v2-history-actions{margin-top:.65rem}.booking-v2-history-actions a{color:#81d4a8;font-size:.72rem;font-weight:850}.bookings-query-failed{border:1px solid rgba(244,63,94,.32);border-radius:15px;background:rgba(244,63,94,.08);padding:1.1rem;color:#fecdd3}.bookings-query-failed p{margin:.35rem 0 0}.bookings-error{margin-top:.65rem;border:1px solid rgba(244,63,94,.34);border-radius:10px;background:rgba(244,63,94,.1);padding:.7rem;color:#fecdd3;font-size:.75rem;font-weight:750}.bookings-inline-action{border:0;background:none;color:#8bd6ae;font-weight:850}.bookings-code-input{font-family:ui-monospace,monospace}
+@media(max-width:950px){.bookings-v2-guest,.bookings-v2-lookup form{grid-template-columns:1fr}.bookings-v2-metrics{grid-template-columns:1fr 1fr}.booking-v2-finance.pending{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.bookings-v2-hero-grid{align-items:stretch;flex-direction:column;padding-block:2.2rem}.bookings-v2-hero h1{font-size:2.65rem}.bookings-v2-hero-actions{flex-direction:column}.bookings-v2-hero-actions .btn{width:100%}.bookings-v2-steps,.bookings-v2-metrics{grid-template-columns:1fr}.bookings-v2-lookup-controls,.bookings-v2-account-head,.booking-v2-card>header,.booking-v2-payment>header{align-items:stretch;flex-direction:column}.bookings-v2-account{padding:.9rem}.booking-v2-code{max-width:none;text-align:left}.booking-v2-code strong{max-width:100%}.booking-v2-finance,.booking-v2-finance.pending{grid-template-columns:1fr 1fr}.booking-v2-payment-grid{grid-template-columns:1fr}.booking-v2-actions{align-items:stretch;flex-direction:column}.booking-v2-actions span{order:-1;margin:0}.booking-v2-actions button,.booking-v2-actions a,.booking-v2-payment-actions button,.booking-v2-payment-actions a{justify-content:center;width:100%}.booking-v2-countdown{grid-template-columns:1fr auto}.booking-v2-history-money{flex-direction:column;gap:.3rem}}
+@media(max-width:480px){.booking-v2-finance,.booking-v2-finance.pending{grid-template-columns:1fr}.bookings-v2-code{padding:1.2rem}.bookings-v2-intro{padding:1.2rem}}
+
+/* escala-profesional-mis-reservas-v3-20261010 */
+/* Escala profesional compacta para escritorio y portatiles. */
+@media (min-width:901px){
+  .bookings-v2-hero-grid{align-items:center;min-height:0;padding-block:1.75rem}
+  .bookings-v2-hero h1{max-width:760px;margin:.32rem 0 .55rem;font-size:clamp(2.35rem,3.65vw,3.7rem);letter-spacing:-.048em;line-height:.98}
+  .bookings-v2-hero p:last-child{max-width:650px;font-size:.9rem;line-height:1.5}
+  .bookings-v2-hero-actions{gap:.5rem}
+  .bookings-v2-hero-actions .btn{min-height:42px;padding:.62rem .9rem;font-size:.78rem}
+  .bookings-v2-shell{padding-block:1rem 3.5rem}
+  .bookings-loading{gap:.75rem;border-radius:14px;padding:.85rem 1rem}
+  .bookings-loading>span{width:24px;height:24px}
+  .bookings-loading strong{font-size:.82rem}
+  .bookings-loading p{margin:.15rem 0 0;font-size:.72rem}
+  .bookings-v2-guest{grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);gap:.75rem}
+  .bookings-v2-intro,.bookings-v2-code{padding:1.25rem 1.35rem;border-radius:17px}
+  .bookings-v2-intro h2{margin:.32rem 0 .55rem;font-size:clamp(1.55rem,2.35vw,2.2rem);letter-spacing:-.035em;line-height:1.05}
+  .bookings-v2-intro>p:last-of-type{margin:.35rem 0 0;font-size:.78rem;line-height:1.5}
+  .bookings-v2-steps{gap:.45rem;margin-top:1rem}
+  .bookings-v2-steps span{padding-top:.65rem;font-size:.66rem}
+  .bookings-v2-steps b{margin-bottom:.3rem;font-size:.56rem}
+  .bookings-v2-code .etiqueta-web{font-size:.63rem}
+  .bookings-v2-code .field-web{min-height:42px;padding:.58rem .75rem;font-size:.78rem}
+  .bookings-v2-code>small{margin-top:.3rem;font-size:.61rem}
+  .bookings-v2-code .btn{min-height:42px;margin-top:.7rem;padding:.58rem .8rem;font-size:.76rem}
+  .bookings-v2-code>p{margin:.7rem 0 0;font-size:.65rem}
+  .bookings-error{margin-top:.5rem;padding:.58rem .65rem;font-size:.67rem}
+  .bookings-v2-lookup{margin-top:.75rem}
+  .bookings-v2-lookup form{grid-template-columns:1fr minmax(340px,.72fr);gap:.75rem;padding:1rem 1.1rem;border-radius:17px}
+  .bookings-v2-lookup h2{font-size:1.25rem}
+  .bookings-v2-lookup p:last-child{font-size:.7rem}
+  .bookings-v2-lookup-controls .field-web{min-height:42px;font-size:.75rem}
+  .bookings-v2-lookup-controls .btn{min-height:42px;font-size:.73rem}
+  .bookings-v2-result{margin-top:.75rem}
+  .bookings-v2-account{margin-top:.75rem;padding:1rem 1.1rem;border-radius:17px}
+  .bookings-v2-account-head h2{margin:.25rem 0;font-size:1.55rem}
+  .bookings-v2-account-head p:last-child{font-size:.72rem}
+  .bookings-v2-account-head .btn{min-height:40px;padding:.55rem .75rem;font-size:.72rem}
+  .bookings-v2-metrics{gap:.45rem;margin-top:.75rem}
+  .bookings-v2-metrics article{padding:.68rem .75rem;border-radius:11px}
+  .bookings-v2-metrics small,.bookings-v2-metrics span{font-size:.56rem}
+  .bookings-v2-metrics strong{margin:.18rem 0;font-size:1.16rem}
+  .bookings-section-switch{margin:1rem 0 .7rem;padding-top:.85rem}
+  .bookings-section-heading h3{font-size:1.15rem}
+  .bookings-section-heading>p:last-child{font-size:.68rem}
+  .bookings-section-switch .bookings-tabs{margin-top:.7rem}
+  .bookings-section-switch .bookings-tabs button{min-width:150px;min-height:40px;padding:.48rem .68rem}
+  .bookings-section-switch .bookings-tabs button span{font-size:.72rem}
+  .bookings-v2-list{gap:.6rem}
+  .booking-v2-card{padding:.9rem 1rem;border-radius:14px}
+  .booking-v2-card h3{margin:.45rem 0 .15rem;font-size:1.16rem}
+  .booking-v2-card header p{font-size:.72rem}
+  .booking-status{padding:.27rem .52rem;font-size:.56rem}
+  .booking-v2-code small{font-size:.52rem}
+  .booking-v2-code strong{font-size:.65rem}
+  .booking-v2-code button{font-size:.65rem}
+  .booking-v2-countdown{margin-top:.62rem;padding:.58rem .65rem;border-radius:10px}
+  .booking-v2-countdown small{font-size:.57rem}
+  .booking-v2-countdown strong{font-size:1.25rem}
+  .booking-v2-countdown span{font-size:.6rem}
+  .booking-v2-finance{gap:.4rem;margin-top:.62rem;padding-top:.62rem}
+  .booking-v2-finance span{padding:.55rem .6rem;border-radius:8px}
+  .booking-v2-finance small{font-size:.52rem}
+  .booking-v2-finance strong{font-size:.78rem}
+  .booking-v2-progress{margin-top:.48rem}
+  .booking-v2-progress small{font-size:.58rem}
+  .booking-v2-message{margin-top:.55rem;padding:.55rem .6rem}
+  .booking-v2-message b{font-size:.66rem}
+  .booking-v2-message span{font-size:.61rem}
+  .booking-v2-payment{margin-top:.55rem;padding:.7rem;border-radius:11px}
+  .booking-v2-payment h4{font-size:.84rem}
+  .booking-v2-payment header>strong{font-size:.95rem}
+  .booking-v2-payment-grid{margin-top:.55rem}
+  .booking-v2-payment small{font-size:.52rem}
+  .booking-v2-payment-grid b,.booking-v2-payment>p{font-size:.66rem}
+  .booking-v2-payment-actions,.booking-v2-actions{margin-top:.55rem}
+  .booking-v2-payment-actions button,.booking-v2-payment-actions a,.booking-v2-actions button,.booking-v2-actions a{min-height:34px;padding:.38rem .65rem;font-size:.64rem}
+  .booking-v2-actions span{font-size:.56rem}
+  .booking-v2-history-money{margin-top:.52rem;padding-top:.52rem;font-size:.62rem}
+}
+/* Ajuste intermedio sin volver a la escala hero inicial. */
+@media (min-width:701px) and (max-width:900px){
+  .bookings-v2-hero-grid{padding-block:2rem}
+  .bookings-v2-hero h1{font-size:clamp(2.35rem,6.2vw,3.3rem)}
+  .bookings-v2-shell{padding-block:1rem 3.5rem}
+  .bookings-v2-intro,.bookings-v2-code{padding:1.3rem}
+  .bookings-v2-intro h2{font-size:2rem}
+}
+
+/* experiencia-integral-mis-reservas-v4-20261010 */
+/* Cuenta como contenido principal, no como tarjeta anidada. */
+.bookings-v2-account{border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;padding:0!important}
+.bookings-v2-account-head{margin-top:.85rem;border-bottom:1px solid #2b3b40;padding:.2rem 0 .85rem}
+.bookings-v2-account-actions{display:flex;align-items:center;gap:.5rem}.bookings-v2-account-actions>span{color:#71857d;font-size:.6rem}.bookings-v2-account-actions .btn{min-height:40px}
+.bookings-v2-metrics{grid-template-columns:repeat(3,1fr)}
+.bookings-section-switch{display:flex!important;align-items:end;justify-content:space-between;gap:1.25rem}.bookings-section-switch .bookings-tabs{margin:0!important}
+/* Consulta secundaria al final y colapsable. */
+.bookings-v2-lookup{margin-top:1rem;border:1px solid #2b3b40;border-radius:14px;background:#0d1619}
+.bookings-v2-lookup>summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;cursor:pointer;list-style:none;padding:.8rem 1rem;color:#879a92;font-size:.7rem}.bookings-v2-lookup>summary::-webkit-details-marker{display:none}.bookings-v2-lookup>summary b{color:#83d4aa}.bookings-v2-lookup[open]>summary{border-bottom:1px solid #2b3b40}
+.bookings-v2-lookup form{margin:0;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}.bookings-v2-lookup label>.etiqueta-web{display:block;margin-bottom:.35rem}
+/* Codigo tecnico compacto e integrado. */
+.booking-v2-code{max-width:290px}.booking-v2-code>div{display:flex;align-items:center;gap:.35rem;margin-top:.25rem;border:1px solid #304148;border-radius:8px;background:#101a1e;padding:.28rem .35rem .28rem .55rem}.booking-v2-code>div strong{min-width:0;flex:1;margin:0}.booking-v2-code>div button{flex:none;margin:0;border-left:1px solid #304148;padding:.2rem .42rem}
+/* Reserva mas proxima y jerarquia operativa. */
+.booking-v2-card.featured{border-color:#427b60;box-shadow:0 14px 38px rgba(0,0,0,.16),inset 0 0 0 1px rgba(79,185,131,.08)}.booking-v2-next{display:inline-flex;margin:0 0 .55rem;border-radius:999px;background:rgba(61,155,112,.14);padding:.3rem .55rem;color:#92deb7;font-size:.56rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.booking-v2-finance.confirmed .accent{border:1px solid rgba(74,181,126,.32);background:rgba(61,155,112,.1)}.booking-v2-finance.confirmed .accent strong{color:#98dfba}
+.booking-v2-message b{font-weight:750}.booking-v2-message span{display:none!important}
+/* En cuenta no quedan acciones globales repetidas dentro de cada tarjeta. */
+.bookings-v2-account .booking-v2-actions{display:none}
+/* Hero mas directo. */
+.bookings-v2-hero h1{max-width:720px}.bookings-v2-hero-actions .hidden{display:none!important}
+@media(min-width:901px){.bookings-v2-hero-grid{grid-template-columns:minmax(0,1fr) auto}.bookings-v2-account-head{align-items:center}.bookings-v2-metrics{max-width:100%}}
+@media(max-width:900px){.bookings-v2-account-actions{align-items:stretch;flex-wrap:wrap}.bookings-section-switch{align-items:stretch;flex-direction:column}.bookings-section-switch .bookings-tabs{width:100%!important}}
+@media(max-width:700px){.bookings-v2-account-actions{width:100%;flex-direction:column}.bookings-v2-account-actions>span{order:3}.bookings-v2-account-actions .btn{width:100%}.bookings-v2-metrics{grid-template-columns:1fr}.bookings-v2-lookup>summary{align-items:flex-start;flex-direction:column}.booking-v2-code{max-width:none}.bookings-v2-lookup form{padding:.9rem!important}}
+
+/* cierre-premium-mis-reservas-v5-20261010 */
+/* Los estados son mutuamente excluyentes aunque cada vista tenga display propio. */
+#estadoCuenta.hidden,#modoVisitante.hidden,#modoAutenticado.hidden,#consultaCodigoSiempre.hidden,#resultadoSeguimiento.hidden,#accesoHeroReservas.hidden,#reservarHeroReservas.hidden{display:none!important}
+/* Cabecera operativa mas unida. */
+.bookings-v2-account-actions{gap:.4rem}.bookings-v2-account-actions>span{margin-right:.15rem;font-variant-numeric:tabular-nums}.bookings-v2-account-actions #actualizarReservas{min-width:98px}
+/* Metricas semanticas con menor protagonismo cuando no requieren accion. */
+.bookings-v2-metrics article{position:relative;padding-left:2.7rem}.bookings-v2-metrics article:before{position:absolute;left:.8rem;top:50%;display:grid;width:25px;height:25px;place-items:center;transform:translateY(-50%);border-radius:8px;background:#17252a;color:#83d3aa;font-size:.68rem;font-weight:900}.bookings-v2-metrics article:nth-child(1):before{content:'↗'}.bookings-v2-metrics article:nth-child(2):before{content:'$';color:#91a39c}.bookings-v2-metrics article:nth-child(3):before{content:'✓'}.bookings-v2-metrics article.attention:before{background:#302612;color:#e4bd65}
+/* Insignias en una sola linea y enfasis verde controlado. */
+.booking-v2-badges{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;margin-bottom:.45rem}.booking-v2-next{margin:0!important}.booking-v2-card.featured .booking-status.confirmed{border-color:#3b5d4c;background:#132019;color:#9db8aa}.booking-v2-card.featured .booking-v2-code button{color:#a8bbb3}.booking-v2-card.featured .booking-v2-code button:hover{color:#83d4aa}
+/* Codigo como una sola pieza, sin capsulas superpuestas. */
+.booking-v2-code>div{overflow:hidden;padding:0!important;gap:0!important}.booking-v2-code>div strong{padding:.42rem .55rem}.booking-v2-code>div button{min-height:32px;margin:0!important;border:0!important;border-left:1px solid #304148!important;border-radius:0!important;background:#142126!important;padding:.35rem .58rem!important}.booking-v2-code>div button:hover{background:#1b2d31!important}
+/* Mensaje ligero en vez de franja pesada. */
+.booking-v2-message{display:flex!important;align-items:center;flex-direction:row!important;gap:.55rem;background:transparent!important;border-top:1px solid #26363b;border-radius:0!important;padding:.58rem .1rem .05rem!important}.booking-v2-message>span{display:grid!important;width:22px;height:22px;flex:none;place-items:center;border-radius:50%;background:rgba(61,155,112,.12);color:#8ad7ae;font-size:.62rem}.booking-v2-message>div{display:flex;min-width:0;flex-direction:column}.booking-v2-message b{font-size:.66rem}.booking-v2-message small{margin-top:.08rem;color:#7f928a;font-size:.6rem;line-height:1.35}
+/* Siguientes turnos mas compactos sin perder datos. */
+.booking-v2-card.secondary{padding-block:.78rem}.booking-v2-card.secondary .booking-v2-finance{margin-top:.5rem;padding-top:.5rem}.booking-v2-card.secondary .booking-v2-finance span{padding:.46rem .55rem}.booking-v2-card.secondary .booking-v2-message{margin-top:.42rem}.booking-v2-card.secondary h3{font-size:1.08rem}
+/* Menor desplazamiento total. */
+.bookings-v2-list{gap:.5rem}.bookings-v2-lookup{margin-top:.7rem}
+@media(min-width:1100px){.booking-v2-card.secondary>header{display:grid;grid-template-columns:minmax(260px,.8fr) minmax(170px,.25fr);align-items:center}.booking-v2-card.secondary .booking-v2-finance{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.bookings-v2-metrics article{padding-left:2.8rem}.booking-v2-badges{margin-bottom:.35rem}.booking-v2-code>div strong{padding:.5rem .55rem}.booking-v2-message{align-items:flex-start!important}}
+
+/* pulido-premium-final-mis-reservas-v6-20261010 */
+/* Actualizacion como control agrupado. */
+.bookings-v2-refresh{display:flex;align-items:center;overflow:hidden;border:1px solid #34474d;border-radius:11px;background:#101a1e}.bookings-v2-refresh>span{padding:0 .65rem;color:#789087;font-size:.58rem;font-variant-numeric:tabular-nums}.bookings-v2-refresh .btn{min-width:94px;border:0!important;border-left:1px solid #34474d!important;border-radius:0!important;background:#17242a!important}.bookings-v2-refresh .btn:hover{background:#203238!important}
+/* SVG consistentes en metricas. */
+.bookings-v2-metrics article{padding-left:3rem}.bookings-v2-metrics article:before{display:none!important}.bookings-v2-metrics article>i{position:absolute;left:.8rem;top:50%;display:grid;width:27px;height:27px;place-items:center;transform:translateY(-50%);border-radius:8px;background:#17252a;color:#80d2a6}.bookings-v2-metrics svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.bookings-v2-metrics article.quiet{opacity:.78}.bookings-v2-metrics article.attention>i{background:#302612;color:#e4bd65}
+/* Reservas secundarias: una sola lectura horizontal y sin nota repetida. */
+.booking-v2-card.secondary{display:grid;grid-template-columns:minmax(260px,.82fr) minmax(520px,1.6fr);align-items:center;gap:.65rem 1rem}.booking-v2-card.secondary>header{display:flex!important;grid-column:1;align-items:center}.booking-v2-card.secondary .booking-v2-finance{grid-column:2;grid-row:1;margin:0!important;border:0!important;padding:0!important}.booking-v2-card.secondary .booking-v2-card-accent{width:2px}.booking-v2-card.secondary .booking-v2-badges{margin-bottom:.3rem}.booking-v2-card.secondary .booking-status{padding:.24rem .48rem;font-size:.52rem}.booking-v2-card.secondary .booking-v2-code{margin-left:auto}.booking-v2-balance-note{grid-column:2;display:block;margin-top:-.35rem;color:#6f867d;font-size:.56rem;text-align:left}.booking-v2-card.secondary .booking-v2-finance span{min-height:52px;justify-content:center}
+/* Historial controlado para decenas de reservas. */
+.bookings-v2-history-tools{display:grid;grid-template-columns:220px minmax(240px,1fr);gap:.55rem;margin-bottom:.65rem;border:1px solid #2b3b40;border-radius:12px;background:#0d1619;padding:.65rem}.bookings-v2-history-tools label{display:flex;flex-direction:column;gap:.3rem}.bookings-v2-history-tools label>span{color:#71857d;font-size:.57rem;font-weight:850;text-transform:uppercase}.bookings-v2-history-tools .field-web{min-height:38px;padding:.48rem .65rem;font-size:.7rem}.bookings-v2-history-more{display:flex;align-items:center;justify-content:center;gap:.75rem;margin-top:.7rem}.bookings-v2-history-more span{color:#71857d;font-size:.62rem}.bookings-v2-history-more .btn{min-height:38px;font-size:.68rem}.bookings-v2-history-more .hidden{display:none!important}
+/* Ritmo vertical final. */
+.bookings-v2-metrics{margin-top:.65rem}.bookings-section-switch{margin:.75rem 0 .55rem!important;padding-top:.7rem!important}.bookings-v2-list{gap:.42rem}
+@media(max-width:1150px){.booking-v2-card.secondary{display:block}.booking-v2-card.secondary .booking-v2-finance{margin-top:.5rem!important;border-top:1px solid #27363b!important;padding-top:.5rem!important}.booking-v2-balance-note{margin-top:.35rem}}
+@media(max-width:700px){.bookings-v2-refresh{width:100%}.bookings-v2-refresh>span{flex:1}.bookings-v2-refresh .btn{width:auto!important}.bookings-v2-history-tools{grid-template-columns:1fr}.bookings-v2-history-more{align-items:stretch;flex-direction:column}.bookings-v2-history-more .btn{width:100%}}
+
+/* ajuste-integral-historial-mis-reservas-v7-20261010 */
+#filtrosHistorial.hidden,#accionesHistorial.hidden{display:none!important}
+.bookings-v2-history-tools{grid-template-columns:260px minmax(320px,440px) 1fr;align-items:end}.bookings-v2-history-results{display:flex;align-items:end;justify-content:flex-end;gap:.4rem;padding:0 .25rem .45rem}.bookings-v2-history-results small{color:#71857d;font-size:.57rem;text-transform:uppercase}.bookings-v2-history-results strong{color:#dce8e2;font-size:.8rem}
+.booking-v2-card.secondary{grid-template-columns:minmax(260px,.85fr) 190px minmax(500px,1.7fr)}.booking-v2-card.secondary>header{grid-column:1}.booking-v2-card.secondary .booking-v2-code{grid-column:2;grid-row:1;width:100%;margin:0}.booking-v2-card.secondary .booking-v2-code>small{display:block;margin-bottom:.28rem}.booking-v2-card.secondary .booking-v2-code>div{min-height:52px}.booking-v2-card.secondary .booking-v2-finance{grid-column:3}.booking-v2-card.secondary .booking-v2-finance span{min-height:52px}.booking-v2-card.secondary .booking-v2-finance.confirmed span:nth-child(2):after{content:'No afecta la confirmación';margin-top:.12rem;color:#6f867d;font-size:.5rem;font-weight:600}
+.booking-v2-card.history-card{display:grid;grid-template-columns:minmax(280px,1fr) minmax(260px,.75fr);gap:.55rem 1rem;padding:.8rem 1rem}.booking-v2-card.history-card>header{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}.booking-v2-card.history-card .booking-v2-badges{margin-bottom:.3rem}.booking-v2-card.history-card h3{display:inline;margin:.1rem .55rem 0 0;font-size:1.05rem}.booking-v2-card.history-card header p{display:inline;font-size:.65rem}.booking-v2-card.history-card .booking-v2-history-money{grid-column:1;align-self:center;margin:0;border:0;padding:0}.booking-v2-history-context{grid-column:1/-1;display:flex;align-items:center;gap:.55rem;border-top:1px solid #26363b;padding-top:.55rem}.booking-v2-history-context>span{display:grid;width:25px;height:25px;flex:none;place-items:center;border-radius:50%;background:#17252a;color:#91a39c}.booking-v2-history-context svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.booking-v2-history-context p{flex:1;margin:0;color:#82958d;font-size:.62rem}.booking-v2-history-context a{flex:none;color:#83d4aa;font-size:.65rem;font-weight:850}.booking-v2-history-context.state-completed>span{background:rgba(61,155,112,.12);color:#8ad7ae}.booking-v2-history-context.state-cancelled>span{background:rgba(210,104,118,.12);color:#e397a2}.booking-v2-history-context.state-expired>span{background:#182328;color:#9baca5}.booking-v2-history-context.state-absent>span{background:rgba(202,140,75,.12);color:#d9a36d}
+@media(max-width:1250px){.booking-v2-card.secondary{grid-template-columns:minmax(240px,.8fr) 170px minmax(430px,1.5fr)}}@media(max-width:1050px){.booking-v2-card.secondary{display:block}.booking-v2-card.secondary .booking-v2-code{width:auto;margin-top:.45rem}.booking-v2-card.secondary .booking-v2-finance{margin-top:.5rem!important}.bookings-v2-history-tools{grid-template-columns:220px minmax(260px,1fr)}.bookings-v2-history-results{grid-column:1/-1;justify-content:flex-start;padding:.1rem}}@media(max-width:700px){.bookings-v2-history-tools{grid-template-columns:1fr}.booking-v2-card.history-card{display:block}.booking-v2-card.history-card>header{display:flex}.booking-v2-card.history-card .booking-v2-history-money{margin-top:.5rem}.booking-v2-history-context{align-items:flex-start;margin-top:.5rem;flex-wrap:wrap}.booking-v2-history-context p{min-width:calc(100% - 40px)}.booking-v2-history-context a{margin-left:40px}}
+
+/* precision-visual-mis-reservas-v8-20261010 */
+/* SVG visible y consistente dentro del mensaje prioritario. */
+.booking-v2-message>span{color:#8ad7ae!important;background:rgba(61,155,112,.12)!important}.booking-v2-message>span svg{display:block;width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+/* Distribucion milimetrica: mas espacio al turno y codigo ajustado al contenido. */
+@media(min-width:1251px){.booking-v2-card.secondary{grid-template-columns:minmax(360px,1.08fr) max-content minmax(520px,1.65fr);column-gap:1rem}.booking-v2-card.secondary>header{min-width:0}.booking-v2-card.secondary>header>div:first-child{min-width:0}.booking-v2-card.secondary h3,.booking-v2-card.secondary header p{white-space:nowrap}.booking-v2-card.secondary .booking-v2-code{width:max-content;max-width:200px;justify-self:end}.booking-v2-card.secondary .booking-v2-code>div{width:max-content;max-width:200px}.booking-v2-card.secondary .booking-v2-code>div strong{min-width:118px;max-width:138px}.booking-v2-card.secondary .booking-v2-finance{min-width:0}}
+@media(min-width:1051px) and (max-width:1250px){.booking-v2-card.secondary{grid-template-columns:minmax(300px,1fr) max-content minmax(430px,1.4fr);column-gap:.75rem}.booking-v2-card.secondary h3,.booking-v2-card.secondary header p{white-space:nowrap}.booking-v2-card.secondary .booking-v2-code{width:max-content;max-width:185px;justify-self:end}.booking-v2-card.secondary .booking-v2-code>div{width:max-content}.booking-v2-card.secondary .booking-v2-code>div strong{min-width:108px}}
+/* Finanzas secundarias alineadas y sin altura sobrante. */
+.booking-v2-card.secondary .booking-v2-finance{gap:.42rem}.booking-v2-card.secondary .booking-v2-finance span{min-height:50px;padding:.42rem .55rem}.booking-v2-card.secondary .booking-v2-finance small{line-height:1.15}.booking-v2-card.secondary .booking-v2-finance.confirmed span:nth-child(2):after{line-height:1.15}
+/* Historial en dos niveles compactos, sin divisor financiero intermedio. */
+.booking-v2-card.history-card{row-gap:.38rem;padding:.7rem .95rem}.booking-v2-card.history-card>header{padding-bottom:.15rem}.booking-v2-card.history-card .booking-v2-history-money{display:flex;gap:1rem;margin-top:-.1rem}.booking-v2-card.history-card .booking-v2-history-money span{white-space:nowrap}.booking-v2-history-context{margin-top:0;border-top:1px solid #26363b;padding-top:.45rem}.booking-v2-history-context>span{width:23px;height:23px}.booking-v2-history-context svg{width:13px;height:13px}.booking-v2-history-context p{font-size:.6rem}.booking-v2-history-context a{font-size:.63rem}
+/* Correcciones de recorte y continuidad tipografica. */
+.booking-v2-card.secondary h3{overflow:hidden;text-overflow:ellipsis}.booking-v2-card.secondary header p{overflow:hidden;text-overflow:ellipsis}.booking-v2-code>div strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.booking-v2-card.history-card h3,.booking-v2-card.history-card header p{vertical-align:baseline}
+/* Portatil y movil: volver a flujo seguro sin cortes. */
+@media(max-width:1050px){.booking-v2-card.secondary h3,.booking-v2-card.secondary header p{white-space:normal}.booking-v2-card.secondary .booking-v2-code{width:max-content;max-width:100%}.booking-v2-card.secondary .booking-v2-code>div{width:max-content;max-width:100%}}
+@media(max-width:700px){.booking-v2-message>span svg{width:14px;height:14px}.booking-v2-card.history-card{padding:.75rem .85rem}.booking-v2-card.history-card h3,.booking-v2-card.history-card header p{display:block;margin-right:0}.booking-v2-card.history-card header p{margin-top:.2rem}.booking-v2-card.history-card .booking-v2-history-money{flex-wrap:wrap;gap:.35rem 1rem}}
+
+/* simplificacion-movil-mis-reservas-v9-20261010 */
+.bookings-v2-account-actions{gap:.65rem}
+.bookings-v2-updated{color:#71857d;font-size:.6rem;font-variant-numeric:tabular-nums}
+.booking-v2-refresh{display:none!important}
+.booking-v2-actions.query-actions{justify-content:flex-end}
+.booking-v2-actions.query-actions a{margin-left:auto}
+.bookings-v2-lookup>summary b{display:inline-flex;align-items:center;gap:.45rem}
+.bookings-v2-lookup>summary b i{width:7px;height:7px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .2s ease}
+.bookings-v2-lookup .label-open{display:none}
+.bookings-v2-lookup[open] .label-closed{display:none}
+.bookings-v2-lookup[open] .label-open{display:inline}
+.bookings-v2-lookup[open]>summary b i{transform:rotate(225deg) translate(-1px,-1px)}
+.bookings-v2-shell,.bookings-v2-account{min-height:0!important}
+.bookings-v2-lookup{margin-bottom:0}
+.bookings-v2-shell+footer{margin-top:0!important}
+@media(max-width:700px){
+  .bookings-v2-account-actions{display:grid!important;grid-template-columns:1fr;gap:.45rem}
+  .bookings-v2-updated{order:2;padding:.1rem .15rem;text-align:right}
+  .bookings-v2-account-actions .btn{order:1;width:100%}
+  .bookings-v2-metrics{grid-template-columns:1fr 1fr!important;gap:.45rem}
+  .bookings-v2-metrics article{min-height:82px;padding:.65rem .55rem .65rem 2.65rem}
+  .bookings-v2-metrics article:nth-child(2){grid-column:1/-1;min-height:58px}
+  .bookings-v2-metrics article:nth-child(2)>i{width:24px;height:24px}
+  .bookings-v2-metrics article:nth-child(2) strong,.bookings-v2-metrics article:nth-child(2) small,.bookings-v2-metrics article:nth-child(2) span{display:inline;margin-right:.35rem}
+  .bookings-v2-metrics article:nth-child(2) span{font-size:.55rem}
+  .booking-v2-card:not(.history-card) .booking-v2-finance{grid-template-columns:1fr 1fr!important}
+  .booking-v2-card:not(.history-card) .booking-v2-finance span:nth-child(3){grid-column:1/-1}
+  .booking-v2-card:not(.history-card) .booking-v2-finance span{min-height:58px;padding:.52rem .58rem}
+  .booking-v2-card.secondary{padding:.72rem .8rem}
+  .booking-v2-card.secondary .booking-v2-code{margin-top:.4rem}
+  .booking-v2-card.secondary .booking-v2-finance{margin-top:.42rem!important;padding-top:.42rem!important}
+  .booking-v2-card.secondary .booking-v2-finance span{min-height:54px}
+  .booking-v2-card.secondary h3{font-size:1.05rem}
+  .booking-v2-card.history-card{padding:.66rem .72rem}
+  .booking-v2-card.history-card .booking-v2-badges{margin-bottom:.24rem}
+  .booking-v2-card.history-card .booking-v2-code{margin-top:.38rem}
+  .booking-v2-card.history-card .booking-v2-history-money{margin-top:.38rem!important}
+  .booking-v2-history-context{margin-top:.38rem!important;padding-top:.38rem!important}
+  .booking-v2-history-context a{min-height:30px;display:inline-flex;align-items:center}
+  .bookings-v2-list{gap:.35rem}
+  .bookings-v2-shell{padding-bottom:2rem!important}
+  .bookings-v2-lookup{margin-top:.6rem}
+}
+@media(max-width:390px){
+  .bookings-v2-metrics{grid-template-columns:1fr!important}
+  .bookings-v2-metrics article:nth-child(2){grid-column:auto}
+  .booking-v2-card:not(.history-card) .booking-v2-finance{grid-template-columns:1fr!important}
+  .booking-v2-card:not(.history-card) .booking-v2-finance span:nth-child(3){grid-column:auto}
+}
+@media(prefers-reduced-motion:reduce){.bookings-v2-lookup>summary b i{transition:none}}
+
+/* cierre-responsive-movil-mis-reservas-v10-20261010 */
+/* Este bloque actua unicamente hasta 700 px. Escritorio queda intacto. */
+@media(max-width:700px){
+  /* Orden correcto: Proximas y Confirmadas arriba; Esperando senia debajo. */
+  .bookings-v2-metrics{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    grid-template-areas:
+      "proximas confirmadas"
+      "pendientes pendientes";
+    align-items:stretch;
+    gap:.45rem!important
+  }
+  .bookings-v2-metrics article:nth-child(1){grid-area:proximas}
+  .bookings-v2-metrics article:nth-child(2){grid-area:pendientes;grid-column:auto!important}
+  .bookings-v2-metrics article:nth-child(3){grid-area:confirmadas}
+  .bookings-v2-metrics article:nth-child(1),
+  .bookings-v2-metrics article:nth-child(3){
+    min-width:0;
+    min-height:84px;
+    padding:.68rem .52rem .68rem 2.55rem
+  }
+  .bookings-v2-metrics article:nth-child(2){
+    display:grid;
+    grid-template-columns:28px auto auto 1fr;
+    align-items:center;
+    column-gap:.42rem;
+    min-height:54px;
+    padding:.55rem .65rem
+  }
+  .bookings-v2-metrics article:nth-child(2)>i{
+    position:static;
+    grid-column:1;
+    grid-row:1;
+    width:24px;
+    height:24px;
+    transform:none
+  }
+  .bookings-v2-metrics article:nth-child(2)>small{
+    grid-column:2;
+    grid-row:1;
+    margin:0!important;
+    white-space:nowrap
+  }
+  .bookings-v2-metrics article:nth-child(2)>strong{
+    grid-column:3;
+    grid-row:1;
+    margin:0!important
+  }
+  .bookings-v2-metrics article:nth-child(2)>span{
+    grid-column:4;
+    grid-row:1;
+    margin:0!important;
+    overflow:hidden;
+    text-align:right;
+    text-overflow:ellipsis;
+    white-space:nowrap
+  }
+  .bookings-v2-metrics article:nth-child(1)>i,
+  .bookings-v2-metrics article:nth-child(3)>i{left:.65rem}
+  .bookings-v2-metrics article:nth-child(1) strong,
+  .bookings-v2-metrics article:nth-child(3) strong{font-size:1.2rem}
+
+  /* Marca temporal centrada debajo de la unica accion principal. */
+  .bookings-v2-account-actions{
+    display:flex!important;
+    width:100%;
+    align-items:stretch!important;
+    flex-direction:column!important;
+    gap:.38rem!important
+  }
+  .bookings-v2-account-actions .btn{order:1;width:100%}
+  .bookings-v2-updated{
+    order:2;
+    align-self:center;
+    padding:0!important;
+    color:#71857d;
+    font-size:.56rem;
+    line-height:1.3;
+    text-align:center!important
+  }
+
+  /* Reservas secundarias mantienen el lenguaje operativo alineado a izquierda. */
+  .booking-v2-card.secondary,
+  .booking-v2-card.secondary>header,
+  .booking-v2-card.secondary>header>div:first-child,
+  .booking-v2-card.secondary .booking-v2-badges,
+  .booking-v2-card.secondary h3,
+  .booking-v2-card.secondary header p,
+  .booking-v2-card.secondary .booking-v2-code{
+    text-align:left!important
+  }
+  .booking-v2-card.secondary>header{align-items:stretch!important}
+  .booking-v2-card.secondary .booking-v2-badges{justify-content:flex-start!important}
+  .booking-v2-card.secondary .booking-v2-code{
+    width:100%!important;
+    max-width:none!important;
+    margin:.45rem 0 0!important
+  }
+  .booking-v2-card.secondary .booking-v2-code>div{
+    width:100%!important;
+    max-width:none!important
+  }
+  .booking-v2-card.secondary .booking-v2-code>div strong{
+    min-width:0!important;
+    max-width:none!important
+  }
+
+  /* Ritmo y legibilidad de proxima reserva. */
+  .booking-v2-card.featured{padding:.82rem .85rem}
+  .booking-v2-card.featured .booking-v2-finance{gap:.42rem}
+  .booking-v2-card.featured .booking-v2-message{margin-top:.48rem}
+  .booking-v2-card:not(.history-card) .booking-v2-finance span:nth-child(1),
+  .booking-v2-card:not(.history-card) .booking-v2-finance span:nth-child(2){min-width:0}
+
+  /* Historial compacto, pero con acciones tactiles y texto sin colisiones. */
+  .booking-v2-card.history-card .booking-v2-code{width:max-content;max-width:100%}
+  .booking-v2-card.history-card .booking-v2-code>div{max-width:100%}
+  .booking-v2-history-context p{line-height:1.35}
+  .booking-v2-history-context a{padding:.15rem 0}
+  .bookings-v2-history-more{margin-top:.55rem}
+
+  /* Consulta y pie: separacion final controlada. */
+  .bookings-v2-lookup>summary{padding:.72rem .8rem}
+  .bookings-v2-lookup form{padding:.8rem!important}
+  .bookings-v2-shell{padding-bottom:1.5rem!important}
+}
+@media(max-width:390px){
+  /* En anchos muy estrechos se conserva una columna para evitar compresion. */
+  .bookings-v2-metrics{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "proximas"
+      "confirmadas"
+      "pendientes"
+  }
+  .bookings-v2-metrics article:nth-child(2){
+    grid-template-columns:28px auto auto 1fr;
+    min-height:54px
+  }
+}
+
+/* correccion-responsive-movil-mis-reservas-v11-20261010 */
+@media(max-width:700px){
+  /* Grilla determinista: evita que reglas heredadas reduzcan la tarjeta pendiente. */
+  .bookings-v2-metrics{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    grid-template-rows:auto auto!important;
+    grid-template-areas:none!important;
+    width:100%!important
+  }
+  .bookings-v2-metrics article:nth-child(1){
+    grid-column:1!important;
+    grid-row:1!important;
+    width:100%!important
+  }
+  .bookings-v2-metrics article:nth-child(3){
+    grid-column:2!important;
+    grid-row:1!important;
+    width:100%!important
+  }
+  .bookings-v2-metrics article:nth-child(2){
+    display:flex!important;
+    grid-column:1 / -1!important;
+    grid-row:2!important;
+    width:100%!important;
+    min-width:0!important;
+    align-items:center!important;
+    gap:.45rem!important;
+    padding:.55rem .65rem!important
+  }
+  .bookings-v2-metrics article:nth-child(2)>i{
+    position:static!important;
+    width:24px!important;
+    height:24px!important;
+    flex:0 0 24px!important;
+    transform:none!important
+  }
+  .bookings-v2-metrics article:nth-child(2)>small,
+  .bookings-v2-metrics article:nth-child(2)>strong,
+  .bookings-v2-metrics article:nth-child(2)>span{
+    display:block!important;
+    margin:0!important
+  }
+  .bookings-v2-metrics article:nth-child(2)>small{flex:0 1 auto;white-space:nowrap}
+  .bookings-v2-metrics article:nth-child(2)>strong{flex:0 0 auto}
+  .bookings-v2-metrics article:nth-child(2)>span{
+    min-width:0;
+    flex:1 1 auto;
+    overflow:visible!important;
+    text-align:right!important;
+    text-overflow:clip!important;
+    white-space:normal!important
+  }
+  /* La hora de refresco no aporta una accion en movil y quedaba visualmente aislada. */
+  .bookings-v2-updated{display:none!important}
+  .bookings-v2-account-actions{gap:0!important}
+}
+@media(max-width:390px){
+  .bookings-v2-metrics{
+    grid-template-columns:1fr!important;
+    grid-template-rows:auto auto auto!important
+  }
+  .bookings-v2-metrics article:nth-child(1){grid-column:1!important;grid-row:1!important}
+  .bookings-v2-metrics article:nth-child(3){grid-column:1!important;grid-row:2!important}
+  .bookings-v2-metrics article:nth-child(2){grid-column:1!important;grid-row:3!important}
+}
