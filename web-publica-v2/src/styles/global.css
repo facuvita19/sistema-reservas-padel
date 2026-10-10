@@ -1629,3 +1629,69 @@ html,body{max-width:100%;overflow-x:clip}
 
 /* scroll-sticky-detalle-torneo-v3 */
 #premiumDetailContent,.premium-detail-tabs{overflow-anchor:none}
+
+/* reconstruccion-premium-reservar-v2 */
+.reserve-v2-hero .reserve-hero-grid{align-items:center;min-height:245px;padding-block:2.35rem}
+.reserve-v2-hero h1{max-width:680px;margin:.35rem 0 .65rem;font-size:clamp(2.6rem,4.4vw,4rem);line-height:.96}
+.reserve-v2-hero p:last-child{font-size:.98rem;line-height:1.55}
+.reserve-v2-hero .reserve-hero-trust{grid-template-columns:repeat(3,minmax(130px,1fr));min-width:480px;gap:.5rem}
+.reserve-v2-hero .reserve-hero-trust span{display:flex;min-height:66px;flex-direction:column;align-items:flex-start;justify-content:center;gap:.2rem;border:1px solid rgba(91,111,119,.34);border-radius:13px;background:rgba(9,18,20,.5);padding:.7rem .8rem}
+.reserve-v2-hero .reserve-hero-trust small{color:#71877e;font-size:.58rem;font-weight:900;text-transform:uppercase;letter-spacing:.06em}.reserve-v2-hero .reserve-hero-trust b{display:block;width:auto;height:auto;border:0;background:none;color:#dff5e8;font-size:.82rem}
+.reserve-shell{padding-block:1.25rem 3.5rem}.reserve-steps{gap:.45rem;margin-bottom:.75rem}.paso-reserva{min-height:52px;padding:.55rem .75rem;border-radius:11px;font-size:.73rem}.paso-reserva b{width:1.65rem;height:1.65rem;font-size:.72rem}.paso-reserva.activo:not(.actual){border-color:#305440;background:#12231b;color:#a7c9b8}.paso-reserva.activo:not(.actual) b:before{content:'✓';font-size:.72rem}.paso-reserva.activo:not(.actual) b{font-size:0;background:#286b4c}.paso-reserva.actual{border-color:#56b482;background:#183126;box-shadow:0 8px 24px rgba(35,126,86,.14)}
+.reserve-layout{grid-template-columns:minmax(0,1fr) 300px;gap:.85rem}.reserve-main{padding:1.25rem 1.35rem;border-radius:20px}.reserve-side-card{padding:1rem;border-radius:20px}.reserve-panel-head{margin-bottom:1rem}.reserve-panel-head h2,.reserve-success-head h2{font-size:clamp(1.65rem,2.6vw,2.15rem)}.reserve-panel-head p:last-child,.reserve-success-head p:last-child{font-size:.86rem;line-height:1.5}.reserve-panel-head.split{gap:1rem}.boton-volver-paso{min-height:40px;font-size:.75rem}
+.reserve-date-box{grid-template-columns:minmax(210px,.42fr) 1fr;gap:.85rem;margin-bottom:1rem;padding:.85rem;border-radius:14px}.reserve-date-box span{font-size:.72rem}
+.reserve-courts{grid-template-columns:repeat(2,minmax(0,1fr));max-width:100%;gap:.65rem}.reserve-court{min-height:220px;padding:.9rem;border-radius:15px}.reserve-court>strong{margin-top:.7rem;font-size:1.16rem}.reserve-court>p{margin:.4rem 0;font-size:.75rem}.reserve-court-top b{border-radius:99px;background:#18262a;padding:.25rem .45rem}.reserve-court.selected .reserve-court-top b{background:rgba(61,155,112,.18)}.reserve-court-money{margin-top:.7rem;padding-top:.65rem}.reserve-actions{margin-top:1rem;padding-top:.85rem}.reserve-primary{min-height:44px}.reserve-primary:disabled{background:#18262a;border-color:#314148;color:#81918b;opacity:1}
+.reserve-times{grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem}.reserve-time{position:relative;min-height:102px;padding:.75rem .85rem;border-radius:13px}.reserve-time strong{font-size:1.25rem}.reserve-time.selected:after{content:'✓';position:absolute;right:.65rem;top:.55rem;display:grid;width:22px;height:22px;place-items:center;border-radius:50%;background:#3d9b70;color:#fff;font-size:.7rem;font-weight:900}.reserve-time:focus-visible,.reserve-court:focus-visible{outline:3px solid rgba(92,190,139,.35);outline-offset:2px}
+.reserve-summary-inline{gap:.45rem;margin-bottom:.85rem;padding:.7rem .8rem;border-radius:13px}.reserve-form-grid{gap:.65rem .8rem}.reserve-form-grid textarea{min-height:82px}.reserve-consent{margin-top:.7rem;padding:.75rem;font-size:.72rem}.reserve-actions>span{font-size:.7rem}.reserve-optional{margin-left:.25rem;color:#6f827b;font-size:.58rem;font-weight:750;text-transform:none;letter-spacing:0}
+.reserve-side{top:12px}.reserve-side-card{max-height:calc(100vh - 24px)}.reserve-side-card>h2{margin:.2rem 0 .7rem;font-size:1.25rem}.reserve-side-content{padding-block:.75rem}.reserve-side-court{padding:.75rem}.reserve-side-court strong{font-size:1rem}.reserve-side-content dl{margin:.65rem 0 0}.reserve-side-content dl>div{padding:.42rem 0}.reserve-side-note{margin-top:.65rem;padding:.7rem}
+.reserve-mobile-summary{display:none}.reserve-success-head>span{width:40px;height:40px;font-size:1.15rem}.reserve-confirm-grid{gap:.55rem;margin-top:.8rem}.reserve-confirm-grid>div{padding:.75rem;border-radius:12px}.reserve-payment-priority{display:grid;grid-template-columns:1fr 1fr;gap:.55rem;margin-top:1rem}.reserve-payment-priority>span{display:flex;flex-direction:column;border:1px solid #367456;border-radius:13px;background:rgba(61,155,112,.11);padding:.8rem}.reserve-payment-priority small{color:#84a997;font-size:.62rem;text-transform:uppercase}.reserve-payment-priority strong{margin-top:.25rem;color:#9be4bc;font-size:1.35rem}.reserve-payment-priority .urgent{color:#f0c66b}.reserve-payment{gap:.55rem;margin-top:.55rem;padding:.8rem}.reserve-success-actions{margin-top:.8rem}.reserve-success-actions .btn{min-height:42px}
+@media(max-width:1050px){.reserve-v2-hero .reserve-hero-trust{min-width:0}.reserve-layout{grid-template-columns:1fr}.reserve-side{position:static;order:-1}.reserve-side-card{max-height:none}.reserve-mobile-summary{display:grid}.reserve-side-note{display:none}}
+@media(max-width:760px){.reserve-v2-hero .reserve-hero-grid{min-height:0;padding-block:2rem}.reserve-v2-hero h1{font-size:clamp(2.35rem,12vw,3.25rem)}.reserve-v2-hero .reserve-hero-trust{grid-template-columns:repeat(3,minmax(0,1fr))}.reserve-v2-hero .reserve-hero-trust span{min-height:58px;padding:.55rem}.reserve-steps{position:sticky;top:0;z-index:35;padding:.35rem 0;background:#080d0f}.reserve-main{padding:.9rem}.reserve-panel-head.split{flex-direction:column}.reserve-courts,.reserve-times{grid-template-columns:1fr 1fr}.reserve-form-grid{grid-template-columns:1fr}.reserve-payment-priority{grid-template-columns:1fr 1fr}}
+@media(max-width:520px){.reserve-v2-hero .reserve-hero-trust{grid-template-columns:1fr}.reserve-v2-hero .reserve-hero-trust span{min-height:50px}.reserve-courts,.reserve-times{grid-template-columns:1fr}.reserve-court{min-height:0}.reserve-payment-priority{grid-template-columns:1fr}.reserve-success-actions .btn{width:100%}}
+
+/* pulido-responsive-reservar-v3 */
+.reserve-step-mobile{display:none}
+@media(max-width:760px){
+ /* El progreso conserva los cuatro estados y agrega contexto textual del activo. */
+ .reserve-steps{margin-bottom:0;border-bottom:0}
+ .reserve-step-mobile{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .55rem;border:1px solid #2b3b40;border-top:0;border-radius:0 0 11px 11px;background:#0d1619;padding:.42rem .65rem;color:#8ea29a;font-size:.66rem}
+ .reserve-step-mobile span{font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+ .reserve-step-mobile b{color:#a5e2bf;font-size:.72rem}
+ /* En movil el resumen completo lateral se elimina: cada paso usa su resumen compacto. */
+ .reserve-side{display:none!important}
+ .reserve-layout{display:block}
+ .reserve-mobile-summary{display:grid!important}
+ /* La fecha deja de comprimirse en dos columnas estrechas. */
+ .reserve-date-box{display:grid!important;grid-template-columns:minmax(0,1fr)!important;align-items:stretch}
+ .reserve-date-box>div{padding-bottom:0}
+ .reserve-date-box strong{font-size:.86rem}
+ .reserve-date-box span{font-size:.68rem;line-height:1.45}
+ /* Las acciones de retorno se leen como navegacion secundaria, no como tarjetas. */
+ .boton-volver-paso{min-height:0!important;border:0!important;background:transparent!important;padding:.2rem 0!important;color:#8ed9b2!important;box-shadow:none!important;text-align:left}
+ .boton-volver-paso:hover,.boton-volver-paso:focus-visible{color:#c4f2d8!important;text-decoration:underline}
+ .reserve-panel-head.split{gap:.55rem}
+}
+@media(max-width:520px){
+ .reserve-step-mobile{margin-bottom:.5rem}
+ .reserve-summary-inline{grid-template-columns:repeat(2,minmax(0,1fr));font-size:.72rem}
+}
+
+/* transiciones-premium-reservar-v1 */
+.reserve-shell,.panel-reserva{overflow-anchor:none}
+.panel-reserva{scroll-margin-top:12px}
+@media(max-width:760px){
+ .reserve-steps,.reserve-step-mobile{overflow-anchor:none}
+ .panel-reserva{scroll-margin-top:118px}
+}
+
+/* Validacion contextual y jerarquia de campos en Reserva */
+.reserve-email-label{display:flex;align-items:center;justify-content:space-between;gap:.65rem}
+.reserve-optional{display:inline-flex;align-items:center;min-height:20px;margin-left:.45rem;border:1px solid rgba(130,202,165,.38);border-radius:999px;background:rgba(61,155,112,.13);padding:.18rem .52rem;color:#a9ddc1;font-size:.61rem;font-weight:900;line-height:1;letter-spacing:.045em;text-transform:uppercase}
+.reserve-consent-wrap{margin-top:1rem}
+.reserve-consent-wrap .reserve-consent{margin-top:0;transition:border-color .16s,background-color .16s,box-shadow .16s}
+.reserve-consent-error{min-height:0;margin:.42rem .2rem 0;font-size:.7rem;font-weight:800}
+.reserve-consent-error:empty{display:none}
+.reserve-consent-invalid .reserve-consent{border-color:#e46f7f;background:rgba(105,28,42,.14);box-shadow:0 0 0 3px rgba(225,80,98,.12)}
+.reserve-consent-invalid .reserve-consent strong{color:#ffd5da}
+.reserve-consent input.field-invalid{outline:2px solid #e46f7f;outline-offset:3px}
+@media(max-width:760px){.reserve-email-label{align-items:flex-start}.reserve-optional{min-height:19px;padding:.17rem .45rem;font-size:.58rem}.reserve-consent-wrap{margin-top:.7rem}}
