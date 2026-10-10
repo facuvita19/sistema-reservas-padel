@@ -1,63 +1,9 @@
-import { api, type Cancha, type Complejo, type TorneoResumen } from './api';
-import { fecha, hora, moneda } from './formatos';
-
-const byId = <T extends HTMLElement>(id:string) => document.getElementById(id) as T | null;
-const text = (id:string, value:string) => { const node=byId(id); if(node) node.textContent=value; };
-const escapeHtml = (value:unknown) => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c] || c));
-const digits = (value?:string) => (value || '').replace(/\D/g,'');
-const today = () => { const d=new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
-
-function courtCard(cancha:Cancha, currency:string) {
-  const href=`/reservar?cancha=${cancha.id}`;
-  return `<article class="home-court-card">
-    <div class="home-court-visual"><span class="home-court-number">${escapeHtml(cancha.nombre)}</span><span class="home-court-status">Disponible online</span><div class="mini-court"><i></i><b></b></div></div>
-    <div class="home-court-content"><div class="home-court-title"><div><small>${escapeHtml(cancha.tipo || 'Pádel')}</small><h3>${escapeHtml(cancha.nombre)}</h3></div><span>${cancha.tieneIluminacion ? 'Con iluminación' : 'Luz natural'}</span></div>
-    <p>${escapeHtml(cancha.descripcion || cancha.superficie || 'Cancha preparada para tu próximo partido.')}</p>
-    <div class="home-court-tags"><span>${escapeHtml(cancha.superficie || 'Superficie informada')}</span><span>${cancha.duracionMinutos} min</span><span>${hora(cancha.horaApertura)}–${hora(cancha.horaCierre)}</span></div>
-    <div class="home-court-footer"><div><small>Turno</small><strong>${moneda(cancha.precio,currency)}</strong></div><div><small>Seña</small><strong>${moneda(cancha.importeSenia,currency)}</strong></div><a class="btn btn-primary" href="${href}">Reservar</a></div></div>
-  </article>`;
-}
-
-function tournamentCard(tournament?:TorneoResumen) {
-  const node=byId('torneoDestacado'); if(!node) return;
-  if(!tournament){node.innerHTML='<div class="home-empty-state"><span>PRÓXIMAMENTE</span><h3>Nuevas competencias en preparación</h3><p>Volvé pronto para descubrir categorías, fechas y cupos.</p><a class="btn btn-secondary" href="/torneos">Visitar torneos</a></div>';return;}
-  const state=tournament.inscripcionDisponible?'Inscripción abierta':tournament.estado.toLowerCase().replaceAll('_',' ');
-  node.innerHTML=`<div class="home-tournament-top"><span>${escapeHtml(state)}</span><small>${tournament.cantidadCategorias} categoría${tournament.cantidadCategorias===1?'':'s'}</small></div><h3>${escapeHtml(tournament.nombre)}</h3><p>${escapeHtml(tournament.descripcion || 'Una nueva competencia para vivir dentro y fuera de la cancha.')}</p><div class="home-tournament-date"><small>Se juega</small><strong>${fecha(tournament.fechaInicio)} al ${fecha(tournament.fechaFin)}</strong></div><a class="btn btn-primary" href="/torneos">Ver torneo y categorías</a>`;
-}
-
-function contact(complex:Complejo){
-  const node=byId('contactoComplejo'); if(!node) return;
-  const links:string[]=[];
-  if(complex.direccion) links.push(`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(complex.direccion)}" target="_blank" rel="noopener"><small>Ubicación</small><strong>${escapeHtml(complex.direccion)}</strong></a>`);
-  if(complex.whatsapp) links.push(`<a href="https://wa.me/${digits(complex.whatsapp)}" target="_blank" rel="noopener"><small>WhatsApp</small><strong>${escapeHtml(complex.whatsapp)}</strong></a>`);
-  else if(complex.telefono) links.push(`<a href="tel:${digits(complex.telefono)}"><small>Teléfono</small><strong>${escapeHtml(complex.telefono)}</strong></a>`);
-  if(complex.email) links.push(`<a href="mailto:${escapeHtml(complex.email)}"><small>Correo</small><strong>${escapeHtml(complex.email)}</strong></a>`);
-  if(complex.instagram) { const handle=complex.instagram.replace(/^@/,''); links.push(`<a href="https://instagram.com/${encodeURIComponent(handle)}" target="_blank" rel="noopener"><small>Instagram</small><strong>@${escapeHtml(handle)}</strong></a>`); }
-  node.innerHTML=links.length?links.join(''):'<span class="text-slate-400">Los datos de contacto estarán disponibles próximamente.</span>';
-}
-
-function setupQuick(courts:Cancha[]){
-  const date=byId<HTMLInputElement>('fechaRapida'); const select=byId<HTMLSelectElement>('canchaRapida'); const form=byId<HTMLFormElement>('formReservaRapida');
-  if(date){date.min=today();date.value=today();}
-  if(select) select.innerHTML='<option value="">Cualquier cancha</option>'+courts.map(c=>`<option value="${c.id}">${escapeHtml(c.nombre)}</option>`).join('');
-  form?.addEventListener('submit',event=>{event.preventDefault();const params=new URLSearchParams();if(date?.value)params.set('fecha',date.value);if(select?.value)params.set('cancha',select.value);location.href=`/reservar?${params.toString()}`;});
-}
-
-async function load(){
-  const state=byId('estadoPortada');
-  try{
-    const [complex,courts,tournaments]=await Promise.all([api<Complejo>('/complejo'),api<Cancha[]>('/canchas'),api<TorneoResumen[]>('/torneos').catch(()=>[])]);
-    document.documentElement.style.setProperty('--color-principal',complex.colorPrincipal || '#3d9b70');
-    text('nombreComplejo',complex.nombreComercial);text('marcaNombre',complex.nombreComercial);text('direccionComplejo',complex.direccion || 'Ubicación a confirmar');
-    const prices=courts.map(c=>Number(c.precio)).filter(Number.isFinite);const durations=courts.map(c=>c.duracionMinutos).filter(Boolean);
-    text('datoCanchas',String(courts.length));text('metricaCanchas',String(courts.length));text('datoTurno',prices.length?moneda(Math.min(...prices),complex.moneda):'Consultar');
-    text('datoSenia',`${complex.porcentajeSenia}%`);text('metricaDuracion',durations.length?`${Math.round(durations.reduce((a,b)=>a+b,0)/durations.length)} min`:'Consultar');text('metricaPlazo',`${complex.minutosReservaPendiente} min`);
-    text('heroDisponibilidad',courts.length?`${courts.length} cancha${courts.length===1?'':'s'} para elegir`:'Próximamente');
-    const container=byId('canchasDestacadas'); if(container) container.innerHTML=courts.length?courts.slice(0,3).map(c=>courtCard(c,complex.moneda)).join(''):'<div class="home-empty-state col-span-full"><span>SIN CANCHAS PUBLICADAS</span><h3>Estamos preparando la disponibilidad</h3><p>Consultá nuevamente más tarde.</p></div>';
-    setupQuick(courts);tournamentCard(tournaments.find(t=>t.inscripcionDisponible) || tournaments[0]);contact(complex);state?.remove();
-  }catch(error){
-    if(state) state.innerHTML=`<div><strong>No pudimos cargar la portada</strong><p>${escapeHtml(error instanceof Error?error.message:'Intentá nuevamente en unos instantes.')}</p><button id="reintentarPortada" class="btn btn-secondary mt-4" type="button">Reintentar</button></div>`;
-    byId('reintentarPortada')?.addEventListener('click',load,{once:true});tournamentCard();
-  }
-}
-load();
+import { api, type Cancha, type Complejo, type TorneoResumen } from './api';import { fecha, hora, moneda } from './formatos';import { cargarComplejo, digits, escapeHtml } from './configuracion-publica';
+const byId=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T|null;const text=(id:string,v:string)=>{const n=byId(id);if(n)n.textContent=v};const today=()=>{const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)};
+function canchaCard(c:Cancha,m:string){return '<article class="home-v2-court-card"><div class="home-v2-court-art"><span>Reservas online</span><div><i></i><i></i><b></b></div></div><div class="home-v2-court-body"><header><div><small>'+escapeHtml(c.tipo||'Pádel')+'</small><h3>'+escapeHtml(c.nombre)+'</h3></div><span>'+(c.tieneIluminacion?'Con iluminación':'Luz natural')+'</span></header><p>'+escapeHtml(c.descripcion||c.superficie||'Cancha preparada para tu próximo partido.')+'</p><div class="home-v2-tags"><span>'+escapeHtml(c.superficie||'Superficie informada')+'</span><span>'+c.duracionMinutos+' min</span><span>'+hora(c.horaApertura)+'–'+hora(c.horaCierre)+'</span></div><footer><span><small>Turno</small><b>'+moneda(c.precio,m)+'</b></span><span><small>Seña</small><b>'+moneda(c.importeSenia,m)+'</b></span><a class="btn btn-primary" href="/reservar?cancha='+c.id+'">Ver horarios</a></footer></div></article>'}
+function rangoCompacto(desde:string,hasta:string){const a=new Date(desde+'T12:00:00'),b=new Date(hasta+'T12:00:00');if(Number.isNaN(a.getTime())||Number.isNaN(b.getTime()))return fecha(desde)+' al '+fecha(hasta);const meses=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];if(a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth())return a.getDate()+' al '+b.getDate()+' de '+meses[b.getMonth()]+' de '+b.getFullYear();if(a.getFullYear()===b.getFullYear())return a.getDate()+' de '+meses[a.getMonth()]+' al '+b.getDate()+' de '+meses[b.getMonth()]+' de '+b.getFullYear();return fecha(desde)+' al '+fecha(hasta)}
+function torneo(t?:TorneoResumen){const n=byId('torneoDestacado');if(!n)return;if(!t){n.innerHTML='<div class="home-v2-empty"><span>Próximamente</span><h3>Nuevas competencias en preparación</h3><p>Volvé pronto para descubrir categorías, fechas y cupos.</p><a href="/torneos">Explorar torneos</a></div>';return}const pct=t.partidosTotales?Math.round(t.partidosFinalizados/t.partidosTotales*100):0,state=t.inscripcionDisponible?'Inscripción abierta':t.estadoPortal==='EN_CURSO'?'En competencia':t.estadoPortal==='FINALIZADO'?'Finalizado':'Próximamente';n.innerHTML='<div class="home-v2-tournament-main"><span>'+escapeHtml(state)+'</span><p class="site-kicker gold">Torneo destacado</p><h3>'+escapeHtml(t.nombre)+'</h3><p>'+escapeHtml(t.descripcion||'Una competencia para vivir dentro y fuera de la cancha.')+'</p><div class="home-v2-tournament-actions"><a class="btn btn-primary" href="/torneos?torneo='+t.id+'">Ver torneo</a><a href="/torneos">Explorar catálogo →</a></div></div><div class="home-v2-tournament-data"><span><small>Fechas</small><b>'+rangoCompacto(t.fechaInicio,t.fechaFin)+'</b></span><span><small>Categorías</small><b>'+t.cantidadCategorias+'</b></span><span><small>Cupos libres</small><b>'+t.cuposDisponibles+'</b></span><span><small>Inscripción</small><b>'+(t.precioMinimo===t.precioMaximo?moneda(t.precioMinimo,'ARS'):moneda(t.precioMinimo,'ARS')+'–'+moneda(t.precioMaximo,'ARS'))+'</b></span>'+(t.estadoPortal==='EN_CURSO'?'<div><small>Progreso · '+pct+'%</small><i><b style="width:'+pct+'%"></b></i></div>':'')+'</div>'}
+function contacto(c:Complejo){const n=byId('contactoComplejo');if(!n)return;const a:string[]=[];if(c.direccion)a.push('<a class="primary" href="https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.direccion)+'" target="_blank" rel="noopener"><small>Ubicación</small><b>'+escapeHtml(c.direccion)+'</b><span>Cómo llegar →</span></a>');if(c.whatsapp)a.push('<a class="primary" href="https://wa.me/'+digits(c.whatsapp)+'" target="_blank" rel="noopener"><small>WhatsApp</small><b>'+escapeHtml(c.whatsapp)+'</b><span>Escribir ahora →</span></a>');else if(c.telefono)a.push('<a href="tel:'+digits(c.telefono)+'"><small>Teléfono</small><b>'+escapeHtml(c.telefono)+'</b></a>');if(c.email)a.push('<a href="mailto:'+escapeHtml(c.email)+'"><small>Correo</small><b>'+escapeHtml(c.email)+'</b></a>');if(c.instagram){const h=c.instagram.replace(/^@/,'');a.push('<a href="https://instagram.com/'+encodeURIComponent(h)+'" target="_blank" rel="noopener"><small>Instagram</small><b>@'+escapeHtml(h)+'</b></a>')}n.innerHTML=a.join('')||'<span>Los datos de contacto estarán disponibles próximamente.</span>'}
+function reserva(canchas:Cancha[]){const d=byId<HTMLInputElement>('fechaRapida'),s=byId<HTMLSelectElement>('canchaRapida'),f=byId<HTMLFormElement>('formReservaRapida'),err=byId('errorReservaRapida'),b=byId<HTMLButtonElement>('buscarHorariosRapidos');if(d){d.min=today();d.value=today()}if(s)s.innerHTML='<option value="">Cualquier cancha</option>'+canchas.map(c=>'<option value="'+c.id+'">'+escapeHtml(c.nombre)+'</option>').join('');f?.addEventListener('submit',e=>{e.preventDefault();err?.classList.add('hidden');if(!d?.value){if(err){err.textContent='Elegí una fecha para consultar horarios.';err.classList.remove('hidden')}d?.focus();return}const q=new URLSearchParams({fecha:d.value});if(s?.value)q.set('cancha',s.value);if(b){b.disabled=true;b.textContent='Abriendo disponibilidad...'}location.href='/reservar?'+q})}
+async function load(){const state=byId('estadoPortada');try{const [c,cs,ts]=await Promise.all([cargarComplejo(),api<Cancha[]>('/canchas'),api<TorneoResumen[]>('/torneos').catch(()=>[])]);text('nombreComplejo',c.nombreComercial);text('direccionComplejo',c.direccion||'Ubicación a confirmar');const ps=cs.map(x=>Number(x.precio)).filter(Number.isFinite),ds=cs.map(x=>x.duracionMinutos).filter(Boolean);text('datoCanchas',String(cs.length));text('metricaCanchas',String(cs.length));text('datoTurno',ps.length?moneda(Math.min(...ps),c.moneda):'Consultar');text('datoSenia',c.porcentajeSenia+'%');text('metricaDuracion',ds.length?Math.round(ds.reduce((a,b)=>a+b,0)/ds.length)+' min':'Consultar');text('metricaPlazo',c.minutosReservaPendiente+' min');text('heroDisponibilidad',cs.length?cs.length+' cancha'+(cs.length===1?'':'s')+' para elegir':'Próximamente');const host=byId('canchasDestacadas');if(host){const featured=cs.slice(0,cs.length===2?2:3);host.dataset.count=String(featured.length);host.innerHTML=featured.length?featured.map(x=>canchaCard(x,c.moneda)).join(''):'<div class="home-v2-empty"><h3>Estamos preparando la disponibilidad</h3><p>Consultá nuevamente más tarde.</p></div>'}reserva(cs);torneo(ts.find(x=>x.inscripcionDisponible)||ts[0]);contacto(c);state?.remove()}catch(e){if(state)state.innerHTML='<div><b>No pudimos cargar la portada</b><p>'+escapeHtml(e instanceof Error?e.message:'Intentá nuevamente.')+'</p><button id="reintentarPortada" class="btn btn-secondary" type="button">Reintentar</button></div>';byId('reintentarPortada')?.addEventListener('click',load,{once:true});torneo()}}
+addEventListener('sesion-cliente-cambiada',(e:any)=>{const a=byId<HTMLAnchorElement>('accionReservasHero');if(a)a.textContent=e.detail?.autenticado&&e.detail?.perfil?'Mis próximas reservas':'Ver mis reservas'});load();

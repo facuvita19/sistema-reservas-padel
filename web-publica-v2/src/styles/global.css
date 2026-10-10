@@ -1329,3 +1329,303 @@ header.site-header,
  .f4-rounds{padding:.75rem!important}
  .f4-content:has(.f4-rounds){padding:0!important}
 }
+
+/* inicio-premium-fase5-v1 */
+.home-v2-hero{position:relative;overflow:hidden;border-bottom:1px solid rgba(91,111,119,.25);background:linear-gradient(140deg,#080d0f,#0d1819 58%,#11271d)}.home-v2-glow{position:absolute;right:-15rem;top:-20rem;width:50rem;height:50rem;border-radius:50%;background:rgba(61,155,112,.12);filter:blur(20px)}.home-v2-hero-grid{position:relative;display:grid;grid-template-columns:minmax(0,1.08fr) minmax(380px,.92fr);align-items:center;gap:3rem;min-height:570px;padding-block:3.8rem 5.8rem}.home-v2-eyebrow{display:inline-flex;align-items:center;gap:.55rem;margin:0 0 1.15rem;border:1px solid rgba(82,202,145,.28);border-radius:99px;padding:.4rem .7rem;color:#9ee1be;font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.home-v2-eyebrow span{width:8px;height:8px;border-radius:50%;background:#50cf91;box-shadow:0 0 0 5px rgba(80,207,145,.1)}.home-v2-copy h1{max-width:760px;margin:0;font-size:clamp(3.2rem,5.3vw,5rem);line-height:.92;letter-spacing:-.06em}.home-v2-copy h1 strong{display:block;color:#7dd4a7}.home-v2-copy>p:not(.home-v2-eyebrow){max-width:680px;margin:1.35rem 0 0;color:#adbbb6;font-size:1.1rem;line-height:1.65}.home-v2-actions{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;margin-top:1.7rem}.home-v2-link{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem;color:#a8bbb3;font-weight:850}.home-v2-link:hover{color:#fff}.home-v2-trust{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.4rem;color:#758a81;font-size:.72rem;font-weight:780}.home-v2-trust span:before{content:"";display:inline-block;width:6px;height:6px;margin-right:.45rem;border-radius:50%;background:#4ec58a}.home-v2-stage{position:relative;min-height:410px;border:1px solid rgba(130,202,165,.2);border-radius:26px;background:linear-gradient(150deg,rgba(24,44,37,.9),rgba(9,17,19,.96));padding:1.3rem;box-shadow:0 30px 80px rgba(0,0,0,.3)}.home-v2-stage header{display:flex;justify-content:space-between;gap:1rem}.home-v2-stage header span{color:#76d3a3;font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.14em}.home-v2-stage header b{color:#c4d3cd;font-size:.75rem}.home-v2-court{position:absolute;left:9%;right:9%;top:27%;height:53%;border:2px solid rgba(220,250,232,.7);background:linear-gradient(180deg,#28734f,#1b573b);transform:perspective(700px) rotateX(54deg);transform-origin:center bottom;box-shadow:0 0 45px rgba(70,190,130,.2)}.home-v2-court:before,.home-v2-court:after,.home-v2-court i,.home-v2-court b{content:"";position:absolute;background:rgba(238,255,245,.7)}.home-v2-court:before{left:50%;top:0;width:2px;height:100%}.home-v2-court:after{left:0;top:50%;width:100%;height:3px}.home-v2-court i:nth-child(1){left:0;top:28%;width:100%;height:2px}.home-v2-court i:nth-child(2){left:0;bottom:28%;width:100%;height:2px}.home-v2-stage-facts{position:absolute;left:-1rem;right:-1rem;bottom:1rem;display:flex;justify-content:space-between}.home-v2-stage-facts span{min-width:145px;border:1px solid #2d4940;border-radius:14px;background:rgba(9,17,19,.94);padding:.75rem .9rem;box-shadow:0 16px 38px rgba(0,0,0,.3)}.home-v2-stage-facts small,.home-v2-stage-facts strong{display:block}.home-v2-stage-facts small{color:#71857d;font-size:.58rem;font-weight:850;text-transform:uppercase}.home-v2-stage-facts strong{margin-top:.25rem;font-size:1rem}.home-v2-booking{position:relative;z-index:5;margin-top:-2.7rem;border:1px solid rgba(103,130,119,.42);border-radius:20px;background:#10191d;box-shadow:0 24px 65px rgba(0,0,0,.32)}.home-v2-booking form{display:grid;grid-template-columns:minmax(260px,1.25fr) minmax(180px,.55fr) minmax(230px,.7fr) auto;align-items:end;gap:.9rem;padding:1.1rem}.home-v2-booking-title h2{margin:.2rem 0;font-size:1.22rem}.home-v2-booking-title p:last-child{margin:0;color:#7c9087;font-size:.78rem}.home-v2-booking button{min-height:46px}.home-v2-form-error{grid-column:1/-1;margin:0;color:#fda4af;font-size:.72rem}.home-v2-booking-facts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #2b393f}.home-v2-booking-facts span{padding:.75rem 1.1rem}.home-v2-booking-facts span+span{border-left:1px solid #2b393f}.home-v2-booking-facts small,.home-v2-booking-facts b{display:block}.home-v2-booking-facts small{color:#71857d;font-size:.58rem;text-transform:uppercase}.home-v2-booking-facts b{margin-top:.2rem;font-size:.82rem}.home-v2-section{padding-block:4.4rem}.home-v2-section-head{display:flex;align-items:end;justify-content:space-between;gap:2rem;margin-bottom:1.4rem}.home-v2-section-head h2{margin:.35rem 0 0;font-size:clamp(2rem,3.6vw,3.15rem);letter-spacing:-.04em}.home-v2-section-head>div:last-child{text-align:right;color:#889b93}.home-v2-section-head a{color:#8cdbb1;font-weight:850}.home-v2-state{display:flex;align-items:center;gap:1rem;border:1px solid #2b393f;border-radius:16px;padding:1rem}.home-v2-state p{margin:.2rem 0 0;color:#7c9087}.home-v2-courts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;max-width:100%}.home-v2-courts[data-count="1"]{grid-template-columns:minmax(320px,620px);justify-content:center}.home-v2-courts[data-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1100px;margin-inline:auto}.home-v2-court-card{overflow:hidden;border:1px solid #2c3c41;border-radius:20px;background:#10191d;box-shadow:0 20px 55px rgba(0,0,0,.2)}.home-v2-court-art{position:relative;height:120px;overflow:hidden;background:radial-gradient(circle at 75% 20%,rgba(126,208,166,.22),transparent 38%),linear-gradient(150deg,#173026,#0c1719);padding:1rem}.home-v2-court-art>span{position:relative;z-index:2;color:#8ce0b4;font-size:.62rem;font-weight:900;text-transform:uppercase}.home-v2-court-art>div{position:absolute;left:13%;right:13%;bottom:-40%;height:130px;border:2px solid rgba(220,250,232,.6);background:#226947;transform:perspective(400px) rotateX(58deg)}.home-v2-court-art>div:before,.home-v2-court-art>div:after,.home-v2-court-art i{content:"";position:absolute;background:rgba(238,255,245,.65)}.home-v2-court-art>div:before{left:50%;height:100%;width:2px}.home-v2-court-art>div:after{top:50%;width:100%;height:2px}.home-v2-court-art i:first-child{top:27%;width:100%;height:1px}.home-v2-court-art i:nth-child(2){bottom:27%;width:100%;height:1px}.home-v2-court-body{padding:1.15rem}.home-v2-court-body header{display:flex;justify-content:space-between;gap:1rem}.home-v2-court-body header small{color:#73d3a1;font-size:.62rem;font-weight:900;text-transform:uppercase}.home-v2-court-body h3{margin:.2rem 0 0;font-size:1.35rem}.home-v2-court-body header>span{color:#8ba099;font-size:.68rem}.home-v2-court-body>p{min-height:2.6em;margin:.75rem 0;color:#82968e;line-height:1.45}.home-v2-tags{display:flex;flex-wrap:wrap;gap:.35rem}.home-v2-tags span{border-radius:99px;background:#19262b;padding:.35rem .55rem;color:#9bb0a8;font-size:.64rem}.home-v2-court-body footer{display:grid;grid-template-columns:1fr 1fr auto;align-items:end;gap:.7rem;margin-top:1rem;border-top:1px solid #2b393f;padding-top:.9rem}.home-v2-court-body footer small{display:block;color:#71857d;font-size:.6rem}.home-v2-court-body footer b{display:block;margin-top:.18rem}.home-v2-court-body footer .btn{min-height:40px;padding:.5rem .8rem}.home-v2-process{border-block:1px solid rgba(91,111,119,.23);background:#0c1417;padding-block:1.5rem}.home-v2-process>.container-site{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:2rem}.home-v2-process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem}.home-v2-process-grid article{display:flex;align-items:center;gap:.75rem;border-left:1px solid #31443c;padding:.5rem 1rem}.home-v2-process-grid>article>span{display:grid;width:32px;height:32px;flex:none;place-items:center;border-radius:50%;background:#183325;color:#81d8aa;font-size:.72rem;font-weight:900}.home-v2-process-grid h3{margin:0;font-size:.86rem}.home-v2-process-grid p{margin:.18rem 0 0;color:#778b83;font-size:.68rem}.site-kicker.gold{color:#e2c16d}.home-v2-tournament{display:grid;grid-template-columns:1.2fr .8fr;gap:1rem;border:1px solid rgba(205,166,66,.28);border-radius:22px;background:radial-gradient(circle at 85% 10%,rgba(208,168,61,.13),transparent 34%),linear-gradient(145deg,#1b1c17,#101819);padding:1.5rem}.home-v2-tournament-main>span{display:inline-flex;border:1px solid #745f28;border-radius:99px;padding:.35rem .6rem;color:#e8ca71;font-size:.62rem;font-weight:900;text-transform:uppercase}.home-v2-tournament h3{margin:.4rem 0;font-size:2rem}.home-v2-tournament-main>p:not(.site-kicker){max-width:620px;color:#929e98}.home-v2-tournament-actions{display:flex;align-items:center;gap:.8rem;margin-top:1rem}.home-v2-tournament-data{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}.home-v2-tournament-data>span{border:1px solid rgba(205,166,66,.14);border-radius:13px;background:rgba(7,13,14,.44);padding:.75rem}.home-v2-tournament-data small,.home-v2-tournament-data b{display:block}.home-v2-tournament-data small{color:#8f9188;font-size:.6rem}.home-v2-tournament-data b{margin-top:.24rem;font-size:.78rem}.home-v2-tournament-data>div{grid-column:1/-1}.home-v2-tournament-data i{display:block;height:5px;margin-top:.35rem;border-radius:99px;background:#303126}.home-v2-tournament-data i b{display:block;height:100%;background:#d3ab48}.home-v2-empty{grid-column:1/-1;padding:2rem;text-align:center;color:#899b94}.home-v2-contact{display:grid;grid-template-columns:.7fr 1.3fr;gap:1.5rem;border:1px solid #2b3b40;border-radius:22px;background:#10191d;padding:1.5rem}.home-v2-contact h2{margin:.35rem 0;font-size:2rem}.home-v2-contact>div>p:last-child{color:#84988f}.home-v2-contact-links{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}.home-v2-contact-links a{display:flex;min-height:76px;flex-direction:column;justify-content:center;border:1px solid #2b3b40;border-radius:13px;background:#0b1215;padding:.8rem}.home-v2-contact-links a.primary{border-color:#365948}.home-v2-contact-links small{color:#71857d;font-size:.58rem;text-transform:uppercase}.home-v2-contact-links b{margin-top:.2rem;overflow-wrap:anywhere}.home-v2-contact-links span{margin-top:.25rem;color:#75d09e;font-size:.64rem}.home-v2-final{display:flex;align-items:center;justify-content:space-between;gap:2rem;margin-bottom:4rem;border:1px solid rgba(82,202,145,.25);border-radius:22px;background:linear-gradient(135deg,#13271d,#0d1719);padding:1.45rem 1.6rem}.home-v2-final h2{margin:.35rem 0 0;font-size:clamp(1.6rem,3vw,2.5rem)}.home-v2-final>div:last-child{display:flex;align-items:center;gap:.6rem}
+@media(max-width:1050px){.home-v2-hero-grid{grid-template-columns:1fr;min-height:0}.home-v2-stage{max-width:720px;width:100%;margin:auto}.home-v2-booking form{grid-template-columns:1fr 1fr}.home-v2-booking-title{grid-column:1/-1}.home-v2-courts{grid-template-columns:repeat(2,1fr)}.home-v2-tournament,.home-v2-contact{grid-template-columns:1fr}}
+@media(max-width:760px){.home-v2-hero-grid{gap:2rem;padding-block:2.8rem 4.5rem}.home-v2-copy h1{font-size:clamp(2.75rem,14vw,4rem)}.home-v2-stage{min-height:330px}.home-v2-stage-facts{left:.6rem;right:.6rem}.home-v2-booking form,.home-v2-booking-facts,.home-v2-courts,.home-v2-process>.container-site,.home-v2-process-grid,.home-v2-contact-links{grid-template-columns:1fr}.home-v2-booking-title{grid-column:auto}.home-v2-booking-facts span+span{border-left:0;border-top:1px solid #2b393f}.home-v2-booking-facts{grid-template-columns:1fr 1fr}.home-v2-booking-facts span:nth-child(3){border-left:0}.home-v2-section{padding-block:3.3rem}.home-v2-section-head{align-items:flex-start;flex-direction:column}.home-v2-section-head>div:last-child{text-align:left}.home-v2-courts[data-count]{grid-template-columns:1fr}.home-v2-process-grid article{border-left:0;border-top:1px solid #31443c;padding:.8rem 0}.home-v2-tournament-data{grid-template-columns:1fr 1fr}.home-v2-final{align-items:flex-start;flex-direction:column}.home-v2-final>div:last-child{width:100%;align-items:stretch;flex-direction:column}.home-v2-final .btn{width:100%}}
+@media(max-width:480px){.home-v2-actions{align-items:stretch;flex-direction:column}.home-v2-actions .btn,.home-v2-actions .home-v2-link{width:100%;justify-content:center}.home-v2-trust{display:none}.home-v2-stage{min-height:295px}.home-v2-stage-facts span{min-width:125px}.home-v2-booking-facts{grid-template-columns:1fr 1fr}.home-v2-court-body footer{grid-template-columns:1fr 1fr}.home-v2-court-body footer .btn{grid-column:1/-1}.home-v2-tournament-data{grid-template-columns:1fr}.home-v2-tournament-data>div{grid-column:auto}.home-v2-tournament-actions{align-items:stretch;flex-direction:column}.home-v2-tournament-actions .btn{width:100%}}
+
+/* pulido-final-inicio-premium-v2 */
+/* Hero ligeramente mas compacto para mostrar completa la zona operativa. */
+@media(min-width:1051px){
+ .home-v2-hero-grid{min-height:540px;padding-block:3.25rem 5.1rem}
+ .home-v2-stage{min-height:390px}
+ .home-v2-court{top:22%;height:58%}
+ .home-v2-stage-facts{left:-.55rem;right:-.55rem;bottom:.75rem}
+}
+/* Metricas operativas con lectura mas clara. */
+.home-v2-booking-facts small{color:#82968d;font-size:.62rem;font-weight:800;letter-spacing:.035em}
+.home-v2-booking-facts b{margin-top:.3rem;color:#eef6f2;font-size:.9rem}
+/* Ritmo vertical especifico para el cierre de la portada. */
+.home-v2-section:has(.home-v2-contact){padding-top:2.7rem;padding-bottom:2rem}
+.home-v2-final{margin-top:.2rem;margin-bottom:2.8rem}
+/* Atributos de las canchas como una sola familia semantica. */
+.home-v2-court-body header>span{align-self:flex-start;border-radius:999px;background:#18272b;padding:.3rem .5rem;color:#a1b5ad}
+.home-v2-court-body header small{display:inline-flex;border-radius:999px;background:rgba(61,155,112,.1);padding:.3rem .5rem}
+.home-v2-court-art>span{display:inline-flex;border:1px solid rgba(82,202,145,.2);border-radius:999px;background:rgba(8,18,16,.36);padding:.28rem .48rem}
+.home-v2-courts[data-count="2"] .home-v2-court-card:nth-child(2) .home-v2-court-art{background:radial-gradient(circle at 28% 18%,rgba(126,208,166,.2),transparent 38%),linear-gradient(150deg,#152b25,#0c1719)}
+/* Datos competitivos mas compactos y fechas sin cortes artificiales. */
+.home-v2-tournament{grid-template-columns:minmax(0,1.3fr) minmax(330px,.7fr)}
+.home-v2-tournament-data{align-content:center}
+.home-v2-tournament-data>span{min-height:70px;padding:.65rem .75rem}
+.home-v2-tournament-data>span:first-child{grid-column:1/-1;min-height:62px}
+.home-v2-tournament-data b{line-height:1.35}
+/* El cierre conserva jerarquia sin competir con el hero. */
+.home-v2-final h2{font-size:clamp(1.55rem,2.6vw,2.25rem)}
+@media(max-width:1050px){
+ .home-v2-tournament{grid-template-columns:1fr}
+ .home-v2-tournament-data>span:first-child{grid-column:auto}
+}
+@media(max-width:760px){
+ .home-v2-section:has(.home-v2-contact){padding-top:2.2rem;padding-bottom:1.5rem}
+ .home-v2-final{margin-bottom:2rem}
+ .home-v2-booking-facts small{font-size:.6rem}
+ .home-v2-booking-facts b{font-size:.86rem}
+}
+
+/* correccion-responsive-inicio-v3 */
+/* Contencion defensiva: ningun componente de Inicio puede ensanchar el documento. */
+html,body{max-width:100%;overflow-x:clip}
+@media(max-width:760px){
+ main,#contenido-principal,.home-v2-hero,.home-v2-section,.home-v2-process{width:100%;max-width:100%;min-width:0;overflow-x:clip}
+ .container-site{width:calc(100% - 20px)!important;max-width:var(--page-max);min-width:0;margin-inline:auto}
+ .home-v2-hero-grid,.home-v2-copy,.home-v2-stage,.home-v2-booking,.home-v2-booking form,.home-v2-booking-facts,.home-v2-courts,.home-v2-court-card,.home-v2-court-body,.home-v2-process>.container-site,.home-v2-process-grid,.home-v2-tournament,.home-v2-tournament-main,.home-v2-tournament-data,.home-v2-contact,.home-v2-contact-links,.home-v2-final,.home-v2-final>div{width:100%;max-width:100%;min-width:0}
+ /* Cabecera realmente contenida en 390, 360 y 320 px. */
+ header[data-site-header] nav{width:calc(100% - 20px)!important;max-width:none;min-width:0;padding-inline:0}
+ .site-menu-button{flex:none;max-width:46%}
+ .site-mobile-panel{left:10px!important;right:10px!important;width:auto!important;max-width:calc(100% - 20px)!important}
+ /* Hero: texto y escenario sin anchuras intrinsecas bloqueantes. */
+ .home-v2-hero-grid{padding-block:2.55rem 4rem}
+ .home-v2-copy h1{max-width:100%;font-size:clamp(2.55rem,13.2vw,3.65rem);line-height:.94;overflow-wrap:anywhere}
+ .home-v2-copy>p:not(.home-v2-eyebrow){max-width:100%;font-size:1rem;overflow-wrap:anywhere}
+ .home-v2-actions,.home-v2-actions>a{max-width:100%;min-width:0}
+ .home-v2-stage{min-height:300px;padding:1rem;overflow:hidden}
+ .home-v2-stage header{align-items:flex-start;flex-wrap:wrap}
+ .home-v2-stage header b{max-width:58%;text-align:right;white-space:normal}
+ .home-v2-court{left:7%;right:7%;top:24%;height:55%}
+ .home-v2-stage-facts{left:.55rem;right:.55rem;bottom:.55rem;gap:.5rem}
+ .home-v2-stage-facts span{min-width:0;flex:1;padding:.65rem .7rem}
+ /* Reserva rapida: neutraliza columnas y minimos heredados. */
+ .home-v2-booking{overflow:hidden}
+ .home-v2-booking form{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:1rem}
+ .home-v2-booking form>*{min-width:0;max-width:100%}
+ .home-v2-booking input,.home-v2-booking select,.home-v2-booking button{width:100%;max-width:100%;min-width:0}
+ .home-v2-booking-facts{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .home-v2-booking-facts span{min-width:0;padding:.7rem .8rem}
+ /* Canchas: atributos envuelven y acciones nunca exceden la tarjeta. */
+ .home-v2-section-head,.home-v2-section-head>div{width:100%;max-width:100%;min-width:0}
+ .home-v2-section-head h2{font-size:clamp(2rem,10vw,2.65rem);overflow-wrap:anywhere}
+ .home-v2-courts[data-count]{display:grid!important;grid-template-columns:minmax(0,1fr)!important;margin-inline:0!important}
+ .home-v2-court-card{overflow:hidden}
+ .home-v2-court-body{padding:1rem}
+ .home-v2-court-body header{align-items:flex-start;flex-wrap:wrap;gap:.55rem}
+ .home-v2-court-body header>div{min-width:0;flex:1 1 150px}
+ .home-v2-court-body header>span{max-width:100%;white-space:normal}
+ .home-v2-court-body>p,.home-v2-tags{max-width:100%;overflow-wrap:anywhere}
+ .home-v2-court-body footer{grid-template-columns:repeat(2,minmax(0,1fr));width:100%;min-width:0}
+ .home-v2-court-body footer span{min-width:0}
+ .home-v2-court-body footer .btn{grid-column:1/-1;width:100%;max-width:100%;min-width:0}
+ /* Proceso, torneo, contacto y CTA: una sola columna contraible. */
+ .home-v2-process>.container-site,.home-v2-process-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+ .home-v2-process-grid article,.home-v2-process-grid article>div{min-width:0;max-width:100%}
+ .home-v2-tournament{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:1rem;overflow:hidden}
+ .home-v2-tournament-main>p,.home-v2-tournament-main h3{max-width:100%;overflow-wrap:anywhere}
+ .home-v2-tournament-actions{max-width:100%}
+ .home-v2-tournament-actions .btn{width:100%;max-width:100%;min-width:0}
+ .home-v2-tournament-data{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+ .home-v2-tournament-data>span,.home-v2-tournament-data>div{grid-column:auto!important;width:100%;max-width:100%;min-width:0}
+ .home-v2-tournament-data b{overflow-wrap:anywhere}
+ .home-v2-contact{display:grid!important;grid-template-columns:minmax(0,1fr)!important;padding:1rem;overflow:hidden}
+ .home-v2-contact>div,.home-v2-contact-links,.home-v2-contact-links a{min-width:0;max-width:100%}
+ .home-v2-contact h2{font-size:clamp(1.9rem,9vw,2.45rem);overflow-wrap:anywhere}
+ .home-v2-contact-links{display:grid!important;grid-template-columns:minmax(0,1fr)!important}
+ .home-v2-contact-links a{width:100%;overflow:hidden}
+ .home-v2-contact-links b{overflow-wrap:anywhere;word-break:break-word}
+ .home-v2-final{padding:1.15rem;overflow:hidden}
+ .home-v2-final h2{max-width:100%;font-size:clamp(1.7rem,8.5vw,2.25rem);overflow-wrap:anywhere}
+ .home-v2-final>div:last-child,.home-v2-final .btn,.home-v2-final .home-v2-link{width:100%;max-width:100%;min-width:0}
+ /* Pie completo, en una columna y con textos largos contraibles. */
+ footer .container-site{min-width:0}
+ footer .container-site>div,footer nav,footer a,footer p,footer span{min-width:0;max-width:100%;overflow-wrap:anywhere}
+ footer .container-site.grid{grid-template-columns:minmax(0,1fr)!important;gap:2rem;padding-block:2.8rem}
+}
+@media(max-width:360px){
+ .container-site,header[data-site-header] nav{width:calc(100% - 16px)!important}
+ .home-v2-copy h1{font-size:clamp(2.35rem,12.8vw,3.2rem)}
+ .home-v2-eyebrow{font-size:.61rem;letter-spacing:.075em}
+ .home-v2-stage{min-height:280px}
+ .home-v2-stage-facts strong{font-size:.9rem}
+ .home-v2-booking-facts span{padding:.65rem}
+}
+
+/* hotfix-ancho-movil-inicio-v4 */
+/* En navegadores moviles con gutter vertical, calc(100% - Npx) puede tomar el
+   ancho del layout viewport y no el ancho visual util. Se usan margenes fisicos. */
+@media(max-width:760px){
+ html{width:100%;max-width:100%;overflow-x:hidden}
+ body{width:100%;max-width:100%;overflow-x:hidden}
+ #contenido-principal{display:block;width:100%;max-width:100%;min-width:0}
+ .container-site,
+ header[data-site-header] nav{
+   width:auto!important;
+   max-width:none!important;
+   min-width:0!important;
+   margin-left:10px!important;
+   margin-right:10px!important;
+ }
+ .home-v2-process>.container-site{width:auto!important}
+ .home-v2-hero-grid,
+ .home-v2-booking,
+ .home-v2-section,
+ .home-v2-courts,
+ .home-v2-courts[data-count],
+ .home-v2-process-grid,
+ .home-v2-tournament,
+ .home-v2-contact,
+ .home-v2-final{
+   box-sizing:border-box!important;
+   inline-size:auto!important;
+   max-inline-size:100%!important;
+   min-inline-size:0!important;
+ }
+ .home-v2-section,.home-v2-hero-grid{overflow:visible}
+ .home-v2-courts[data-count]{margin-left:0!important;margin-right:0!important}
+ .home-v2-court-card,
+ .home-v2-tournament,
+ .home-v2-contact,
+ .home-v2-final{
+   width:auto!important;
+   max-width:100%!important;
+   margin-left:0!important;
+   margin-right:0!important;
+ }
+ .home-v2-court-body header>span{
+   flex:0 1 auto;
+   min-width:0;
+   max-width:100%;
+   overflow-wrap:anywhere;
+ }
+ .home-v2-court-body footer .btn,
+ .home-v2-tournament-actions .btn,
+ .home-v2-final .btn{
+   box-sizing:border-box!important;
+   width:100%!important;
+   max-width:100%!important;
+ }
+}
+@media(max-width:360px){
+ .container-site,
+ header[data-site-header] nav{
+   margin-left:8px!important;
+   margin-right:8px!important;
+ }
+}
+
+/* correccion-integral-recorrido-torneos-v1 */
+/* Carruseles tactiles sin barra nativa visible. */
+.f4-group-tabs,.competition-group-tabs,.f4-phase-index,.f4-round-tabs,.premium-detail-tabs,.f4-nav{scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-inline:contain}
+.f4-group-tabs::-webkit-scrollbar,.competition-group-tabs::-webkit-scrollbar,.f4-phase-index::-webkit-scrollbar,.f4-round-tabs::-webkit-scrollbar,.premium-detail-tabs::-webkit-scrollbar,.f4-nav::-webkit-scrollbar{display:none;width:0;height:0}
+/* Las fuentes pendientes comunican de que cruce provienen. */
+.f4-teams>div:not(.winner) b{overflow-wrap:anywhere}
+.f4-teams>div:not(.winner) b:has(+ em:empty){color:#a7b9b1;font-weight:750}
+/* Escala profesional del detalle especifico del torneo. */
+@media(min-width:1051px){
+ .tournament-detail-view{padding:.65rem 0 4rem}
+ .premium-tournament-detail{max-width:1380px}
+ .premium-detail-topbar{margin-bottom:.55rem}
+ .premium-detail-back,.premium-detail-share{min-height:40px;padding-inline:.8rem;font-size:.78rem}
+ .premium-detail-hero{grid-template-columns:minmax(0,1.55fr) minmax(270px,.55fr);gap:1.25rem;padding:1.55rem 1.7rem;border-radius:22px}
+ .premium-detail-hero h1{max-width:760px;margin:.25rem 0 .65rem;font-size:clamp(2.35rem,4vw,4rem);line-height:.95}
+ .premium-detail-status{margin-bottom:.75rem;padding:.32rem .6rem;font-size:.64rem}
+ .premium-detail-hero-copy>p:last-of-type{max-width:680px;font-size:.95rem;line-height:1.55}
+ .premium-detail-actions{margin-top:1rem}
+ .premium-detail-actions .btn{min-height:42px;padding:.62rem .95rem;font-size:.78rem}
+ .premium-detail-summary{gap:.45rem}
+ .premium-detail-summary span{min-height:76px;padding:.7rem .8rem;border-radius:13px}
+ .premium-detail-summary small{font-size:.64rem}.premium-detail-summary b{margin-top:.32rem;font-size:.88rem}
+ .premium-detail-tabs{top:84px;margin:.6rem 0 .8rem;padding:.3rem;border-radius:14px}
+ .premium-detail-tabs button{min-height:40px;padding-inline:.8rem;font-size:.78rem}
+ .premium-detail-panel{padding:1.35rem 1.5rem;border-radius:20px}
+ .premium-information-panel{gap:1.25rem}
+ .premium-detail-copy h2,.premium-section-heading h2{margin:.25rem 0 .55rem;font-size:clamp(1.6rem,2.4vw,2.15rem)}
+ .premium-detail-copy>p:last-child,.premium-section-heading>p{font-size:.88rem;line-height:1.55}
+ .premium-detail-metrics{gap:.45rem}.premium-detail-metrics span{padding:.75rem;border-radius:12px}.premium-detail-metrics b{font-size:1rem}
+ .premium-detail-timeline{gap:.55rem;margin-top:.25rem}.premium-detail-timeline span{padding:.75rem .75rem .75rem 3rem;border-radius:12px}.premium-detail-timeline i{left:.75rem;top:.75rem;width:26px;height:26px;font-size:.72rem}
+ .premium-section-heading{margin-bottom:.8rem}
+ .premium-category-grid{grid-template-columns:repeat(auto-fit,minmax(290px,420px));gap:.75rem}
+ .premium-category-card{min-height:0!important;padding:1rem;border-radius:16px}
+ .premium-category-card h3{font-size:1.25rem}.premium-category-price{margin:.85rem 0}.premium-category-price b{font-size:1.3rem}
+ .premium-category-actions-v4{gap:.45rem;padding-top:.8rem}.premium-category-actions-v4 .btn{min-height:42px!important;font-size:.76rem}
+ .premium-category-unavailable{min-height:42px!important;padding:.6rem}
+ .premium-rules-content{max-width:1050px;padding:1rem!important;font-size:.92rem;line-height:1.7}
+}
+@media(max-width:700px){
+ .f4-group-tabs,.competition-group-tabs,.f4-phase-index,.f4-round-tabs,.premium-detail-tabs,.f4-nav{-webkit-overflow-scrolling:touch}
+ .premium-detail-hero h1{font-size:clamp(2.15rem,11vw,3.25rem)}
+ .premium-detail-summary span{min-height:78px;padding:.75rem}
+ .premium-detail-tabs{top:var(--header-height,64px)}
+}
+
+/* correccion-sticky-centro-competitivo-v1 */
+/* La navegacion del centro competitivo forma una cabecera continua con el sitio.
+   La cubierta superior evita que tarjetas desplazadas queden visibles encima. */
+.f4-nav{
+  top:var(--header-height,76px)!important;
+  z-index:46!important;
+  isolation:isolate;
+  overflow-x:auto;
+  overflow-y:visible;
+  background:#0a1219!important;
+  border-color:#293b43!important;
+  box-shadow:0 12px 24px rgba(0,0,0,.22),0 1px 0 rgba(255,255,255,.025) inset;
+  backdrop-filter:none!important;
+}
+.f4-nav::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-2px;
+  right:-2px;
+  bottom:calc(100% - 1px);
+  height:14px;
+  background:#080d0f;
+  pointer-events:none;
+}
+.f4-nav::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:0;
+  right:0;
+  top:100%;
+  height:10px;
+  background:linear-gradient(180deg,rgba(0,0,0,.18),transparent);
+  pointer-events:none;
+}
+/* El contenido comienza debajo de la superficie sticky, sin saltos al cambiar vista. */
+.f4-content{scroll-margin-top:calc(var(--header-height,76px) + 74px)}
+@media(max-width:700px){
+ .f4-nav{
+   top:var(--header-height,64px)!important;
+   z-index:46!important;
+   margin-top:.55rem;
+   background:#0a1219!important;
+   box-shadow:0 9px 20px rgba(0,0,0,.24);
+ }
+ .f4-nav::before{display:block!important;height:10px;background:#071019}
+ .f4-nav::after{height:7px}
+ .f4-content{scroll-margin-top:calc(var(--header-height,64px) + 67px)}
+}
+
+/* correccion-definitiva-sticky-torneos-v2 */
+/* La cabecera global se desplaza con la pagina, por lo que la navegacion del
+   centro debe ocupar el borde superior real y no reservar una cabecera ausente. */
+.f4-nav{
+  top:0!important;
+  z-index:60!important;
+  margin-top:.55rem;
+  background:#0a1219!important;
+  border-color:#293b43!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.3)!important;
+  backdrop-filter:none!important;
+}
+.f4-nav::before,.f4-nav::after{display:none!important;content:none!important}
+.f4-content{scroll-margin-top:68px!important}
+@media(max-width:700px){
+ .f4-nav{top:0!important;z-index:60!important;margin-top:.45rem}
+ .f4-content{scroll-margin-top:64px!important}
+}
+
+/* scroll-sticky-detalle-torneo-v3 */
+#premiumDetailContent,.premium-detail-tabs{overflow-anchor:none}

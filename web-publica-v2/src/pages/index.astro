@@ -1,98 +1,21 @@
 ---
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
-<LayoutPrincipal titulo="Pádel Reservas" descripcion="Reservá tu cancha, seguí tus turnos y descubrí torneos de pádel." actual="inicio">
-  <section class="home-hero">
-    <div class="home-glow home-glow-one"></div>
-    <div class="home-glow home-glow-two"></div>
-    <div class="container-site home-hero-grid">
-      <div class="home-hero-copy">
-        <p class="home-eyebrow"><span class="home-live-dot"></span> Reservas online disponibles</p>
-        <h1>Tu próximo partido <span>empieza acá.</span></h1>
-        <p class="home-lead">Encontrá cancha, elegí horario y gestioná todo desde un solo lugar en <strong id="nombreComplejo">tu complejo</strong>.</p>
-        <div class="home-actions">
-          <a class="btn btn-primary home-primary-action" href="#reserva-rapida">Buscar un turno</a>
-          <a class="btn btn-secondary" href="/torneos">Explorar torneos</a>
-          <a class="home-text-link" href="/mis-reservas">Ver mis reservas <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="home-trust-row" aria-label="Ventajas principales">
-          <span>Disponibilidad actualizada</span><span>Seguimiento online</span><span>Pago por transferencia</span>
-        </div>
-      </div>
-
-      <div class="home-court-stage" aria-label="Representación de una cancha de pádel">
-        <div class="home-stage-label"><span>Club online</span><strong id="heroDisponibilidad">Preparando tu próxima reserva</strong></div>
-        <div class="home-court-shell">
-          <div class="home-court">
-            <span class="court-line court-line-center"></span><span class="court-line court-line-service-a"></span><span class="court-line court-line-service-b"></span><span class="court-net"></span>
-            <span class="court-light court-light-a"></span><span class="court-light court-light-b"></span>
-          </div>
-        </div>
-        <div class="home-floating-card home-floating-price"><small>Turnos desde</small><strong id="datoTurno">Cargando...</strong></div>
-        <div class="home-floating-card home-floating-courts"><small>Canchas activas</small><strong id="datoCanchas">-</strong></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="reserva-rapida" class="container-site home-quick-wrap">
-    <form id="formReservaRapida" class="home-quick-card" novalidate>
-      <div class="home-quick-heading"><p class="site-kicker">Reserva rápida</p><h2>Encontrá tu próximo horario</h2><p>Elegí una fecha y una cancha. Te llevamos directo a la disponibilidad.</p></div>
-      <label><span class="etiqueta-web">Fecha</span><input id="fechaRapida" class="field-web" type="date" required /></label>
-      <label><span class="etiqueta-web">Cancha</span><select id="canchaRapida" class="field-web"><option value="">Cualquier cancha</option></select></label>
-      <button class="btn btn-primary home-quick-submit" type="submit">Buscar horarios</button>
-    </form>
-  </section>
-
-  <section class="container-site home-metrics" aria-label="Información del complejo">
-    <article><small>Canchas disponibles</small><strong id="metricaCanchas">-</strong><span>para elegir dónde jugar</span></article>
-    <article><small>Duración habitual</small><strong id="metricaDuracion">-</strong><span>por cada turno</span></article>
-    <article><small>Seña requerida</small><strong id="datoSenia">-</strong><span>para asegurar tu reserva</span></article>
-    <article><small>Tiempo para acreditar</small><strong id="metricaPlazo">-</strong><span>después de solicitar</span></article>
-  </section>
-
-  <section class="container-site home-section" id="canchas">
-    <div class="home-section-heading"><div><p class="site-kicker">Nuestras canchas</p><h2 class="site-title">Elegí dónde jugar</h2></div><p id="direccionComplejo">Cargando ubicación...</p></div>
-    <div id="estadoPortada" class="home-loading-card"><span class="home-loader"></span><div><strong>Conectando con el complejo</strong><p>Estamos preparando canchas, precios y disponibilidad.</p></div></div>
-    <div id="canchasDestacadas" class="home-courts-grid"></div>
-  </section>
-
-  <section class="home-process-section">
-    <div class="container-site home-section">
-      <div class="home-section-heading"><div><p class="site-kicker">Simple y rápido</p><h2 class="site-title">De la búsqueda a la cancha en tres pasos</h2></div><p>Sin llamadas, sin esperas y con toda la información disponible.</p></div>
-      <div class="home-process-grid">
-        <article><span>01</span><div class="home-process-icon">⌕</div><h3>Elegí tu turno</h3><p>Seleccioná cancha, fecha y uno de los horarios disponibles.</p></article>
-        <article><span>02</span><div class="home-process-icon">✓</div><h3>Completá tus datos</h3><p>Confirmá quién reserva y la cantidad de jugadores.</p></article>
-        <article><span>03</span><div class="home-process-icon">$</div><h3>Acreditá la seña</h3><p>Usá los datos de transferencia y seguí el estado online.</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-site home-section">
-    <div class="home-tournament-layout">
-      <div class="home-tournament-copy"><p class="site-kicker">Competencia</p><h2 class="site-title">Jugá, competí y seguí cada instancia</h2><p>Consultá categorías, cupos, premios y cuadros desde cualquier dispositivo.</p><a class="btn btn-secondary" href="/torneos">Ver todos los torneos</a></div>
-      <div id="torneoDestacado" class="home-tournament-card"><div class="skeleton h-5 w-32 rounded"></div><div class="skeleton mt-4 h-10 w-3/4 rounded"></div><div class="skeleton mt-5 h-20 rounded-xl"></div></div>
-    </div>
-  </section>
-
-  <section class="container-site home-section">
-    <div class="home-benefits-grid">
-      <article><span class="home-benefit-mark">01</span><h3>Disponibilidad real</h3><p>Los horarios se consultan directamente sobre la agenda del complejo.</p></article>
-      <article><span class="home-benefit-mark">02</span><h3>Todo bajo control</h3><p>Revisá estados, pagos y próximas reservas desde tu cuenta.</p></article>
-      <article><span class="home-benefit-mark">03</span><h3>Torneos en vivo</h3><p>Descubrí competencias, inscribí tu pareja y consultá cuadros.</p></article>
-    </div>
-  </section>
-
-  <section id="contacto" class="container-site home-section">
-    <div class="home-contact-card">
-      <div><p class="site-kicker">Estamos para ayudarte</p><h2>Tu club, siempre cerca</h2><p id="contactoDescripcion">Encontrá la ubicación y los canales de contacto del complejo.</p></div>
-      <div id="contactoComplejo" class="home-contact-links"><span class="text-slate-400">Cargando datos de contacto...</span></div>
-    </div>
-  </section>
-
-  <section class="container-site home-final-cta">
-    <div><p class="site-kicker">Tu próximo partido</p><h2>La cancha está lista. Solo falta elegir el horario.</h2></div>
-    <a class="btn btn-primary" href="/reservar">Reservar ahora</a>
-  </section>
-
-  <script>import '../scripts/portada';</script>
+<LayoutPrincipal titulo="Arena Pádel | Reservas y torneos" descripcion="Reservá tu cancha, seguí tus turnos y viví los torneos del club." actual="inicio">
+<section class="home-v2-hero">
+ <div class="home-v2-glow"></div><div class="container-site home-v2-hero-grid">
+  <div class="home-v2-copy"><p class="home-v2-eyebrow"><span></span> Reservas online disponibles</p><h1>Tu próximo partido <strong>empieza acá.</strong></h1><p>Elegí cancha y horario, reservá online y seguí todo desde <b id="nombreComplejo">tu club</b>.</p><div class="home-v2-actions"><a class="btn btn-primary" href="#reserva-rapida">Buscar un turno</a><a id="accionReservasHero" class="btn btn-secondary" href="/mis-reservas">Mis próximas reservas</a><a class="home-v2-link" href="/torneos">Explorar torneos <span>→</span></a></div><div class="home-v2-trust"><span>Disponibilidad real</span><span>Seguimiento online</span><span>Torneos actualizados</span></div></div>
+  <div class="home-v2-stage" aria-label="Información operativa del club"><header><span>Club online</span><b id="heroDisponibilidad">Preparando disponibilidad</b></header><div class="home-v2-court"><i></i><i></i><i></i><i></i><b></b></div><div class="home-v2-stage-facts"><span><small>Turnos desde</small><strong id="datoTurno">Cargando...</strong></span><span><small>Canchas activas</small><strong id="datoCanchas">-</strong></span></div></div>
+ </div>
+</section>
+<section id="reserva-rapida" class="container-site home-v2-booking">
+ <form id="formReservaRapida" novalidate><div class="home-v2-booking-title"><p class="site-kicker">Reserva rápida</p><h2>Encontrá tu próximo horario</h2><p>Elegí fecha y cancha. Te llevamos directo a la disponibilidad.</p></div><label><span class="etiqueta-web">Fecha</span><input id="fechaRapida" class="field-web" type="date" required aria-describedby="errorReservaRapida"/></label><label><span class="etiqueta-web">Cancha</span><select id="canchaRapida" class="field-web"><option value="">Cualquier cancha</option></select></label><button id="buscarHorariosRapidos" class="btn btn-primary" type="submit">Buscar horarios</button><p id="errorReservaRapida" class="home-v2-form-error hidden" role="alert"></p></form>
+ <div class="home-v2-booking-facts" aria-label="Condiciones de reserva"><span><small>Canchas</small><b id="metricaCanchas">-</b></span><span><small>Duración habitual</small><b id="metricaDuracion">-</b></span><span><small>Seña requerida</small><b id="datoSenia">-</b></span><span><small>Plazo para acreditar</small><b id="metricaPlazo">-</b></span></div>
+</section>
+<section class="container-site home-v2-section" id="canchas"><header class="home-v2-section-head"><div><p class="site-kicker">Nuestras canchas</p><h2>Elegí dónde jugar</h2></div><div><p id="direccionComplejo">Cargando ubicación...</p><a href="/reservar">Ver toda la disponibilidad →</a></div></header><div id="estadoPortada" class="home-v2-state" aria-live="polite"><span class="home-loader"></span><div><b>Conectando con el complejo</b><p>Estamos preparando canchas, precios y disponibilidad.</p></div></div><div id="canchasDestacadas" class="home-v2-courts"></div></section>
+<section class="home-v2-process"><div class="container-site"><p class="site-kicker">Simple y rápido</p><div class="home-v2-process-grid"><article><span>1</span><div><h3>Elegí fecha y cancha</h3><p>Consultá opciones publicadas por el complejo.</p></div></article><article><span>2</span><div><h3>Seleccioná un horario</h3><p>Revisá precio, duración y disponibilidad.</p></div></article><article><span>3</span><div><h3>Confirmá la reserva</h3><p>Acreditá la seña y seguí el estado online.</p></div></article></div></div></section>
+<section class="container-site home-v2-section"><header class="home-v2-section-head"><div><p class="site-kicker gold">Competencia</p><h2>Viví cada instancia</h2></div><a href="/torneos">Ver todos los torneos →</a></header><div id="torneoDestacado" class="home-v2-tournament"><div class="skeleton h-5 w-32 rounded"></div><div class="skeleton mt-4 h-10 w-3/4 rounded"></div><div class="skeleton mt-5 h-20 rounded-xl"></div></div></section>
+<section id="contacto" class="container-site home-v2-section"><div class="home-v2-contact"><div><p class="site-kicker">Contacto</p><h2>Tu club, siempre cerca</h2><p id="contactoDescripcion">Encontrá la ubicación y los canales de contacto del complejo.</p></div><div id="contactoComplejo" class="home-v2-contact-links"><span>Cargando datos de contacto...</span></div></div></section>
+<section class="container-site home-v2-final"><div><p class="site-kicker">Tu próximo partido</p><h2>Tu próximo turno está a unos clics.</h2></div><div><a class="btn btn-primary" href="/reservar">Reservar ahora</a><a class="home-v2-link" href="/mis-reservas">Ver mis reservas</a></div></section>
+<script>import '../scripts/portada';</script>
 </LayoutPrincipal>

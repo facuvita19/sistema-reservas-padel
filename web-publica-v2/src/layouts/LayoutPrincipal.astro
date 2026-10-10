@@ -23,6 +23,6 @@ const { titulo, descripcion='Reservas, torneos y experiencia de pádel en un sol
   <main id="contenido-principal"><slot/></main>
   <PiePagina/>
   <ModalAutenticacion/>
-  <script>import '../scripts/autenticacion';</script>
+  <script>import '../scripts/autenticacion';import { cargarComplejo } from '../scripts/configuracion-publica';cargarComplejo().catch(()=>{});</script>
 </body>
 </html>
