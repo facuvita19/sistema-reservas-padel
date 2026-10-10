@@ -6,6 +6,8 @@ import java.util.List;
 import api.publica.TorneoPublicoDTO.Categoria;
 import api.publica.TorneoPublicoDTO.TorneoDetalle;
 import api.publica.TorneoPublicoDTO.TorneoResumen;
+import dao.TorneoCatalogoPublicoDAO;
+import dao.TorneoCatalogoPublicoDAOMySQL;
 import dao.TorneoCategoriaDAO;
 import dao.TorneoCategoriaDAOMySQL;
 import dao.TorneoDAO;
@@ -15,120 +17,32 @@ import negocio.Torneo;
 import negocio.TorneoCategoria;
 
 public class TorneoPublicoService {
-
     private final TorneoDAO torneoDAO;
     private final TorneoCategoriaDAO categoriaDAO;
+    private final TorneoCatalogoPublicoDAO catalogoDAO;
 
-    public TorneoPublicoService() {
-        this(new TorneoDAOMySQL(), new TorneoCategoriaDAOMySQL());
+    public TorneoPublicoService(){this(new TorneoDAOMySQL(),new TorneoCategoriaDAOMySQL(),new TorneoCatalogoPublicoDAOMySQL());}
+    public TorneoPublicoService(TorneoDAO torneoDAO,TorneoCategoriaDAO categoriaDAO){this(torneoDAO,categoriaDAO,new TorneoCatalogoPublicoDAOMySQL());}
+    public TorneoPublicoService(TorneoDAO torneoDAO,TorneoCategoriaDAO categoriaDAO,TorneoCatalogoPublicoDAO catalogoDAO){
+        if(torneoDAO==null||categoriaDAO==null||catalogoDAO==null)throw new IllegalArgumentException("Los DAO de torneos no pueden ser nulos.");
+        this.torneoDAO=torneoDAO;this.categoriaDAO=categoriaDAO;this.catalogoDAO=catalogoDAO;
     }
 
-    public TorneoPublicoService(
-            TorneoDAO torneoDAO,
-            TorneoCategoriaDAO categoriaDAO) {
-        if (torneoDAO == null || categoriaDAO == null) {
-            throw new IllegalArgumentException(
-                    "Los DAO de torneos no pueden ser nulos.");
-        }
-        this.torneoDAO = torneoDAO;
-        this.categoriaDAO = categoriaDAO;
-    }
+    public List<TorneoResumen> listar(){LocalDateTime ahora=LocalDateTime.now();return catalogoDAO.listar().stream().map(x->new TorneoResumen(
+            x.id(),x.nombre(),x.descripcion(),x.fechaInicio(),x.fechaFin(),x.inscripcionDesde(),x.inscripcionHasta(),x.estado(),
+            estadoPortal(x.estado()),inscripcionDisponible(x,ahora),x.cantidadCategorias(),x.categoriasDisponibles(),x.cupoTotal(),
+            x.parejasConfirmadas(),x.cuposDisponibles(),x.precioMinimo(),x.precioMaximo(),x.categorias(),x.ramas(),x.formatos(),
+            etapa(x),x.partidosTotales(),x.partidosFinalizados(),x.partidosCancelados(),x.partidosFinalizados()>0,x.finalDisputada())).toList();}
 
-    public List<TorneoResumen> listar() {
-        LocalDateTime ahora = LocalDateTime.now();
-        return torneoDAO.listarActivos().stream()
-                .filter(this::esPublico)
-                .filter(torneo -> !categoriaDAO
-                        .listarActivasPorTorneo(torneo.getId()).isEmpty())
-                .map(torneo -> convertirResumen(torneo, ahora))
-                .toList();
-    }
+    public TorneoDetalle buscar(long id){if(id<=0)throw new IllegalArgumentException("El ID del torneo debe ser positivo.");Torneo t=torneoDAO.buscar(id);
+        if(t==null||!t.isActivo()||!esPublico(t))throw new TorneoPublicoNoEncontradoException();LocalDateTime ahora=LocalDateTime.now();
+        List<Categoria> categorias=categoriaDAO.listarActivasPorTorneo(t.getId()).stream().map(c->convertirCategoria(c,t.inscripcionDisponible(ahora))).toList();
+        return new TorneoDetalle(t.getId(),t.getNombre(),t.getDescripcion(),t.getFechaInicio(),t.getFechaFin(),t.getInscripcionDesde(),t.getInscripcionHasta(),t.getEstado().name(),t.getReglamento(),t.inscripcionDisponible(ahora),categorias);}
 
-    public TorneoDetalle buscar(long id) {
-        if (id <= 0) {
-            throw new IllegalArgumentException(
-                    "El ID del torneo debe ser positivo.");
-        }
-        Torneo torneo = torneoDAO.buscar(id);
-        if (torneo == null || !torneo.isActivo() || !esPublico(torneo)) {
-            throw new TorneoPublicoNoEncontradoException();
-        }
-        LocalDateTime ahora = LocalDateTime.now();
-        List<Categoria> categorias = categoriaDAO
-                .listarActivasPorTorneo(torneo.getId())
-                .stream()
-                .map(categoria -> convertirCategoria(
-                        categoria,
-                        torneo.inscripcionDisponible(ahora)))
-                .toList();
-        return new TorneoDetalle(
-                torneo.getId(),
-                torneo.getNombre(),
-                torneo.getDescripcion(),
-                torneo.getFechaInicio(),
-                torneo.getFechaFin(),
-                torneo.getInscripcionDesde(),
-                torneo.getInscripcionHasta(),
-                torneo.getEstado().name(),
-                torneo.getReglamento(),
-                torneo.inscripcionDisponible(ahora),
-                categorias);
-    }
-
-    private TorneoResumen convertirResumen(
-            Torneo torneo,
-            LocalDateTime ahora) {
-        int cantidadCategorias = categoriaDAO
-                .listarActivasPorTorneo(torneo.getId())
-                .size();
-        return new TorneoResumen(
-                torneo.getId(),
-                torneo.getNombre(),
-                torneo.getDescripcion(),
-                torneo.getFechaInicio(),
-                torneo.getFechaFin(),
-                torneo.getInscripcionDesde(),
-                torneo.getInscripcionHasta(),
-                torneo.getEstado().name(),
-                torneo.inscripcionDisponible(ahora),
-                cantidadCategorias);
-    }
-
-    private Categoria convertirCategoria(
-            TorneoCategoria categoria,
-            boolean inscripcionTorneoDisponible) {
-        boolean disponible = inscripcionTorneoDisponible
-                && categoria.isActivo()
-                && categoria.tieneCupoDisponible();
-        return new Categoria(
-                categoria.getId(),
-                categoria.getNombre(),
-                categoria.getRama().name(),
-                categoria.getCupoParejas(),
-                categoria.getParejasConfirmadas(),
-                categoria.getCuposDisponibles(),
-                categoria.getPrecioInscripcion(),
-                categoria.getPremioCampeon(),
-                categoria.getPremioSubcampeon(),
-                categoria.getPremioDescripcion(),
-                disponible,
-                categoria.getFormatoCompetencia().name(),
-                categoria.getCantidadGruposTres(),
-                categoria.getCantidadGruposCuatro(),
-                categoria.getClasificadosProyectados());
-    }
-
-    private boolean esPublico(Torneo torneo) {
-        EstadoTorneo estado = torneo.getEstado();
-        return estado != EstadoTorneo.BORRADOR
-                && estado != EstadoTorneo.CANCELADO;
-    }
-
-    public static class TorneoPublicoNoEncontradoException
-            extends RuntimeException {
-
-        public TorneoPublicoNoEncontradoException() {
-            super("El torneo solicitado no existe o no esta publicado.");
-        }
-    }
+    static String estadoPortal(String e){return "FINALIZADO".equals(e)?"FINALIZADO":"EN_CURSO".equals(e)?"EN_CURSO":"PROXIMO";}
+    static String etapa(TorneoCatalogoPublicoDAO.Resumen x){if("FINALIZADO".equals(x.estado()))return "FINALIZADA";if("EN_CURSO".equals(x.estado())){if(x.tieneEliminatorias())return "ELIMINATORIAS";if(x.tieneGrupos())return "GRUPOS";return "PREPARACION";}if("INSCRIPCION_ABIERTA".equals(x.estado()))return "INSCRIPCION";return "PREPARACION";}
+    private static boolean inscripcionDisponible(TorneoCatalogoPublicoDAO.Resumen x,LocalDateTime a){return "INSCRIPCION_ABIERTA".equals(x.estado())&&!a.isBefore(x.inscripcionDesde())&&!a.isAfter(x.inscripcionHasta())&&x.cuposDisponibles()>0;}
+    private Categoria convertirCategoria(TorneoCategoria c,boolean abierta){boolean disponible=abierta&&c.isActivo()&&c.tieneCupoDisponible();return new Categoria(c.getId(),c.getNombre(),c.getRama().name(),c.getCupoParejas(),c.getParejasConfirmadas(),c.getCuposDisponibles(),c.getPrecioInscripcion(),c.getPremioCampeon(),c.getPremioSubcampeon(),c.getPremioDescripcion(),disponible,c.getFormatoCompetencia().name(),c.getCantidadGruposTres(),c.getCantidadGruposCuatro(),c.getClasificadosProyectados());}
+    private boolean esPublico(Torneo t){return t.getEstado()!=EstadoTorneo.BORRADOR&&t.getEstado()!=EstadoTorneo.CANCELADO;}
+    public static class TorneoPublicoNoEncontradoException extends RuntimeException{public TorneoPublicoNoEncontradoException(){super("El torneo solicitado no existe o no esta publicado.");}}
 }

@@ -5,11 +5,33 @@ import ModalCuadroTorneo from '../components/ModalCuadroTorneo.astro';
 
 ---
 <LayoutPrincipal titulo="Torneos | Pádel Reservas" actual="torneos">
-  <section class="tournaments-hero"><div class="container-site tournaments-hero-grid"><div><p class="site-kicker">Competencia pública</p><h1>Viví cada etapa del torneo</h1><p>Inscribí tu pareja, seguí los grupos, consultá posiciones y recorré el cuadro eliminatorio desde un único lugar.</p></div><div class="tournaments-hero-flow"><span><b>01</b> Inscripción</span><span><b>02</b> Grupos</span><span><b>03</b> Eliminatorias</span></div></div></section>
-  <section class="container-site tournaments-shell">
-    <div id="resumenTorneos" class="tournaments-metrics hidden"></div>
-    <div class="tournaments-heading"><div><p class="site-kicker">Calendario competitivo</p><h2>Torneos publicados</h2></div><p>La información se actualiza con los resultados y la programación registrada por la organización.</p></div>
-    <div id="listaTorneos" class="tournaments-list"></div>
+  
+  <section class="container-site tournament-catalog-shell">
+    <div id="vistaCatalogoTorneos" class="tournament-catalog-view">
+      <header class="tournament-catalog-heading">
+        <div><p class="site-kicker">Calendario competitivo</p><h2>Encontrá tu próxima competencia</h2><p>Explorá torneos, compará categorías y seguí cada etapa sin recorrer información innecesaria.</p></div>
+        <div id="resumenTorneos" class="tournament-catalog-summary" aria-live="polite"></div>
+      </header>
+      <nav id="pestanasTorneos" class="tournament-catalog-tabs" aria-label="Estados de torneos"></nav>
+      <div class="tournament-catalog-toolbar">
+        <label class="tournament-search"><span class="sr-only">Buscar torneo o categoría</span><input id="buscarTorneo" type="search" placeholder="Buscar torneo o categoría" autocomplete="off"><i aria-hidden="true">⌕</i></label>
+        <button id="abrirFiltrosTorneos" class="tournament-filter-trigger" type="button" aria-controls="panelFiltrosTorneos" aria-expanded="false">Filtros <span id="cantidadFiltrosTorneos" class="hidden">0</span></button>
+      </div>
+      <div class="tournament-catalog-layout">
+        <aside id="panelFiltrosTorneos" class="tournament-filter-panel" aria-label="Filtros de torneos">
+          <header><div><p class="site-kicker">Refinar búsqueda</p><h3>Filtros</h3></div><button id="cerrarFiltrosTorneos" type="button" aria-label="Cerrar filtros">×</button></header>
+          <label class="tournament-check"><input id="filtroInscripcion" type="checkbox"><span>Solo con inscripción abierta</span></label>
+          <label>Rama<select id="filtroRama"><option value="">Todas las ramas</option></select></label>
+          <label>Formato<select id="filtroFormato"><option value="">Todos los formatos</option></select></label>
+          <footer><button id="limpiarFiltrosTorneos" type="button">Limpiar</button><button id="aplicarFiltrosTorneos" class="btn btn-primary" type="button">Ver resultados</button></footer>
+        </aside>
+        <main class="tournament-results"><div class="tournament-results-header"><div id="estadoCatalogoTorneos" class="tournament-results-meta"></div><div id="chipsFiltrosTorneos" class="tournament-filter-chips" aria-live="polite"></div></div><div id="listaTorneos" class="tournament-catalog-grid"></div><button id="mostrarMasTorneos" class="tournament-load-more hidden" type="button">Mostrar más</button></main>
+      </div>
+    </div>
+    <div id="vistaDetalleTorneo" class="tournament-detail-view hidden">
+      <div id="detalleTorneoHost"></div>
+    </div>
+    <div id="fondoFiltrosTorneos" class="tournament-filter-backdrop hidden"></div>
   </section>
   <ModalInscripcionTorneo />
   <ModalCuadroTorneo />
