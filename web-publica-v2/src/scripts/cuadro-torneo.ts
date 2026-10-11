@@ -107,26 +107,7 @@ function activarRondaMovil(indice:number,enfocar=false){
   botones[indiceRondaMovil].scrollIntoView({behavior:movimientoReducido()?'auto':'smooth',block:'nearest',inline:'center'});
   if(enfocar)botones[indiceRondaMovil].focus();
 }
-function mostrarAyudaArrastre(){
-  if(!contenido)return;
-  contenido.querySelector('.bracket-drag-hint')?.remove();
-  const ayuda=document.createElement('div');ayuda.className='bracket-drag-hint';ayuda.textContent='Arrastra para recorrer la llave';
-  contenido.querySelector('.bracket-canvas-wrap')?.appendChild(ayuda);
-  requestAnimationFrame(()=>ayuda.classList.add('visible'));
-  window.setTimeout(()=>{ayuda.classList.remove('visible');window.setTimeout(()=>ayuda.remove(),220)},2400);
-}
 // cierre-movil-llave-v42-20261011
-function alternarVistaMovil(){
-  if(!contenido)return;
-  if(esVistaMovil()){
-    contenido.classList.remove('mobile-full-bracket');
-    contenido.classList.add('mobile-round-bracket');
-    aplicarEscala(1,false);
-    activarRondaMovil(indiceRondaMovil);
-    return;
-  }
-}
-
 function enfocarRondaEscritorio(nombre:string){
   if(!contenido||esVistaMovil())return;
   const viewport=contenido.querySelector<HTMLElement>('.bracket-viewport');
@@ -203,18 +184,6 @@ function configurarArrastre() {
   viewport.addEventListener('click',event=>{if(movido){event.preventDefault();event.stopPropagation();movido=false;}},true);
 }
 
-function centroVisible() {
-  const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport');
-  if(!viewport)return {x:0,y:0};
-  return {x:viewport.scrollLeft+viewport.clientWidth/2,y:viewport.scrollTop+viewport.clientHeight/2};
-}
-function centrarVista() {
-  const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport');
-  const shell=contenido?.querySelector<HTMLElement>('.bracket-size-shell');
-  if(!viewport||!shell)return;
-  viewport.scrollLeft=Math.max(0,(shell.offsetWidth-viewport.clientWidth)/2);
-  viewport.scrollTop=Math.max(0,(shell.offsetHeight-viewport.clientHeight)/2);
-}
 function aplicarEscala(valor: number, conservarCentro=true) {
   const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport');
   const stage=contenido?.querySelector<HTMLElement>('.bracket-stage');

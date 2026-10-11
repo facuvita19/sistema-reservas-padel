@@ -1,0 +1,17 @@
+---
+import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
+---
+<LayoutPrincipal titulo="Página no encontrada | Pádel Reservas" descripcion="La página solicitada no existe o cambió de ubicación." actual="inicio" indexable={false}>
+  <section class="container-site" style="min-height:70vh;display:grid;place-items:center;padding-block:7rem;">
+    <div style="max-width:720px;text-align:center;">
+      <p class="site-kicker">Error 404</p>
+      <h1 style="font-size:clamp(2.5rem,8vw,5.5rem);line-height:.95;margin:1rem 0;">Esta pelota quedó fuera.</h1>
+      <p style="max-width:580px;margin:0 auto 2rem;color:#94a3b8;font-size:1.08rem;line-height:1.8;">La dirección no existe o fue movida. Volvé al inicio, consultá disponibilidad o explorá los torneos del club.</p>
+      <div style="display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;">
+        <a class="btn btn-primary" href="/">Volver al inicio</a>
+        <a class="btn btn-secondary" href="/reservar">Reservar cancha</a>
+        <a class="btn btn-secondary" href="/torneos">Ver torneos</a>
+      </div>
+    </div>
+  </section>
+</LayoutPrincipal>

@@ -1,7 +1,7 @@
 import { api, type TorneoDetalle, type TorneoResumen, type CompetenciaCategoriaPublica, type CuadroCategoriaPublico, type PartidoCuadroPublico } from './api';
 import { abrirCuadroTorneo } from './cuadro-torneo';
 import { abrirCentroCompetitivo, manejarCentroCompetitivoClick, centroActivo, restaurarCentroDesdeUrl } from './centro-competitivo-premium';
-import {etiqueta, fecha, fechaHora, moneda, rangoFechas } from './formatos';
+import { etiqueta, fecha, moneda, rangoFechas } from './formatos';
 
 type Perfil = { nombre?: string; apellido?: string; telefono?: string };
 type SolicitudCreada = { inscripcionId: number; estado: string; mensaje: string };
@@ -20,18 +20,7 @@ let ultimoFoco: HTMLElement | null = null;
 let enviandoInscripcion = false;
 let inscripcionCompletada = false;
 
-function disponibilidad(torneo: TorneoDetalle) {
-  if (torneo.inscripcionDisponible) return { texto: 'Inscripción abierta', clase: 'text-emerald-300 border-emerald-500/30 bg-emerald-500/10' };
-  const ahora = new Date();
-  const desde = new Date(torneo.inscripcionDesde);
-  const hasta = new Date(torneo.inscripcionHasta);
-  if (ahora < desde) return { texto: `Abre ${fechaHora(torneo.inscripcionDesde)}`, clase: 'text-amber-200 border-amber-500/30 bg-amber-500/10' };
-  if (ahora > hasta) return { texto: 'Inscripción finalizada', clase: 'text-slate-300 border-slate-500/30 bg-slate-500/10' };
-  return { texto: etiqueta(torneo.estado), clase: 'text-slate-300 border-slate-500/30 bg-slate-500/10' };
-}
-
 function precioCategoria(valor:number){return Number(valor)===0?'Gratis':moneda(valor)}
-function motivoInscripcion(torneo:TorneoDetalle,categoria:TorneoDetalle['categorias'][number]){if(torneo.estado==='FINALIZADO')return 'Torneo finalizado';if(categoria.cuposDisponibles<=0)return 'Cupos completos';if(!torneo.inscripcionDisponible)return 'Inscripción cerrada';return 'No disponible'}
 function formatoCategoria(valor:string){return valor==='GRUPOS_ELIMINACION'?'Grupos + eliminación':'Eliminación directa'}
 function etapaTexto(valor:string){return ({PREPARACION:'Preparación',GRUPOS_EN_PREPARACION:'Grupos en preparación',GRUPOS_EN_CURSO:'Fase de grupos',GRUPOS_FINALIZADOS:'Grupos finalizados',DESEMPATE_PENDIENTE:'Desempate pendiente',ELIMINATORIAS:'Etapa eliminatoria',FINALIZADA:'Competencia finalizada'} as Record<string,string>)[valor]||etiqueta(valor)}
 function estadoCompetencia(etapa:string){if(etapa==='FINALIZADA')return'complete';if(etapa==='DESEMPATE_PENDIENTE')return'warning';if(etapa==='ELIMINATORIAS'||etapa==='GRUPOS_EN_CURSO'||etapa==='GRUPOS_FINALIZADOS')return'live';return'pending'}
@@ -61,12 +50,6 @@ function tarjetaPosicionMovil(p:CompetenciaCategoriaPublica['grupos'][number]['p
   return `<article class="competition-position-card ${clase}"><header><b>${p.posicion}</b><div><strong>${escapeHtml(p.pareja)}</strong><span>PJ ${p.partidosJugados} · PG ${p.partidosGanados} · PP ${p.partidosPerdidos}</span></div><i>${escapeHtml(etiqueta(p.estado))}</i></header><details><summary>Ver estadísticas</summary><dl><div><dt>Sets</dt><dd>${p.setsGanados}-${p.setsPerdidos}</dd></div><div><dt>Diferencia de sets</dt><dd>${p.diferenciaSets}</dd></div><div><dt>Games</dt><dd>${p.gamesGanados}-${p.gamesPerdidos}</dd></div><div><dt>Diferencia de games</dt><dd>${p.diferenciaGames}</dd></div></dl></details></article>`;
 }
 
-function tarjeta(torneo: TorneoDetalle) {
- const estado=disponibilidad(torneo);
- const categorias=torneo.categorias.map(c=>{const habilitada=torneo.inscripcionDisponible&&c.disponible&&c.cuposDisponibles>0;const porcentaje=Math.min(100,c.cupoParejas?c.parejasConfirmadas/c.cupoParejas*100:0);return `<article class="tournament-category" data-category="${c.id}"><header><div><span>${escapeHtml(etiqueta(c.rama))}</span><h3>${escapeHtml(c.nombre)}</h3></div><b>${precioCategoria(c.precioInscripcion)}</b></header><p class="tournament-format">${escapeHtml(formatoCategoria(c.formatoCompetencia))}</p><div class="tournament-occupancy"><i style="width:${porcentaje}%"></i></div><div class="tournament-capacity"><span><b>${c.parejasConfirmadas}</b> confirmadas</span><span><b>${c.cuposDisponibles}</b> cupos libres</span></div><div class="tournament-category-actions"><button class="competition-open btn btn-secondary" type="button" data-categoria-id="${c.id}">Seguir competencia</button><button class="${habilitada?'inscribir-pareja btn btn-primary':'btn btn-ghost'}" ${habilitada?'':'disabled'} type="button" data-categoria-id="${c.id}" data-resumen="${escapeHtml(`${torneo.nombre} · ${c.nombre} · ${etiqueta(c.rama)} · ${precioCategoria(c.precioInscripcion)}`)}">${habilitada?'Inscribir pareja':motivoInscripcion(torneo,c)}</button></div></article>`}).join('');
- return `<article class="tournament-card"><header class="tournament-card-head"><div><span class="tournament-status ${torneo.inscripcionDisponible?'open':'closed'}">${escapeHtml(estado.texto)}</span><h2>${escapeHtml(torneo.nombre)}</h2><p>${escapeHtml(torneo.descripcion||'Competencia de pádel')}</p></div><div class="tournament-dates"><small>Calendario</small><strong>${rangoFechas(torneo.fechaInicio,torneo.fechaFin)}</strong><span>Calendario completo</span></div></header><div class="tournament-card-meta"><span><small>Estado</small><b>${escapeHtml(etiqueta(torneo.estado))}</b></span><span><small>Categorías</small><b>${torneo.categorias.length}</b></span><span><small>Inscripciones hasta</small><b>${fechaHora(torneo.inscripcionHasta)}</b></span></div><div class="tournament-categories">${categorias}</div><div class="competition-slot hidden" id="competencia-torneo-${torneo.id}"></div>${torneo.reglamento?`<details class="tournament-rules"><summary>Reglamento del torneo</summary><p>${escapeHtml(torneo.reglamento)}</p></details>`:''}</article>`;
-}
-function parejaCompetencia(p?:{jugadores:string[]}|null){return p?.jugadores?.length?p.jugadores.map(escapeHtml).join(' / '):'Por definir'}
 function abreviaturas(){return '<p class="competition-legend"><b>PJ</b>: jugados · <b>PG</b>: ganados · <b>PP</b>: perdidos · <b>DS</b>: diferencia de sets · <b>DG</b>: diferencia de games</p>'}
 function tablaPosiciones(g:CompetenciaCategoriaPublica['grupos'][number]){const filas=g.posiciones.map(p=>`<tr class="${p.estado==='CLASIFICADO'?'qualified':p.estado==='DESEMPATE_PENDIENTE'?'tie':''}"><td><b>${p.posicion}</b></td><td>${escapeHtml(p.pareja)}</td><td>${p.partidosJugados}</td><td>${p.partidosGanados}</td><td>${p.partidosPerdidos}</td><td>${p.setsGanados}-${p.setsPerdidos}</td><td>${p.diferenciaSets}</td><td>${p.gamesGanados}-${p.gamesPerdidos}</td><td>${p.diferenciaGames}</td><td><span>${escapeHtml(etiqueta(p.estado))}</span></td></tr>`).join('');const movil=g.posiciones.map(tarjetaPosicionMovil).join('');return `<div class="competition-table-desktop"><div class="competition-table-wrap"><table><thead><tr><th>#</th><th>Pareja</th><th>PJ</th><th>PG</th><th>PP</th><th>Sets</th><th>DS</th><th>Games</th><th>DG</th><th>Estado</th></tr></thead><tbody>${filas}</tbody></table></div>${abreviaturas()}</div><div class="competition-positions-mobile">${movil}</div>`}
 function integrantesPareja(p?:{jugadores:string[]}|null){if(!p?.jugadores?.length)return '<span>Por definir</span>';return p.jugadores.map(j=>`<span>${escapeHtml(j)}</span>`).join('')}
@@ -108,10 +91,6 @@ function limpiarErroresInscripcion(){
     const input=campo(id);input.removeAttribute('aria-invalid');input.classList.remove('field-invalid');
     const mensaje=document.getElementById('error-'+id);if(mensaje){mensaje.textContent='';mensaje.classList.add('hidden')}
   });
-}
-function errorCampo(id:string,mensaje:string){
-  const input=campo(id);input.setAttribute('aria-invalid','true');input.classList.add('field-invalid');
-  const caja=document.getElementById('error-'+id);if(caja){caja.textContent=mensaje;caja.classList.remove('hidden')}
 }
 function primerCampoVacio(){return ['responsableNombre','responsableApellido','responsableTelefono','parejaNombre','parejaApellido','parejaTelefono'].map(campo).find(x=>!x.value.trim())||campo('parejaNombre')}
 function actualizarContadorComentarios(){document.getElementById('contadorComentarios')!.textContent=`${campo('comentariosInscripcion').value.length}/500`}
@@ -330,7 +309,7 @@ function crearSelectPremium(select:HTMLSelectElement){
  const boton=document.createElement('button');boton.type='button';boton.className='premium-select-trigger';boton.setAttribute('aria-haspopup','listbox');boton.setAttribute('aria-expanded','false');
  const lista=document.createElement('div');lista.className='premium-select-menu';lista.setAttribute('role','listbox');lista.tabIndex=-1;
  select.insertAdjacentElement('afterend',raiz);raiz.append(select,boton,lista);select.classList.add('premium-select-native');
- const dibujar=()=>{const opciones=[...select.options];const actual=opciones.find(o=>o.value===select.value)||opciones[0];boton.innerHTML=`<span><small>${escapeHtml(select.dataset.premiumSelect||'Seleccionar')}</small><b>${escapeHtml(actual?.text||'Seleccionar')}</b></span><i aria-hidden="true"></i>`;lista.innerHTML=opciones.map((o,i)=>`<button type="button" role="option" data-value="${escapeHtml(o.value)}" aria-selected="${o.value===select.value}" tabindex="-1"><span>${escapeHtml(o.text)}</span><i aria-hidden="true">${o.value===select.value?'✓':''}</i></button>`).join('')};
+ const dibujar=()=>{const opciones=[...select.options];const actual=opciones.find(o=>o.value===select.value)||opciones[0];boton.innerHTML=`<span><small>${escapeHtml(select.dataset.premiumSelect||'Seleccionar')}</small><b>${escapeHtml(actual?.text||'Seleccionar')}</b></span><i aria-hidden="true"></i>`;lista.innerHTML=opciones.map(o=>`<button type="button" role="option" data-value="${escapeHtml(o.value)}" aria-selected="${o.value===select.value}" tabindex="-1"><span>${escapeHtml(o.text)}</span><i aria-hidden="true">${o.value===select.value?'✓':''}</i></button>`).join('')};
  const abrir=(valor:boolean)=>{cerrarSelectsPremium(valor?raiz:undefined);raiz.classList.toggle('open',valor);boton.setAttribute('aria-expanded',String(valor));if(valor){const rect=raiz.getBoundingClientRect(),espacioAbajo=innerHeight-rect.bottom;raiz.classList.toggle('open-up',espacioAbajo<Math.min(300,lista.scrollHeight+18));requestAnimationFrame(()=>lista.querySelector<HTMLElement>('[aria-selected="true"]')?.focus())}};
  boton.addEventListener('click',()=>abrir(!raiz.classList.contains('open')));
  lista.addEventListener('click',e=>{const opcion=(e.target as HTMLElement).closest<HTMLButtonElement>('[data-value]');if(!opcion)return;select.value=opcion.dataset.value||'';select.dispatchEvent(new Event('change',{bubbles:true}));dibujar();abrir(false);boton.focus()});

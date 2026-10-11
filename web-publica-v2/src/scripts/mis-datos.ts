@@ -2,7 +2,6 @@ import { escucharSesion, actualizarPerfilSesion } from './sesion-global';
 import { api } from './api';
 type Posicion='DRIVE'|'REVES'|null;type Perfil={clienteId:number;nombre:string;apellido:string;documento:string;telefono:string;email:string;posicionPreferida:Posicion};
 const e=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;let perfilActual:Perfil|null=null,editando=false,guardando=false;
-const campos=['datosNombre','datosApellido','datosTelefono','datosEmail'] as const;
 function mostrarModo(modo:'carga'|'contenido'|'sesion'){e('cargandoDatos').classList.toggle('hidden',modo!=='carga');e('contenidoDatos').classList.toggle('hidden',modo!=='contenido');e('sinSesionDatos').classList.toggle('hidden',modo!=='sesion')}
 function posicion():Posicion{const x=document.querySelector<HTMLInputElement>('input[name="posicionPreferida"]:checked');return x?.value===''?null:(x?.value as Posicion)||null}
 function etiquetaPosicion(p:Posicion){return p==='DRIVE'?'Drive':p==='REVES'?'Revés':'Sin preferencia'}
