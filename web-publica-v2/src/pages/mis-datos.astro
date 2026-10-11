@@ -1,7 +1,7 @@
 ---
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
-<LayoutPrincipal titulo="Mi cuenta | Pádel Reservas" descripcion="Administrá tus datos personales, preferencias y seguridad." actual="cuenta">
+<LayoutPrincipal titulo="Mi cuenta | Pádel Reservas" descripcion="Administrá tus datos personales, preferencias y seguridad." actual="cuenta"><div class="account-v78-page">
   <section class="account-v2-hero"><div class="container-site account-v2-hero-grid"><div><p class="site-kicker">Cuenta de cliente</p><h1>Tu perfil, <strong>simple y protegido.</strong></h1><p>Revisá tus datos, ajustá tus preferencias y administrá el acceso a tu cuenta.</p></div><a class="btn btn-secondary" href="/mis-reservas">Ver mis reservas</a></div></section>
   <section class="container-site account-v2-shell">
     <div id="cargandoDatos" class="account-v2-loading" aria-live="polite"><span></span><div><strong>Cargando tu perfil</strong><p>Estamos recuperando la información de tu cuenta.</p></div></div>
@@ -15,7 +15,7 @@ import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
       <main class="account-v2-content">
         <form id="formDatos" class="account-v2-card" novalidate>
           <header class="account-v2-card-head"><div><p class="site-kicker">Perfil</p><h2>Información personal</h2><p>Estos datos identifican tus reservas y permiten que el complejo se comunique con vos.</p></div><div class="account-v2-head-actions"><span id="estadoEdicion" class="account-v2-state">Información actual</span><button id="editarDatos" class="btn btn-secondary" type="button">Editar datos</button></div></header>
-          <div id="resumenLectura" class="account-v2-read-grid" aria-live="polite"><div><small>Nombre completo</small><strong id="lecturaNombre">-</strong></div><div><small>Teléfono</small><strong id="lecturaTelefono">-</strong></div><div class="full"><small>Correo de acceso</small><strong id="lecturaEmail">-</strong></div><div><small>Documento</small><strong id="lecturaDocumento">-</strong><span>Dato protegido</span></div><div><small>Posición preferida</small><strong id="lecturaPosicion">Sin preferencia</strong></div></div>
+          <div id="resumenLectura" class="account-v2-read-grid" aria-live="polite"><div class="account-v78-editable"><small>Nombre completo</small><strong id="lecturaNombre">-</strong></div><div class="account-v78-editable"><small>Teléfono</small><strong id="lecturaTelefono">-</strong></div><div class="full account-v78-protected"><small>Correo de acceso</small><strong id="lecturaEmail">-</strong><span>Acceso protegido</span></div><div class="account-v78-protected"><small>Documento</small><strong id="lecturaDocumento">-</strong><span>Dato protegido</span></div><div class="account-v78-editable"><small>Posición preferida</small><strong id="lecturaPosicion">Sin preferencia</strong></div></div>
           <div id="editorDatos" class="hidden account-v2-editor">
             <div class="account-v2-form-grid">
               <label><span class="etiqueta-web">Nombre *</span><input id="datosNombre" class="field-web" maxlength="100" autocomplete="given-name" aria-describedby="errorDatosNombre"/><small id="errorDatosNombre" class="account-v2-field-error" data-error="datosNombre"></small></label>
@@ -48,4 +48,4 @@ import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
   </section>
   <!-- navegacion-tab-password-mi-cuenta-v4-20261010 -->
   <script>import '../scripts/mis-datos';</script>
-</LayoutPrincipal>
+</div></LayoutPrincipal>

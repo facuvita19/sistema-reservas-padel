@@ -1,21 +1,36 @@
 ---
 import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
-<LayoutPrincipal titulo="Arena Pádel | Reservas y torneos" descripcion="Reservá tu cancha, seguí tus turnos y viví los torneos del club." actual="inicio">
-<section class="home-v2-hero">
- <div class="home-v2-glow"></div><div class="container-site home-v2-hero-grid">
-  <div class="home-v2-copy"><p class="home-v2-eyebrow"><span></span> Reservas online disponibles</p><h1>Tu próximo partido <strong>empieza acá.</strong></h1><p>Elegí cancha y horario, reservá online y seguí todo desde <b id="nombreComplejo">tu club</b>.</p><div class="home-v2-actions"><a class="btn btn-primary" href="#reserva-rapida">Buscar un turno</a><a id="accionReservasHero" class="btn btn-secondary" href="/mis-reservas">Mis próximas reservas</a><a class="home-v2-link" href="/torneos">Explorar torneos <span>→</span></a></div><div class="home-v2-trust"><span>Disponibilidad real</span><span>Seguimiento online</span><span>Torneos actualizados</span></div></div>
-  <div class="home-v2-stage" aria-label="Información operativa del club"><header><span>Club online</span><b id="heroDisponibilidad">Preparando disponibilidad</b></header><div class="home-v2-court"><i></i><i></i><i></i><i></i><b></b></div><div class="home-v2-stage-facts"><span><small>Turnos desde</small><strong id="datoTurno">Cargando...</strong></span><span><small>Canchas activas</small><strong id="datoCanchas">-</strong></span></div></div>
+<!-- inicio-operativo-premium-v64-20261011 -->
+<LayoutPrincipal titulo="Arena Pádel | Reservas y torneos" descripcion="Encontrá disponibilidad real, reservá tu cancha y seguí toda la actividad del club." actual="inicio">
+<section class="hx-hero" aria-labelledby="hx-title">
+ <div class="hx-atmosphere" aria-hidden="true"><i></i><i></i><i></i></div>
+ <div class="container-site hx-hero-grid">
+  <div class="hx-copy">
+   <p class="hx-eyebrow"><span></span><b id="hxClubEstado">Club online</b><em id="hxClubDia">Consultando agenda</em></p>
+   <h1 id="hx-title">Tu próximo partido <strong>empieza acá.</strong></h1>
+   <p>Elegí el momento ideal, encontrá una cancha disponible y reservá online en <b id="nombreComplejo">tu club</b>.</p>
+   <div class="hx-actions"><a class="btn btn-primary" href="#disponibilidad">Ver horarios disponibles</a><a id="accionReservasHero" class="btn btn-secondary" href="/mis-reservas">Ver mis reservas</a><a class="hx-text-link" href="/torneos">Explorar torneos <span>→</span></a></div>
+   <ul class="hx-proof" aria-label="Beneficios"><li>Disponibilidad real</li><li>Reserva protegida</li><li>Seguimiento online</li></ul>
+  </div>
+  <aside id="hxAvailabilityPanel" class="hx-live" aria-live="polite" aria-busy="true">
+   <div class="hx-live-loading"><span></span><p><small>Próxima disponibilidad</small><b>Revisando la agenda del club</b></p></div>
+  </aside>
  </div>
 </section>
-<section id="reserva-rapida" class="container-site home-v2-booking">
- <form id="formReservaRapida" novalidate><div class="home-v2-booking-title"><p class="site-kicker">Reserva rápida</p><h2>Encontrá tu próximo horario</h2><p>Elegí fecha y cancha. Te llevamos directo a la disponibilidad.</p></div><label><span class="etiqueta-web">Fecha</span><input id="fechaRapida" class="field-web" type="date" required aria-describedby="errorReservaRapida"/></label><label><span class="etiqueta-web">Cancha</span><select id="canchaRapida" class="field-web"><option value="">Cualquier cancha</option></select></label><button id="buscarHorariosRapidos" class="btn btn-primary" type="submit">Buscar horarios</button><p id="errorReservaRapida" class="home-v2-form-error hidden" role="alert"></p></form>
- <div class="home-v2-booking-facts" aria-label="Condiciones de reserva"><span><small>Canchas</small><b id="metricaCanchas">-</b></span><span><small>Duración habitual</small><b id="metricaDuracion">-</b></span><span><small>Seña requerida</small><b id="datoSenia">-</b></span><span><small>Plazo para acreditar</small><b id="metricaPlazo">-</b></span></div>
+<section id="disponibilidad" class="container-site hx-finder" aria-labelledby="hx-finder-title">
+ <header><div><p class="site-kicker">Disponibilidad en vivo</p><h2 id="hx-finder-title">Elegí cuándo querés jugar</h2><p>Consultamos todas las canchas y reunimos los mejores horarios para vos.</p></div><div class="hx-finder-date"><input id="fechaRapida" class="field-web" type="date" aria-label="Fecha del partido"></div></header>
+ <div id="hxFinderState" class="hx-finder-state" aria-live="polite"><span class="hx-spinner"></span><p><b>Preparando horarios</b><small>Esto puede tardar unos segundos.</small></p></div>
+ <div id="hxSlots" class="hx-slots hidden" role="list"></div>
+ <div class="hx-finder-footer"><p id="hxFinderSummary">Consultando disponibilidad…</p><a id="hxAllAvailability" class="btn btn-primary" href="/reservar">Ver todos los horarios</a></div>
 </section>
-<section class="container-site home-v2-section" id="canchas"><header class="home-v2-section-head"><div><p class="site-kicker">Nuestras canchas</p><h2>Elegí dónde jugar</h2></div><div><p id="direccionComplejo">Cargando ubicación...</p><a href="/reservar">Ver toda la disponibilidad →</a></div></header><div id="estadoPortada" class="home-v2-state" aria-live="polite"><span class="home-loader"></span><div><b>Conectando con el complejo</b><p>Estamos preparando canchas, precios y disponibilidad.</p></div></div><div id="canchasDestacadas" class="home-v2-courts"></div></section>
-<section class="home-v2-process"><div class="container-site"><p class="site-kicker">Simple y rápido</p><div class="home-v2-process-grid"><article><span>1</span><div><h3>Elegí fecha y cancha</h3><p>Consultá opciones publicadas por el complejo.</p></div></article><article><span>2</span><div><h3>Seleccioná un horario</h3><p>Revisá precio, duración y disponibilidad.</p></div></article><article><span>3</span><div><h3>Confirmá la reserva</h3><p>Acreditá la seña y seguí el estado online.</p></div></article></div></div></section>
-<section class="container-site home-v2-section"><header class="home-v2-section-head"><div><p class="site-kicker gold">Competencia</p><h2>Viví cada instancia</h2></div><a href="/torneos">Ver todos los torneos →</a></header><div id="torneoDestacado" class="home-v2-tournament"><div class="skeleton h-5 w-32 rounded"></div><div class="skeleton mt-4 h-10 w-3/4 rounded"></div><div class="skeleton mt-5 h-20 rounded-xl"></div></div></section>
-<section id="contacto" class="container-site home-v2-section"><div class="home-v2-contact"><div><p class="site-kicker">Contacto</p><h2>Tu club, siempre cerca</h2><p id="contactoDescripcion">Encontrá la ubicación y los canales de contacto del complejo.</p></div><div id="contactoComplejo" class="home-v2-contact-links"><span>Cargando datos de contacto...</span></div></div></section>
-<section class="container-site home-v2-final"><div><p class="site-kicker">Tu próximo partido</p><h2>Tu próximo turno está a unos clics.</h2></div><div><a class="btn btn-primary" href="/reservar">Reservar ahora</a><a class="home-v2-link" href="/mis-reservas">Ver mis reservas</a></div></section>
+<section class="container-site hx-courts-section" id="canchas"><header class="hx-section-head"><div><p class="site-kicker">Nuestras canchas</p><h2>Todo listo para jugar</h2></div><div><p id="direccionComplejo">Cargando ubicación…</p><a href="/reservar">Ver disponibilidad →</a></div></header><div id="estadoPortada" class="hx-inline-state" aria-live="polite"><span class="hx-spinner"></span><p><b>Conectando con el complejo</b><small>Preparando canchas y condiciones.</small></p></div><div id="canchasDestacadas" class="hx-courts"></div></section>
+<section id="hxPersonalSection" class="container-site hx-personal hidden" aria-labelledby="hx-personal-title">
+ <header class="hx-section-head"><div><p class="site-kicker">Tu actividad</p><h2 id="hx-personal-title">Todo bajo control</h2></div><a href="/mis-reservas">Abrir Mis reservas →</a></header>
+ <div id="hxPersonalMetrics" class="hx-personal-metrics" aria-live="polite"></div>
+</section>
+<section id="hxJourney" class="hx-journey"><div class="container-site"><p class="site-kicker">Reservar es simple</p><ol><li><span>01</span><div><b>Elegí un horario</b><small>Disponibilidad real para cada cancha.</small></div></li><li><span>02</span><div><b>Protegé tu turno</b><small>Completá tus datos y generá la solicitud.</small></div></li><li><span>03</span><div><b>Acreditá la seña</b><small>Confirmá y seguí todo online.</small></div></li></ol></div></section>
+<section class="container-site hx-section"><header class="hx-section-head"><div><p class="site-kicker gold">Competencia</p><h2>Viví cada instancia</h2></div><a href="/torneos">Ver todos los torneos →</a></header><div id="torneoDestacado" class="hx-tournament"><div class="hx-inline-state"><span class="hx-spinner"></span><p><b>Buscando la próxima competencia</b><small>Preparando categorías y cupos.</small></p></div></div></section>
+<section id="contacto" class="container-site hx-section"><div class="hx-contact"><div><p class="site-kicker">Tu club</p><h2>Todo lo importante, cerca</h2><p id="contactoDescripcion">Ubicación y canales directos para resolver lo que necesites.</p></div><div id="contactoComplejo" class="hx-contact-links"><span>Cargando datos de contacto…</span></div></div></section>
 <script>import '../scripts/portada';</script>
 </LayoutPrincipal>

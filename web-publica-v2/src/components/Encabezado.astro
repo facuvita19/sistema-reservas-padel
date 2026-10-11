@@ -65,7 +65,17 @@ const enlaces=[
   </div>
 </header>
 <script>
+ /* correccion-menu-movil-v63-20261011 */
  const header=document.querySelector<HTMLElement>('[data-site-header]'),menuButton=document.querySelector<HTMLButtonElement>('#menuButton'),mainMenu=document.querySelector<HTMLElement>('#mainMenu'),backdrop=document.querySelector<HTMLElement>('#mainMenuBackdrop'),closeButton=document.querySelector<HTMLButtonElement>('#cerrarMenuMovil');let menuFocus:HTMLElement|null=null;
+ // El panel y su fondo deben escapar del contexto de apilado del encabezado.
+ // Como son nodos globales y conservan sus referencias, moverlos a body no altera los eventos.
+ if(backdrop&&backdrop.parentElement!==document.body)document.body.appendChild(backdrop);
+ if(mainMenu&&mainMenu.parentElement!==document.body)document.body.appendChild(mainMenu);
+ /* sincronizacion-marca-menu-v63b-20261011 */
+ const marcaPrincipal=document.querySelector<HTMLElement>('#marcaNombre'),marcaMovil=document.querySelector<HTMLElement>('#marcaNombreMovil');
+ const sincronizarMarcaMovil=()=>{if(marcaPrincipal&&marcaMovil&&marcaPrincipal.textContent)marcaMovil.textContent=marcaPrincipal.textContent};
+ sincronizarMarcaMovil();
+ if(marcaPrincipal)new MutationObserver(sincronizarMarcaMovil).observe(marcaPrincipal,{childList:true,subtree:true,characterData:true});
  const updateHeight=()=>{if(header)document.documentElement.style.setProperty('--header-height',header.getBoundingClientRect().height+'px')};
  const closeMenu=()=>{mainMenu?.classList.remove('open');backdrop?.classList.remove('open');mainMenu?.setAttribute('aria-hidden','true');menuButton?.setAttribute('aria-expanded','false');document.body.classList.remove('no-scroll');menuFocus?.focus()};
  const openMenu=()=>{menuFocus=document.activeElement as HTMLElement;mainMenu?.classList.add('open');backdrop?.classList.add('open');mainMenu?.setAttribute('aria-hidden','false');menuButton?.setAttribute('aria-expanded','true');document.body.classList.add('no-scroll');setTimeout(()=>closeButton?.focus(),30)};

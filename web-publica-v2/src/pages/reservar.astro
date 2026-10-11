@@ -32,9 +32,12 @@ import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
       <main class="reserve-main">
         <section class="panel-reserva" data-panel="1" tabindex="-1">
           <div class="reserve-panel-head"><div><p class="site-kicker">Paso 1</p><h2>Elegí dónde y cuándo jugar</h2><p>Seleccioná una cancha y la fecha que mejor te quede.</p></div></div>
-          <div class="reserve-date-box">
+          <div class="reserve-date-box reserve-date-box-v74d">
             <label for="fechaReserva"><span class="etiqueta-web">Fecha del turno</span><input id="fechaReserva" class="field-web" type="date" /></label>
-            <div><strong id="ayudaFecha">Elegí una fecha disponible</strong><span id="detalleFecha">Los horarios respetan la anticipación mínima del complejo.</span></div>
+            <div class="reserve-date-facts" aria-live="polite">
+              <span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></i><small>Anticipación mínima</small><strong id="datoAnticipacionFecha">Consultando…</strong></span>
+              <span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M5 9h14M6 5h12a1 1 0 0 1 1 1v14H5V6a1 1 0 0 1 1-1Z"/></svg></i><small>Protección del turno</small><strong id="datoProteccionFecha">Consultando…</strong></span>
+            </div>
           </div>
           <div id="listaCanchasReserva" class="reserve-courts" aria-live="polite">
             <div class="reserve-skeleton skeleton"></div><div class="reserve-skeleton skeleton"></div><div class="reserve-skeleton skeleton"></div>
