@@ -331,3 +331,8 @@ document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>v
 addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);if(cat>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,cat,(p.get('vista')||'resumen') as any,false)}else volverCatalogo(false);});
 addEventListener('f4-back',(e:any)=>{detalleActual=e.detail.torneo;pestanaDetalle='categorias';document.getElementById('detalleTorneoHost')!.innerHTML=detallePremium(detalleActual!);seleccionarPestanaDetalle('categorias',false);});
 cargar();
+
+// accesibilidad-web-v85-20261011
+function accesibilidadFiltrosTorneos(){const panel=document.getElementById('panelFiltrosTorneos');if(!panel)return;const abierto=panel.classList.contains('open');panel.toggleAttribute('inert',!abierto&&matchMedia('(max-width:899px)').matches)}
+document.addEventListener('keydown',ev=>{const panel=document.getElementById('panelFiltrosTorneos');if(!panel?.classList.contains('open')||ev.key!=='Tab'||!matchMedia('(max-width:899px)').matches)return;const f=[...panel.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex="0"]')].filter(x=>x.offsetParent!==null);if(!f.length)return;if(ev.shiftKey&&document.activeElement===f[0]){ev.preventDefault();f.at(-1)?.focus()}else if(!ev.shiftKey&&document.activeElement===f.at(-1)){ev.preventDefault();f[0].focus()}});
+new MutationObserver(accesibilidadFiltrosTorneos).observe(document.getElementById('panelFiltrosTorneos')!,{attributes:true,attributeFilter:['class']});accesibilidadFiltrosTorneos();
