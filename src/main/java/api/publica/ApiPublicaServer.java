@@ -346,7 +346,7 @@ public final class ApiPublicaServer {
         String permitido = System.getProperty("api.cors.origen", "local");
         if ("local".equalsIgnoreCase(permitido)) {
             if (origen != null && origen.matches(
-                    "^http://(localhost|127\\.0\\.0\\.1|10\\.\\d+\\.\\d+\\.\\d+|192\\.168\\.\\d+\\.\\d+|172\\.(1[6-9]|2\\d|3[01])\\.\\d+\\.\\d+):5173$")) {
+                    "^http://(localhost|127\\.0\\.0\\.1|10\\.\\d+\\.\\d+\\.\\d+|192\\.168\\.\\d+\\.\\d+|172\\.(1[6-9]|2\\d|3[01])\\.\\d+\\.\\d+):4321$")) {
                 x.getResponseHeaders().set(
                         "Access-Control-Allow-Origin", origen);
                 x.getResponseHeaders().set("Vary", "Origin");
@@ -378,7 +378,7 @@ public final class ApiPublicaServer {
             valor = System.getProperty("api.web.publica.url");
         }
         return valor == null || valor.isBlank()
-                ? "http://localhost:5173/"
+                ? "http://localhost:4321/"
                 : valor.trim();
     }
 

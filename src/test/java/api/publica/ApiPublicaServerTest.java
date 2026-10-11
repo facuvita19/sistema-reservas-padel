@@ -97,11 +97,11 @@ class ApiPublicaServerTest {
     void corsAceptaLocalhost() throws Exception {
         HttpResponse<String> respuesta = enviar(
                 HttpRequest.newBuilder(URI.create(baseUrl + "/estado"))
-                        .header("Origin", "http://localhost:5173")
+                        .header("Origin", "http://localhost:4321")
                         .GET().build());
 
         assertEquals(200, respuesta.statusCode());
-        assertEquals("http://localhost:5173",
+        assertEquals("http://localhost:4321",
                 encabezado(respuesta, "Access-Control-Allow-Origin"));
     }
 

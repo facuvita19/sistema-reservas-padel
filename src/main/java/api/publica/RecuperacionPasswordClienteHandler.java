@@ -178,7 +178,7 @@ public final class RecuperacionPasswordClienteHandler {
             valor = System.getenv("API_WEB_PUBLICA_URL");
         }
         return valor == null || valor.isBlank()
-                ? "http://localhost:5173/"
+                ? "http://localhost:4321/"
                 : valor.trim();
     }
 
