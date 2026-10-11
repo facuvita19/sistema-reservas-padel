@@ -54,7 +54,7 @@ function piePartido(p: PartidoCuadroPublico) {
 }
 
 function tarjeta(p: PartidoCuadroPublico) {
-  return `<article class="bracket-card state-${p.estado.toLowerCase()}" id="bracket-match-${p.id}" data-match-id="${p.id}" data-next-id="${p.partidoSiguienteId || ''}" data-next-position="${p.posicionSiguiente || ''}"><header><span>${escapeHtml(faseTitulo(p.fase))} · Partido ${p.orden}</span><i>${escapeHtml(etiqueta(p.estado))}</i></header><div class="bracket-teams">${equipo(p,1)}${equipo(p,2)}</div>${piePartido(p)}<i class="bracket-anchor-out" aria-hidden="true"></i></article>`;
+  return `<article class="bracket-card state-${p.estado.toLowerCase()}" id="bracket-match-${p.id}" data-match-id="${p.id}" data-next-id="${p.partidoSiguienteId || ''}" data-next-position="${p.posicionSiguiente || ''}"><header><span>${p.fase === 'FINAL' ? 'Final' : `${escapeHtml(faseTitulo(p.fase))} · Partido ${p.orden}`}</span><i>${escapeHtml(etiqueta(p.estado))}</i></header><div class="bracket-teams">${equipo(p,1)}${equipo(p,2)}</div>${piePartido(p)}<i class="bracket-anchor-out" aria-hidden="true"></i></article>`;
 }
 
 function columnas(cuadro: CuadroCategoriaPublico) {
@@ -62,29 +62,24 @@ function columnas(cuadro: CuadroCategoriaPublico) {
 }
 
 function campeones(cuadro: CuadroCategoriaPublico) {
-  if (!cuadro.campeona) return '<section class="bracket-progress"><div><small>Competencia en curso</small><h3>La pareja campeona se definirá al finalizar el cuadro.</h3></div></section>';
+  if (!cuadro.campeona) return '';
   return `<section class="bracket-champion"><div><small>★ Campeones</small><h3>${escapeHtml(resumenPareja(cuadro.campeona))}</h3><p>Final ${escapeHtml(cuadro.campeona.resultadoFinal || 'sin resultado')}</p></div><button id="enfocarFinal" type="button">Ver final</button></section>`;
 }
 
-function controles() {
-  return `<div class="bracket-view-controls">
-    <button id="alternarControlesLlave" class="bracket-controls-toggle" type="button" aria-expanded="false" aria-controls="panelControlesLlave" aria-label="Abrir controles de vista" title="Controles de vista">
-      <span aria-hidden="true">⌗</span>
-    </button>
-    <div id="panelControlesLlave" class="bracket-controls-popover hidden" role="group" aria-label="Controles de vista de la llave">
-      <div class="bracket-controls-head"><strong>Vista de la llave</strong><button id="cerrarControlesLlave" type="button" aria-label="Cerrar controles">×</button></div>
-      <button id="ajustarLlave" type="button">Ajustar</button>
-      <div class="bracket-zoom"><button id="alejarLlave" type="button" aria-label="Alejar">−</button><b id="escalaLlave">100%</b><button id="acercarLlave" type="button" aria-label="Acercar">+</button></div>
-      <button id="restaurarLlave" type="button">Restablecer</button>
-      <small>Arrastrá el fondo para mover la llave.</small>
-    </div>
+function controles(_fases:CuadroCategoriaPublico['fases']) {
+  return `<div class="bracket-v48-toolbar" role="toolbar" aria-label="Escala de la llave">
+    <div><strong>Llave completa</strong><span>Arrastrá para recorrer el cuadro</span></div>
+    <div class="bracket-v48-zoom"><button id="alejarLlave" type="button" aria-label="Alejar">−</button><b id="escalaLlave" aria-live="polite">100%</b><button id="acercarLlave" type="button" aria-label="Acercar">+</button><button id="restaurarLlave" type="button">Restablecer</button></div>
   </div>`;
 }
-
 function render(cuadro: CuadroCategoriaPublico) {
+  // llave-escritorio-premium-v46-20261011
+// cierre-definitivo-llave-escritorio-v48-20261011
   escala = 1;
+  indiceRondaMovil = 0;
+  contenido?.classList.remove('mobile-full-bracket','mobile-round-bracket');
   if (titulo) titulo.textContent = `${cuadro.categoria.nombre} · ${etiqueta(cuadro.categoria.rama)}`;
-  if (subtitulo) subtitulo.innerHTML = `<span class="bracket-tournament-name">${escapeHtml(cuadro.torneo.nombre)}</span><span class="bracket-tournament-dates">${escapeHtml(rangoFechas(cuadro.torneo.fechaInicio,cuadro.torneo.fechaFin))}</span>`;
+  if (subtitulo) subtitulo.innerHTML = `<span class="bracket-tournament-name">${escapeHtml(cuadro.torneo.nombre)}</span><span class="bracket-tournament-separator" aria-hidden="true">·</span><span class="bracket-tournament-dates">${escapeHtml(rangoFechas(cuadro.torneo.fechaInicio,cuadro.torneo.fechaFin))}</span>`;
   if (!contenido) return;
   const fases = cuadro.fases.filter(f => f.nombre !== 'GRUPOS');
   const limpio = { ...cuadro, fases };
@@ -93,9 +88,9 @@ function render(cuadro: CuadroCategoriaPublico) {
     contenido.innerHTML = `${campeones(limpio)}<div class="bracket-empty">El cuadro eliminatorio todavía no fue generado.</div>`;
     return;
   }
-  contenido.innerHTML = `${campeones(limpio)}<div class="bracket-mobile-toolbar"><button id="alternarVistaCuadroMovil" type="button">Ver llave completa</button></div><div class="bracket-mobile" role="tablist" aria-label="Rondas del cuadro">${fases.map((f,i) => `<button type="button" role="tab" aria-selected="${i===0}" class="${i===0?'active':''}" data-mobile-round="${escapeHtml(f.nombre)}">${escapeHtml(faseTitulo(f.nombre))}</button>`).join('')}</div><div class="bracket-canvas-wrap">${controles()}<div class="bracket-viewport"><div class="bracket-size-shell"><div class="bracket-stage"><svg class="bracket-links" aria-hidden="true"></svg><div class="bracket-columns">${columnas(limpio)}</div></div></div></div></div><nav class="bracket-round-navigation" aria-label="Navegacion entre rondas"><button id="rondaAnterior" type="button">‹ Anterior</button><span id="estadoRondaMovil" aria-live="polite"></span><button id="rondaSiguiente" type="button">Siguiente ›</button></nav>`;
+  contenido.innerHTML = `${campeones(limpio)}<div class="bracket-mobile-toolbar"><button id="alternarVistaCuadroMovil" type="button">Ver llave completa</button></div><div class="bracket-mobile" role="tablist" aria-label="Rondas del cuadro">${fases.map((f,i) => `<button type="button" role="tab" aria-selected="${i===0}" class="${i===0?'active':''}" data-mobile-round="${escapeHtml(f.nombre)}">${escapeHtml(faseTitulo(f.nombre))}</button>`).join('')}</div><div class="bracket-canvas-wrap">${controles(fases)}<div class="bracket-v46-help"><span>Arrastrá para recorrer</span><span>Shift + rueda para desplazamiento horizontal</span></div><div class="bracket-viewport" tabindex="0" aria-label="Llave eliminatoria interactiva"><div class="bracket-size-shell"><div class="bracket-stage"><svg class="bracket-links" aria-hidden="true"></svg><div class="bracket-columns">${columnas(limpio)}</div></div></div></div></div><nav class="bracket-round-navigation" aria-label="Navegacion entre rondas"><button id="rondaAnterior" type="button">‹ Anterior</button><span id="estadoRondaMovil" aria-live="polite"></span><button id="rondaSiguiente" type="button">Siguiente ›</button></nav>`;
   configurarInteracciones();
-  requestAnimationFrame(() => { distribuirEstructuralmente(); dibujarConexiones(); ajustar(true); });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{distribuirEstructuralmente();dibujarConexiones();ajustar(true)}));
 }
 
 function activarRondaMovil(indice:number,enfocar=false){
@@ -120,47 +115,55 @@ function mostrarAyudaArrastre(){
   requestAnimationFrame(()=>ayuda.classList.add('visible'));
   window.setTimeout(()=>{ayuda.classList.remove('visible');window.setTimeout(()=>ayuda.remove(),220)},2400);
 }
+// cierre-movil-llave-v42-20261011
 function alternarVistaMovil(){
   if(!contenido)return;
-  const completa=contenido.classList.toggle('mobile-full-bracket');
-  contenido.classList.toggle('mobile-round-bracket',!completa);
-  const boton=contenido.querySelector<HTMLButtonElement>('#alternarVistaCuadroMovil');if(boton)boton.textContent=completa?'Volver a vista por rondas':'Ver llave completa';
-  if(completa){requestAnimationFrame(()=>{distribuirEstructuralmente();dibujarConexiones();ajustar(true);requestAnimationFrame(()=>{centrarVista();mostrarAyudaArrastre()})})}else{aplicarEscala(1,false);activarRondaMovil(indiceRondaMovil)}
+  if(esVistaMovil()){
+    contenido.classList.remove('mobile-full-bracket');
+    contenido.classList.add('mobile-round-bracket');
+    aplicarEscala(1,false);
+    activarRondaMovil(indiceRondaMovil);
+    return;
+  }
 }
 
+function enfocarRondaEscritorio(nombre:string){
+  if(!contenido||esVistaMovil())return;
+  const viewport=contenido.querySelector<HTMLElement>('.bracket-viewport');
+  const boton=contenido.querySelector<HTMLButtonElement>(`[data-bracket-focus="${nombre}"]`);
+  contenido.querySelectorAll<HTMLElement>('[data-bracket-focus]').forEach(x=>x.classList.toggle('active',x===boton));
+  if(!viewport)return;
+  if(nombre==='all'){ajustar(true);return;}
+  const ronda=contenido.querySelector<HTMLElement>(`[data-round="${nombre}"]`);
+  if(!ronda)return;
+  const escalaFoco=Math.max(.92,Math.min(1.05,escala));
+  if(Math.abs(escalaFoco-escala)>.01)aplicarEscala(escalaFoco,false);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const contexto=Math.min(150,viewport.clientWidth*.12);
+    const destino=Math.max(0,ronda.offsetLeft*escalaFoco-contexto);
+    viewport.scrollTo({left:destino,top:0,behavior:movimientoReducido()?'auto':'smooth'});
+  }));
+}
 function configurarInteracciones() {
-  contenido?.querySelector('#acercarLlave')?.addEventListener('click', () => cambiarEscala(.1));
-  contenido?.querySelector('#alejarLlave')?.addEventListener('click', () => cambiarEscala(-.1));
-  contenido?.querySelector('#restaurarLlave')?.addEventListener('click', () => restablecerVista());
-  contenido?.querySelector('#ajustarLlave')?.addEventListener('click', ajustar);
-  const toggle=contenido?.querySelector<HTMLButtonElement>('#alternarControlesLlave');
-  const panel=contenido?.querySelector<HTMLElement>('#panelControlesLlave');
-  const cerrarPanel=()=>{if(!toggle||!panel)return;panel.classList.add('hidden');toggle.setAttribute('aria-expanded','false');toggle.setAttribute('aria-label','Abrir controles de vista');};
-  const alternarPanel=()=>{if(!toggle||!panel)return;const abrir=panel.classList.contains('hidden');panel.classList.toggle('hidden',!abrir);toggle.setAttribute('aria-expanded',String(abrir));toggle.setAttribute('aria-label',abrir?'Cerrar controles de vista':'Abrir controles de vista');};
-  toggle?.addEventListener('click',event=>{event.stopPropagation();alternarPanel();});
-  contenido?.querySelector('#cerrarControlesLlave')?.addEventListener('click',event=>{event.stopPropagation();cerrarPanel();toggle?.focus();});
-  panel?.addEventListener('click',event=>event.stopPropagation());
-  contenido?.addEventListener('click',cerrarPanel);
+  contenido?.querySelector('#acercarLlave')?.addEventListener('click',()=>cambiarEscala(.1));
+  contenido?.querySelector('#alejarLlave')?.addEventListener('click',()=>cambiarEscala(-.1));
+  contenido?.querySelector('#restaurarLlave')?.addEventListener('click',()=>restablecerVista());
   configurarArrastre();
-  contenido?.querySelector('#enfocarFinal')?.addEventListener('click', () => contenido?.querySelector('[data-round="FINAL"]')?.scrollIntoView({ behavior:'smooth', inline:'center', block:'nearest' }));
+  contenido?.querySelector('#enfocarFinal')?.addEventListener('click',()=>enfocarRondaEscritorio('FINAL'));
   const botonesRonda=[...contenido?.querySelectorAll<HTMLButtonElement>('[data-mobile-round]')||[]];
   botonesRonda.forEach((b,i)=>b.addEventListener('click',()=>activarRondaMovil(i)));
   contenido?.querySelector('#rondaAnterior')?.addEventListener('click',()=>activarRondaMovil(indiceRondaMovil-1,true));
   contenido?.querySelector('#rondaSiguiente')?.addEventListener('click',()=>activarRondaMovil(indiceRondaMovil+1,true));
-  contenido?.querySelector('#alternarVistaCuadroMovil')?.addEventListener('click',alternarVistaMovil);
-  const canvas=contenido?.querySelector<HTMLElement>('.bracket-canvas-wrap');let inicioToque=0;
-  canvas?.addEventListener('touchstart',e=>{if(contenido?.classList.contains('mobile-round-bracket'))inicioToque=e.touches[0]?.clientX||0},{passive:true});
-  canvas?.addEventListener('touchend',e=>{if(!contenido?.classList.contains('mobile-round-bracket')||!inicioToque)return;const delta=(e.changedTouches[0]?.clientX||0)-inicioToque;if(Math.abs(delta)>65)activarRondaMovil(indiceRondaMovil+(delta<0?1:-1),true);inicioToque=0},{passive:true});
-  if(esVistaMovil()){contenido?.classList.add('mobile-round-bracket');contenido?.classList.remove('mobile-full-bracket');activarRondaMovil(0)}else{contenido?.classList.remove('mobile-round-bracket','mobile-full-bracket')}
+  if(esVistaMovil()){contenido?.classList.add('mobile-round-bracket');contenido?.classList.remove('mobile-full-bracket');aplicarEscala(1,false);activarRondaMovil(0)}else{contenido?.classList.remove('mobile-round-bracket','mobile-full-bracket')}
   observador?.disconnect();
-  const viewport = contenido?.querySelector('.bracket-viewport');
-  if (viewport) {
-    const heads = contenido?.querySelector<HTMLElement>('.bracket-headings-viewport');
-    viewport.addEventListener('scroll', () => { if(heads) heads.scrollLeft = viewport.scrollLeft; }, { passive:true });
-    observador = new ResizeObserver(() => { if(!zoomEnCurso) requestAnimationFrame(dibujarConexiones); }); observador.observe(viewport);
+  const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport');
+  if(viewport){
+    viewport.addEventListener('wheel',event=>{if(event.shiftKey&&Math.abs(event.deltaY)>0){event.preventDefault();viewport.scrollLeft+=event.deltaY}},{passive:false});
+    viewport.addEventListener('dblclick',()=>ajustar(true));
+    viewport.addEventListener('keydown',event=>{const paso=90;if(event.key==='ArrowRight')viewport.scrollLeft+=paso;else if(event.key==='ArrowLeft')viewport.scrollLeft-=paso;else if(event.key==='ArrowDown')viewport.scrollTop+=paso;else if(event.key==='ArrowUp')viewport.scrollTop-=paso;else if(event.key==='Home')enfocarRondaEscritorio('all');else return;event.preventDefault()});
+    observador=new ResizeObserver(()=>{if(!zoomEnCurso)requestAnimationFrame(()=>{dibujarConexiones();equilibrarLienzo()})});observador.observe(viewport);
   }
 }
-
 function actualizarShell() {
   const stage = contenido?.querySelector<HTMLElement>('.bracket-stage');
   const shell = contenido?.querySelector<HTMLElement>('.bracket-size-shell');
@@ -176,7 +179,7 @@ function configurarArrastre() {
   viewport.addEventListener('dragstart',event=>event.preventDefault());
   viewport.addEventListener('pointerdown',event=>{
     if(event.button!==0||esControl(event.target))return;
-    activo=true;movido=false;inicioX=event.clientX;inicioY=event.clientY;scrollX=viewport.scrollLeft;scrollY=contenido.scrollTop;
+    activo=true;movido=false;inicioX=event.clientX;inicioY=event.clientY;scrollX=viewport.scrollLeft;scrollY=viewport.scrollTop;
     viewport.setPointerCapture(event.pointerId);viewport.classList.add('is-dragging');
     document.body.classList.add('bracket-drag-active');
     event.preventDefault();
@@ -186,7 +189,7 @@ function configurarArrastre() {
     const dx=event.clientX-inicioX,dy=event.clientY-inicioY;
     if(Math.abs(dx)>2||Math.abs(dy)>2)movido=true;
     viewport.scrollLeft=scrollX-dx;
-    contenido.scrollTop=scrollY-dy;
+    viewport.scrollTop=scrollY-dy;
     event.preventDefault();
   });
   const terminar=(event:PointerEvent)=>{
@@ -220,7 +223,7 @@ function aplicarEscala(valor: number, conservarCentro=true) {
   const anterior=escala;
   const centroX=(viewport.scrollLeft+viewport.clientWidth/2)/Math.max(anterior,.01);
   const centroY=(viewport.scrollTop+viewport.clientHeight/2)/Math.max(anterior,.01);
-  const nueva=Math.max(.82,Math.min(1.35,valor));
+  const nueva=Math.max(.6,Math.min(1.35,valor));
   if(Math.abs(nueva-anterior)<.001){if(label)label.textContent=`${Math.round(nueva*100)}%`;return;}
   zoomEnCurso=true;
   if(zoomFrame)cancelAnimationFrame(zoomFrame);
@@ -244,26 +247,30 @@ function aplicarEscala(valor: number, conservarCentro=true) {
     });
   });
 }
-function cambiarEscala(delta: number) { aplicarEscala(Math.round((escala + delta) * 10) / 10,true); }
+// pulido-final-llave-escritorio-v49b-20261011
+// detalles-finales-llave-v50-20261011
+function equilibrarLienzo(){const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport'),shell=contenido?.querySelector<HTMLElement>('.bracket-size-shell');if(!viewport||!shell)return;const sobra=viewport.clientWidth-shell.offsetWidth;shell.style.marginLeft=sobra>0?String(Math.floor(sobra/2))+'px':'0px';shell.style.marginRight=sobra>0?String(Math.floor(sobra/2))+'px':'0px'}
+function cambiarEscala(delta: number) { aplicarEscala(Math.round((escala + delta) * 10) / 10,true);requestAnimationFrame(()=>requestAnimationFrame(equilibrarLienzo)); }
+// cierre-definitivo-llave-escritorio-v48-20261011
 function ajustar(recentrar=false) {
-  const viewport = contenido?.querySelector<HTMLElement>('.bracket-viewport');
-  const columns = contenido?.querySelector<HTMLElement>('.bracket-columns');
-  if (!viewport || !columns) return;
-  const disponible = Math.max(300, viewport.clientWidth - 28);
-  const altoDisponible=Math.max(440,window.innerHeight-285);
-  const porAncho=disponible/columns.scrollWidth;
-  const porAlto=altoDisponible/columns.scrollHeight;
-  const maxPartidos=Math.max(...[...contenido?.querySelectorAll<HTMLElement>('.bracket-round')||[]].map(r=>r.querySelectorAll('.bracket-card').length),1);
-  const minimo=maxPartidos>=8?.82:.86;
-  aplicarEscala(Math.min(1,Math.max(minimo,Math.min(porAncho,porAlto))),false);
-  if(recentrar)requestAnimationFrame(centrarVista);
+  const viewport=contenido?.querySelector<HTMLElement>('.bracket-viewport');
+  const columns=contenido?.querySelector<HTMLElement>('.bracket-columns');
+  if(!viewport||!columns)return;
+  const alto=Math.max(320,viewport.clientHeight-30);
+  const porAlto=alto/Math.max(columns.scrollHeight,1);
+  const escalaInicial=Math.max(.68,Math.min(.9,porAlto));
+  aplicarEscala(escalaInicial,false);
+  if(recentrar)requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    const shell=contenido?.querySelector<HTMLElement>('.bracket-size-shell');
+    if(!shell)return;
+    const sobraHorizontal=viewport.clientWidth-shell.offsetWidth;
+    viewport.scrollLeft=0;
+    viewport.scrollTop=0;
+    shell.style.marginLeft=sobraHorizontal>0?String(Math.floor(sobraHorizontal/2))+'px':'0px';
+    shell.style.marginRight=sobraHorizontal>0?String(Math.floor(sobraHorizontal/2))+'px':'0px';
+  }));
 }
-function restablecerVista(){
-  ajustar(true);
-  const panel=contenido?.querySelector<HTMLElement>('#panelControlesLlave');
-  const toggle=contenido?.querySelector<HTMLButtonElement>('#alternarControlesLlave');
-  panel?.classList.add('hidden');toggle?.setAttribute('aria-expanded','false');
-}
+function restablecerVista(){ajustar(true)}
 
 function top(card: HTMLElement) { return Number(card.style.top.replace('px','')) || 0; }
 function center(card: HTMLElement) { return top(card) + card.offsetHeight / 2; }
@@ -350,6 +357,7 @@ function dibujarConexiones() {
   });
 }
 
-export async function abrirCuadroTorneo(categoriaId:number,disparador?:HTMLElement){if(!modal||!contenido)return;ultimoFoco=disparador||null;contenido.innerHTML='<div class="bracket-loading">Cargando cuadro...</div>';modal.classList.remove('hidden');modal.classList.add('flex');document.body.style.overflow='hidden';try{render(await api<CuadroCategoriaPublico>(`/torneos/categorias/${categoriaId}/cuadro`));}catch(error){contenido.innerHTML=`<div class="bracket-error">${escapeHtml(error instanceof Error?error.message:'No se pudo cargar el cuadro.')}</div>`;}}
-function cerrar(){if(!modal)return;observador?.disconnect();modal.classList.add('hidden');modal.classList.remove('flex');document.body.style.overflow='';ultimoFoco?.focus();}
-document.getElementById('cerrarCuadroTorneo')?.addEventListener('click',cerrar);document.addEventListener('keydown',e=>{if(e.key!=='Escape'||!modal||modal.classList.contains('hidden'))return;const panel=contenido?.querySelector<HTMLElement>('#panelControlesLlave');const toggle=contenido?.querySelector<HTMLButtonElement>('#alternarControlesLlave');if(panel&&!panel.classList.contains('hidden')){panel.classList.add('hidden');toggle?.setAttribute('aria-expanded','false');toggle?.focus();return;}cerrar();});
+export async function abrirCuadroTorneo(categoriaId:number,disparador?:HTMLElement){if(!modal||!contenido)return;if(matchMedia('(max-width: 760px)').matches)return;ultimoFoco=disparador||null;contenido.innerHTML='<div class="bracket-loading">Cargando cuadro...</div>';modal.classList.remove('hidden');modal.classList.add('flex','bracket-v41-open');document.body.classList.add('bracket-modal-open');document.body.style.overflow='hidden';try{render(await api<CuadroCategoriaPublico>(`/torneos/categorias/${categoriaId}/cuadro`));}catch(error){contenido.innerHTML=`<div class="bracket-error">${escapeHtml(error instanceof Error?error.message:'No se pudo cargar el cuadro.')}</div>`;}}
+function cerrar(){if(!modal)return;observador?.disconnect();if(zoomFrame)cancelAnimationFrame(zoomFrame);zoomFrame=0;zoomEnCurso=false;modal.classList.add('hidden');modal.classList.remove('flex','bracket-v41-open');contenido?.classList.remove('mobile-full-bracket','mobile-round-bracket');document.body.classList.remove('bracket-modal-open','bracket-drag-active');document.body.style.removeProperty('overflow');ultimoFoco?.focus();}
+document.addEventListener('click',event=>{const target=event.target as Element|null;if(target?.closest('#cerrarCuadroTorneo,#cerrarCuadroTorneoTexto')){event.preventDefault();event.stopPropagation();cerrar();return}if(target===modal)cerrar()},true);
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&modal&&!modal.classList.contains('hidden')){event.preventDefault();cerrar()}},true);
