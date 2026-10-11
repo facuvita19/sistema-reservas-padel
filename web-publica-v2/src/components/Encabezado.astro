@@ -1,47 +1,76 @@
 ---
 interface Props { actual?: 'inicio'|'reservar'|'torneos'|'reservas'|'cuenta'; }
 const { actual='inicio' }=Astro.props;
-const enlaces=[['inicio','/','Inicio'],['torneos','/torneos','Torneos'],['reservas','/mis-reservas','Mis reservas']] as const;
+const enlaces=[
+  ['inicio','/','Inicio','M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6h-4v6H5a1 1 0 0 1-1-1z'],
+  ['reservar','/reservar','Reservar','M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1zM8 13h3v3H8z'],
+  ['torneos','/torneos','Torneos','M8 4h8v3a4 4 0 0 1-3 3.87V14h3v3H8v-3h3v-3.13A4 4 0 0 1 8 7zm0 2H5v1a3 3 0 0 0 3 3m8-4h3v1a3 3 0 0 1-3 3'],
+  ['reservas','/mis-reservas','Mis reservas','M5 5h14v14H5zM8 2v5M16 2v5M8 11h8M8 15h5']
+] as const;
 ---
-<header data-site-header class="sticky top-0 z-50 border-b border-white/8 bg-ink-950/88 backdrop-blur-2xl">
-  <nav class="container-site flex min-h-[76px] items-center gap-4" aria-label="Navegación principal">
-    <a href="/" class="focus-ring flex min-w-0 items-center gap-3 rounded-xl" aria-label="Ir al inicio">
-      <span class="grid size-11 shrink-0 place-items-center rounded-xl border border-brand-300/45 bg-brand-500/16 font-black text-brand-100 shadow-lg shadow-brand-700/15">P</span>
-      <span class="hidden min-w-0 sm:block"><strong id="marcaNombre" class="block truncate text-base text-white">Pádel Reservas</strong><small class="block text-xs text-slate-500">Jugá. Competí. Volvé.</small></span>
+<!-- encabezado-global-premium-v59-20261011 -->
+<header data-site-header class="site-header-v59" data-header-version="59">
+  <div class="site-header-v59-glow" aria-hidden="true"></div>
+  <nav class="container-site site-header-v59-inner" aria-label="Navegación principal">
+    <a href="/" class="site-brand-v59 focus-ring" aria-label="Ir al inicio de Arena Pádel">
+      <span class="site-brand-v59-mark" aria-hidden="true"><i></i><b>AP</b></span>
+      <span class="site-brand-v59-copy"><strong id="marcaNombre">Pádel Reservas</strong><small>Jugá. Competí. Volvé.</small></span>
     </a>
-    <div class="ml-auto hidden items-center gap-1 lg:flex">
-      {enlaces.map(([id,href,texto])=><a href={href} class:list={['focus-ring rounded-xl px-4 py-2.5 text-sm font-extrabold transition',actual===id?'bg-white/8 text-white':'text-slate-400 hover:bg-white/5 hover:text-white']} aria-current={actual===id?'page':undefined}>{texto}</a>)}
-      <a href="/reservar" class:list={['btn ml-2',actual==='reservar'?'btn-secondary':'btn-primary']}>Reservar cancha</a>
-      <button id="abrirAutenticacion" class="btn btn-secondary ml-1" type="button">Ingresar</button>
-      <div id="menuUsuario" class="relative hidden">
-        <button id="botonUsuario" class="btn btn-secondary ml-1" type="button" aria-expanded="false" aria-controls="desplegableUsuario"><span id="nombreUsuario">Cuenta</span><span aria-hidden="true">⌄</span></button>
-        <div id="desplegableUsuario" class="absolute right-0 top-[calc(100%+.65rem)] hidden min-w-60 rounded-2xl border border-ink-700 bg-ink-900 p-2 shadow-2xl shadow-black/40">
-          <a class="block rounded-xl px-4 py-3 text-sm font-bold text-slate-200 hover:bg-ink-800" href="/mis-reservas">Mis reservas</a>
-          <a class="block rounded-xl px-4 py-3 text-sm font-bold text-slate-200 hover:bg-ink-800" href="/mis-datos">Mis datos</a>
-          <div class="my-1 border-t border-ink-700"></div>
-          <button id="cerrarSesion" class="w-full rounded-xl px-4 py-3 text-left text-sm font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
+
+    <div class="site-nav-v59" aria-label="Secciones principales">
+      {enlaces.map(([id,href,texto,d])=>
+        <a href={href} class:list={['site-nav-v59-link',actual===id&&'active']} aria-current={actual===id?'page':undefined}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d={d}></path></svg><span>{texto}</span>
+        </a>)}
+    </div>
+
+    <div class="site-actions-v59">
+      <a href="/reservar" class:list={['site-reserve-v59',actual==='reservar'&&'current']}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1z"></path></svg><span>Reservar ahora</span><b aria-hidden="true">→</b>
+      </a>
+      <button id="abrirAutenticacion" class="site-login-v59" type="button"><span class="site-login-v59-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M15 8a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM6.5 19c.7-3.1 2.5-5 5.5-5s4.8 1.9 5.5 5M18 5l2 2-2 2M20 7h-4"></path></svg></span><span>Ingresar</span></button>
+      <div id="menuUsuario" class="site-account-v59 hidden">
+        <button id="botonUsuario" class="site-account-v59-trigger" type="button" aria-expanded="false" aria-controls="desplegableUsuario">
+          <span id="avatarUsuario" class="site-account-v59-avatar" aria-hidden="true">PR</span>
+          <span class="site-account-v59-copy"><small>Mi cuenta</small><strong id="nombreUsuario">Cuenta</strong></span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"></path></svg>
+        </button>
+        <div id="desplegableUsuario" class="site-account-v59-menu hidden" role="menu" aria-label="Opciones de la cuenta" aria-hidden="true">
+          <header><span id="avatarUsuarioMenu" aria-hidden="true">PR</span><div><small>Cuenta activa</small><strong id="nombreUsuarioMenu">Cuenta</strong><em id="correoUsuarioMenu">Tu perfil de jugador</em></div></header>
+          <a href="/mis-reservas" role="menuitem"><span aria-hidden="true">⌁</span><div><b>Mis reservas</b><small>Turnos, pagos y seguimiento</small></div><i>→</i></a>
+          <a href="/mis-datos" role="menuitem"><span aria-hidden="true">◎</span><div><b>Mis datos</b><small>Perfil y seguridad</small></div><i>→</i></a>
+          <button id="cerrarSesion" type="button" role="menuitem"><span aria-hidden="true">↗</span><div><b>Cerrar sesión</b><small>Salir de esta cuenta</small></div></button>
         </div>
       </div>
     </div>
-    <button id="menuButton" class="btn btn-secondary ml-auto site-menu-button lg:hidden" type="button" aria-expanded="false" aria-controls="mainMenu"><span>Menú</span><span aria-hidden="true">☰</span></button>
-    <div id="mainMenu" class="site-mobile-panel absolute left-3 right-3 top-[82px] hidden flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-3 shadow-2xl shadow-black/50 lg:hidden">
-      <a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/">Inicio</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/torneos">Torneos</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/mis-reservas">Mis reservas</a><a class="btn btn-primary mt-1" href="/reservar">Reservar cancha</a>
-      <button id="abrirAutenticacionMovil" class="btn btn-secondary" type="button">Ingresar o crear cuenta</button>
-      <!-- cierre-sesion-cliente-v11-20261011 -->
-      <div id="cuentaUsuarioMovil" class="hidden rounded-xl border border-ink-700 bg-ink-950/55 p-2">
-        <div class="px-2 py-2"><small class="block text-xs font-bold uppercase tracking-wider text-brand-200">Cuenta activa</small><strong id="nombreUsuarioMovil" class="mt-1 block text-white">Cuenta</strong></div>
-        <a class="block rounded-lg px-3 py-2.5 font-bold text-slate-200 hover:bg-ink-800" href="/mis-reservas">Mis reservas</a>
-        <a class="block rounded-lg px-3 py-2.5 font-bold text-slate-200 hover:bg-ink-800" href="/mis-datos">Mis datos</a>
-        <button id="cerrarSesionMovil" class="mt-1 w-full rounded-lg px-3 py-2.5 text-left font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
-      </div>
-    </div>
+
+    <button id="menuButton" class="site-menu-v59-button" type="button" aria-expanded="false" aria-controls="mainMenu" aria-label="Abrir menú principal"><span></span><span></span><span></span></button>
   </nav>
+
+  <div id="mainMenuBackdrop" class="site-menu-v59-backdrop" aria-hidden="true"></div>
+  <div id="mainMenu" class="site-menu-v59-panel" aria-hidden="true">
+    <header><a href="/" class="site-menu-v59-brand"><span class="site-brand-v59-mark"><i></i><b>AP</b></span><div><strong id="marcaNombreMovil">Pádel Reservas</strong><small>Tu club, siempre cerca.</small></div></a><button id="cerrarMenuMovil" type="button" aria-label="Cerrar menú">×</button></header>
+    <div class="site-menu-v59-status"><span></span><div><small>Club online</small><b>Reservas disponibles</b></div></div>
+    <nav aria-label="Navegación móvil">
+      {enlaces.map(([id,href,texto,d])=><a href={href} class:list={[actual===id&&'active']} aria-current={actual===id?'page':undefined}><svg viewBox="0 0 24 24"><path d={d}></path></svg><span>{texto}</span><b>→</b></a>)}
+    </nav>
+    <a class="site-menu-v59-primary" href="/reservar"><span>Reservar una cancha</span><b>→</b></a>
+    <button id="abrirAutenticacionMovil" class="site-menu-v59-login" type="button">Ingresar o crear cuenta</button>
+    <div id="cuentaUsuarioMovil" class="site-menu-v59-account hidden">
+      <div><span id="avatarUsuarioMovil">PR</span><p><small>Cuenta activa</small><strong id="nombreUsuarioMovil">Cuenta</strong></p></div>
+      <a href="/mis-reservas">Mis reservas <b>→</b></a><a href="/mis-datos">Mis datos <b>→</b></a>
+      <button id="cerrarSesionMovil" type="button">Cerrar sesión</button>
+    </div>
+    <footer><span>Experiencia segura</span><span>Datos actualizados</span></footer>
+  </div>
 </header>
 <script>
- const menuButton=document.querySelector<HTMLButtonElement>('#menuButton'); const mainMenu=document.querySelector<HTMLElement>('#mainMenu');
- const closeMenu=()=>{mainMenu?.classList.remove('site-menu-open');menuButton?.setAttribute('aria-expanded','false');document.body.classList.remove('no-scroll')};
- menuButton?.addEventListener('click',()=>{const abrir=menuButton.getAttribute('aria-expanded')!=='true';menuButton.setAttribute('aria-expanded',String(abrir));mainMenu?.classList.toggle('site-menu-open',abrir);document.body.classList.toggle('no-scroll',abrir)});
- mainMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu)); document.addEventListener('keydown',e=>{if(e.key==='Escape')closeMenu()});
- document.addEventListener('click',e=>{const t=e.target as Node;if(mainMenu&&!mainMenu.contains(t)&&menuButton&&!menuButton.contains(t))closeMenu()});
+ const header=document.querySelector<HTMLElement>('[data-site-header]'),menuButton=document.querySelector<HTMLButtonElement>('#menuButton'),mainMenu=document.querySelector<HTMLElement>('#mainMenu'),backdrop=document.querySelector<HTMLElement>('#mainMenuBackdrop'),closeButton=document.querySelector<HTMLButtonElement>('#cerrarMenuMovil');let menuFocus:HTMLElement|null=null;
+ const updateHeight=()=>{if(header)document.documentElement.style.setProperty('--header-height',header.getBoundingClientRect().height+'px')};
+ const closeMenu=()=>{mainMenu?.classList.remove('open');backdrop?.classList.remove('open');mainMenu?.setAttribute('aria-hidden','true');menuButton?.setAttribute('aria-expanded','false');document.body.classList.remove('no-scroll');menuFocus?.focus()};
+ const openMenu=()=>{menuFocus=document.activeElement as HTMLElement;mainMenu?.classList.add('open');backdrop?.classList.add('open');mainMenu?.setAttribute('aria-hidden','false');menuButton?.setAttribute('aria-expanded','true');document.body.classList.add('no-scroll');setTimeout(()=>closeButton?.focus(),30)};
+ menuButton?.addEventListener('click',()=>menuButton.getAttribute('aria-expanded')==='true'?closeMenu():openMenu());closeButton?.addEventListener('click',closeMenu);backdrop?.addEventListener('click',closeMenu);mainMenu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',closeMenu));
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mainMenu?.classList.contains('open'))closeMenu();if(e.key==='Tab'&&mainMenu?.classList.contains('open')){const f=[...mainMenu.querySelectorAll<HTMLElement>('a,button:not([disabled])')].filter(x=>x.offsetParent!==null);if(!f.length)return;if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f.at(-1)?.focus()}else if(!e.shiftKey&&document.activeElement===f.at(-1)){e.preventDefault();f[0].focus()}}});
  document.querySelector('#abrirAutenticacionMovil')?.addEventListener('click',()=>{closeMenu();(document.querySelector('#abrirAutenticacion') as HTMLButtonElement)?.click()});
+ let ticking=false;const onScroll=()=>{if(ticking)return;ticking=true;requestAnimationFrame(()=>{header?.classList.toggle('compact',scrollY>32);updateHeight();ticking=false})};addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',updateHeight,{passive:true});new ResizeObserver(updateHeight).observe(header!);updateHeight();onScroll();
 </script>
