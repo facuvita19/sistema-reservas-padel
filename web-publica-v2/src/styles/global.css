@@ -4364,3 +4364,68 @@ body>.site-menu-v59-panel{z-index:1309!important}
  .tournament-v51 .t55-filter-row>.tournament-filter-trigger{display:inline-flex!important;min-width:94px!important;flex:none!important;align-items:center!important;justify-content:center!important;padding:0 .72rem!important;white-space:nowrap!important}
  .tournament-v51 .t55-filter-row>.tournament-filter-trigger span{flex:none!important}
 }
+
+/* cierre-transversal-visual-responsive-v81b-20261011 */
+/* Tokens aditivos para cierres y mantenimiento futuro. No sustituyen la paleta dinamica existente. */
+:root{
+ --surface-page:#080d0f;
+ --surface-card:#0e171a;
+ --surface-raised:#142126;
+ --text-primary:#edf5f1;
+ --text-secondary:#a0b2aa;
+ --text-muted:#83988f;
+ --border-soft:#2b3d42;
+ --border-strong:#3b5550;
+ --focus-color:rgba(92,190,139,.4);
+ --radius-control:12px;
+ --radius-card:18px;
+ --control-height:44px;
+ --touch-target:44px;
+}
+/* 404 integrada al sistema visual, sin estilos inline. */
+.error-page{display:grid;min-height:calc(100dvh - var(--header-height,88px));place-items:center;padding-block:clamp(3rem,8vh,7rem)}
+.error-page-content{width:min(720px,100%);text-align:center}
+.error-page-content h1{margin:1rem 0;font-size:clamp(2.5rem,8vw,5.5rem);line-height:.95;letter-spacing:-.055em}
+.error-page-content>p:not(.site-kicker){max-width:580px;margin:0 auto 2rem;color:var(--text-secondary);font-size:1.08rem;line-height:1.8}
+.error-page-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:.8rem}
+/* Foco complementario para controles que no usan las clases base. */
+:where(summary,[role=tab],[role=menuitem],[aria-haspopup=listbox],button,a):focus-visible{outline:3px solid var(--focus-color);outline-offset:3px}
+/* Recuperacion: toda la accion conserva tamaño y superficie táctil suficientes. */
+.auth-x-login>.auth-x-text{display:flex;min-height:var(--touch-target);align-items:center;justify-content:center;flex-wrap:wrap;gap:.25rem;padding:.65rem .75rem;color:#a3b5ae;font-size:.72rem;line-height:1.45}
+.auth-x-login>.auth-x-text span{font-size:inherit}
+/* Nombres largos: el ganador nunca colisiona con la pareja. */
+.f4-teams>div{align-items:flex-start}
+.f4-teams>div b{min-width:0;padding-right:.35rem}
+.f4-teams>div em{flex:0 0 auto;white-space:nowrap}
+/* Controles secundarios móviles: legibilidad moderada sin alterar la geometría. */
+@media(max-width:760px){
+ .error-page{min-height:calc(100dvh - var(--header-height,72px));padding-block:2.5rem}
+ .error-page-content h1{font-size:clamp(2.45rem,13vw,3.7rem)}
+ .error-page-content>p:not(.site-kicker){font-size:.94rem;line-height:1.65}
+ .error-page-actions{display:grid;grid-template-columns:1fr;width:100%}
+ .error-page-actions .btn{width:100%;min-height:48px}
+ .auth-x-view label>small,.auth-x-progress p small,.auth-x-grid .wide>small{font-size:.6rem!important;color:#91a59c!important;line-height:1.4}
+ .auth-x-field input::placeholder{color:#71857d}
+ .bookings-v2-metrics .booking-metric-copy small{font-size:.51rem!important;color:#8da198!important}
+ .bookings-v2-metrics .booking-metric-copy span{font-size:.52rem!important;color:#879b92!important}
+ .booking-v2-card.history-card header p,.booking-v2-card.history-card .booking-v2-history-money span,.booking-v2-history-context p{font-size:.58rem!important;color:#8ea198!important}
+ .account-v2-read-grid small,.account-v2-protected span,.account-v2-security-summary em{color:#8ba097!important}
+ .f4-match footer small,.f4-position-card dt,.f4-position-card>header div span{color:#96aaa1}
+ .f4-teams>div{gap:.65rem}
+}
+/* Filtros de Torneos: superficie táctil, pie adaptable y selector contenido. */
+@media(max-width:899px){
+ body>#panelFiltrosTorneos.tournament-filter-portal .tournament-check{min-height:48px!important;border:1px solid #365049!important;border-radius:12px!important;background:#101c20!important;padding:.7rem .8rem!important;cursor:pointer}
+ body>#panelFiltrosTorneos.tournament-filter-portal .tournament-check:has(input:checked){border-color:#58bd88!important;background:#183327!important;color:#dff7e9!important}
+ body>#panelFiltrosTorneos.tournament-filter-portal footer{grid-template-columns:1fr 1.35fr!important}
+ body>#panelFiltrosTorneos.tournament-filter-portal footer button:only-child{grid-column:1/-1!important;width:100%!important}
+ body>#panelFiltrosTorneos.tournament-filter-portal .premium-select-menu{max-height:min(44dvh,320px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+ body>#panelFiltrosTorneos.tournament-filter-portal{padding-bottom:calc(1rem + env(safe-area-inset-bottom))!important}
+}
+/* Inicio extremo: el dato secundario cede antes de forzar desbordamiento. */
+@media(max-width:340px){
+ .hx-eyebrow{max-width:100%;gap:.42rem;padding-inline:.58rem;font-size:.59rem}
+ .hx-eyebrow em{display:none!important}
+ .site-brand-v59-copy strong{max-width:145px}
+}
+@media(prefers-reduced-motion:reduce){.error-page *{scroll-behavior:auto!important}}
