@@ -27,6 +27,13 @@ const enlaces=[['inicio','/','Inicio'],['torneos','/torneos','Torneos'],['reserv
     <div id="mainMenu" class="site-mobile-panel absolute left-3 right-3 top-[82px] hidden flex-col gap-2 rounded-2xl border border-ink-700 bg-ink-900 p-3 shadow-2xl shadow-black/50 lg:hidden">
       <a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/">Inicio</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/torneos">Torneos</a><a class="rounded-xl px-4 py-3 font-bold hover:bg-ink-800" href="/mis-reservas">Mis reservas</a><a class="btn btn-primary mt-1" href="/reservar">Reservar cancha</a>
       <button id="abrirAutenticacionMovil" class="btn btn-secondary" type="button">Ingresar o crear cuenta</button>
+      <!-- cierre-sesion-cliente-v11-20261011 -->
+      <div id="cuentaUsuarioMovil" class="hidden rounded-xl border border-ink-700 bg-ink-950/55 p-2">
+        <div class="px-2 py-2"><small class="block text-xs font-bold uppercase tracking-wider text-brand-200">Cuenta activa</small><strong id="nombreUsuarioMovil" class="mt-1 block text-white">Cuenta</strong></div>
+        <a class="block rounded-lg px-3 py-2.5 font-bold text-slate-200 hover:bg-ink-800" href="/mis-reservas">Mis reservas</a>
+        <a class="block rounded-lg px-3 py-2.5 font-bold text-slate-200 hover:bg-ink-800" href="/mis-datos">Mis datos</a>
+        <button id="cerrarSesionMovil" class="mt-1 w-full rounded-lg px-3 py-2.5 text-left font-bold text-rose-300 hover:bg-rose-500/10" type="button">Cerrar sesión</button>
+      </div>
     </div>
   </nav>
 </header>
