@@ -45,10 +45,10 @@ public class TorneoInscripcionJugadorDAOMySQL
             Connection conexion,
             TorneoInscripcionJugador jugador) {
         String sql = "INSERT INTO torneo_inscripcion_jugadores "
-                + "(inscripcion_id, orden_integrante, cliente_id, "
+                + "(inscripcion_id, orden_integrante, cliente_id, perfil_jugador_id, "
                 + "nombre, apellido, telefono, telefono_normalizado, "
                 + "es_responsable, tipo_vinculacion, requiere_revision) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement sentencia = conexion.prepareStatement(
                 sql, Statement.RETURN_GENERATED_KEYS)) {
             cargarParametros(sentencia, jugador);
@@ -75,13 +75,13 @@ public class TorneoInscripcionJugadorDAOMySQL
             TorneoInscripcionJugador jugador) {
         String sql = "UPDATE torneo_inscripcion_jugadores SET "
                 + "inscripcion_id = ?, orden_integrante = ?, "
-                + "cliente_id = ?, nombre = ?, apellido = ?, "
+                + "cliente_id = ?, perfil_jugador_id = ?, nombre = ?, apellido = ?, "
                 + "telefono = ?, telefono_normalizado = ?, "
                 + "es_responsable = ?, tipo_vinculacion = ?, "
                 + "requiere_revision = ? WHERE id = ?";
         try (PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, jugador);
-            sentencia.setLong(11, jugador.getId());
+            sentencia.setLong(12, jugador.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException(
                         "El integrante del torneo no existe.");
@@ -103,13 +103,14 @@ public class TorneoInscripcionJugadorDAOMySQL
         } else {
             sentencia.setLong(3, jugador.getClienteId());
         }
-        sentencia.setString(4, jugador.getNombre());
-        sentencia.setString(5, jugador.getApellido());
-        sentencia.setString(6, jugador.getTelefono());
-        sentencia.setString(7, jugador.getTelefonoNormalizado());
-        sentencia.setBoolean(8, jugador.isResponsable());
-        sentencia.setString(9, jugador.getTipoVinculacion().name());
-        sentencia.setBoolean(10, jugador.isRequiereRevision());
+        if (jugador.getPerfilJugadorId() == null) { sentencia.setNull(4, Types.BIGINT); } else { sentencia.setLong(4, jugador.getPerfilJugadorId()); }
+        sentencia.setString(5, jugador.getNombre());
+        sentencia.setString(6, jugador.getApellido());
+        sentencia.setString(7, jugador.getTelefono());
+        sentencia.setString(8, jugador.getTelefonoNormalizado());
+        sentencia.setBoolean(9, jugador.isResponsable());
+        sentencia.setString(10, jugador.getTipoVinculacion().name());
+        sentencia.setBoolean(11, jugador.isRequiereRevision());
     }
 
     @Override
@@ -224,7 +225,7 @@ public class TorneoInscripcionJugadorDAOMySQL
     }
 
     private String consultaBase() {
-        return "SELECT id, inscripcion_id, orden_integrante, cliente_id, "
+        return "SELECT id, inscripcion_id, orden_integrante, cliente_id, perfil_jugador_id, "
                 + "nombre, apellido, telefono, telefono_normalizado, "
                 + "es_responsable, tipo_vinculacion, requiere_revision, "
                 + "fecha_creacion, fecha_actualizacion "
@@ -243,6 +244,8 @@ public class TorneoInscripcionJugadorDAOMySQL
         long clienteId = resultado.getLong("cliente_id");
         jugador.setClienteId(
                 resultado.wasNull() ? null : clienteId);
+        long perfilId = resultado.getLong("perfil_jugador_id");
+        jugador.setPerfilJugadorId(resultado.wasNull() ? null : perfilId);
         jugador.setNombre(resultado.getString("nombre"));
         jugador.setApellido(resultado.getString("apellido"));
         jugador.setTelefono(resultado.getString("telefono"));

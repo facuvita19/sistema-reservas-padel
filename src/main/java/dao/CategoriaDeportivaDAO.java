@@ -1,0 +1,1 @@
+package dao; import java.sql.Connection; import java.util.List; import negocio.CategoriaDeportiva; public interface CategoriaDeportivaDAO { CategoriaDeportiva buscar(Connection c,long id); List<CategoriaDeportiva> listarActivas(Connection c); }

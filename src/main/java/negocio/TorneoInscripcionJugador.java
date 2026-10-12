@@ -9,6 +9,7 @@ public class TorneoInscripcionJugador {
     private long inscripcionId;
     private int ordenIntegrante;
     private Long clienteId;
+    private Long perfilJugadorId;
     private String nombre;
     private String apellido;
     private String telefono;
@@ -27,6 +28,8 @@ public class TorneoInscripcionJugador {
     public void setOrdenIntegrante(int valor) { ordenIntegrante = valor; }
     public Long getClienteId() { return clienteId; }
     public void setClienteId(Long valor) { clienteId = valor; }
+    public Long getPerfilJugadorId() { return perfilJugadorId; }
+    public void setPerfilJugadorId(Long valor) { perfilJugadorId = valor; }
     public String getNombre() { return nombre; }
     public void setNombre(String valor) { nombre = valor; }
     public String getApellido() { return apellido; }
