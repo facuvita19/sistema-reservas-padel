@@ -111,6 +111,7 @@ database/docker-init/
 - [Despliegue y rollback](docs/DESPLIEGUE_Y_ROLLBACK.md)
 - [Continuidad del proyecto](docs/CONTINUIDAD_DEL_PROYECTO.md)
 - [Plan de desarrollo](PLAN_DESARROLLO.md)
+- [Plataforma Deportiva W2](docs/PLATAFORMA_DEPORTIVA_W2.md)
 - [Seguridad operativa](docs/SEGURIDAD_OPERATIVA.md)
 
 ## Estado actual

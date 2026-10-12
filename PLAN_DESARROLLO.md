@@ -377,13 +377,43 @@ Cada módulo debe revisar caminos felices, errores, estados vacíos, permisos, c
 - Consolidar estilos solo si no afecta módulos funcionales.
 - Registrar cada deuda cerrada en este plan.
 
-### Fase 5: evolución de producto
+### Fase 5: Plataforma Deportiva W2
 
-- Alertas operativas externas.
-- Analítica histórica avanzada.
-- Automatizaciones comerciales.
-- Experiencia móvil nativa o PWA si existe necesidad validada.
-- Integraciones de pago o facturación según el negocio real.
+La próxima gran evolución funcional está definida en `docs/PLATAFORMA_DEPORTIVA_W2.md`.
+
+Alcance comprometido:
+
+Reglas deportivas ya confirmadas:
+
+- catálogo global de 1.ª a 8.ª;
+- categoría impuesta y modificada por el organizador;
+- ascensos y descensos manuales con publicación agrupada;
+- participación en otra categoría solo con reglas compatibles o autorización;
+- categoría inferior rechazada por defecto, con excepción auditable;
+- formatos de categoría única, combinada y suma configurable, como Suma 12;
+- modalidad Americano configurable, incluido un set o dos sets con super tie-break;
+- ranking individual móvil de 12 meses;
+- puntos por fase, iguales para ambos integrantes de la pareja;
+- Masters de fin de año por categoría;
+- walkovers puntuables según reglas publicadas;
+- correcciones de resultados con recálculo auditado;
+- participantes sin cuenta incluidos mediante identidad provisional vinculable posteriormente;
+- área personal privada y nombre completo en rankings o competencia pública.
+
+
+- identidad deportiva y categorías históricas;
+- rankings auditables por categoría;
+- historial competitivo;
+- perfiles, parejas y comunidad;
+- reserva inteligente;
+- torneos más vivos;
+- dirección visual premium con imágenes y estructuras modernas;
+- pagos reales de señas con Mercado Pago, backend, webhooks, idempotencia y conciliación;
+- PWA, notificaciones y contenido comercial en fases posteriores.
+
+Orden vigente: W2.0 dirección creativa y arquitectura; W2.1 identidad; W2.2 historial; W2.3 ranking; W2.4 experiencia deportiva; W2.5 reserva; W2.6 comunidad; W2.7 pagos en pruebas; W2.8 pagos en producción; W2.9 engagement.
+
+El desarrollo empieza mediante `inspeccionar-plataforma-deportiva-w2.mjs`, sin modificar todavía esquema ni funcionalidad.
 
 ## 9. Criterios de aceptación
 
