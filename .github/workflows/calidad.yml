@@ -110,6 +110,18 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar documentación de continuidad
+        shell: pwsh
+        run: |
+          $required = @(
+            "PLAN_DESARROLLO.md",
+            "docs/CONTINUIDAD_DEL_PROYECTO.md"
+          )
+          foreach ($file in $required) {
+            if (-not (Test-Path $file)) { throw "Falta documento: $file" }
+            if ((Get-Item $file).Length -lt 3000) { throw "Documento incompleto: $file" }
+          }
+          if (Select-String -Path $required -Pattern "localhost:5173" -Quiet) { throw "Referencia obsoleta al puerto 5173" }
       - name: Validar sintaxis de prueba SMTP
         shell: pwsh
         run: |

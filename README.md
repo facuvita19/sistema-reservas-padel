@@ -109,6 +109,8 @@ database/docker-init/
 - [Backup y restauración](docs/BACKUP_Y_RESTAURACION.md)
 - [Solución de problemas](docs/SOLUCION_DE_PROBLEMAS.md)
 - [Despliegue y rollback](docs/DESPLIEGUE_Y_ROLLBACK.md)
+- [Continuidad del proyecto](docs/CONTINUIDAD_DEL_PROYECTO.md)
+- [Plan de desarrollo](PLAN_DESARROLLO.md)
 - [Seguridad operativa](docs/SEGURIDAD_OPERATIVA.md)
 
 ## Estado actual
