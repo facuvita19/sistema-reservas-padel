@@ -110,6 +110,12 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar sintaxis de prueba SMTP
+        shell: pwsh
+        run: |
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("./probar-smtp.ps1",[ref]$null,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw "Script SMTP invalido" }
       - name: Auditar secretos versionados
         shell: pwsh
         run: ./auditar-secretos.ps1

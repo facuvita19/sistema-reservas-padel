@@ -128,3 +128,13 @@ WEB_ORIGIN=local
 ```
 
 Genera `.estado-salud.json` local con estado SALUDABLE o DEGRADADO. No lee `.env` ni muestra secretos.
+
+## Prueba SMTP controlada
+
+La prueba se ejecuta manualmente y nunca desde CI. Lee `.env`, pero no imprime servidor, usuario ni contraseña. Antes del envío exige escribir `ENVIAR`.
+
+```powershell
+.\probar-smtp.ps1 -Destinatario correo@dominio.com
+```
+
+El correo técnico no incluye datos de clientes ni credenciales.
