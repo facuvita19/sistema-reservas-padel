@@ -112,6 +112,9 @@ database/docker-init/
 - [Continuidad del proyecto](docs/CONTINUIDAD_DEL_PROYECTO.md)
 - [Plan de desarrollo](PLAN_DESARROLLO.md)
 - [Plataforma Deportiva W2](docs/PLATAFORMA_DEPORTIVA_W2.md)
+- [Arquitectura funcional W2](docs/ARQUITECTURA_FUNCIONAL_W2.md)
+- [Dirección visual W2](docs/DIRECCION_VISUAL_W2.md)
+- [Mapa de experiencia W2](docs/MAPA_EXPERIENCIA_W2.md)
 - [Seguridad operativa](docs/SEGURIDAD_OPERATIVA.md)
 
 ## Estado actual

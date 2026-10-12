@@ -1,0 +1,6 @@
+import {test,expect} from '@playwright/test';
+const routes=['/w2','/w2/rankings','/w2/jugador','/w2/reservar'];
+for(const route of routes)test('W2 carga '+route,async({page})=>{await page.goto(route);await expect(page.locator('h1').first()).toBeVisible();await expect(page.locator('body')).toBeVisible();await expect(page.locator('html')).not.toHaveCSS('overflow-x','scroll')});
+test('ranking filtra jugadores',async({page})=>{await page.goto('/w2/rankings');await page.locator('#w2RankingSearch').fill('Ana');await expect(page.locator('[data-player]:not(.hidden)')).toHaveCount(1);await expect(page.locator('[data-player]:not(.hidden)')).toContainText('Ana')});
+test('reserva selecciona turno y habilita continuidad',async({page})=>{await page.goto('/w2/reservar');const turno=page.locator('[data-w2-slot]').nth(1);await expect(turno).toBeVisible();await turno.focus();await turno.press('Enter');await expect(turno).toHaveClass(/selected/);await expect(page.locator('#w2Summary')).toContainText('19:30');await expect(page.locator('#w2Continue')).toBeEnabled()});
+test('menu W2 abre en movil',async({page,isMobile})=>{test.skip(!isMobile);await page.goto('/w2');await page.locator('[data-w2-menu]').click();await expect(page.locator('#w2Menu')).toHaveAttribute('aria-hidden','false')});

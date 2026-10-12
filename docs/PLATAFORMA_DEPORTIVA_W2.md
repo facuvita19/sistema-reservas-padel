@@ -553,6 +553,10 @@ Cada imagen debe tener finalidad comercial, informativa o identitaria. Se evitar
 
 ## 15. Orden de trabajo inmediato
 
+> W2.0A completado documentalmente: consultar `ARQUITECTURA_FUNCIONAL_W2.md`, `DIRECCION_VISUAL_W2.md` y `MAPA_EXPERIENCIA_W2.md`. Próximo entregable: prototipo estático W2.0B.
+
+
+
 1. Inspección de modelos actuales de cuenta, cliente, categoría, inscripción, pareja, partido y pago.
 2. Auditoría visual y estructural de `web-publica-v2`.
 3. Inventario de endpoints y pruebas reutilizables.

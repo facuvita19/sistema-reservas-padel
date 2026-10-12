@@ -1,0 +1,26 @@
+---
+import '../styles/w2.css';
+import W2Header from '../components/W2Header.astro';
+import W2ThemeScript from '../components/W2ThemeScript.astro';
+interface Props { titulo:string; actual?:'inicio'|'reservar'|'rankings'|'jugador'; }
+const {titulo,actual='inicio'}=Astro.props;
+---
+<!doctype html><html lang="es-AR"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="robots" content="noindex,nofollow"/><W2ThemeScript/><meta name="theme-color" content="#07100d"/><title>{titulo}</title></head><body class="w2-body"><a class="w2-skip" href="#w2-content">Saltar al contenido</a><W2Header actual={actual}/><main id="w2-content"><slot/></main><footer class="w2-footer"><div class="w2-container"><strong>Plataforma Deportiva W2</strong><span>Prototipo conceptual con datos demostrativos. No modifica reservas ni perfiles reales.</span><a href="/">Volver a la web actual</a></div></footer><script>
+const menuButton=document.querySelector<HTMLButtonElement>('[data-w2-menu]');
+const menuPanel=document.querySelector<HTMLElement>('#w2Menu');
+function closeW2Menu(returnFocus=false){
+ menuPanel?.classList.remove('open');
+ menuPanel?.setAttribute('aria-hidden','true');
+ menuButton?.setAttribute('aria-expanded','false');
+ document.body.classList.remove('w2-menu-open');
+ if(returnFocus)menuButton?.focus();
+}
+menuButton?.addEventListener('click',()=>{
+ const open=menuPanel?.classList.toggle('open')??false;
+ menuButton.setAttribute('aria-expanded',String(open));
+ menuPanel?.setAttribute('aria-hidden',String(!open));
+ document.body.classList.toggle('w2-menu-open',open);
+});
+menuPanel?.querySelectorAll<HTMLAnchorElement>('a').forEach(link=>link.addEventListener('click',()=>closeW2Menu(false)));
+document.addEventListener('keydown',event=>{if(event.key==='Escape')closeW2Menu(true)});
+</script></body></html>

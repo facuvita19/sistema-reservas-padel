@@ -413,7 +413,7 @@ Reglas deportivas ya confirmadas:
 
 Orden vigente: W2.0 dirección creativa y arquitectura; W2.1 identidad; W2.2 historial; W2.3 ranking; W2.4 experiencia deportiva; W2.5 reserva; W2.6 comunidad; W2.7 pagos en pruebas; W2.8 pagos en producción; W2.9 engagement.
 
-El desarrollo empieza mediante `inspeccionar-plataforma-deportiva-w2.mjs`, sin modificar todavía esquema ni funcionalidad.
+La inspección inicial W2 quedó completada. W2.0A define arquitectura funcional, dirección visual y mapa de experiencia en `docs/ARQUITECTURA_FUNCIONAL_W2.md`, `docs/DIRECCION_VISUAL_W2.md` y `docs/MAPA_EXPERIENCIA_W2.md`. El próximo bloque es W2.0B: prototipo estático de Inicio, Ranking, Perfil y Reserva antes de aplicar migraciones.
 
 ## 9. Criterios de aceptación
 
