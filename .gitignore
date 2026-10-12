@@ -52,3 +52,9 @@ backups/
 /aplicar-*.mjs
 /corregir-*.mjs
 /backups/
+
+# Playwright E2E
+web-publica-v2/test-results/
+web-publica-v2/playwright-report/
+web-publica-v2/blob-report/
+web-publica-v2/.playwright-artifacts/
