@@ -3,6 +3,7 @@ package servicio;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -19,6 +20,9 @@ import org.junit.jupiter.api.Test;
 import dao.BloqueoCanchaDAO;
 import dao.CanchaDAO;
 import dao.ReservaDAO;
+import dao.TorneoCategoriaDAO;
+import dao.TorneoInscripcionDAO;
+import dao.TorneoPartidoDAO;
 import negocio.AgendaDiaria;
 import negocio.BloqueoCancha;
 import negocio.Cancha;
@@ -42,7 +46,11 @@ class AgendaServiceTest {
 		canchaDAO = new CanchaDAODoble();
 		reservaDAO = new ReservaDAODoble();
 		bloqueoDAO = new BloqueoDAODoble();
-		service = new AgendaService(canchaDAO, reservaDAO, bloqueoDAO);
+		service = new AgendaService(
+                        canchaDAO, reservaDAO, bloqueoDAO,
+                        mock(TorneoPartidoDAO.class),
+                        mock(TorneoCategoriaDAO.class),
+                        mock(TorneoInscripcionDAO.class));
 		lunesFuturo = LocalDate.now().with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 		canchaDAO.canchas.add(crearCancha());
 	}

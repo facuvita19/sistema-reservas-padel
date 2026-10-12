@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
@@ -22,6 +23,7 @@ import dao.BloqueoCanchaDAO;
 import dao.CanchaDAO;
 import dao.ConfiguracionComplejoDAO;
 import dao.ReservaDAO;
+import dao.TorneoPartidoDAO;
 import negocio.BloqueoCancha;
 import negocio.Cancha;
 import negocio.ConfiguracionComplejo;
@@ -50,11 +52,18 @@ class ReservaVencimientoServiceTest {
                 new ConfiguracionDAODoble();
         configuracionDAO.configuracion = configuracion;
 
+        BloqueoDAODoble bloqueoDAO = new BloqueoDAODoble();
+        DisponibilidadCanchaService disponibilidadService =
+                new DisponibilidadCanchaService(
+                        reservaDAO, bloqueoDAO,
+                        mock(TorneoPartidoDAO.class));
+
         service = new ReservaService(
                 reservaDAO,
-                new BloqueoDAODoble(),
+                bloqueoDAO,
                 new CanchaService(canchaDAO),
-                new ConfiguracionComplejoService(configuracionDAO));
+                new ConfiguracionComplejoService(configuracionDAO),
+                disponibilidadService);
     }
 
     @Test
