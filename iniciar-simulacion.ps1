@@ -4,6 +4,7 @@ Set-Location $root
 if (-not (Test-Path ".env")) {
     throw "Falta .env. Copia .env.example como .env y cambia las contrasenas."
 }
+& ".\validar-configuracion.ps1" -Archivo ".env" -Modo local
 & ".\preparar-docker-init.ps1"
 docker compose up --build -d
 if ($LASTEXITCODE -ne 0) { throw "No se pudo iniciar la simulacion." }

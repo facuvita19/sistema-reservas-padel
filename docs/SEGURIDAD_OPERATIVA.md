@@ -70,3 +70,7 @@ Antes de publicar en Internet:
 - Backups automáticos externos.
 - Política de privacidad.
 - Revisión de dependencias.
+
+## Preflight seguro
+
+Antes de iniciar, `validar-configuracion.ps1` comprueba variables obligatorias sin imprimir valores. En producción usar `-Modo produccion`, HTTPS, origen exacto y `API_COOKIES_SECURE=true`. Nunca usar `docker compose config` en salidas compartidas porque expande secretos.

@@ -94,3 +94,17 @@ http://localhost:8080/api/publica/estado
 http://localhost:8080/api/publica/canchas
 http://localhost:4321
 ```
+
+## Validación previa
+
+```powershell
+.\validar-configuracion.ps1 -Archivo .env -Modo local
+```
+
+Para producción:
+
+```powershell
+.\validar-configuracion.ps1 -Archivo .env -Modo produccion
+```
+
+La salida solo informa estados y nunca muestra credenciales.

@@ -110,6 +110,12 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar formato del preflight seguro
+        shell: pwsh
+        run: |
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("./validar-configuracion.ps1",[ref]$null,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw "Preflight invalido" }
       - name: Validar instalacion desde cero
         shell: pwsh
         run: ./validar-instalacion-limpia.ps1
