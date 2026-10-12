@@ -4,40 +4,20 @@ $root = Split-Path -Parent $MyInvocation.MyCommand.Path
 $source = Join-Path $root "database"
 $target = Join-Path $source "docker-init"
 
-if (-not (Test-Path $source)) {
-    throw "No se encontro la carpeta database."
-}
+if (-not (Test-Path $source)) { throw "No se encontro la carpeta database." }
+$schema = Join-Path $source "schema.sql"
+if (-not (Test-Path $schema)) { throw "No se encontro database\schema.sql." }
+
+$migraciones = Get-ChildItem $source -Filter "*.sql" -File |
+    Where-Object { $_.Name -ne "schema.sql" } |
+    Sort-Object @{ Expression = {
+        if ($_.BaseName -match '^(\d+)_') { [int]$Matches[1] } else { [int]::MaxValue }
+    } }, Name
+if (-not $migraciones) { throw "No se encontraron migraciones SQL." }
 
 New-Item -ItemType Directory -Force -Path $target | Out-Null
-Get-ChildItem $target -Filter "*.sql" -File -ErrorAction SilentlyContinue |
-    Remove-Item -Force
-
-$files = Get-ChildItem $source -Filter "*.sql" -File
-if (-not $files) {
-    throw "No se encontraron archivos SQL en la carpeta database."
-}
-
-$schemaPrincipal = $null
-foreach ($file in $files) {
-    $contenido = Get-Content $file.FullName -Raw
-    if ($contenido -match '(?is)CREATE\s+TABLE\s+(IF\s+NOT\s+EXISTS\s+)?clientes' -and
-        $contenido -match '(?is)CREATE\s+TABLE\s+(IF\s+NOT\s+EXISTS\s+)?reservas' -and
-        $contenido -match '(?is)CREATE\s+TABLE\s+(IF\s+NOT\s+EXISTS\s+)?canchas') {
-        $schemaPrincipal = $file
-        break
-    }
-}
-
-if ($null -eq $schemaPrincipal) {
-    throw "No se encontro el esquema principal que crea clientes, canchas y reservas."
-}
-
-Copy-Item $schemaPrincipal.FullName `
-    (Join-Path $target "000_esquema_principal.sql")
-
-$migraciones = $files |
-    Where-Object { $_.FullName -ne $schemaPrincipal.FullName } |
-    Sort-Object Name
+Get-ChildItem $target -Filter "*.sql" -File -ErrorAction SilentlyContinue | Remove-Item -Force
+Copy-Item $schema (Join-Path $target "000_esquema_principal.sql")
 
 $indice = 1
 foreach ($file in $migraciones) {
@@ -46,8 +26,18 @@ foreach ($file in $migraciones) {
     $indice++
 }
 
-Write-Host "Esquema principal: $($schemaPrincipal.Name)" -ForegroundColor Cyan
-Write-Host "Orden de inicializacion Docker:" -ForegroundColor Green
-Get-ChildItem $target -Filter "*.sql" -File |
-    Sort-Object Name |
-    ForEach-Object { Write-Host "  $($_.Name)" }
+$generados = Get-ChildItem $target -Filter "*.sql" -File | Sort-Object Name
+$esperados = $migraciones.Count + 1
+if ($generados.Count -ne $esperados) {
+    throw "Docker init incompleto: se esperaban $esperados archivos y se generaron $($generados.Count)."
+}
+foreach ($file in $migraciones) {
+    if (-not ($generados.Name | Where-Object { $_ -like "*_$($file.Name)" })) {
+        throw "Falta copiar la migracion $($file.Name)."
+    }
+}
+
+Write-Host "Docker init regenerado correctamente." -ForegroundColor Green
+Write-Host "Esquema principal: schema.sql" -ForegroundColor Cyan
+Write-Host "Migraciones incluidas: $($migraciones.Count)" -ForegroundColor Cyan
+$generados | ForEach-Object { Write-Host "  $($_.Name)" }

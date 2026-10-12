@@ -92,5 +92,5 @@ DB_PASSWORD=valor MYSQL_PASSWORD de .env
 ```text
 http://localhost:8080/api/publica/estado
 http://localhost:8080/api/publica/canchas
-http://localhost:5173
+http://localhost:4321
 ```

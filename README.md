@@ -47,7 +47,7 @@ Set-ExecutionPolicy -Scope Process Bypass
 4. Abrir:
 
 ```text
-Web: http://localhost:5173
+Web: http://localhost:4321
 API: http://localhost:8080/api/publica/estado
 ```
 

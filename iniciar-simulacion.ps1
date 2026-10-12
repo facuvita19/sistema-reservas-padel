@@ -8,6 +8,6 @@ if (-not (Test-Path ".env")) {
 docker compose up --build -d
 if ($LASTEXITCODE -ne 0) { throw "No se pudo iniciar la simulacion." }
 Write-Host "Entorno iniciado:" -ForegroundColor Green
-Write-Host "Web: http://localhost:5173"
+Write-Host "Web: http://localhost:4321"
 Write-Host "API: http://localhost:8080/api/publica/estado"
 Write-Host "Logs: docker compose logs -f"

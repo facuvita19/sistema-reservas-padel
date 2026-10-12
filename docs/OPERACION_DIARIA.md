@@ -33,7 +33,7 @@ padel-web      running
 6. Abrir la web:
 
 ```text
-http://localhost:5173
+http://localhost:4321
 ```
 
 7. Iniciar la aplicación administrativa desde Eclipse.
@@ -112,7 +112,7 @@ ipconfig
 2. Abrir desde el celular:
 
 ```text
-http://IP_DE_LA_PC:5173
+http://IP_DE_LA_PC:4321
 ```
 
 El celular y la computadora deben estar en la misma red Wi-Fi. `.env` debe incluir:
