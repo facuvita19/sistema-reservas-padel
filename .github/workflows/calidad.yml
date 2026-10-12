@@ -100,3 +100,16 @@ jobs:
           path: web-publica-v2/test-results/
           if-no-files-found: ignore
           retention-days: 14
+  docker-clean:
+    name: Instalacion Docker limpia
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+      - name: Preparar migraciones Docker
+        shell: pwsh
+        run: ./preparar-docker-init.ps1
+      - name: Validar instalacion desde cero
+        shell: pwsh
+        run: ./validar-instalacion-limpia.ps1

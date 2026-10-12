@@ -17,7 +17,15 @@ services:
     healthcheck:
       test:
         - CMD-SHELL
-        - 'MYSQL_PWD="$${MYSQL_ROOT_PASSWORD}" mysqladmin ping -h localhost -uroot --silent'
+        - >-
+          MYSQL_PWD="$${MYSQL_ROOT_PASSWORD}" mysql -h localhost -uroot -Nse
+          "SELECT COUNT(*) FROM information_schema.columns
+          WHERE table_schema='$${MYSQL_DATABASE}'
+          AND (
+            (table_name='reservas' AND column_name='cliente_ocasional_nombre')
+            OR (table_name='canchas' AND column_name='orden_visual')
+            OR (table_name='torneo_partido_enlaces' AND column_name='id')
+          )" | grep -qx 3
       interval: 10s
       timeout: 5s
       retries: 12

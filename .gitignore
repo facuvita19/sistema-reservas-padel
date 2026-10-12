@@ -64,3 +64,6 @@ web-publica-v2/.playwright-artifacts/
 /.cierre-bloque-*
 /inspeccionar-*.mjs
 /inspeccion-*.txt
+
+# Informes locales de preparacion para produccion
+inspeccion-bloque-10*.txt
