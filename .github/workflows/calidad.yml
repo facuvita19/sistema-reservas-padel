@@ -32,7 +32,7 @@ jobs:
         run: mvn --batch-mode --no-transfer-progress clean test
       - name: Publicar resultados Java si falla
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: resultados-java
           path: target/surefire-reports/
@@ -86,7 +86,7 @@ jobs:
         run: npm run test:e2e
       - name: Publicar reporte Playwright
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reporte-playwright
           path: web-publica-v2/playwright-report/
@@ -94,7 +94,7 @@ jobs:
           retention-days: 14
       - name: Publicar trazas y capturas si falla
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: evidencias-playwright
           path: web-publica-v2/test-results/
@@ -110,6 +110,15 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Auditar secretos versionados
+        shell: pwsh
+        run: ./auditar-secretos.ps1
+      - name: Validar monitor operativo
+        shell: pwsh
+        run: |
+          $errors=$null
+          [System.Management.Automation.Language.Parser]::ParseFile("./monitorear-salud.ps1",[ref]$null,[ref]$errors) | Out-Null
+          if ($errors.Count) { throw "Monitor invalido" }
       - name: Validar scripts de despliegue y rollback
         shell: pwsh
         run: |

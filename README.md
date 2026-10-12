@@ -15,7 +15,7 @@ Sistema comercial para administrar canchas, clientes, reservas, pagos, caja y so
 ```text
 Cliente web
     ↓
-Nginx, puerto 5173
+Nginx, puerto 4321
     ↓
 API Java, puerto 8080
     ↓

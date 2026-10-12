@@ -1,5 +1,5 @@
 $ErrorActionPreference = "Stop"
-$port = 5173
+$port = 4321
 $folder = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $folder
 

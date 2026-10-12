@@ -120,3 +120,11 @@ El celular y la computadora deben estar en la misma red Wi-Fi. `.env` debe inclu
 ```env
 WEB_ORIGIN=local
 ```
+
+## Monitor de salud
+
+```powershell
+.\monitorear-salud.ps1
+```
+
+Genera `.estado-salud.json` local con estado SALUDABLE o DEGRADADO. No lee `.env` ni muestra secretos.

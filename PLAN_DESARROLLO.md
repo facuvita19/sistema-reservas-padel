@@ -212,7 +212,7 @@ Astro + TypeScript + Tailwind CSS + Nginx
 Dirección local:
 
 ```text
-http://localhost:5173
+http://localhost:4321
 ```
 
 Páginas principales:
@@ -260,7 +260,7 @@ padel-web
 Puertos locales:
 
 ```text
-Web:   http://localhost:5173
+Web:   http://localhost:4321
 API:   http://localhost:8080
 MySQL: localhost:3307
 ```
@@ -787,11 +787,11 @@ Resultado:
 
 ### 10.1 Sesiones localhost
 
-Las cookies se comparten por dominio. Si hay conflicto entre puertos `4321`, `4173` y `5173`:
+Las cookies se comparten por dominio. Si hay conflicto entre puertos `4321` y `4173`:
 
 1. Borrar datos de `localhost`.
 2. Cerrar pestañas anteriores.
-3. Abrir únicamente `http://localhost:5173`.
+3. Abrir únicamente `http://localhost:4321`.
 4. Iniciar sesión nuevamente.
 
 ### 10.2 Gmail SMTP
@@ -806,7 +806,7 @@ SMTP_FROM_NAME=Padel Reservas
 SMTP_STARTTLS=true
 SMTP_SSL=false
 SMTP_TIMEOUT_MS=10000
-API_WEB_PUBLICA_URL=http://localhost:5173/
+API_WEB_PUBLICA_URL=http://localhost:4321/
 ```
 
 Los secretos deben quedar fuera de Git.

@@ -6,7 +6,7 @@
 Navegador o celular
         │ HTTP
         ▼
-Nginx, contenedor padel-web, puerto 5173
+Nginx, contenedor padel-web, puerto 4321
         │ HTTP JSON
         ▼
 API Java, contenedor padel-api, puerto 8080

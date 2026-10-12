@@ -35,7 +35,7 @@ docker compose up -d --force-recreate api
 http://IP_DE_LA_PC:8080/api/publica/canchas
 ```
 
-4. Revisar firewall en puertos `5173` y `8080`.
+4. Revisar firewall en puertos `4321` y `8080.
 
 ## La cuenta regresiva suma tres horas
 

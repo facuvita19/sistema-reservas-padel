@@ -70,3 +70,6 @@ inspeccion-bloque-10*.txt
 
 # Estado operativo local
 .ultimo-despliegue.json
+
+# Estado local de observabilidad
+.estado-salud.json
