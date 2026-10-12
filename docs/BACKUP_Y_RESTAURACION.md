@@ -66,3 +66,14 @@ Comprobar:
 - No guardar backups en Git.
 - Probar restauraciones periódicamente.
 - No utilizar archivos que contengan caracteres dañados como `P??del`.
+
+## Backup verificado y retención
+
+El backup crea un archivo SQL y su checksum SHA-256. La salida no muestra el hash completo. Por defecto conserva al menos 7 copias y elimina archivos de más de 30 días fuera de ese mínimo.
+
+```powershell
+.\backup-mysql.ps1
+.\validar-restauracion-backup.ps1 -Archivo .\backups\padel_reservas_FECHA.sql
+```
+
+La segunda orden restaura en un contenedor y volumen temporales, valida tablas críticas y elimina el entorno sin tocar la base principal.

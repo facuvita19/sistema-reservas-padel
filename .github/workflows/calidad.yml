@@ -110,6 +110,15 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar scripts de backup y restauracion
+        shell: pwsh
+        run: |
+          $files = @("./backup-mysql.ps1", "./validar-restauracion-backup.ps1")
+          foreach ($file in $files) {
+            $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$errors) | Out-Null
+            if ($errors.Count) { throw "Script invalido: $file" }
+          }
       - name: Validar formato del preflight seguro
         shell: pwsh
         run: |
