@@ -110,6 +110,15 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar scripts de despliegue y rollback
+        shell: pwsh
+        run: |
+          $files = @("./desplegar-seguro.ps1", "./validar-despliegue.ps1", "./rollback-seguro.ps1")
+          foreach ($file in $files) {
+            $errors=$null
+            [System.Management.Automation.Language.Parser]::ParseFile($file,[ref]$null,[ref]$errors) | Out-Null
+            if ($errors.Count) { throw "Script invalido: $file" }
+          }
       - name: Validar endurecimiento Compose
         run: |
           docker compose config --quiet

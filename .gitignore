@@ -67,3 +67,6 @@ web-publica-v2/.playwright-artifacts/
 
 # Informes locales de preparacion para produccion
 inspeccion-bloque-10*.txt
+
+# Estado operativo local
+.ultimo-despliegue.json

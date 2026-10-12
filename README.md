@@ -108,6 +108,7 @@ database/docker-init/
 - [Despliegue local y Docker](docs/DESPLIEGUE.md)
 - [Backup y restauración](docs/BACKUP_Y_RESTAURACION.md)
 - [Solución de problemas](docs/SOLUCION_DE_PROBLEMAS.md)
+- [Despliegue y rollback](docs/DESPLIEGUE_Y_ROLLBACK.md)
 - [Seguridad operativa](docs/SEGURIDAD_OPERATIVA.md)
 
 ## Estado actual
