@@ -1,0 +1,102 @@
+name: Calidad continua
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: calidad-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  java:
+    name: Java 25 y Maven
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+      - name: Configurar Java 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+      - name: Ejecutar pruebas Java
+        run: mvn --batch-mode --no-transfer-progress clean test
+      - name: Publicar resultados Java si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-java
+          path: target/surefire-reports/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  web:
+    name: Astro y TypeScript
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web-publica-v2
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web-publica-v2/package-lock.json
+      - name: Instalar dependencias reproducibles
+        run: npm ci
+      - name: Validar Astro y TypeScript
+        run: npm run check
+      - name: Construir web publica
+        run: npm run build
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: web-publica-v2
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web-publica-v2/package-lock.json
+      - name: Instalar dependencias reproducibles
+        run: npm ci
+      - name: Instalar Chromium y dependencias
+        run: npx playwright install --with-deps chromium
+      - name: Ejecutar 129 pruebas E2E
+        run: npm run test:e2e
+      - name: Publicar reporte Playwright
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-playwright
+          path: web-publica-v2/playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Publicar trazas y capturas si falla
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-playwright
+          path: web-publica-v2/test-results/
+          if-no-files-found: ignore
+          retention-days: 14
