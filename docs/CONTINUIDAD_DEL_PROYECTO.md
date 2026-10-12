@@ -277,7 +277,102 @@ $backup = Get-ChildItem .\backups\padel_reservas_*.sql | Sort-Object LastWriteTi
 - Esperar CI verde.
 - No versionar aplicadores, backups ni informes locales.
 
-## 10. Decisiones que no deben revertirse accidentalmente
+## 10. Política de cadencia y espera de CI
+
+No es necesario detener todo el trabajo cada vez que GitHub Actions está ejecutándose. La regla general es:
+
+> Se puede inspeccionar, analizar, diseñar y preparar el siguiente bloque mientras corre CI, pero no se debe publicar otro commit importante sobre una base cuyo resultado todavía no se conoce.
+
+### Nivel 1: cambios pequeños y locales
+
+Ejemplos:
+
+- correcciones de redacción;
+- comentarios;
+- documentación que no modifica CI;
+- ajustes visuales pequeños y aislados;
+- limpieza sin impacto funcional demostrado.
+
+Forma de trabajo:
+
+- se pueden agrupar varios cambios relacionados;
+- no es obligatorio esperar CI después de cada commit pequeño;
+- se valida CI al cerrar el bloque lógico;
+- si el cambio toca documentación validada por el workflow, pasa al Nivel 2.
+
+### Nivel 2: cambios funcionales normales
+
+Ejemplos:
+
+- una pantalla administrativa;
+- una validación de negocio;
+- mejoras de servicios;
+- cambios en reservas, clientes, torneos o estadísticas;
+- ajustes relevantes de la web pública.
+
+Forma de trabajo:
+
+1. cerrar el bloque;
+2. ejecutar las pruebas aplicables localmente;
+3. crear commit y push;
+4. dejar CI ejecutándose;
+5. mientras CI corre, se puede analizar o preparar el siguiente bloque;
+6. no publicar el siguiente commit funcional hasta que el anterior quede verde.
+
+### Nivel 3: cambios críticos
+
+Siempre se debe esperar CI verde antes de publicar el siguiente cambio cuando se modifique:
+
+- base de datos, esquema o migraciones;
+- autenticación, sesiones o recuperación;
+- permisos y roles;
+- pagos, caja o información financiera;
+- Docker, imágenes, healthchecks o Compose;
+- workflows de GitHub Actions;
+- secretos, configuración o CORS;
+- backups, restauración, despliegue o rollback;
+- dependencias principales;
+- lógica deportiva de clasificación o cuadros;
+- una release o etiqueta estable.
+
+### Excepción temporal: cierre de versión estable
+
+Durante un cierre formal de producción o antes de crear una etiqueta estable:
+
+- cada bloque publicado debe quedar verde antes del siguiente push;
+- no se mezclan reparaciones con nuevas funciones;
+- cada fallo se atribuye al commit exacto;
+- la etiqueta solo se crea sobre un commit limpio, sincronizado y completamente verde.
+
+### Qué significa esperar
+
+Esperar CI no significa quedarse sin trabajar. Durante la ejecución se permite:
+
+- inspeccionar archivos;
+- analizar resultados anteriores;
+- diseñar la solución siguiente;
+- preparar borradores;
+- construir un aplicador en un entorno temporal;
+- revisar documentación;
+- identificar riesgos y criterios de aceptación.
+
+No se debe:
+
+- publicar otro commit importante;
+- etiquetar una versión;
+- desplegar como estable;
+- mezclar un fallo aún no diagnosticado con otro bloque.
+
+### Decisión rápida
+
+Antes de cada push, clasificar el cambio:
+
+- **Nivel 1:** continuar y validar al cerrar el bloque.
+- **Nivel 2:** preparar en paralelo, pero esperar verde antes del siguiente push funcional.
+- **Nivel 3:** esperar verde obligatoriamente.
+- **Cierre de release:** esperar verde entre todos los commits.
+
+## 11. Decisiones que no deben revertirse accidentalmente
 
 - La web activa es `web-publica-v2`.
 - El puerto web vigente es `4321`.
@@ -291,7 +386,7 @@ $backup = Get-ChildItem .\backups\padel_reservas_*.sql | Sort-Object LastWriteTi
 - El estándar premium grafito y verde se mantiene.
 - La calidad prima sobre el costo de implementación.
 
-## 11. Mantenimiento de la continuidad
+## 12. Mantenimiento de la continuidad
 
 Actualizar este documento cuando cambie:
 
