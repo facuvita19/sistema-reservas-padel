@@ -110,6 +110,11 @@ jobs:
       - name: Preparar migraciones Docker
         shell: pwsh
         run: ./preparar-docker-init.ps1
+      - name: Validar endurecimiento Compose
+        run: |
+          docker compose config --quiet
+          grep -q "USER padel" Dockerfile.api
+          grep -q "Content-Security-Policy" web-publica-v2/nginx.conf
       - name: Validar scripts de backup y restauracion
         shell: pwsh
         run: |

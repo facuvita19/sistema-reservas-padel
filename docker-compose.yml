@@ -1,3 +1,9 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
 services:
   mysql:
     image: mysql:8.4
@@ -30,6 +36,12 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
+    logging: *default-logging
+    mem_limit: 1g
+    cpus: 1.50
+    pids_limit: 300
+    security_opt:
+      - no-new-privileges:true
 
   api:
     build:
@@ -69,6 +81,15 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    logging: *default-logging
+    mem_limit: 768m
+    cpus: 1.50
+    pids_limit: 256
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,mode=1777
 
   web:
    build:
@@ -83,6 +104,12 @@ services:
    depends_on:
      api:
        condition: service_healthy
+   logging: *default-logging
+   mem_limit: 256m
+   cpus: 0.75
+   pids_limit: 128
+   security_opt:
+     - no-new-privileges:true
 
 volumes:
   padel_mysql_data:
