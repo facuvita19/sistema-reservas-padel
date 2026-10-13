@@ -1,0 +1,450 @@
+/* Jugadores W2.1B1 - estilos consolidados */
+.players-root { -players-green:#429571; -fx-font-family:"Segoe UI"; }
+.players-header { -fx-min-height:82; -fx-pref-height:82; -fx-max-height:82; }
+.players-header .page-title { -fx-font-size:24px; -fx-font-weight:900; -fx-text-fill:#f2f4f5; }
+.players-header .page-subtitle { -fx-font-size:11px; -fx-text-fill:#8b999f; }
+.players-back { -fx-min-width:42; -fx-pref-width:42; -fx-max-width:42; -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-padding:0; -fx-background-color:#20272b; -fx-border-color:#4b585f; -fx-background-radius:10; -fx-border-radius:10; -fx-cursor:hand; }
+.players-back:hover { -fx-background-color:#293238; -fx-border-color:-color-principal; -fx-effect:dropshadow(gaussian,-color-principal-transparente,8,.10,0,2); -fx-translate-y:-1; }
+.players-back:pressed { -fx-background-color:#1b2124; -fx-effect:none; -fx-translate-y:0; -fx-scale-x:.98; -fx-scale-y:.98; }
+.players-module-icon,.players-avatar,.players-empty-icon { -fx-background-color:#1b3028; -fx-border-color:#3f765e; -fx-background-radius:11; -fx-border-radius:11; }
+.players-line-icon,.players-muted-icon,.players-button-icon { -fx-fill:transparent; -fx-stroke:#b7c3c8; -fx-stroke-width:1.5; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; }
+.players-accent-icon { -fx-stroke:#80cfaa; }
+.players-button-icon { -fx-stroke:#eef4f1; }
+.players-muted-icon { -fx-stroke:#8d9a9f; -fx-scale-x:.78; -fx-scale-y:.78; }
+.players-status { -fx-max-width:260; -fx-text-overrun:ELLIPSIS; -fx-alignment:CENTER-RIGHT; -fx-text-fill:#849197; -fx-font-size:10px; }
+.players-status-ok { -fx-text-fill:#7fc7a5; } .players-status-error { -fx-text-fill:#ef9ca6; }
+.players-list,.players-detail-scroll,.players-detail-scroll>.viewport,.players-detail-stage,.players-detail { -fx-background-color:#111417; }
+.players-split>.split-pane-divider { -fx-background-color:#30383d; -fx-padding:0 .5 0 .5; }
+.players-search-shell { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-background-color:#1b2024; -fx-border-color:#3b444a; -fx-border-radius:9; -fx-background-radius:9; }
+.players-search-icon-box { -fx-background-color:transparent; }
+.players-search,.players-search:hover,.players-search:focused { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; -fx-background-color:transparent; -fx-border-color:transparent; -fx-effect:none; -fx-padding:0 12 0 2; -fx-font-size:11px; }
+.players-secondary { -fx-min-height:42; -fx-pref-height:42; -fx-max-height:42; -fx-background-color:linear-gradient(to bottom,#30363a,#282e32); -fx-border-color:#59636a; -fx-background-radius:9; -fx-border-radius:9; -fx-text-fill:#eef2f3; -fx-font-size:10px; -fx-font-weight:900; -fx-padding:0 14; -fx-content-display:LEFT; -fx-graphic-text-gap:8; -fx-cursor:hand; }
+.players-secondary:hover { -fx-background-color:linear-gradient(to bottom,#3a4247,#30373b); -fx-border-color:-color-principal; -fx-text-fill:white; -fx-effect:dropshadow(gaussian,-color-principal-transparente,9,.12,0,2); -fx-translate-y:-1; }
+.players-secondary:pressed { -fx-background-color:#22272b; -fx-effect:none; -fx-translate-y:0; -fx-scale-x:.985; -fx-scale-y:.985; }
+.players-secondary:disabled { -fx-opacity:.55; -fx-effect:none; -fx-translate-y:0; -fx-scale-x:1; -fx-scale-y:1; }
+.players-filter-row { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.players-filter-row .combo-box { -fx-min-width:0; -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.players-filter-row .combo-box .list-cell { -fx-font-size:10.5px; -fx-text-overrun:ELLIPSIS; }
+.players-scope { -fx-min-height:36; -fx-pref-height:36; }
+.players-scope-button { -fx-min-height:36; -fx-pref-height:36; -fx-max-height:36; -fx-background-color:#22282c; -fx-border-color:#424b50; -fx-background-radius:8; -fx-border-radius:8; -fx-text-fill:#a4afb4; -fx-font-size:9px; -fx-font-weight:900; -fx-padding:0 12; -fx-cursor:hand; }
+.players-scope-button:hover { -fx-background-color:#2b3338; -fx-border-color:-color-principal; -fx-text-fill:white; -fx-translate-y:-1; }
+.players-scope-button:pressed { -fx-background-color:#1d2428; -fx-translate-y:0; -fx-scale-x:.98; -fx-scale-y:.98; }
+.players-scope-button:selected { -fx-background-color:#203129; -fx-border-color:#4b866c; -fx-text-fill:#9ed6ba; }
+.players-results { -fx-min-width:142; -fx-alignment:CENTER-RIGHT; -fx-text-fill:#8fc6ad; -fx-font-size:10.5px; -fx-font-weight:800; }
+.players-table .table-row-cell { -fx-cell-size:54px; } .players-table .table-cell { -fx-font-size:10px; -fx-padding:0 6; -fx-text-overrun:ELLIPSIS; }
+.players-table .table-cell:first-child { -fx-alignment:CENTER-LEFT; -fx-padding:0 8 0 14; }
+.players-table .column-header .label,.players-history .column-header .label { -fx-alignment:CENTER; -fx-font-size:10px; -fx-font-weight:900; }
+.players-table .scroll-bar:horizontal,.players-detail-scroll .scroll-bar:horizontal { -fx-min-height:0; -fx-pref-height:0; -fx-max-height:0; -fx-opacity:0; }
+.players-table .table-row-cell:filled:hover { -fx-background-color:#20272b; -fx-cursor:hand; }
+.players-table .table-row-cell:selected,.players-table .table-row-cell:selected:hover { -fx-background-color:#22292e; -fx-border-color:transparent transparent #343d42 -color-principal; -fx-border-width:0 0 1 4; }
+.player-category-cell,.player-identity-cell,.player-state-cell,.player-history-state { -fx-min-width:88; -fx-pref-width:88; -fx-max-width:104; -fx-alignment:CENTER; -fx-background-radius:10; -fx-border-radius:10; -fx-font-size:9px; -fx-font-weight:900; -fx-padding:4 8; }
+.player-category-cell-sin-asignar { -fx-background-color:#292d30; -fx-border-color:#555d62; -fx-text-fill:#aeb6ba; }
+.player-identity-cell-definitivo,.player-state-cell-activo,.player-history-state-vigente { -fx-background-color:#1e3229; -fx-border-color:#4e8069; -fx-text-fill:#b9ddcc; }
+.player-identity-cell-provisional { -fx-background-color:#3a301c; -fx-border-color:#8c7133; -fx-text-fill:#efcf84; }
+.player-state-cell-inactivo,.player-history-state-suspendida { -fx-background-color:#382326; -fx-border-color:#8b5058; -fx-text-fill:#efb5bc; }
+.players-empty-state { -fx-padding:80 36; } .players-empty-icon { -fx-background-radius:18; -fx-border-radius:18; }
+.players-empty-title { -fx-text-fill:#eef1f2; -fx-font-size:20px; -fx-font-weight:900; } .players-empty-description { -fx-text-fill:#849197; -fx-font-size:11px; -fx-text-alignment:CENTER; }
+.players-hero { -fx-background-color:#181d21; -fx-border-color:#394249; -fx-background-radius:11; -fx-border-radius:11; -fx-padding:12 14; }
+.players-eyebrow,.players-metric-label { -fx-text-fill:#7d8a90; -fx-font-size:9px; -fx-font-weight:900; } .players-name { -fx-text-fill:#f0f3f4; -fx-font-size:18px; -fx-font-weight:900; }
+.players-copy { -fx-text-fill:#89969b; -fx-font-size:10px; }
+.players-category-card,.players-metric-card,.players-info-card { -fx-background-color:#1d2327; -fx-border-color:#3a4349; -fx-background-radius:9; -fx-border-radius:9; -fx-padding:10 12; -fx-spacing:3; }
+.players-category-card { -fx-border-width:1 1 1 3; -fx-border-color:#3a4349 #3a4349 #3a4349 #438e6c; }
+.players-category-value { -fx-text-fill:#8fd3b2; -fx-font-size:19px; -fx-font-weight:900; } .players-metric-value { -fx-text-fill:#e1e6e8; -fx-font-size:15px; -fx-font-weight:900; }
+.players-info-card { -fx-min-height:62; -fx-pref-height:62; } .players-info-value { -fx-text-fill:#d7dddf; -fx-font-size:11px; -fx-font-weight:700; -fx-text-overrun:ELLIPSIS; }
+.players-empty-copy { -fx-max-width:620; -fx-background-color:#18251f; -fx-border-color:#3a694f; -fx-border-width:0 0 0 3; -fx-background-radius:7; -fx-border-radius:3 7 7 3; -fx-text-fill:#82d1aa; -fx-padding:8 11; }
+.players-empty-copy:empty { -fx-min-height:0; -fx-pref-height:0; -fx-max-height:0; -fx-padding:0; -fx-background-color:transparent; -fx-border-color:transparent; }
+.players-history { -fx-min-height:220; -fx-pref-height:260; -fx-max-height:320; } .players-history .table-row-cell { -fx-cell-size:48px; } .players-history .table-cell { -fx-font-size:9.5px; -fx-text-overrun:ELLIPSIS; }
+
+/* W2.1B1 detalles finales de lectura */
+.players-search-shell {
+    -fx-alignment:CENTER-LEFT;
+    -fx-padding:0;
+    -fx-background-color:#1b2024;
+    -fx-border-color:#3b444a;
+    -fx-border-width:1;
+    -fx-border-radius:9;
+    -fx-background-radius:9;
+}
+.players-search-shell:focus-within {
+    -fx-border-color:-color-principal;
+    -fx-effect:dropshadow(gaussian,-color-principal-transparente,8,.08,0,0);
+}
+.players-search,.players-search:hover,.players-search:focused {
+    -fx-min-height:40;
+    -fx-pref-height:40;
+    -fx-max-height:40;
+    -fx-background-color:transparent;
+    -fx-border-color:transparent;
+    -fx-border-width:0;
+    -fx-background-insets:0;
+    -fx-effect:none;
+    -fx-padding:0 12 0 48;
+}
+.players-search-overlay-icon {
+    -fx-translate-x:17;
+    -fx-scale-x:.78;
+    -fx-scale-y:.78;
+}
+.player-identity-cell-vinculado {
+    -fx-background-color:#1e3229;
+    -fx-border-color:#4e8069;
+    -fx-text-fill:#b9ddcc;
+}
+.players-table .table-cell.player-state-cell {
+    -fx-padding:0 4;
+}
+.players-table .scroll-bar:vertical {
+    -fx-pref-width:8;
+}
+
+/* W2.1B1 geometria definitiva de tabla */
+/* Una sola politica controla las columnas; el scrollbar queda fuera del ancho util. */
+.players-table {
+    -fx-table-cell-border-color: transparent;
+}
+.players-table .virtual-flow {
+    -fx-padding:0;
+}
+.players-table .table-cell {
+    -fx-padding:0 5;
+    -fx-alignment:CENTER;
+}
+.players-table .table-cell:first-child {
+    -fx-alignment:CENTER-LEFT;
+    -fx-padding:0 8 0 14;
+}
+.players-table .table-cell.player-state-cell {
+    -fx-padding:0 3 0 2;
+    -fx-alignment:CENTER;
+}
+.players-table .scroll-bar:vertical {
+    -fx-min-width:8;
+    -fx-pref-width:8;
+    -fx-max-width:8;
+}
+.player-category-cell,
+.player-identity-cell,
+.player-state-cell {
+    -fx-min-width:0;
+    -fx-pref-width:86;
+    -fx-max-width:92;
+    -fx-padding:4 7;
+    -fx-alignment:CENTER;
+    -fx-text-overrun:CLIP;
+}
+.player-state-cell {
+    -fx-pref-width:80;
+    -fx-max-width:86;
+}
+.players-table .table-row-cell:selected .player-state-cell,
+.players-table .table-row-cell:selected .player-identity-cell,
+.players-table .table-row-cell:selected .player-category-cell {
+    -fx-opacity:1;
+}
+
+/* W2.1B2 operaciones administrativas */
+.players-header-action,.players-header-primary,.players-detail-action,.players-detail-danger,.players-category-action,.players-category-secondary{-fx-min-height:38;-fx-background-radius:8;-fx-border-radius:8;-fx-font-size:9px;-fx-font-weight:900;-fx-cursor:hand;-fx-padding:0 13}.players-header-action,.players-detail-action,.players-category-secondary{-fx-background-color:#242b2f;-fx-border-color:#4a555b;-fx-text-fill:#d9e0e2}.players-header-primary,.players-category-action{-fx-background-color:-color-principal;-fx-border-color:-color-principal-hover;-fx-text-fill:white}.players-detail-danger{-fx-background-color:#332326;-fx-border-color:#77434b;-fx-text-fill:#efb0b7}.players-header-action:hover,.players-detail-action:hover,.players-category-secondary:hover{-fx-border-color:-color-principal;-fx-text-fill:white}.players-header-primary:hover,.players-category-action:hover{-fx-background-color:-color-principal-hover}.players-detail-danger:hover{-fx-background-color:#432a2f;-fx-border-color:#a35c66}.players-category-action,.players-category-secondary{-fx-min-height:32;-fx-padding:0 10}.players-category-card{-fx-min-height:110}
+
+/* W2.1B2 cierre integral de calidad */
+.players-header-action { -fx-min-width:148; }
+.players-header-primary { -fx-min-width:132; }
+.players-detail-action,.players-detail-danger { -fx-min-width:92; }
+.players-category-action { -fx-min-width:132; }
+
+/* W2.1B2 cierre premium definitivo */
+.players-split { -fx-min-height:0; -fx-pref-height:0; }
+.players-detail-scroll { -fx-fit-to-width:true; -fx-pannable:false; }
+.players-detail-scroll>.viewport { -fx-background-color:#111417; }
+.players-category-card { -fx-min-height:116; -fx-pref-height:116; -fx-padding:14 16; }
+.player-category-assigned,.player-category-cell-sin-asignar { -fx-min-width:78; -fx-pref-width:78; -fx-max-width:92; -fx-padding:4 8; -fx-background-radius:10; -fx-border-radius:10; -fx-alignment:CENTER; -fx-font-size:9px; -fx-font-weight:900; }
+.players-category-value { -fx-font-size:24px; }
+.players-category-secondary { -fx-min-width:86; }
+#botonSuspenderCategoria { -fx-background-color:#382f1f; -fx-border-color:#806736; -fx-text-fill:#e4c47d; }
+#botonSuspenderCategoria:hover { -fx-background-color:#483b25; -fx-border-color:#ae8950; }
+#botonFinalizarCategoria { -fx-background-color:#282e32; -fx-border-color:#59636a; -fx-text-fill:#d9dfe1; }
+.players-empty-copy  { -fx-min-height:0; }
+.players-history { -fx-max-height:282; }
+.players-history .table-cell { -fx-alignment:CENTER-LEFT; }
+.players-history .column-header .label { -fx-alignment:CENTER-LEFT; }
+.players-list .scroll-bar:vertical,.players-detail-scroll .scroll-bar:vertical { -fx-min-width:8; -fx-pref-width:8; -fx-max-width:8; -fx-opacity:.62; }
+.players-list .scroll-bar:vertical .thumb,.players-detail-scroll .scroll-bar:vertical .thumb { -fx-background-color:#465159; -fx-background-radius:5; }
+.players-list .scroll-bar:vertical .thumb:hover,.players-detail-scroll .scroll-bar:vertical .thumb:hover { -fx-background-color:-color-principal; }
+.players-detail-action,.players-detail-danger { -fx-min-height:40; -fx-pref-height:40; }
+.players-detail-danger { -fx-background-color:#302326; -fx-border-color:#6f4149; }
+
+/* W2.1B2 historial y categorias alineados */
+/* Las categorias usan semantica administrativa estable; el rojo queda reservado a peligro. */
+.player-category-assigned {
+    -fx-background-color:#1e3229;
+    -fx-border-color:#4e8069;
+    -fx-text-fill:#b9ddcc;
+}
+.players-table .table-row-cell:selected .player-category-assigned {
+    -fx-background-color:#244035;
+    -fx-border-color:#65a385;
+    -fx-text-fill:#d0eedf;
+}
+.player-category-cell-sin-asignar {
+    -fx-background-color:#292d30;
+    -fx-border-color:#555d62;
+    -fx-text-fill:#aeb6ba;
+}
+/* Historial: una reticula unica para encabezados, filas e insignias. */
+.players-history {
+    -fx-table-cell-border-color:transparent;
+    -fx-padding:0;
+}
+.players-history .column-header,
+.players-history .filler {
+    -fx-size:44;
+}
+.players-history .column-header .label {
+    -fx-alignment:CENTER-LEFT;
+    -fx-padding:0 10;
+    -fx-font-size:10px;
+    -fx-font-weight:900;
+}
+.players-history .table-row-cell {
+    -fx-cell-size:48px;
+}
+.players-history .table-cell {
+    -fx-alignment:CENTER-LEFT;
+    -fx-padding:0 10;
+    -fx-font-size:10px;
+    -fx-text-overrun:ELLIPSIS;
+}
+.players-history .scroll-bar:horizontal {
+    -fx-min-height:0;
+    -fx-pref-height:0;
+    -fx-max-height:0;
+    -fx-opacity:0;
+}
+.player-history-category {
+    -fx-min-width:58;
+    -fx-pref-width:58;
+    -fx-max-width:66;
+    -fx-min-height:26;
+    -fx-pref-height:26;
+    -fx-alignment:CENTER;
+    -fx-background-color:#1e3229;
+    -fx-border-color:#4e8069;
+    -fx-background-radius:10;
+    -fx-border-radius:10;
+    -fx-text-fill:#b9ddcc;
+    -fx-font-size:10px;
+    -fx-font-weight:900;
+    -fx-padding:4 8;
+}
+.player-history-state {
+    -fx-min-width:82;
+    -fx-pref-width:82;
+    -fx-max-width:94;
+    -fx-min-height:26;
+    -fx-pref-height:26;
+    -fx-padding:4 8;
+}
+/* Tarjeta principal y tabla comparten el mismo acento verde. */
+.players-category-value { -fx-text-fill:#8fd3b2; }
+.players-category-card { -fx-border-color:#3a4349 #3a4349 #3a4349 #438e6c; }
+
+/* W2.1B2 iconografia final de acciones */
+.players-header-action,.players-header-primary,.players-detail-action,.players-detail-danger,
+.players-category-action,.players-category-secondary {
+    -fx-content-display:LEFT;
+    -fx-graphic-text-gap:8;
+}
+.players-action-icon {
+    -fx-fill:transparent;
+    -fx-stroke:#d9e1e4;
+    -fx-stroke-width:1.55;
+    -fx-stroke-line-cap:round;
+    -fx-stroke-line-join:round;
+    -fx-scale-x:.78;
+    -fx-scale-y:.78;
+}
+.players-action-icon-primary { -fx-stroke:#ffffff; }
+.players-action-icon-danger { -fx-stroke:#efb0b7; }
+.players-action-icon-warning { -fx-stroke:#e4c47d; }
+.players-header-action:hover .players-action-icon,
+.players-detail-action:hover .players-action-icon,
+.players-category-secondary:hover .players-action-icon { -fx-stroke:#ffffff; }
+.players-detail-danger:hover .players-action-icon-danger { -fx-stroke:#ffd0d5; }
+#botonSuspenderCategoria:hover .players-action-icon-warning { -fx-stroke:#f4d892; }
+.players-header-action:pressed .players-action-icon,
+.players-header-primary:pressed .players-action-icon,
+.players-detail-action:pressed .players-action-icon,
+.players-detail-danger:pressed .players-action-icon,
+.players-category-action:pressed .players-action-icon,
+.players-category-secondary:pressed .players-action-icon {
+    -fx-scale-x:.74;
+    -fx-scale-y:.74;
+}
+.players-header-action:disabled .players-action-icon,
+.players-header-primary:disabled .players-action-icon,
+.players-detail-action:disabled .players-action-icon,
+.players-detail-danger:disabled .players-action-icon,
+.players-category-action:disabled .players-action-icon,
+.players-category-secondary:disabled .players-action-icon { -fx-opacity:.55; }
+
+/* W2.1B2 alineacion visual con modulos estabilizados */
+/* Caja optica fija: evita que cada trazado altere la posicion del texto. */
+.players-header-action .graphic,
+.players-header-primary .graphic,
+.players-detail-action .graphic,
+.players-detail-danger .graphic,
+.players-category-action .graphic,
+.players-category-secondary .graphic {
+    -fx-min-width:18;
+    -fx-pref-width:18;
+    -fx-max-width:18;
+    -fx-min-height:18;
+    -fx-pref-height:18;
+    -fx-max-height:18;
+}
+.players-action-icon {
+    -fx-translate-x:0;
+    -fx-translate-y:0;
+}
+/* Acciones grandes, equivalentes a Nuevo cliente y Agregar inscripcion. */
+.players-header-action,.players-header-primary {
+    -fx-min-height:52;
+    -fx-pref-height:52;
+    -fx-max-height:52;
+    -fx-background-radius:11;
+    -fx-border-radius:11;
+    -fx-graphic-text-gap:9;
+}
+.players-header-primary:hover {
+    -fx-background-color:-color-principal-hover;
+    -fx-effect:dropshadow(gaussian,-color-principal-transparente,9,.10,0,2);
+    -fx-translate-y:-1;
+}
+.players-header-action:hover {
+    -fx-background-color:#283238;
+    -fx-border-color:-color-principal;
+    -fx-text-fill:#ffffff;
+    -fx-translate-y:-1;
+}
+.players-header-action:pressed,.players-header-primary:pressed {
+    -fx-translate-y:0;
+    -fx-scale-x:.985;
+    -fx-scale-y:.985;
+}
+/* Acciones del perfil, misma altura y ritmo que los botones de Clientes. */
+.players-detail-action,.players-detail-danger {
+    -fx-min-height:48;
+    -fx-pref-height:48;
+    -fx-max-height:48;
+    -fx-background-radius:9;
+    -fx-border-radius:9;
+}
+.players-detail-action:hover,.players-detail-danger:hover {
+    -fx-translate-y:-1;
+}
+.players-detail-action:pressed,.players-detail-danger:pressed {
+    -fx-translate-y:0;
+    -fx-scale-x:.985;
+    -fx-scale-y:.985;
+}
+/* Acciones de categoria, compactas como las acciones contextuales de Inscripciones. */
+.players-category-action,.players-category-secondary {
+    -fx-min-height:42;
+    -fx-pref-height:42;
+    -fx-max-height:42;
+    -fx-graphic-text-gap:7;
+}
+.players-category-action:hover {
+    -fx-background-color:-color-principal-hover;
+    -fx-translate-y:-1;
+}
+.players-category-secondary:hover { -fx-translate-y:-1; }
+.players-category-action:pressed,.players-category-secondary:pressed {
+    -fx-translate-y:0;
+    -fx-scale-x:.985;
+    -fx-scale-y:.985;
+}
+/* Foco de teclado equivalente sin halo azul nativo. */
+.players-header-action:focused,.players-header-primary:focused,
+.players-detail-action:focused,.players-detail-danger:focused,
+.players-category-action:focused,.players-category-secondary:focused {
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+}
+
+/* W2.1B2 cabecera heredada de Clientes v10 */
+/* Escala final comun: cabecera 82, acciones 42, Segoe UI 11. */
+.players-root .players-header-primary-v10,
+.players-root .players-header-secondary-v10 {
+    -fx-min-height:42;
+    -fx-pref-height:42;
+    -fx-max-height:42;
+    -fx-background-radius:10;
+    -fx-border-radius:10;
+    -fx-font-family:"Segoe UI";
+    -fx-font-size:11px;
+    -fx-font-weight:900;
+    -fx-content-display:LEFT;
+    -fx-graphic-text-gap:9;
+    -fx-padding:0 16;
+    -fx-cursor:hand;
+    -fx-translate-y:0;
+    -fx-scale-x:1;
+    -fx-scale-y:1;
+    -fx-focus-color:transparent;
+    -fx-faint-focus-color:transparent;
+    -fx-background-insets:0;
+    -fx-border-insets:0;
+}
+.players-root .players-header-primary-v10 {
+    -fx-background-color:-color-principal;
+    -fx-border-color:-color-principal-hover;
+    -fx-text-fill:#ffffff;
+    -fx-effect:dropshadow(gaussian,rgba(66,149,113,.24),8,.10,0,2);
+}
+.players-root .players-header-primary-v10:hover {
+    -fx-background-color:-color-principal-hover;
+    -fx-border-color:#76b697;
+    -fx-effect:dropshadow(gaussian,-color-principal-transparente,10,.16,0,0);
+}
+.players-root .players-header-primary-v10:pressed {
+    -fx-background-color:#326f52;
+    -fx-border-color:#4d8e6f;
+    -fx-scale-x:.985;
+    -fx-scale-y:.985;
+    -fx-effect:dropshadow(gaussian,rgba(0,0,0,.20),4,.08,0,0);
+}
+.players-root .players-header-secondary-v10 {
+    -fx-background-color:#20292e;
+    -fx-border-color:#3b484f;
+    -fx-text-fill:#d4dcdf;
+}
+.players-root .players-header-secondary-v10:hover {
+    -fx-background-color:#28343a;
+    -fx-border-color:-color-principal;
+    -fx-text-fill:#ffffff;
+}
+.players-root .players-header-secondary-v10:pressed {
+    -fx-background-color:#1b2327;
+    -fx-border-color:#4d8e6f;
+    -fx-scale-x:.985;
+    -fx-scale-y:.985;
+}
+.players-root .players-header-primary-v10:disabled,
+.players-root .players-header-secondary-v10:disabled {
+    -fx-opacity:.42;
+    -fx-scale-x:1;
+    -fx-scale-y:1;
+    -fx-effect:none;
+}
+.players-header-action-icon-slot-v10 { -fx-alignment:CENTER; }
+.players-header-action-icon-v10 {
+    -fx-fill:transparent;
+    -fx-stroke:#ffffff;
+    -fx-stroke-width:1.5;
+    -fx-stroke-line-cap:round;
+    -fx-stroke-line-join:round;
+    -fx-scale-x:.67;
+    -fx-scale-y:.67;
+}
+.players-header-secondary-v10 .players-header-action-icon-v10 { -fx-stroke:#b9c6cb; }
+.players-header-secondary-v10:hover .players-header-action-icon-v10 { -fx-stroke:#ffffff; }

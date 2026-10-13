@@ -318,3 +318,14 @@
     -fx-alignment: CENTER-LEFT;
     -fx-translate-y: 8;
 }
+
+/* jugadores-menu-caja-optica-final */
+.dashboard-nav-button .icon-players-v8 {
+    -fx-scale-x:.68;
+    -fx-scale-y:.68;
+    -fx-translate-x:0;
+    -fx-translate-y:-1;
+    -fx-stroke-width:1.55;
+}
+.dashboard-nav-button:hover .icon-players-v8 { -fx-stroke:#ffffff; }
+.dashboard-nav-active .icon-players-v8 { -fx-stroke:-color-principal-hover; }

@@ -20,7 +20,7 @@ public final class Navegacion {
 	private static final String CSS_GLOBAL = "/css/tema-padel.css";
 
 	// aislar-estilos-especificos-modulos-v1: los CSS de dialogos exclusivos se cargan localmente.
-        private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/reservas.css",
+        private static final String[] CSS_OPCIONALES = { "/css/canchas.css", "/css/clientes.css", "/css/jugadores.css", "/css/reservas.css",
 			"/css/bloqueos.css", "/css/pagos.css", "/css/dashboard.css", "/css/estadisticas.css",
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
 			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css",
@@ -136,6 +136,12 @@ public final class Navegacion {
 		verificarSesion();
 		mostrarVista("/fxml/canchas.fxml", 1360, 820, true);
 		escenario.setTitle("Padel Reservas - Canchas");
+	}
+
+	public static void mostrarJugadores() {
+		verificarSesion();
+		mostrarVista("/fxml/jugadores.fxml", 1440, 860, true);
+		escenario.setTitle("Padel Reservas - Jugadores");
 	}
 
 	public static void mostrarClientes() {

@@ -42,8 +42,9 @@ CREATE TABLE IF NOT EXISTS perfiles_jugador (
     CONSTRAINT uq_perfiles_jugador_cliente UNIQUE (cliente_id),
     CONSTRAINT fk_perfiles_jugador_cliente FOREIGN KEY (cliente_id) REFERENCES clientes(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT fk_perfiles_jugador_revision FOREIGN KEY (usuario_revision_id) REFERENCES usuarios(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-    CONSTRAINT chk_perfiles_jugador_identidad CHECK ((estado='DEFINITIVO' AND cliente_id IS NOT NULL) OR (estado='PROVISIONAL' AND cliente_id IS NULL)),
-    CONSTRAINT chk_perfiles_jugador_revision CHECK ((vinculacion_revisada=FALSE AND usuario_revision_id IS NULL AND fecha_revision IS NULL) OR (vinculacion_revisada=TRUE AND usuario_revision_id IS NOT NULL AND fecha_revision IS NOT NULL)),
+    -- La coherencia DEFINITIVO/PROVISIONAL se valida en servicio.
+    -- MySQL 8.4 no admite CHECK sobre cliente_id porque integra una FK referencial.
+    -- La coherencia de revision se valida en servicio por compatibilidad con MySQL 8.4.
     INDEX idx_perfiles_jugador_estado (activo,estado),
     INDEX idx_perfiles_jugador_nombre (nombre_publico)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

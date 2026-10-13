@@ -5111,3 +5111,47 @@
 .combo-box-popup .list-view .list-cell.structural-add-popup-cell.structural-add-number-cell-v4 .text {
     -fx-text-alignment: center;
 }
+
+/* W2.1B2 dialogos de jugadores premium */
+.player-editor-dialog .dialog-pane,
+.dialog-client-search .dialog-pane { -fx-font-family:"Segoe UI"; }
+.player-editor-content,.player-client-content { -fx-background-color:transparent; }
+.player-dialog-intro { -fx-text-fill:#8f9da3; -fx-font-size:11px; -fx-line-spacing:2px; -fx-padding:0 0 5 0; }
+.player-dialog-label { -fx-text-fill:#aab5b9; -fx-font-size:9px; -fx-font-weight:900; -fx-padding:5 0 0 0; }
+.player-dialog-field,.player-dialog-combo,.player-client-search { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; -fx-font-size:11px; }
+.player-dialog-preferences { -fx-background-color:#1a2024; -fx-border-color:#3a4449; -fx-background-radius:9; -fx-border-radius:9; -fx-padding:12 14; }
+.player-dialog-preferences .check-box { -fx-text-fill:#d4dade; -fx-font-size:11px; -fx-opacity:1; }
+.player-dialog-preferences .check-box .box { -fx-background-color:#20272b; -fx-border-color:#536067; -fx-background-radius:4; -fx-border-radius:4; }
+.player-dialog-preferences .check-box:selected .box { -fx-background-color:-color-principal; -fx-border-color:-color-principal-hover; }
+.player-dialog-preferences .check-box:selected .mark { -fx-background-color:white; }
+.player-client-results { -fx-text-fill:#7fc7a5; -fx-font-size:10px; -fx-font-weight:800; }
+.player-client-table { -fx-background-color:#12171a; -fx-border-color:#3a4449; -fx-background-radius:10; -fx-border-radius:10; }
+.player-client-table .table-row-cell { -fx-cell-size:46px; }
+.player-client-table .table-row-cell:filled:hover { -fx-background-color:#20282c; -fx-cursor:hand; }
+.player-client-table .table-row-cell:selected { -fx-background-color:#213229; -fx-border-color:transparent transparent #34443d -color-principal; -fx-border-width:0 0 1 4; }
+.player-client-table .table-cell { -fx-alignment:CENTER-LEFT; -fx-padding:0 10; -fx-font-size:10.5px; }
+.player-client-table .column-header .label { -fx-alignment:CENTER-LEFT; -fx-padding:0 10; -fx-font-size:10px; -fx-font-weight:900; }
+.player-client-table .placeholder .label { -fx-text-fill:#7f8c91; -fx-font-size:11px; }
+.player-editor-dialog .button-bar .button,
+.dialog-client-search .button-bar .button { -fx-min-height:42; -fx-pref-height:42; -fx-min-width:150; -fx-font-size:10px; -fx-font-weight:900; }
+
+/* W2.1B2 claridad de perfiles provisionales */
+.player-client-empty {
+    -fx-text-fill:#8e9ba0;
+    -fx-font-size:11px;
+    -fx-line-spacing:3px;
+    -fx-alignment:CENTER;
+    -fx-padding:28;
+}
+.dialog-client-search .button-bar .dialog-action-primary:disabled {
+    -fx-opacity:.42;
+}
+
+/* W2.1B2 cierre integral de dialogos */
+.player-client-table .table-cell,.player-client-table .column-header .label { -fx-alignment:CENTER-LEFT; }
+.player-client-table .table-row-cell:selected .table-cell { -fx-text-fill:#f2f5f4; }
+.player-category-content { -fx-background-color:transparent; }
+.player-dialog-date { -fx-min-height:40; -fx-pref-height:40; -fx-max-height:40; }
+.player-dialog-area { -fx-background-insets:0; -fx-border-color:#3b454a; -fx-border-radius:8; -fx-background-radius:8; -fx-font-size:11px; }
+.player-dialog-area:focused { -fx-border-color:-color-principal; -fx-effect:dropshadow(gaussian,-color-principal-transparente,7,.06,0,0); }
+.player-category-dialog .button-bar .button { -fx-min-height:42; -fx-pref-height:42; -fx-min-width:150; -fx-font-size:10px; -fx-font-weight:900; }

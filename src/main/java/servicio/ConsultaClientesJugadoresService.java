@@ -1,0 +1,6 @@
+package servicio;
+import java.sql.*;import java.util.*;import config.ConexionBD;
+public class ConsultaClientesJugadoresService {
+ public List<ClienteDisponible> listarDisponibles(String texto){String q="SELECT c.id,TRIM(CONCAT(c.nombre,' ',c.apellido)) nombre_completo,c.documento,c.telefono,c.email FROM clientes c LEFT JOIN perfiles_jugador p ON p.cliente_id=c.id WHERE c.activo=TRUE AND p.id IS NULL AND (?='' OR LOWER(CONCAT(c.nombre,' ',c.apellido)) LIKE ? OR c.documento LIKE ? OR c.telefono LIKE ?) ORDER BY c.nombre LIMIT 100";String t=texto==null?"":texto.trim().toLowerCase(Locale.ROOT),like="%"+t+"%";try(Connection c=ConexionBD.obtenerConexion();PreparedStatement s=c.prepareStatement(q)){s.setString(1,t);s.setString(2,like);s.setString(3,like);s.setString(4,like);try(ResultSet r=s.executeQuery()){List<ClienteDisponible> out=new ArrayList<>();while(r.next())out.add(new ClienteDisponible(r.getLong(1),r.getString("nombre_completo"),r.getString(3),r.getString(4),r.getString(5)));return out;}}catch(SQLException e){throw new RuntimeException("No se pudieron cargar los clientes disponibles.",e);}}
+ public record ClienteDisponible(long id,String nombre,String documento,String telefono,String email){}
+}
