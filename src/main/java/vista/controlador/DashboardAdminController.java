@@ -422,4 +422,9 @@ public class DashboardAdminController {
     private boolean esAdministradorActual(){Usuario u=Navegacion.getUsuarioActual();return u!=null&&u.esAdministrador();}
     private String capitalizar(String t){return t==null||t.isBlank()?"":Character.toUpperCase(t.charAt(0))+t.substring(1);}
     private record DatosDashboard(ResumenDashboard resumen,List<Reserva> proximas){}
+
+    @FXML
+    private void abrirRankings() {
+        Navegacion.mostrarRankings();
+    }
 }

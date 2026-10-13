@@ -25,7 +25,8 @@ public final class Navegacion {
 			"/css/configuracion.css", "/css/agenda.css", "/css/usuarios.css", "/css/cierre-caja.css",
 			"/css/solicitudes-web.css", "/css/torneos.css", "/css/torneos-inscripciones.css",
 							"/css/torneo-cuadro.css", "/css/torneo-grupos.css",
-                                                        "/css/interfaz-unificada.css" };
+                                                        "/css/rankings.css",
+                                              "/css/interfaz-unificada.css" };
 
 	private static final ConfiguracionComplejoService configuracionService = new ConfiguracionComplejoService();
 
@@ -138,7 +139,13 @@ public final class Navegacion {
 		escenario.setTitle("Padel Reservas - Canchas");
 	}
 
-	public static void mostrarJugadores() {
+	public static void mostrarRankings() {
+              verificarSesion();
+              mostrarVista("/fxml/rankings.fxml", 1480, 880, true);
+              escenario.setTitle("Padel Reservas - Rankings deportivos");
+      }
+
+      public static void mostrarJugadores() {
               mostrarJugadores(null);
       }
 
