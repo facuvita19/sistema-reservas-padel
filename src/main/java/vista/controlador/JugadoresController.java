@@ -43,6 +43,8 @@ public class JugadoresController {
     private final IdentidadDeportivaService identidadService = new IdentidadDeportivaService();
     private final ObservableList<JugadorResumen> jugadores = FXCollections.observableArrayList();
     private final ObservableList<CategoriaHistorial> historial = FXCollections.observableArrayList();
+    private final ObservableList<servicio.ConsultaHistorialCompetitivoService.Partido> historialCompetitivo = FXCollections.observableArrayList();
+    private final servicio.ConsultaHistorialCompetitivoService historialCompetitivoService = new servicio.ConsultaHistorialCompetitivoService();
     private FilteredList<JugadorResumen> filtrados;
     private boolean cargaEnCurso;
     private boolean categoriasCargadas;
@@ -62,7 +64,9 @@ public class JugadoresController {
             etiquetaCategoria, etiquetaCategoriaDesde, etiquetaPosicion, etiquetaVinculacion,
             etiquetaDocumento, etiquetaTelefono, etiquetaEmail, etiquetaDisponibilidad,
             etiquetaInvitaciones, etiquetaHistorialVacio;
-    @FXML private Label etiquetaHistorialAyuda;
+    @FXML private Label etiquetaHistorialAyuda, etiquetaCompetitivoVacio, etiquetaPartidosCompetitivos, etiquetaVictoriasCompetitivas, etiquetaDerrotasCompetitivas, etiquetaEfectividadCompetitiva;
+    @FXML private TableView<servicio.ConsultaHistorialCompetitivoService.Partido> tablaHistorialCompetitivo;
+    @FXML private TableColumn<servicio.ConsultaHistorialCompetitivoService.Partido,String> columnaCompetitivaFecha, columnaCompetitivaTorneo, columnaCompetitivaFase, columnaCompetitivaPareja, columnaCompetitivaRivales, columnaCompetitivaResultado;
     @FXML private VBox panelEstadoVacio, panelDetalleJugador;
     @FXML private ToggleButton botonTodos, botonConCategoria, botonSinCategoria;
     @FXML private TableView<JugadorResumen> tablaJugadores;
@@ -74,7 +78,7 @@ public class JugadoresController {
             columnaHistorialMotivo;
 
     @FXML private void initialize() {
-        configurarTabla(); configurarHistorial(); configurarFiltros(); aplicarPermisosOperaciones(); limpiarDetalle(); cargar();
+        configurarTabla(); configurarHistorial(); configurarHistorialCompetitivo(); configurarFiltros(); aplicarPermisosOperaciones(); limpiarDetalle(); cargar();
     }
 
     private void configurarTabla() {
@@ -96,6 +100,17 @@ public class JugadoresController {
         columnaIdentidad.setCellFactory(c -> badgeJugador("player-identity-cell"));
         columnaEstado.setCellFactory(c -> badgeJugador("player-state-cell"));
         tablaJugadores.getSelectionModel().selectedItemProperty().addListener((o,a,n)->mostrar(n));
+    }
+
+    private void configurarHistorialCompetitivo() {
+        tablaHistorialCompetitivo.setItems(historialCompetitivo);
+        columnaCompetitivaFecha.setCellValueFactory(d -> texto(d.getValue().fecha()==null?"-":d.getValue().fecha().format(FECHA)));
+        columnaCompetitivaTorneo.setCellValueFactory(d -> texto(d.getValue().torneo()+" · "+d.getValue().categoria()));
+        columnaCompetitivaFase.setCellValueFactory(d -> texto(d.getValue().fase()));
+        columnaCompetitivaPareja.setCellValueFactory(d -> texto(valor(d.getValue().companero(),"Sin compañero")));
+        columnaCompetitivaRivales.setCellValueFactory(d -> texto(valor(d.getValue().rivales(),"Sin rivales")));
+        columnaCompetitivaResultado.setCellValueFactory(d -> texto(("GANADOR".equals(d.getValue().resultado())?"VICTORIA":"DERROTA")+" · "+valor(d.getValue().marcador(),"Sin marcador")));
+        tablaHistorialCompetitivo.setFixedCellSize(48);
     }
 
     private void configurarHistorial() {
@@ -187,6 +202,15 @@ public class JugadoresController {
         etiquetaDisponibilidad.setText(j.disponible()?"Disponible para jugar":"No disponible para jugar"); etiquetaInvitaciones.setText(j.aceptaInvitaciones()?"Acepta invitaciones":"No acepta invitaciones");
         actualizarAcciones(j);
         cargarHistorial(j.id());
+        cargarHistorialCompetitivo(j.id());
+    }
+
+    private void cargarHistorialCompetitivo(long id) {
+        historialCompetitivo.clear(); etiquetaCompetitivoVacio.setText("Cargando actividad competitiva...");
+        javafx.concurrent.Task<servicio.ConsultaHistorialCompetitivoService.Resumen> tarea=new javafx.concurrent.Task<>(){@Override protected servicio.ConsultaHistorialCompetitivoService.Resumen call(){return historialCompetitivoService.consultar(id);}};
+        tarea.setOnSucceeded(e->{var r=tarea.getValue();historialCompetitivo.setAll(r.historial());etiquetaPartidosCompetitivos.setText(String.valueOf(r.partidos()));etiquetaVictoriasCompetitivas.setText(String.valueOf(r.victorias()));etiquetaDerrotasCompetitivas.setText(String.valueOf(r.derrotas()));etiquetaEfectividadCompetitiva.setText(r.efectividad()+"%");boolean vacio=r.historial().isEmpty();tablaHistorialCompetitivo.setVisible(!vacio);tablaHistorialCompetitivo.setManaged(!vacio);etiquetaCompetitivoVacio.setVisible(vacio);etiquetaCompetitivoVacio.setManaged(vacio);etiquetaCompetitivoVacio.setText(vacio?"Este jugador todavía no registra partidos finalizados.":"");});
+        tarea.setOnFailed(e->{etiquetaCompetitivoVacio.setText("No se pudo cargar el historial competitivo.");tablaHistorialCompetitivo.setVisible(false);tablaHistorialCompetitivo.setManaged(false);});
+        Thread hilo=new Thread(tarea,"historial-competitivo-"+id);hilo.setDaemon(true);hilo.start();
     }
 
     private void cargarHistorial(long id) {
@@ -198,7 +222,7 @@ public class JugadoresController {
     }
 
     private void actualizarAcciones(JugadorResumen j){boolean admin=Navegacion.getUsuarioActual()!=null&&Navegacion.getUsuarioActual().esAdministrador();boolean sinFicha=j.clienteId()==null;botonVincular.setVisible(admin&&sinFicha);botonVincular.setManaged(admin&&sinFicha);botonVincular.setDisable(!admin||!sinFicha);botonVincular.setText("ASOCIAR FICHA");botonMarcarRevisado.setVisible(admin&&j.clienteId()!=null&&!j.vinculacionRevisada());botonMarcarRevisado.setManaged(admin&&j.clienteId()!=null&&!j.vinculacionRevisada());botonMarcarRevisado.setDisable(!admin||j.clienteId()==null||j.vinculacionRevisada());botonEstadoPerfil.setDisable(!admin);botonEstadoPerfil.setText(j.activo()?"DESACTIVAR PERFIL":"ACTIVAR PERFIL");botonAsignarCategoria.setText(j.categoriaId()==null?"ASIGNAR CATEGORÍA":"CAMBIAR CATEGORÍA");boolean conCategoria=j.categoriaId()!=null;botonSuspenderCategoria.setVisible(admin&&conCategoria);botonSuspenderCategoria.setManaged(admin&&conCategoria);botonSuspenderCategoria.setDisable(!admin||!conCategoria);botonFinalizarCategoria.setVisible(admin&&conCategoria);botonFinalizarCategoria.setManaged(admin&&conCategoria);botonFinalizarCategoria.setDisable(!admin||!conCategoria);}
-    private void limpiarDetalle(){alternarDetalle(false);historial.clear();etiquetaHistorialVacio.setText("");alternarHistorial(false);}
+    private void limpiarDetalle(){alternarDetalle(false);historial.clear();historialCompetitivo.clear();etiquetaHistorialVacio.setText("");alternarHistorial(false);}
     private void alternarDetalle(boolean seleccionado){if(panelEstadoVacio!=null){panelEstadoVacio.setVisible(!seleccionado);panelEstadoVacio.setManaged(!seleccionado);}if(panelDetalleJugador!=null){panelDetalleJugador.setVisible(seleccionado);panelDetalleJugador.setManaged(seleccionado);}}
     private TableCell<JugadorResumen,String> badgeJugador(String clase){return celdaInsignia(clase);}
     private TableCell<CategoriaHistorial,String> badgeHistorial(String clase){return celdaInsignia(clase);}
