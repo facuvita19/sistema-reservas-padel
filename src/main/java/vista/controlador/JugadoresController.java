@@ -55,10 +55,10 @@ public class JugadoresController {
     }
 
     @FXML private TextField campoBuscar;
-    @FXML private Button botonActualizar, botonVincular, botonEstadoPerfil, botonAsignarCategoria, botonSuspenderCategoria, botonFinalizarCategoria;
+    @FXML private Button botonActualizar, botonVincular, botonEstadoPerfil, botonMarcarRevisado, botonAsignarCategoria, botonSuspenderCategoria, botonFinalizarCategoria;
     @FXML private ComboBox<String> filtroIdentidad, filtroEstado;
     @FXML private ComboBox<CategoriaResumen> filtroCategoria;
-    @FXML private Label etiquetaResultados, etiquetaEstado, etiquetaNombre, etiquetaIdentidad,
+    @FXML private Label etiquetaResultados, etiquetaRevisionResumen, etiquetaEstado, etiquetaNombre, etiquetaIdentidad, etiquetaRevisionPerfil,
             etiquetaCategoria, etiquetaCategoriaDesde, etiquetaPosicion, etiquetaVinculacion,
             etiquetaDocumento, etiquetaTelefono, etiquetaEmail, etiquetaDisponibilidad,
             etiquetaInvitaciones, etiquetaHistorialVacio;
@@ -115,7 +115,8 @@ public class JugadoresController {
 
     private void configurarFiltros() {
         filtrados = new FilteredList<>(jugadores, j -> true); tablaJugadores.setItems(filtrados);
-        filtroIdentidad.getItems().setAll("Todas las vinculaciones", "Vinculados a clientes", "Provisionales sin vincular"); filtroIdentidad.setValue("Todas las vinculaciones");
+        filtroIdentidad.getItems().setAll("Todas las vinculaciones", "Vinculados a clientes",
+                "Provisionales sin vincular", "Revisión pendiente"); filtroIdentidad.setValue("Todas las vinculaciones");
         filtroEstado.getItems().setAll("Todos los estados", "Activos", "Inactivos"); filtroEstado.setValue("Todos los estados");
         campoBuscar.textProperty().addListener((o,a,n)->filtrar());
         filtroIdentidad.valueProperty().addListener((o,a,n)->filtrar());
@@ -146,12 +147,19 @@ public class JugadoresController {
     private void filtrar() {
         String q=campoBuscar.getText()==null?"":campoBuscar.getText().trim().toLowerCase(Locale.ROOT);
         filtrados.setPredicate(j->{boolean texto=q.isBlank()||contiene(j.nombre(),q)||contiene(j.documento(),q)||contiene(j.telefono(),q)||contiene(j.email(),q);
-            boolean identidad="Todas las vinculaciones".equals(filtroIdentidad.getValue())||("Vinculados a clientes".equals(filtroIdentidad.getValue())&&j.clienteId()!=null)||("Provisionales sin vincular".equals(filtroIdentidad.getValue())&&j.clienteId()==null);
+            boolean identidad="Todas las vinculaciones".equals(filtroIdentidad.getValue())
+                    ||("Vinculados a clientes".equals(filtroIdentidad.getValue())&&j.clienteId()!=null)
+                    ||("Provisionales sin vincular".equals(filtroIdentidad.getValue())&&j.clienteId()==null)
+                    ||("Revisión pendiente".equals(filtroIdentidad.getValue())&&j.requiereRevision());
             boolean estado="Todos los estados".equals(filtroEstado.getValue())||("Activos".equals(filtroEstado.getValue())&&j.activo())||("Inactivos".equals(filtroEstado.getValue())&&!j.activo());
             boolean categoria=filtroCategoria.getValue()==null||(j.categoriaId()!=null&&j.categoriaId()==filtroCategoria.getValue().id());
             boolean alcance=botonTodos.isSelected()||(botonConCategoria.isSelected()&&j.categoriaId()!=null)||(botonSinCategoria.isSelected()&&j.categoriaId()==null);
             return texto&&identidad&&estado&&categoria&&alcance;});
         etiquetaResultados.setText(filtrados.size()+" "+(filtrados.size()==1?"jugador visible":"jugadores visibles"));
+        long pendientes=jugadores.stream().filter(JugadorResumen::requiereRevision).count();
+        etiquetaRevisionResumen.setText(pendientes==0?"IDENTIDADES AL DÍA":pendientes+" PENDIENTES DE REVISIÓN");
+        etiquetaRevisionResumen.getStyleClass().removeAll("players-review-ok","players-review-pending");
+        etiquetaRevisionResumen.getStyleClass().add(pendientes==0?"players-review-ok":"players-review-pending");
     }
 
     @FXML private void mostrarTodos(){seleccionarAlcance(botonTodos);}
@@ -167,6 +175,9 @@ public class JugadoresController {
         alternarDetalle(true);
         etiquetaNombre.setText(j.nombre());
         etiquetaIdentidad.setText(j.identidad()==negocio.EstadoPerfilJugador.DEFINITIVO?"VINCULADO A CLIENTE":"PERFIL PROVISIONAL ACTIVO");
+        etiquetaRevisionPerfil.setText(j.estadoRevision());
+        etiquetaRevisionPerfil.getStyleClass().removeAll("players-review-ok","players-review-pending");
+        etiquetaRevisionPerfil.getStyleClass().add(j.requiereRevision()?"players-review-pending":"players-review-ok");
         etiquetaCategoria.setText(valor(j.categoria(),"SIN CATEGORÍA"));
         etiquetaCategoriaDesde.setText(j.categoriaDesde()==null?"Pendiente de evaluación":"Vigente desde "+j.categoriaDesde().format(FECHA));
         etiquetaPosicion.setText(nombrePosicion(j.posicion()));
@@ -186,7 +197,7 @@ public class JugadoresController {
         Thread hilo=new Thread(tarea,"historial-jugador-"+id);hilo.setDaemon(true);hilo.start();
     }
 
-    private void actualizarAcciones(JugadorResumen j){boolean admin=Navegacion.getUsuarioActual()!=null&&Navegacion.getUsuarioActual().esAdministrador();boolean sinFicha=j.clienteId()==null;botonVincular.setVisible(admin&&sinFicha);botonVincular.setManaged(admin&&sinFicha);botonVincular.setDisable(!admin||!sinFicha);botonVincular.setText("ASOCIAR FICHA");botonEstadoPerfil.setDisable(!admin);botonEstadoPerfil.setText(j.activo()?"DESACTIVAR PERFIL":"ACTIVAR PERFIL");botonAsignarCategoria.setText(j.categoriaId()==null?"ASIGNAR CATEGORÍA":"CAMBIAR CATEGORÍA");boolean conCategoria=j.categoriaId()!=null;botonSuspenderCategoria.setVisible(admin&&conCategoria);botonSuspenderCategoria.setManaged(admin&&conCategoria);botonSuspenderCategoria.setDisable(!admin||!conCategoria);botonFinalizarCategoria.setVisible(admin&&conCategoria);botonFinalizarCategoria.setManaged(admin&&conCategoria);botonFinalizarCategoria.setDisable(!admin||!conCategoria);}
+    private void actualizarAcciones(JugadorResumen j){boolean admin=Navegacion.getUsuarioActual()!=null&&Navegacion.getUsuarioActual().esAdministrador();boolean sinFicha=j.clienteId()==null;botonVincular.setVisible(admin&&sinFicha);botonVincular.setManaged(admin&&sinFicha);botonVincular.setDisable(!admin||!sinFicha);botonVincular.setText("ASOCIAR FICHA");botonMarcarRevisado.setVisible(admin&&j.clienteId()!=null&&!j.vinculacionRevisada());botonMarcarRevisado.setManaged(admin&&j.clienteId()!=null&&!j.vinculacionRevisada());botonMarcarRevisado.setDisable(!admin||j.clienteId()==null||j.vinculacionRevisada());botonEstadoPerfil.setDisable(!admin);botonEstadoPerfil.setText(j.activo()?"DESACTIVAR PERFIL":"ACTIVAR PERFIL");botonAsignarCategoria.setText(j.categoriaId()==null?"ASIGNAR CATEGORÍA":"CAMBIAR CATEGORÍA");boolean conCategoria=j.categoriaId()!=null;botonSuspenderCategoria.setVisible(admin&&conCategoria);botonSuspenderCategoria.setManaged(admin&&conCategoria);botonSuspenderCategoria.setDisable(!admin||!conCategoria);botonFinalizarCategoria.setVisible(admin&&conCategoria);botonFinalizarCategoria.setManaged(admin&&conCategoria);botonFinalizarCategoria.setDisable(!admin||!conCategoria);}
     private void limpiarDetalle(){alternarDetalle(false);historial.clear();etiquetaHistorialVacio.setText("");alternarHistorial(false);}
     private void alternarDetalle(boolean seleccionado){if(panelEstadoVacio!=null){panelEstadoVacio.setVisible(!seleccionado);panelEstadoVacio.setManaged(!seleccionado);}if(panelDetalleJugador!=null){panelDetalleJugador.setVisible(seleccionado);panelDetalleJugador.setManaged(seleccionado);}}
     private TableCell<JugadorResumen,String> badgeJugador(String clase){return celdaInsignia(clase);}
@@ -233,6 +244,7 @@ public class JugadoresController {
     @FXML private void nuevoJugadorVinculado(){new JugadorClienteDialog().mostrar("Seleccionar cliente").ifPresent(cliente->{ejecutarOperacion("Jugador vinculado creado",()->identidadService.crearDefinitivo(cliente.id(),cliente.nombre()));});}
     @FXML private void editarPerfil(){JugadorResumen j=seleccionado();if(j==null)return;new JugadorPerfilDialog().mostrar("Editar perfil",j.nombre(),j.posicion(),j.disponible(),j.aceptaInvitaciones()).ifPresent(d->{ejecutarOperacion("Perfil actualizado",()->identidadService.actualizarPerfil(j.id(),d.nombre(),d.posicion(),d.disponible(),d.invitaciones()));});}
     @FXML private void vincularCliente(){JugadorResumen j=seleccionado();if(j==null)return;new JugadorClienteDialog().mostrar("Vincular cliente al perfil").ifPresent(cliente->{ejecutarOperacion("Perfil vinculado",()->identidadService.vincularCliente(j.id(),cliente.id(),cliente.nombre(),1L,esAdmin()));});}
+    @FXML private void marcarIdentidadRevisada(){JugadorResumen j=seleccionado();if(j==null||!esAdmin())return;long usuario=Navegacion.getUsuarioActual().getId();ejecutarOperacion("Identidad revisada",()->identidadService.marcarVinculacionRevisada(j.id(),usuario,true));}
     @FXML private void asignarCategoria(){JugadorResumen j=seleccionado();if(j==null)return;new JugadorCategoriaOperacionDialog().asignar(List.copyOf(filtroCategoria.getItems()),j.nombre(),j.categoria()).ifPresent(d->{ejecutarOperacion("Categoría actualizada",()->identidadService.asignarCategoria(j.id(),d.categoria().id(),d.fecha(),OrigenJugadorCategoria.ADMINISTRATIVA,d.motivo(),null));});}
     @FXML private void suspenderCategoria(){cerrarCategoria(EstadoJugadorCategoria.SUSPENDIDA,"Suspender categoría");}
     @FXML private void finalizarCategoria(){cerrarCategoria(EstadoJugadorCategoria.FINALIZADA,"Finalizar categoría");}
@@ -242,7 +254,7 @@ public class JugadoresController {
     private boolean esAdmin(){return Navegacion.getUsuarioActual()!=null&&Navegacion.getUsuarioActual().esAdministrador();}
     private <T> void ejecutarOperacion(String exito,java.util.concurrent.Callable<T> accion){if(operacionEnCurso)return;JugadorResumen previo=tablaJugadores.getSelectionModel().getSelectedItem();perfilAReseleccionar=previo==null?null:previo.id();operacionEnCurso=true;bloquearAcciones(true);try{accion.call();Dialogos.exito("Operación completada",exito+" correctamente.");cargar();}catch(Exception e){Dialogos.error("No se pudo completar la operación",mensajeRaiz(e));}finally{operacionEnCurso=false;bloquearAcciones(false);}}
     private void reSeleccionarPendiente(){if(perfilAReseleccionar==null)return;long id=perfilAReseleccionar;perfilAReseleccionar=null;tablaJugadores.getItems().stream().filter(x->x.id()==id).findFirst().ifPresent(x->tablaJugadores.getSelectionModel().select(x));}
-    private void bloquearAcciones(boolean bloquear){for(Button b:List.of(botonActualizar,botonVincular,botonEstadoPerfil,botonAsignarCategoria,botonSuspenderCategoria,botonFinalizarCategoria))if(b!=null)b.setDisable(bloquear);}
+    private void bloquearAcciones(boolean bloquear){for(Button b:List.of(botonActualizar,botonVincular,botonEstadoPerfil,botonMarcarRevisado,botonAsignarCategoria,botonSuspenderCategoria,botonFinalizarCategoria))if(b!=null)b.setDisable(bloquear);}
     private String mensajeRaiz(Throwable e){Throwable x=e;while(x.getCause()!=null)x=x.getCause();return x.getMessage()==null?"Ocurrió un error inesperado.":x.getMessage();}
     private void ocultarEstadoLuego(){PauseTransition pausa=new PauseTransition(Duration.seconds(2.2));pausa.setOnFinished(e->etiquetaEstado.setText(""));pausa.play();}
 

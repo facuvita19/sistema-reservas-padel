@@ -15,11 +15,15 @@ import negocio.PosicionJugador;
 public class ConsultaJugadoresService {
 
     public List<JugadorResumen> listar() {
-        String sql = "SELECT pj.id, pj.nombre_publico, pj.estado, pj.activo, "
+        String sql = "SELECT pj.id, pj.nombre_publico, pj.estado, pj.activo, pj.vinculacion_revisada, "
                 + "pj.cliente_id, pj.posicion_preferida, pj.disponible_para_jugar, "
                 + "pj.acepta_invitaciones, c.documento, c.telefono, c.email, "
                 + "cd.id categoria_id, cd.nombre categoria_nombre, cd.color_hex, "
-                + "jc.fecha_desde categoria_desde "
+                + "jc.fecha_desde categoria_desde, "
+                + "(SELECT COUNT(*) FROM torneo_inscripcion_jugadores tij "
+                + "WHERE tij.perfil_jugador_id=pj.id) participaciones, "
+                + "(SELECT COUNT(*) FROM torneo_inscripcion_jugadores tij "
+                + "WHERE tij.perfil_jugador_id=pj.id AND tij.requiere_revision=TRUE) revisiones_pendientes "
                 + "FROM perfiles_jugador pj "
                 + "LEFT JOIN clientes c ON c.id=pj.cliente_id "
                 + "LEFT JOIN jugador_categorias jc ON jc.perfil_jugador_id=pj.id "
@@ -99,6 +103,8 @@ public class ConsultaJugadoresService {
         Date desde = r.getDate("categoria_desde");
         return new JugadorResumen(r.getLong("id"), r.getString("nombre_publico"),
                 EstadoPerfilJugador.valueOf(r.getString("estado")), r.getBoolean("activo"),
+                r.getBoolean("vinculacion_revisada"),
+                r.getInt("participaciones"), r.getInt("revisiones_pendientes"),
                 clienteId, r.getString("documento"), r.getString("telefono"),
                 r.getString("email"), posicion == null ? null : PosicionJugador.valueOf(posicion),
                 r.getBoolean("disponible_para_jugar"), r.getBoolean("acepta_invitaciones"),
@@ -107,10 +113,21 @@ public class ConsultaJugadoresService {
     }
 
     public record JugadorResumen(long id, String nombre, EstadoPerfilJugador identidad,
-            boolean activo, Long clienteId, String documento, String telefono, String email,
+            boolean activo, boolean vinculacionRevisada, int participaciones,
+            int revisionesPendientes, Long clienteId, String documento, String telefono, String email,
             PosicionJugador posicion, boolean disponible, boolean aceptaInvitaciones,
             Long categoriaId, String categoria, String categoriaColor,
-            java.time.LocalDate categoriaDesde) { }
+            java.time.LocalDate categoriaDesde) {
+        public boolean requiereRevision() {
+            return identidad == EstadoPerfilJugador.PROVISIONAL
+                    || !vinculacionRevisada || revisionesPendientes > 0;
+        }
+        public String estadoRevision() {
+            if (revisionesPendientes > 0) return "REVISAR INSCRIPCIÓN";
+            if (identidad == EstadoPerfilJugador.PROVISIONAL) return "ASOCIAR FICHA";
+            return vinculacionRevisada ? "REVISADO" : "REVISIÓN PENDIENTE";
+        }
+    }
     public record CategoriaResumen(long id, String nombre, String color) {
         @Override public String toString() { return nombre; }
     }

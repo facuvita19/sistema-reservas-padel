@@ -448,3 +448,9 @@
 }
 .players-header-secondary-v10 .players-header-action-icon-v10 { -fx-stroke:#b9c6cb; }
 .players-header-secondary-v10:hover .players-header-action-icon-v10 { -fx-stroke:#ffffff; }
+
+/* W2.1C4 integridad y revision de identidades */
+.players-review-summary,.players-review-badge { -fx-padding:4 8; -fx-background-radius:9; -fx-border-radius:9; -fx-font-size:8.5px; -fx-font-weight:900; }
+.players-review-ok { -fx-background-color:#1e3229; -fx-border-color:#4e8069; -fx-text-fill:#b9ddcc; }
+.players-review-pending { -fx-background-color:#3a301c; -fx-border-color:#8c7133; -fx-text-fill:#efcf84; }
+.players-review-summary { -fx-margin:0 8 0 0; }
