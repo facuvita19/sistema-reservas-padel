@@ -46,13 +46,15 @@ public class ResultadoPartidoTorneoService {
     private final CorreccionResultadoTorneoDAO correccionDAO;
     private final ProveedorConexionResultado proveedorConexion;
     private final ValidadorEstadoTorneo validadorEstadoTorneo;
+    private final ProyeccionHistorialCompetitivoService proyeccionHistorial;
 
     public ResultadoPartidoTorneoService() {
         this(new TorneoPartidoDAOMySQL(),
                 new TorneoPartidoSetDAOMySQL(),
                 new TorneoPartidoEnlaceDAOMySQL(),
                 new CorreccionResultadoTorneoDAOMySQL(),
-                ConexionBD::obtenerConexion, null);
+                ConexionBD::obtenerConexion, null,
+                new ProyeccionHistorialCompetitivoService());
     }
 
     public ResultadoPartidoTorneoService(
@@ -61,7 +63,8 @@ public class ResultadoPartidoTorneoService {
         this(partidoDAO, setDAO,
                 new TorneoPartidoEnlaceDAOMySQL(),
                 new CorreccionResultadoTorneoDAOMySQL(),
-                ConexionBD::obtenerConexion, null);
+                ConexionBD::obtenerConexion, null,
+                new ProyeccionHistorialCompetitivoService());
     }
 
     ResultadoPartidoTorneoService(
@@ -71,6 +74,16 @@ public class ResultadoPartidoTorneoService {
             CorreccionResultadoTorneoDAO correccionDAO,
             ProveedorConexionResultado proveedorConexion,
             ValidadorEstadoTorneo validadorEstadoTorneo) {
+        this(partidoDAO,setDAO,enlaceDAO,correccionDAO,proveedorConexion,
+                validadorEstadoTorneo,null);
+    }
+
+    ResultadoPartidoTorneoService(
+            TorneoPartidoDAO partidoDAO, TorneoPartidoSetDAO setDAO,
+            TorneoPartidoEnlaceDAO enlaceDAO, CorreccionResultadoTorneoDAO correccionDAO,
+            ProveedorConexionResultado proveedorConexion,
+            ValidadorEstadoTorneo validadorEstadoTorneo,
+            ProyeccionHistorialCompetitivoService proyeccionHistorial) {
         if (partidoDAO == null || setDAO == null || enlaceDAO == null
                 || correccionDAO == null || proveedorConexion == null) {
             throw new IllegalArgumentException(
@@ -83,6 +96,7 @@ public class ResultadoPartidoTorneoService {
         this.proveedorConexion = proveedorConexion;
         this.validadorEstadoTorneo = validadorEstadoTorneo == null
                 ? this::validarTorneoEnCursoReal : validadorEstadoTorneo;
+        this.proyeccionHistorial = proyeccionHistorial;
     }
 
     public TorneoPartido registrarResultado(
@@ -203,8 +217,13 @@ public class ResultadoPartidoTorneoService {
     }
 
     private String validarMotivo(String motivo) {
-        if (motivo == null || motivo.isBlank()) return null;
-        String limpio = motivo.trim().replaceAll("\s+", " ");
+        if (motivo == null || motivo.isBlank()) {
+            throw new IllegalArgumentException("El motivo de correccion es obligatorio.");
+        }
+        String limpio = motivo.trim().replaceAll("\\s+", " ");
+        if (limpio.length() < 10) {
+            throw new IllegalArgumentException("El motivo debe tener al menos 10 caracteres.");
+        }
         if (limpio.length() > 500) {
             throw new IllegalArgumentException(
                     "El motivo no puede superar 500 caracteres.");
