@@ -20,6 +20,7 @@ public class GestionVinculacionJugadorTorneoService {
     private final TorneoInscripcionJugadorDAO jugadorDAO;
     private final TorneoInscripcionDAO inscripcionDAO;
     private final ClienteDAO clienteDAO;
+    private final ResolucionPerfilJugadorService perfiles;
     private final ProveedorConexion proveedorConexion;
 
     public GestionVinculacionJugadorTorneoService() {
@@ -27,6 +28,7 @@ public class GestionVinculacionJugadorTorneoService {
                 new TorneoInscripcionJugadorDAOMySQL(),
                 new TorneoInscripcionDAOMySQL(),
                 new ClienteDAOMySQL(),
+                new ResolucionPerfilJugadorService(),
                 ConexionBD::obtenerConexion);
     }
 
@@ -35,22 +37,39 @@ public class GestionVinculacionJugadorTorneoService {
             TorneoInscripcionDAO inscripcionDAO,
             ClienteDAO clienteDAO,
             ProveedorConexion proveedorConexion) {
+        this(jugadorDAO, inscripcionDAO, clienteDAO,
+                new ResolucionPerfilJugadorService(), proveedorConexion);
+    }
+
+    public GestionVinculacionJugadorTorneoService(
+            TorneoInscripcionJugadorDAO jugadorDAO,
+            TorneoInscripcionDAO inscripcionDAO,
+            ClienteDAO clienteDAO,
+            ResolucionPerfilJugadorService perfiles,
+            ProveedorConexion proveedorConexion) {
         if (jugadorDAO == null || inscripcionDAO == null
-                || clienteDAO == null || proveedorConexion == null) {
+                || clienteDAO == null || perfiles == null
+                || proveedorConexion == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de vinculacion no pueden ser nulas.");
         }
         this.jugadorDAO = jugadorDAO;
         this.inscripcionDAO = inscripcionDAO;
         this.clienteDAO = clienteDAO;
+        this.perfiles = perfiles;
         this.proveedorConexion = proveedorConexion;
     }
 
     public TorneoInscripcionJugador vincularManualmente(
-            long jugadorId,
-            long clienteId) {
+            long jugadorId, long clienteId) {
+        return vincularManualmente(jugadorId, clienteId, 1L);
+    }
+
+    public TorneoInscripcionJugador vincularManualmente(
+            long jugadorId, long clienteId, long usuarioId) {
         validarId(jugadorId, "El ID del integrante debe ser positivo.");
         validarId(clienteId, "El ID del cliente debe ser positivo.");
+        validarId(usuarioId, "El ID del usuario debe ser positivo.");
 
         try (Connection conexion = proveedorConexion.obtener()) {
             conexion.setAutoCommit(false);
@@ -81,6 +100,10 @@ public class GestionVinculacionJugadorTorneoService {
                             "El cliente ya participa en otra pareja de esta categoria.");
                 }
 
+                negocio.PerfilJugador perfil = perfiles.consolidarConCliente(
+                        conexion, jugador.getPerfilJugadorId(), clienteId,
+                        cliente.getNombreCompleto(), usuarioId);
+                jugador.setPerfilJugadorId(perfil.getId());
                 jugador.setClienteId(clienteId);
                 jugador.setTipoVinculacion(
                         TipoVinculacionTorneo.MANUAL);

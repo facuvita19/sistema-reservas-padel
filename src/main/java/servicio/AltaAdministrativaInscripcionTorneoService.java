@@ -37,6 +37,7 @@ public class AltaAdministrativaInscripcionTorneoService {
     private final TorneoInscripcionJugadorDAO jugadorDAO;
     private final ClienteDAO clienteDAO;
     private final VinculacionClienteTelefonoService vinculacion;
+    private final ResolucionPerfilJugadorService perfiles;
     private final ProveedorConexion proveedorConexion;
 
     public AltaAdministrativaInscripcionTorneoService() {
@@ -45,6 +46,7 @@ public class AltaAdministrativaInscripcionTorneoService {
                 new TorneoInscripcionJugadorDAOMySQL(),
                 new ClienteDAOMySQL(),
                 new VinculacionClienteTelefonoService(),
+                new ResolucionPerfilJugadorService(),
                 ConexionBD::obtenerConexion);
     }
 
@@ -56,9 +58,23 @@ public class AltaAdministrativaInscripcionTorneoService {
             ClienteDAO clienteDAO,
             VinculacionClienteTelefonoService vinculacion,
             ProveedorConexion proveedorConexion) {
+        this(torneoDAO, categoriaDAO, inscripcionDAO, jugadorDAO, clienteDAO,
+                vinculacion, new ResolucionPerfilJugadorService(),
+                proveedorConexion);
+    }
+
+    public AltaAdministrativaInscripcionTorneoService(
+            TorneoDAO torneoDAO,
+            TorneoCategoriaDAO categoriaDAO,
+            TorneoInscripcionDAO inscripcionDAO,
+            TorneoInscripcionJugadorDAO jugadorDAO,
+            ClienteDAO clienteDAO,
+            VinculacionClienteTelefonoService vinculacion,
+            ResolucionPerfilJugadorService perfiles,
+            ProveedorConexion proveedorConexion) {
         if (torneoDAO == null || categoriaDAO == null
                 || inscripcionDAO == null || jugadorDAO == null
-                || clienteDAO == null || vinculacion == null
+                || clienteDAO == null || vinculacion == null || perfiles == null
                 || proveedorConexion == null) {
             throw new IllegalArgumentException(
                     "Las dependencias del alta administrativa son obligatorias.");
@@ -69,6 +85,7 @@ public class AltaAdministrativaInscripcionTorneoService {
         this.jugadorDAO = jugadorDAO;
         this.clienteDAO = clienteDAO;
         this.vinculacion = vinculacion;
+        this.perfiles = perfiles;
         this.proveedorConexion = proveedorConexion;
     }
 
@@ -122,10 +139,8 @@ public class AltaAdministrativaInscripcionTorneoService {
                 }
                 inscripcionDAO.guardar(conexion, inscripcion);
 
-                TorneoInscripcionJugador j1 = jugador(
-                        inscripcion.getId(), 1, true, responsable);
-                TorneoInscripcionJugador j2 = jugador(
-                        inscripcion.getId(), 2, false, pareja);
+                TorneoInscripcionJugador j1 = jugador(conexion, inscripcion.getId(), 1, true, responsable);
+                TorneoInscripcionJugador j2 = jugador(conexion, inscripcion.getId(), 2, false, pareja);
                 jugadorDAO.guardar(conexion, j1);
                 jugadorDAO.guardar(conexion, j2);
                 inscripcion.setJugadores(List.of(j1, j2));
@@ -286,6 +301,7 @@ public class AltaAdministrativaInscripcionTorneoService {
     }
 
     private TorneoInscripcionJugador jugador(
+            Connection conexion,
             long inscripcionId,
             int orden,
             boolean responsable,
@@ -303,6 +319,12 @@ public class AltaAdministrativaInscripcionTorneoService {
         jugador.setTipoVinculacion(datos.tipoVinculacion());
         jugador.setRequiereRevision(
                 datos.vinculacion().requiereRevision());
+        String nombreCompleto = datos.nombre() + " " + datos.apellido();
+        negocio.PerfilJugador perfil = datos.vinculacion().clienteId() == null
+                ? perfiles.crearSinFicha(conexion, nombreCompleto)
+                : perfiles.resolverParaCliente(conexion,
+                        datos.vinculacion().clienteId(), nombreCompleto);
+        jugador.setPerfilJugadorId(perfil.getId());
         return jugador;
     }
 

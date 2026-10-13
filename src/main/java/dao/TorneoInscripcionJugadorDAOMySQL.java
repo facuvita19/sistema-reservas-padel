@@ -310,6 +310,11 @@ public class TorneoInscripcionJugadorDAOMySQL
         }
         validarTelefonoNormalizado(
                 jugador.getTelefonoNormalizado());
+        if (jugador.getPerfilJugadorId() == null
+                || jugador.getPerfilJugadorId() <= 0) {
+            throw new IllegalArgumentException(
+                    "El perfil deportivo del integrante es obligatorio.");
+        }
         if (jugador.getClienteId() != null
                 && jugador.getClienteId() <= 0) {
             throw new IllegalArgumentException(

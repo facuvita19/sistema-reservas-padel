@@ -21,6 +21,8 @@ import dao.ClienteDAO;
 import dao.TorneoInscripcionDAO;
 import dao.TorneoInscripcionJugadorDAO;
 import negocio.Cliente;
+import negocio.EstadoPerfilJugador;
+import negocio.PerfilJugador;
 import negocio.TipoVinculacionTorneo;
 import negocio.TorneoInscripcion;
 import negocio.TorneoInscripcionJugador;
@@ -31,6 +33,7 @@ class GestionVinculacionJugadorTorneoServiceTest {
     private TorneoInscripcionDAO inscripcionDAO;
     private ClienteDAO clienteDAO;
     private Connection conexion;
+    private ResolucionPerfilJugadorService perfiles;
     private GestionVinculacionJugadorTorneoService servicio;
 
     @BeforeEach
@@ -39,11 +42,22 @@ class GestionVinculacionJugadorTorneoServiceTest {
         inscripcionDAO = mock(TorneoInscripcionDAO.class);
         clienteDAO = mock(ClienteDAO.class);
         conexion = mock(Connection.class);
+        perfiles = mock(ResolucionPerfilJugadorService.class);
         servicio = new GestionVinculacionJugadorTorneoService(
                 jugadorDAO,
                 inscripcionDAO,
                 clienteDAO,
+                perfiles,
                 () -> conexion);
+
+        PerfilJugador perfil = new PerfilJugador();
+        perfil.setId(700L);
+        perfil.setEstado(EstadoPerfilJugador.DEFINITIVO);
+        perfil.setNombrePublico("Perfil torneo");
+        when(perfiles.consolidarConCliente(
+                any(Connection.class), any(), org.mockito.ArgumentMatchers.anyLong(),
+                any(String.class), org.mockito.ArgumentMatchers.anyLong()))
+                .thenReturn(perfil);
     }
 
     @Test

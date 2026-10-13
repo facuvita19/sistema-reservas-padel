@@ -594,7 +594,8 @@ public class TorneosInscripcionesController {
 
             long inscripcionId = seleccionada.id();
             vinculacionService.vincularManualmente(
-                    jugador.jugadorId(), cliente.getId());
+                    jugador.jugadorId(), cliente.getId(),
+                    Navegacion.getUsuarioActual().getId());
             cargarInscripciones();
             seleccionarPorId(inscripcionId);
             mostrarExito("Vinculación completada", "Cliente vinculado correctamente.");

@@ -29,6 +29,8 @@ import dao.TorneoInscripcionJugadorDAO;
 import negocio.Cliente;
 import negocio.EstadoInscripcionTorneo;
 import negocio.EstadoTorneo;
+import negocio.EstadoPerfilJugador;
+import negocio.PerfilJugador;
 import negocio.OrigenInscripcionTorneo;
 import negocio.RamaTorneo;
 import negocio.TipoVinculacionTorneo;
@@ -47,6 +49,7 @@ class InscripcionTorneoWebServiceTest {
     private TorneoInscripcionDAO inscripcionDAO;
     private TorneoInscripcionJugadorDAO jugadorDAO;
     private VinculacionClienteTelefonoService vinculacionService;
+    private ResolucionPerfilJugadorService perfiles;
     private Connection conexion;
     private InscripcionTorneoWebService servicio;
 
@@ -57,6 +60,7 @@ class InscripcionTorneoWebServiceTest {
         inscripcionDAO = mock(TorneoInscripcionDAO.class);
         jugadorDAO = mock(TorneoInscripcionJugadorDAO.class);
         vinculacionService = mock(VinculacionClienteTelefonoService.class);
+        perfiles = mock(ResolucionPerfilJugadorService.class);
         conexion = mock(Connection.class);
         servicio = new InscripcionTorneoWebService(
                 torneoDAO,
@@ -64,11 +68,22 @@ class InscripcionTorneoWebServiceTest {
                 inscripcionDAO,
                 jugadorDAO,
                 vinculacionService,
+                perfiles,
                 () -> conexion);
         doNothing().when(conexion).setAutoCommit(false);
         doNothing().when(conexion).setAutoCommit(true);
         doNothing().when(conexion).commit();
         doNothing().when(conexion).rollback();
+
+        PerfilJugador perfilCliente = perfil(501L, EstadoPerfilJugador.DEFINITIVO);
+        PerfilJugador perfilSinFicha1 = perfil(502L, EstadoPerfilJugador.PROVISIONAL);
+        PerfilJugador perfilSinFicha2 = perfil(503L, EstadoPerfilJugador.PROVISIONAL);
+        when(perfiles.resolverParaCliente(
+                any(Connection.class), org.mockito.ArgumentMatchers.anyLong(), any(String.class)))
+                .thenReturn(perfilCliente);
+        when(perfiles.crearSinFicha(
+                any(Connection.class), any(String.class)))
+                .thenReturn(perfilSinFicha1, perfilSinFicha2);
     }
 
     @Test
@@ -239,6 +254,14 @@ class InscripcionTorneoWebServiceTest {
                 new DatosJugador(
                         "Maria", "Lopez", "+54 9 11 5555-2222"),
                 "Disponibles por la tarde");
+    }
+
+    private PerfilJugador perfil(long id, EstadoPerfilJugador estado) {
+        PerfilJugador perfil = new PerfilJugador();
+        perfil.setId(id);
+        perfil.setEstado(estado);
+        perfil.setNombrePublico("Perfil " + id);
+        return perfil;
     }
 
     private Cliente cliente(long id, String nombre, String apellido) {

@@ -32,6 +32,7 @@ public class InscripcionTorneoWebService {
     private final TorneoInscripcionDAO inscripcionDAO;
     private final TorneoInscripcionJugadorDAO jugadorDAO;
     private final VinculacionClienteTelefonoService vinculacionService;
+    private final ResolucionPerfilJugadorService perfiles;
     private final ProveedorConexion proveedorConexion;
 
     public InscripcionTorneoWebService() {
@@ -41,6 +42,7 @@ public class InscripcionTorneoWebService {
                 new TorneoInscripcionDAOMySQL(),
                 new TorneoInscripcionJugadorDAOMySQL(),
                 new VinculacionClienteTelefonoService(),
+                new ResolucionPerfilJugadorService(),
                 ConexionBD::obtenerConexion);
     }
 
@@ -51,7 +53,8 @@ public class InscripcionTorneoWebService {
             TorneoInscripcionJugadorDAO jugadorDAO,
             VinculacionClienteTelefonoService vinculacionService) {
         this(torneoDAO, categoriaDAO, inscripcionDAO, jugadorDAO,
-                vinculacionService, ConexionBD::obtenerConexion);
+                vinculacionService, new ResolucionPerfilJugadorService(),
+                ConexionBD::obtenerConexion);
     }
 
     public InscripcionTorneoWebService(
@@ -61,9 +64,22 @@ public class InscripcionTorneoWebService {
             TorneoInscripcionJugadorDAO jugadorDAO,
             VinculacionClienteTelefonoService vinculacionService,
             ProveedorConexion proveedorConexion) {
+        this(torneoDAO, categoriaDAO, inscripcionDAO, jugadorDAO,
+                vinculacionService, new ResolucionPerfilJugadorService(),
+                proveedorConexion);
+    }
+
+    public InscripcionTorneoWebService(
+            TorneoDAO torneoDAO,
+            TorneoCategoriaDAO categoriaDAO,
+            TorneoInscripcionDAO inscripcionDAO,
+            TorneoInscripcionJugadorDAO jugadorDAO,
+            VinculacionClienteTelefonoService vinculacionService,
+            ResolucionPerfilJugadorService perfiles,
+            ProveedorConexion proveedorConexion) {
         if (torneoDAO == null || categoriaDAO == null
                 || inscripcionDAO == null || jugadorDAO == null
-                || vinculacionService == null
+                || vinculacionService == null || perfiles == null
                 || proveedorConexion == null) {
             throw new IllegalArgumentException(
                     "Las dependencias de inscripcion no pueden ser nulas.");
@@ -73,6 +89,7 @@ public class InscripcionTorneoWebService {
         this.inscripcionDAO = inscripcionDAO;
         this.jugadorDAO = jugadorDAO;
         this.vinculacionService = vinculacionService;
+        this.perfiles = perfiles;
         this.proveedorConexion = proveedorConexion;
     }
 
@@ -125,14 +142,12 @@ public class InscripcionTorneoWebService {
                         inscripcion.getId(),
                         1,
                         true,
-                        solicitud.responsable(),
-                        vinculacionResponsable);
+                        solicitud.responsable(), vinculacionResponsable, conexion);
                 TorneoInscripcionJugador pareja = crearJugador(
                         inscripcion.getId(),
                         2,
                         false,
-                        solicitud.pareja(),
-                        vinculacionPareja);
+                        solicitud.pareja(), vinculacionPareja, conexion);
 
                 jugadorDAO.guardar(conexion, responsable);
                 jugadorDAO.guardar(conexion, pareja);
@@ -163,7 +178,8 @@ public class InscripcionTorneoWebService {
             int orden,
             boolean responsable,
             DatosJugador datos,
-            ResultadoVinculacion vinculacion) {
+            ResultadoVinculacion vinculacion,
+            Connection conexion) {
         TorneoInscripcionJugador jugador =
                 new TorneoInscripcionJugador();
         jugador.setInscripcionId(inscripcionId);
@@ -179,6 +195,12 @@ public class InscripcionTorneoWebService {
                 vinculacion.tipoVinculacion());
         jugador.setRequiereRevision(
                 vinculacion.requiereRevision());
+        String nombreCompleto = datos.nombre().trim() + " " + datos.apellido().trim();
+        negocio.PerfilJugador perfil = vinculacion.clienteId() == null
+                ? perfiles.crearSinFicha(conexion, nombreCompleto)
+                : perfiles.resolverParaCliente(conexion,
+                        vinculacion.clienteId(), nombreCompleto);
+        jugador.setPerfilJugadorId(perfil.getId());
         return jugador;
     }
 
