@@ -13,7 +13,7 @@ Comunidad
 Mi cuenta
 ```
 
-Competir agrupa Torneos, Calendario, Resultados y Jugadores. Mi cuenta agrupa Resumen, Mis reservas, Mi perfil deportivo, Mis torneos, Mis pagos y Preferencias.
+Competir agrupa Torneos, Calendario, Resultados y Jugadores. Mi cuenta agrupa Resumen, Mis reservas, Mis datos, Seguridad, Mi perfil deportivo, Mi historial, Mis torneos, Mis pagos y Preferencias. La navegación W2 debe reutilizar la sesión real y reemplazar gradualmente el shell anterior sin perder funciones.
 
 ## 2. Mapa de páginas
 
@@ -44,6 +44,48 @@ Competir agrupa Torneos, Calendario, Resultados y Jugadores. Mi cuenta agrupa Re
 - Mis convocatorias y solicitudes;
 - Mis pagos;
 - Preferencias y seguridad.
+
+## 2A. Estado de convergencia al 13 de octubre de 2026
+
+### Operativo en W2
+
+- ranking real por categoría;
+- auditoría de puntos;
+- perfil deportivo público limitado;
+- navegación entre ranking y perfil;
+- estados vacíos y de error iniciales.
+
+### Operativo en la web vigente y pendiente de integrar al shell W2
+
+- autenticación, registro, recuperación y sesión persistente;
+- menú de cuenta;
+- Mis datos y seguridad;
+- Mis reservas, seguimiento, señas y estados;
+- reserva real de canchas;
+- catálogo, detalle, inscripción y centro competitivo de torneos;
+- navegación móvil funcional.
+
+### Regla de retiro
+
+La versión anterior de una experiencia solo se retira después de comprobar paridad de datos, seguridad, validaciones, estados, responsive, accesibilidad y pruebas.
+
+## 2B. Centro de cuenta W2
+
+~~~text
+Mi cuenta
+├── Resumen
+├── Mis reservas
+├── Mis datos
+├── Seguridad
+├── Mi perfil deportivo
+├── Mi historial
+├── Mis torneos
+├── Mis pagos
+└── Preferencias
+~~~
+
+El centro de cuenta será la unión ordenada entre identidad comercial y deportiva. Los datos de categoría, ranking y resultados son de lectura; las preferencias permitidas se editan con privacidad explícita.
+
 
 ## 3. Recorrido Reservar
 
@@ -156,6 +198,18 @@ El primer prototipo estático deberá cubrir:
 - estados de carga, vacío y error.
 
 Los datos serán fixtures de desarrollo explícitos y nunca se presentarán como reales en producción.
+
+## 12A. Próximo recorrido prioritario
+
+1. Entrar o registrarse desde el shell W2.
+2. Ver avatar y menú de cuenta.
+3. Abrir Resumen de cuenta.
+4. Navegar a Mis reservas, Mis datos, Seguridad o Perfil deportivo.
+5. Mantener sesión y contexto al cambiar entre áreas comerciales y deportivas.
+6. Resolver sesión vencida, API inaccesible y móvil sin perder el recorrido.
+
+Este recorrido precede a Comunidad para asegurar identidad, control de privacidad y paridad funcional.
+
 
 ## 12. Métricas futuras
 

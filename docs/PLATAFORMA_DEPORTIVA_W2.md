@@ -18,6 +18,12 @@ Objetivos:
 
 ## 2. Principios obligatorios
 
+- W2 reemplazará integralmente la experiencia anterior, no convivirá indefinidamente como sección paralela.
+- Ninguna capacidad vigente se elimina hasta alcanzar paridad funcional y una experiencia superior verificada.
+- La excelencia visual y de producto prevalece sobre el costo de implementación: se rehace lo necesario cuando mejora el resultado.
+- Cada detalle debe reforzar una presencia premium, profesional, moderna e imponente.
+- La innovación tecnológica se evalúa de forma continua y se adopta cuando mejora experiencia, seguridad, rendimiento o mantenibilidad.
+
 - Una persona no debe duplicarse entre cuenta, cliente y jugador.
 - La cuenta autentica, el cliente representa la relación comercial y el jugador representa la identidad deportiva.
 - Las categorías tienen vigencia e historial; no son un texto fijo en el jugador.
@@ -551,9 +557,33 @@ Cada imagen debe tener finalidad comercial, informativa o identitaria. Se evitar
 - PWA;
 - contenido comercial configurable.
 
+## 14A. Convergencia y paridad funcional
+
+W2 debe absorber y mejorar la web pública vigente completa: autenticación, registro, recuperación, menú de cuenta, Mis datos, seguridad, Mis reservas, seguimiento, reserva de canchas, torneos, inscripción y centro competitivo.
+
+La convergencia se realizará mediante componentes y módulos compartidos, no mediante copias aisladas. El estado de sesión, el cliente API, las validaciones, los contratos y los flujos maduros se reutilizarán.
+
+Una función solo se considera migrada cuando cumple:
+
+- misma funcionalidad o superior;
+- mismos datos reales y reglas de seguridad;
+- estados de carga, vacío, error, éxito y sesión vencida;
+- responsive específico y accesibilidad de teclado;
+- pruebas Java, build y Playwright aplicables;
+- mejor jerarquía visual, legibilidad y velocidad de uso;
+- ausencia de duplicación innecesaria;
+- redirección o compatibilidad para la ruta anterior.
+
+### Estado real de las fases
+
+- W2.0, W2.1 y W2.2: completados en su alcance inicial.
+- W2.3: ranking inicial operativo y auditable; quedan pendientes temporadas, reglas versionadas, ventana móvil, publicaciones históricas, variaciones y Masters.
+- W2.4: iniciada con rankings y perfiles públicos reales; continúa con shell autenticado, centro de cuenta, paridad y Competir.
+
+
 ## 15. Orden de trabajo inmediato
 
-> W2.0A completado documentalmente: consultar `ARQUITECTURA_FUNCIONAL_W2.md`, `DIRECCION_VISUAL_W2.md` y `MAPA_EXPERIENCIA_W2.md`. Próximo entregable: prototipo estático W2.0B.
+> Punto actual: W2.4 en curso. Rankings y perfiles públicos reales están operativos. El próximo entregable es W2.4A: shell autenticado y menú de cuenta, seguido por el centro de cuenta y la paridad funcional completa.
 
 
 

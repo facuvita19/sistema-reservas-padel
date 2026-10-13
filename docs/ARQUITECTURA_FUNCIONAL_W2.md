@@ -8,6 +8,14 @@ Crear una capa deportiva global sobre clientes, cuentas, torneos, inscripciones,
 
 ## 2. Decisiones estructurales
 
+### 2.0 Convergencia del frontend
+
+- `web-publica-v2` es la única web activa y la base de la evolución W2.
+- `W2Layout.astro` debe converger con la autenticación, cuenta y navegación funcionales existentes.
+- `api.ts` y `sesion-global.ts` son infraestructura compartida; no se duplicarán clientes HTTP ni estados de sesión.
+- Las páginas actuales se mantienen hasta que su reemplazo W2 apruebe paridad funcional y E2E.
+- Componentes de encabezado, menú, formularios y estados deben extraerse o refactorizarse para reutilización.
+
 ### 2.1 Identidad única
 
 - `clientes` continúa siendo la persona comercial central.
@@ -171,13 +179,13 @@ El Master pertenece a una categoría, toma clasificados del ranking y conserva c
 Rutas previstas, sujetas a diseño final:
 
 ```text
-GET  /api/publica/categorias
-GET  /api/publica/rankings?categoriaId=&fecha=
-GET  /api/publica/rankings/mi-posicion
-GET  /api/publica/jugadores/{id}
-GET  /api/publica/jugadores/{id}/historial
-GET  /api/publica/cliente/perfil-deportivo
-PUT  /api/publica/cliente/perfil-deportivo
+GET  /api/publica/rankings/categorias                  [implementado]
+GET  /api/publica/rankings?categoriaId=                 [implementado inicial]
+GET  /api/publica/rankings/auditoria?categoriaId=&perfilId= [implementado]
+GET  /api/publica/jugadores/{id}                        [implementado]
+GET  /api/publica/rankings/mi-posicion                  [pendiente]
+GET  /api/publica/cliente/perfil-deportivo              [pendiente W2.4]
+PUT  /api/publica/cliente/perfil-deportivo              [pendiente W2.4]
 GET  /api/publica/cambios-categoria
 GET  /api/publica/convocatorias
 POST /api/publica/convocatorias
@@ -224,3 +232,19 @@ Cada migración deberá existir también en `database/docker-init`, ser idempote
 ## 12. Primer bloque funcional W2.1
 
 El primer cambio de base contendrá únicamente catálogo 1.ª a 8.ª, perfiles deportivos, historial de categorías y servicios de administración. Ranking, comunidad y pagos quedarán fuera de ese commit para mantener alcance controlado.
+
+
+## 13. Criterios de modernización técnica
+
+Las tecnologías nuevas se incorporarán con evaluación explícita de beneficio, madurez, seguridad, compatibilidad, accesibilidad, rendimiento y costo operativo. Se priorizan:
+
+- arquitectura por componentes reutilizables;
+- islas interactivas solo donde aporten valor;
+- carga progresiva, streaming o renderizado híbrido cuando el despliegue lo justifique;
+- imágenes AVIF/WebP, srcset, lazy loading y presupuestos de rendimiento;
+- View Transitions con degradación segura cuando mejoren continuidad;
+- PWA, notificaciones y sincronización resiliente en su fase prevista;
+- observabilidad de experiencia y errores sin exponer datos personales;
+- pruebas visuales y E2E para flujos críticos.
+
+No se adoptará una herramienta por novedad. La innovación debe reducir fricción, elevar calidad o habilitar una capacidad diferencial sostenible.

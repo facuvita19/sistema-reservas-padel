@@ -4,6 +4,8 @@
 
 ## 1. Principio creativo
 
+La exigencia visual es máxima: la plataforma debe sentirse premium, profesional, moderna e imponente en cada pantalla, estado y transición. Ningún detalle se considera demasiado pequeño si mejora lectura, confianza, visibilidad, respuesta o percepción de calidad. Se permite rehacer componentes, páginas o recorridos completos cuando el resultado final sea superior.
+
 La experiencia debe combinar energía competitiva, precisión operativa y confianza comercial. No se buscará una web cargada de efectos, sino una presencia editorial fuerte donde cada imagen, movimiento y bloque ayude a reservar, competir o entender información.
 
 ## 2. Lenguaje visual
@@ -128,6 +130,25 @@ Convocatorias con cupos, categoría, fecha, modalidad y solicitud protegida.
 ### Pago
 
 Detalle de reserva, total, seña, saldo, temporizador, proveedor, estado y recuperación segura.
+
+## 7A. Shell autenticado y centro personal
+
+La cabecera W2 debe resolver con la misma calidad que el resto de la plataforma:
+
+- ingreso y registro;
+- avatar o iniciales;
+- menú de cuenta accesible;
+- Mis reservas, Mis datos, Seguridad y Perfil deportivo;
+- cierre de sesión;
+- estados visitante, cargando, autenticado, error y sesión vencida;
+- navegación móvil propia, no una reducción literal de escritorio.
+
+El centro de cuenta debe organizar información comercial y deportiva con jerarquía clara, resumen accionable, privacidad explícita y continuidad visual con Reservas, Competir, Rankings y Comunidad.
+
+## 7B. Innovación visual responsable
+
+Se evaluarán de manera continua tecnologías modernas de interfaz, interacción, imagen, rendimiento y personalización. Toda incorporación deberá tener fallback, respetar movimiento reducido, mantener contraste y no comprometer carga, SEO ni navegación por teclado.
+
 
 ## 8. Mobile first real
 

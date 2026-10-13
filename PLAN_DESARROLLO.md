@@ -1,6 +1,6 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
-> Fuente de verdad estratégica del proyecto. Actualizado el 12 de octubre de 2026 sobre la rama `master`, después del commit `c1e6ab4` (`Agregar prueba SMTP controlada`).
+> Fuente de verdad estratégica del proyecto. Actualizado el 13 de octubre de 2026 sobre la rama `master`, después del commit `80b740b` (`Publicar perfiles deportivos reales de jugadores`).
 
 ## 1. Punto actual de continuidad
 
@@ -11,7 +11,7 @@ El sistema comercial ya dispone de una base funcional amplia, una aplicación ad
 Estado técnico confirmado:
 
 - Rama estable: `master`.
-- Commit de referencia al reconstruir este plan: `c1e6ab4`.
+- Commit de referencia actual: `80b740b`.
 - CI: cuatro trabajos verdes en GitHub Actions.
 - Java: 250 pruebas, sin fallos.
 - Web: Astro y TypeScript validados.
@@ -23,6 +23,21 @@ Estado técnico confirmado:
 - Auditoría de secretos: sin hallazgos de alta confianza.
 
 ### Próximo objetivo inmediato
+
+1. Formalizar la convergencia integral de `web-publica-v2` hacia Plataforma Deportiva W2 sin perder ninguna capacidad vigente.
+2. Completar W2.4 con shell autenticado, menú de cuenta y centro personal, reutilizando sesión, cuenta, reservas y seguridad existentes.
+3. Mantener la web actual operativa hasta alcanzar paridad funcional, visual, responsive, accesible y de pruebas en W2.
+4. Actualizar la matriz de paridad en cada cierre antes de retirar rutas, componentes o scripts anteriores.
+
+### Estado W2 al 13 de octubre de 2026
+
+- W2.0: arquitectura, dirección visual, mapa de experiencia y prototipos iniciales completados.
+- W2.1: identidad deportiva, categorías históricas y administración completadas.
+- W2.2: historial competitivo auditable completado.
+- W2.3 inicial: ranking operativo, auditoría, publicación web y perfiles públicos reales completados.
+- Motor avanzado de ranking: pendientes temporadas, ventana móvil de 12 meses, reglas versionadas, publicaciones históricas, variaciones y Masters.
+- W2.4: experiencia web deportiva iniciada; próximos bloques centrados en convergencia del shell, cuenta y paridad funcional.
+
 
 1. Cerrar el bloque 10D con auditoría final, backup final, restauración temporal final y validación de despliegue.
 2. Crear y publicar una etiqueta estable una vez que el repositorio y CI vuelvan a quedar limpios y verdes.
@@ -414,6 +429,49 @@ Reglas deportivas ya confirmadas:
 Orden vigente: W2.0 dirección creativa y arquitectura; W2.1 identidad; W2.2 historial; W2.3 ranking; W2.4 experiencia deportiva; W2.5 reserva; W2.6 comunidad; W2.7 pagos en pruebas; W2.8 pagos en producción; W2.9 engagement.
 
 La inspección inicial W2 quedó completada. W2.0A define arquitectura funcional, dirección visual y mapa de experiencia en `docs/ARQUITECTURA_FUNCIONAL_W2.md`, `docs/DIRECCION_VISUAL_W2.md` y `docs/MAPA_EXPERIENCIA_W2.md`. El próximo bloque es W2.0B: prototipo estático de Inicio, Ranking, Perfil y Reserva antes de aplicar migraciones.
+
+## 8A. Convergencia integral de web-publica-v2
+
+Plataforma Deportiva W2 no es una sección paralela ni una segunda web. Es la evolución definitiva de `web-publica-v2` y debe preservar, reorganizar y superar todas las funciones operativas existentes.
+
+Reglas obligatorias:
+
+- ninguna función vigente se retira antes de existir una alternativa W2 igual o superior;
+- autenticación, datos personales, seguridad, reservas, seguimiento, pagos y torneos deben converger en un único shell;
+- se reutilizan `api.ts`, `sesion-global.ts`, contratos, validaciones y lógica madura en lugar de duplicarlos;
+- las rutas anteriores permanecen operativas hasta aprobar paridad funcional, visual, responsive, accesible y E2E;
+- cada retiro exige evidencia de no uso, redirección definida y pruebas aprobadas;
+- el estándar visual es premium, profesional, moderno e imponente en cada detalle;
+- se aceptan rediseños o reconstrucciones amplias cuando mejoren claridad, visibilidad, velocidad, confianza o experiencia;
+- se evaluarán herramientas y tecnologías modernas cuando aporten valor real, seguridad, mantenibilidad, rendimiento o innovación, evitando novedades sin beneficio comprobable.
+
+### Matriz de paridad actual
+
+| Área | Web vigente | W2 | Estado |
+|---|---|---|---|
+| Inicio | Funcional completa | Prototipo premium | En convergencia |
+| Autenticación | Completa | No integrada al shell W2 | Pendiente |
+| Menú de cuenta | Completo | Ausente en W2Layout | Pendiente |
+| Mis datos y seguridad | Completo | Shell anterior | Pendiente |
+| Mis reservas y seguimiento | Completo | Shell anterior | Pendiente |
+| Reservar | Flujo real completo | Prototipo visual | Pendiente |
+| Torneos y centro competitivo | Completo | Navegación deportiva parcial | Pendiente |
+| Rankings | No existía con este alcance | Real y auditable | Inicial completado |
+| Perfil deportivo público | No existía | Real y seguro | Inicial completado |
+| Mi perfil deportivo privado | No existía | Diseñado, no implementado | Pendiente |
+| Comunidad | Conceptual | Conceptual | Pendiente |
+| Mercado Pago | Pendiente | Planificado | Futuro |
+| PWA y notificaciones | Pendiente | Planificado | Futuro |
+
+### Orden actualizado de W2.4
+
+1. W2.4A: shell global autenticado, menú de cuenta y navegación móvil.
+2. W2.4B: centro de cuenta con Resumen, Mis reservas, Mis datos, Seguridad y Perfil deportivo.
+3. W2.4C: paridad completa de cuenta y reservas personales.
+4. W2.4D: convergencia técnica, componentes compartidos, SEO, accesibilidad y Playwright.
+5. W2.4E: integración plena de Competir, torneos y centro competitivo.
+6. W2.4F: retiro controlado de duplicaciones solo después de aprobar la matriz de paridad.
+
 
 ## 9. Criterios de aceptación
 
