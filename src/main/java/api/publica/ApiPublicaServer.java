@@ -41,6 +41,7 @@ public final class ApiPublicaServer {
     private final SolicitudWebPublicaService solicitudWebService;
     private final EstadoSolicitudWebPublicaService estadoService;
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
+    private final RankingPublicoService rankingPublicoService = new RankingPublicoService();
     private final ObjectMapper mapper;
     private final AutenticacionClienteService autenticacionClienteService;
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
@@ -210,6 +211,23 @@ public final class ApiPublicaServer {
             if (!"GET".equals(metodo)) {
                 error(x, 405, "METODO_NO_PERMITIDO",
                         "El método solicitado no está permitido.", operacionId);
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/rankings/categorias")) {
+                responder(x, 200, rankingPublicoService.categorias());
+                return;
+            }
+            if (ruta.equals(PREFIJO + "/rankings")) {
+                Map<String, String> p = parametros(x.getRequestURI());
+                responder(x, 200, rankingPublicoService.buscar(
+                        id(p.get("categoriaId"))));
+                return;
+            }
+            if (ruta.equals(PREFIJO + "/rankings/auditoria")) {
+                Map<String, String> p = parametros(x.getRequestURI());
+                responder(x, 200, rankingPublicoService.auditar(
+                        id(p.get("categoriaId")), id(p.get("perfilId"))));
                 return;
             }
 
