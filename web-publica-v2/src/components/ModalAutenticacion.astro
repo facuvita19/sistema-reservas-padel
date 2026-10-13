@@ -3,7 +3,7 @@
     <aside class="auth-x-brand" aria-hidden="true">
       <div class="auth-x-orbit"><span></span><i></i><b></b></div>
       <div class="auth-x-brand-copy">
-        <p class="auth-x-eyebrow"><span></span> Experiencia Arena</p>
+        <p class="auth-x-eyebrow"><span></span> Experiencia W2</p>
         <h2>Tu pádel.<strong>En un solo lugar.</strong></h2>
         <p>Reservá más rápido, seguí tus pagos y viví cada competencia desde tu perfil.</p>
       </div>
@@ -11,21 +11,21 @@
       <div class="auth-x-brand-foot"><span class="auth-x-live"></span><small>Plataforma segura para clientes</small></div>
     </aside>
     <div class="auth-x-transaction">
-      <header class="auth-x-header"><div><p class="site-kicker">Cuenta de cliente</p><h2 id="tituloAutenticacion">Bienvenido de nuevo</h2><p id="descripcionAutenticacion">Ingresá para continuar donde lo dejaste.</p></div><button id="cerrarAutenticacion" class="auth-x-close" type="button" aria-label="Cerrar acceso">×</button></header>
+      <header class="auth-x-header"><div><p class="site-kicker">Cuenta de cliente W2</p><h2 id="tituloAutenticacion">Bienvenido de nuevo</h2><p id="descripcionAutenticacion">Ingresá para continuar donde lo dejaste.</p></div><button id="cerrarAutenticacion" class="auth-x-close" type="button" aria-label="Cerrar acceso">×</button></header>
       <div id="tabsAutenticacion" class="auth-x-tabs" role="tablist" aria-label="Acceso de cliente"><button id="tabLogin" class="activo" type="button" role="tab" aria-selected="true" aria-controls="formLogin" tabindex="0"><span>01</span>Ingresar</button><button id="tabRegistro" type="button" role="tab" aria-selected="false" aria-controls="formRegistro" tabindex="-1"><span>02</span>Crear cuenta</button><i></i></div>
       <div id="errorAutenticacion" class="hidden auth-x-message error" role="alert" aria-live="assertive"></div>
       <form id="formLogin" class="auth-x-view auth-x-login" role="tabpanel" aria-labelledby="tabLogin" tabindex="0" novalidate>
         <div class="auth-x-welcome"><span>Acceso personal</span><b>Todo listo para tu próximo partido.</b></div>
         <label><span>Correo electrónico</span><div class="auth-x-field"><i>@</i><input id="loginEmail" type="email" autocomplete="email" placeholder="tu@correo.com" aria-describedby="errorLoginEmail"/></div><small id="errorLoginEmail" data-error="loginEmail"></small></label>
-        <label><span>Contraseña</span><div class="auth-x-field"><i>●</i><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" aria-describedby="errorLoginPassword"/><button data-password="loginPassword" type="button" aria-label="Mostrar contraseña" aria-pressed="false">Ver</button></div><small id="errorLoginPassword" data-error="loginPassword"></small></label>
+        <label><span>Contraseña</span><div class="auth-x-field"><i class="auth-x-lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></i><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Tu contraseña" aria-describedby="errorLoginPassword"/><button data-password="loginPassword" type="button" aria-label="Mostrar contraseña" aria-pressed="false">Ver</button></div><small id="errorLoginPassword" data-error="loginPassword"></small></label>
         <button id="enviarLogin" class="auth-x-primary" type="submit"><span>Ingresar a mi cuenta</span><b>→</b></button>
-        <button id="abrirRecuperacion" class="auth-x-text" type="button">¿Olvidaste tu contraseña? <span>Recuperar acceso</span></button>
+        <button id="abrirRecuperacion" class="auth-x-text auth-x-recovery-link" type="button"><span class="auth-x-question">¿Olvidaste tu contraseña?</span><span>Recuperar acceso</span></button>
       </form>
       <form id="formRecuperacion" class="hidden auth-x-view auth-x-recovery" novalidate>
         <div class="auth-x-security-mark"><span class="auth-x-shield" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M12 3.2 18.5 6v5.3c0 4.2-2.6 7.6-6.5 9.5-3.9-1.9-6.5-5.3-6.5-9.5V6L12 3.2Z"/><path d="m9.1 12 1.8 1.8 4-4"/></svg></span><div><b>Recuperación protegida</b><p>La respuesta será neutral para mantener segura tu identidad.</p></div></div>
         <label><span>Correo electrónico</span><div class="auth-x-field"><i>@</i><input id="recuperacionEmail" type="email" autocomplete="email" placeholder="tu@correo.com" aria-describedby="errorRecuperacionEmail"/></div><small id="errorRecuperacionEmail" data-error="recuperacionEmail"></small></label>
         <div id="resultadoRecuperacion" class="hidden auth-x-message ok" role="status" aria-live="polite"></div>
-        <button id="enviarRecuperacion" class="auth-x-primary" type="submit"><span>Enviar instrucciones</span><b>→</b></button><button id="volverLogin" class="auth-x-text" type="button">← Volver a ingresar</button>
+        <button id="enviarRecuperacion" class="auth-x-primary" type="submit"><span>Enviar instrucciones</span><b>→</b></button><p class="auth-x-recovery-note">El enlace vence a los 30 minutos y puede utilizarse una sola vez.</p><button id="volverLogin" class="auth-x-text" type="button">← Volver a ingresar</button>
       </form>
       <form id="formRegistro" class="hidden auth-x-view auth-x-register" role="tabpanel" aria-labelledby="tabRegistro" tabindex="0" novalidate>
         <div class="auth-x-progress" role="status" aria-live="polite" aria-atomic="true"><span id="registroPasoAccesible" class="sr-only">Paso 1 de 2: Identidad y contacto</span><div><span class="active" data-step-dot="1">1</span><i></i><span data-step-dot="2">2</span></div><p><b id="registroPasoTitulo">Identidad y contacto</b><small id="registroPasoAyuda">Contanos quién sos para vincular tus reservas.</small></p></div>
@@ -39,7 +39,7 @@
             <div class="auth-x-review"><span id="registroIniciales">AR</span><div><small>Tu nueva cuenta</small><b id="registroResumenNombre">Completá tus datos</b><em id="registroResumenEmail">Correo de acceso pendiente</em></div><i id="registroResumenPosicion">Flexible</i></div>
           </section>
         </div>
-        <footer class="auth-x-register-actions"><button id="registroAnterior" class="auth-x-back hidden" type="button">← Anterior</button><button id="registroContinuar" class="auth-x-primary" type="button"><span>Continuar</span><b>→</b></button><button id="enviarRegistro" class="auth-x-primary hidden" type="submit" disabled><span>Crear mi cuenta</span><b>✓</b></button></footer>
+        <footer class="auth-x-register-actions"><button id="registroAnterior" class="auth-x-back hidden" type="button">← Anterior</button><button id="registroContinuar" class="auth-x-primary" type="button"><span>Continuar</span><b>→</b></button><button id="enviarRegistro" class="auth-x-primary hidden" type="submit" disabled><span>Crear mi cuenta</span><b>→</b></button></footer>
       </form>
     </div>
   </section>

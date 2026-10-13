@@ -3,4 +3,41 @@ import W2ThemeToggle from './W2ThemeToggle.astro';
 interface Props { actual?:string } const {actual='inicio'}=Astro.props;
 const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['competir','/torneos','Competir'],['rankings','/w2/rankings','Rankings'],['comunidad','/w2#comunidad','Comunidad']];
 ---
-<header class="w2-header"><nav class="w2-container w2-nav" aria-label="Navegación W2"><a class="w2-brand" href="/w2" aria-label="Pádel Las Flores, inicio"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a><div class="w2-links">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']}>{label}</a>)}</div><W2ThemeToggle/><a class="w2-cta" href="/w2/reservar">Reservar <span>→</span></a><button data-w2-menu class="w2-menu-button" aria-expanded="false" aria-controls="w2Menu">Menú</button></nav><aside id="w2Menu" class="w2-menu" aria-hidden="true">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']}>{label}<span>→</span></a>)}<a href="/">Web actual <span>↗</span></a></aside></header>
+<header class="w2-header" data-w2-header>
+ <nav class="w2-container w2-nav" aria-label="Navegación principal W2">
+  <a class="w2-brand" href="/w2" aria-label="Pádel Las Flores, inicio"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a>
+  <div class="w2-links">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']} aria-current={actual===id?'page':undefined}>{label}</a>)}</div>
+  <W2ThemeToggle/>
+  <a class="w2-cta" href="/w2/reservar">Reservar <span>→</span></a>
+  <div class="w2-auth-slot" aria-live="polite">
+   <span class="w2-session-check" id="w2SessionCheck"><i></i><span>Verificando</span></span>
+   <button id="abrirAutenticacion" class="w2-login hidden" type="button"><span aria-hidden="true">◎</span><b>Ingresar</b></button>
+   <div id="menuUsuario" class="w2-account hidden">
+    <button id="botonUsuario" class="w2-account-trigger" type="button" aria-expanded="false" aria-controls="desplegableUsuario">
+     <span id="avatarUsuario" class="w2-account-avatar" aria-hidden="true">PR</span><span><small>Mi cuenta</small><strong id="nombreUsuario">Cuenta</strong></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 9 5 5 5-5"/></svg>
+    </button>
+    <div id="desplegableUsuario" class="w2-account-menu hidden" role="menu" aria-label="Opciones de la cuenta" aria-hidden="true">
+     <header><span id="avatarUsuarioMenu">PR</span><div><small>Cuenta activa</small><strong id="nombreUsuarioMenu">Cuenta</strong><em id="correoUsuarioMenu">Perfil de cliente</em></div></header>
+     <a href="/mis-reservas" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5zM8 12h3v3H8z"/></svg></span><div><b>Mis reservas</b><small>Turnos, pagos y seguimiento</small></div><i>→</i></a>
+     <a href="/mis-datos" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3M18 5l1 1 2-2"/></svg></span><div><b>Mis datos y seguridad</b><small>Información personal y acceso</small></div><i>→</i></a>
+     <a href="/w2/jugador" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8M9 13h6"/></svg></span><div><b>Mi perfil deportivo <em>EN INTEGRACIÓN</em></b><small>Categoría, ranking e historial personal</small></div><i>→</i></a>
+     <button id="cerrarSesion" type="button" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg></span><div><b>Cerrar sesión</b><small>Salir de esta cuenta</small></div></button>
+    </div>
+   </div>
+  </div>
+  <button data-w2-menu class="w2-menu-button" type="button" aria-expanded="false" aria-controls="w2Menu" aria-label="Abrir menú">Menú</button>
+ </nav>
+ <div id="w2MenuBackdrop" class="w2-menu-backdrop" aria-hidden="true"></div>
+ <aside id="w2Menu" class="w2-menu" aria-hidden="true" inert>
+  <header><a href="/w2"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a><button data-w2-menu-close type="button" aria-label="Cerrar menú">×</button></header>
+  <nav aria-label="Navegación móvil W2">{links.map(([id,href,label],index)=><a href={href} class:list={[actual===id&&'active']}><i>{String(index+1).padStart(2,'0')}</i><b>{label}</b><span>→</span></a>)}</nav>
+  <a class="w2-mobile-reserve" href="/w2/reservar">Reservar una cancha <span>→</span></a>
+  <button id="abrirAutenticacionMovil" class="w2-mobile-login hidden" type="button">Ingresar o crear cuenta</button>
+  <div id="cuentaUsuarioMovil" class="w2-mobile-account hidden">
+   <div><span id="avatarUsuarioMovil">PR</span><p><small>Tu cuenta</small><strong id="nombreUsuarioMovil">Cuenta</strong><em id="correoUsuarioMovil">Sesión activa</em></p></div>
+   <a href="/mis-reservas"><i><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5z"/></svg></i><span>Mis reservas</span><b>→</b></a><a href="/mis-datos"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3"/></svg></i><span>Mis datos y seguridad</span><b>→</b></a><a href="/w2/jugador"><i><svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8"/></svg></i><span>Mi perfil deportivo <em>EN INTEGRACIÓN</em></span><b>→</b></a>
+   <button id="cerrarSesionMovil" type="button">Cerrar sesión</button>
+  </div>
+  <footer><span>Sesión segura</span><span>Plataforma W2</span></footer>
+ </aside>
+</header>
