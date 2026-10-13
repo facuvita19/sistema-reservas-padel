@@ -37,6 +37,14 @@ public class ConsultaJugadoresService {
         }
     }
 
+    public JugadorResumen buscarPorCliente(long clienteId) {
+        if (clienteId <= 0) return null;
+        return listar().stream()
+                .filter(jugador -> jugador.clienteId() != null
+                        && jugador.clienteId() == clienteId)
+                .findFirst().orElse(null);
+    }
+
     public List<CategoriaResumen> listarCategorias() {
         String sql = "SELECT id,nombre,color_hex FROM categorias_deportivas "
                 + "WHERE activo=TRUE ORDER BY nivel_orden";

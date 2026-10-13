@@ -47,6 +47,11 @@ public class ClientesController {
     private final ObservableList<Cliente> clientes = FXCollections.observableArrayList();
     private final ObservableList<Reserva> historial = FXCollections.observableArrayList();
     private final Map<Long, BigDecimal> acreditadoPorReserva = new HashMap<>();
+    private final servicio.ConsultaJugadoresService consultaJugadoresService =
+            new servicio.ConsultaJugadoresService();
+    private final servicio.IdentidadDeportivaService identidadDeportivaService =
+            new servicio.IdentidadDeportivaService();
+    private servicio.ConsultaJugadoresService.JugadorResumen perfilDeportivo;
     private final Map<Long, BigDecimal> saldoPorReserva = new HashMap<>();
 
     private FilteredList<Cliente> clientesFiltrados;
@@ -80,6 +85,9 @@ public class ClientesController {
     @FXML private Button botonReactivar;
     @FXML private Button botonEliminarDefinitivamente;
     @FXML private Button botonNuevaReserva;
+    @FXML private Button botonAbrirPerfilDeportivo, botonCrearPerfilDeportivo;
+    @FXML private Label etiquetaPerfilDeportivo, etiquetaCategoriaDeportiva;
+    @FXML private Label etiquetaPosicionDeportiva, etiquetaDisponibilidadDeportiva;
     @FXML private Button botonAbrirReserva;
     @FXML private Label etiquetaTotalReservas;
     @FXML private Label etiquetaCompletadas;
@@ -359,6 +367,7 @@ public class ClientesController {
     private void nuevo() {
         actualizandoFormulario = true;
         clienteSeleccionado = null;
+        limpiarPerfilDeportivo();
         tablaClientes.getSelectionModel().clearSelection();
         etiquetaModoCliente.setText("NUEVO CLIENTE");
         tituloFormulario.setText("Nuevo cliente");
@@ -402,6 +411,7 @@ public class ClientesController {
         mostrarBoton(botonReactivar, !cliente.isActivo());
         mostrarBoton(botonEliminarDefinitivamente, !cliente.isActivo());
         mostrarBoton(botonNuevaReserva, cliente.isActivo());
+        cargarPerfilDeportivo(cliente);
         campoNombre.setText(cliente.getNombre());
         campoApellido.setText(cliente.getApellido());
         campoDocumento.setText(cliente.getDocumento());
@@ -632,6 +642,64 @@ public class ClientesController {
         } catch (RuntimeException e) {
             mostrarError(e.getMessage());
         }
+    }
+
+    @FXML private void abrirPerfilDeportivo() {
+        if (perfilDeportivo != null) Navegacion.mostrarJugadores(perfilDeportivo.id());
+    }
+
+    @FXML private void crearPerfilDeportivo() {
+        if (clienteSeleccionado == null || !esAdministradorActual()) return;
+        try {
+            identidadDeportivaService.crearDefinitivo(
+                    clienteSeleccionado.getId(), clienteSeleccionado.getNombreCompleto());
+            cargarPerfilDeportivo(clienteSeleccionado);
+            mostrarInfo("El perfil deportivo fue creado correctamente.");
+        } catch (RuntimeException exception) {
+            mostrarError(exception.getMessage());
+        }
+    }
+
+    private void cargarPerfilDeportivo(Cliente cliente) {
+        perfilDeportivo = cliente == null ? null
+                : consultaJugadoresService.buscarPorCliente(cliente.getId());
+        boolean existe = perfilDeportivo != null;
+        etiquetaPerfilDeportivo.setText(existe ? "CON PERFIL DEPORTIVO" : "SIN PERFIL DEPORTIVO");
+        etiquetaPerfilDeportivo.getStyleClass().removeAll(
+                "client-sport-profile-linked", "client-sport-profile-empty");
+        etiquetaPerfilDeportivo.getStyleClass().add(existe
+                ? "client-sport-profile-linked" : "client-sport-profile-empty");
+        etiquetaCategoriaDeportiva.setText(existe && perfilDeportivo.categoria() != null
+                ? perfilDeportivo.categoria() : "Sin categoría asignada");
+        etiquetaCategoriaDeportiva.getStyleClass().removeAll(
+                "client-sport-value-assigned", "client-sport-value-empty");
+        etiquetaCategoriaDeportiva.getStyleClass().add(existe
+                && perfilDeportivo.categoria() != null
+                        ? "client-sport-value-assigned" : "client-sport-value-empty");
+        etiquetaPosicionDeportiva.setText(existe && perfilDeportivo.posicion() != null
+                ? perfilDeportivo.posicion().toString() : "Sin posición preferida");
+        etiquetaDisponibilidadDeportiva.setText(!existe ? "Identidad deportiva pendiente"
+                : perfilDeportivo.disponible() ? "Disponible para jugar"
+                : "No disponible para jugar");
+        mostrarBoton(botonAbrirPerfilDeportivo, existe);
+        mostrarBoton(botonCrearPerfilDeportivo, !existe && esAdministradorActual()
+                && cliente != null && cliente.isActivo());
+    }
+
+    private void limpiarPerfilDeportivo() {
+        perfilDeportivo = null;
+        if (etiquetaPerfilDeportivo == null) return;
+        etiquetaPerfilDeportivo.setText("SIN PERFIL DEPORTIVO");
+        etiquetaCategoriaDeportiva.setText("Seleccioná un cliente");
+        etiquetaPosicionDeportiva.setText("-");
+        etiquetaDisponibilidadDeportiva.setText("-");
+        mostrarBoton(botonAbrirPerfilDeportivo, false);
+        mostrarBoton(botonCrearPerfilDeportivo, false);
+    }
+
+    private boolean esAdministradorActual() {
+        return Navegacion.getUsuarioActual() != null
+                && Navegacion.getUsuarioActual().esAdministrador();
     }
 
     @FXML private void nuevaReservaParaCliente() { Navegacion.mostrarReservas(); }

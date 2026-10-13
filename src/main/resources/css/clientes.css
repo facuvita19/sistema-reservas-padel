@@ -443,3 +443,20 @@
     -fx-min-height: 220;
     -fx-pref-height: 265;
 }
+
+/* W2.1C3 perfil deportivo en clientes */
+.clients-root .client-sport-card { -fx-background-color:#171d21; -fx-border-color:#39464c; -fx-background-radius:10; -fx-border-radius:10; -fx-padding:10 12; }
+.clients-root .client-sport-icon-box { -fx-background-color:#1c3028; -fx-border-color:#3d6f59; -fx-background-radius:9; -fx-border-radius:9; }
+.clients-root .client-sport-icon { -fx-fill:transparent; -fx-stroke:#7ccaa5; -fx-stroke-width:1.7; -fx-stroke-line-cap:round; -fx-stroke-line-join:round; }
+.clients-root .client-sport-profile-badge { -fx-padding:3 7; -fx-background-radius:8; -fx-border-radius:8; -fx-font-family:"Segoe UI"; -fx-font-size:9px; -fx-font-weight:900; }
+.clients-root .client-sport-profile-linked { -fx-background-color:#1e352b; -fx-border-color:#4d856b; -fx-text-fill:#a9ddc4; }
+.clients-root .client-sport-profile-empty { -fx-background-color:#292f33; -fx-border-color:#555f64; -fx-text-fill:#aeb8bc; }
+.clients-root .client-sport-label { -fx-text-fill:#788991; -fx-font-size:9px; -fx-font-weight:900; }
+.clients-root .client-sport-value { -fx-text-fill:#d6dfe3; -fx-font-size:10.5px; -fx-font-weight:800; }
+.clients-root .client-sport-value-assigned { -fx-text-fill:#8fd3b2; }
+.clients-root .client-sport-value-empty { -fx-text-fill:#8b999f; }
+.clients-root .client-sport-open-button, .clients-root .client-sport-create-button { -fx-min-height:34; -fx-pref-height:34; -fx-padding:0 12; -fx-background-radius:8; -fx-border-radius:8; -fx-font-family:"Segoe UI"; -fx-font-size:9px; -fx-font-weight:900; -fx-cursor:hand; }
+.clients-root .client-sport-open-button { -fx-background-color:#242d31; -fx-border-color:#4b6257; -fx-text-fill:#d9e8e0; }
+.clients-root .client-sport-create-button { -fx-background-color:#2d7657; -fx-border-color:#4c9875; -fx-text-fill:white; }
+.clients-root .client-sport-open-button:hover { -fx-background-color:#2d3a35; -fx-border-color:-color-principal; }
+.clients-root .client-sport-create-button:hover { -fx-background-color:#398767; -fx-border-color:#70b694; }
