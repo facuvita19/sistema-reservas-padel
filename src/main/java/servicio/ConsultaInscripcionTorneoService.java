@@ -21,10 +21,14 @@ public class ConsultaInscripcionTorneoService {
                 + "c.nombre AS categoria, c.rama, "
                 + "j1.id AS responsable_jugador_id, j1.nombre AS responsable_nombre, j1.apellido AS responsable_apellido, "
                 + "j1.telefono AS responsable_telefono, j1.cliente_id AS responsable_cliente_id, "
+                + "j1.perfil_jugador_id AS responsable_perfil_id, pr.estado AS responsable_perfil_estado, "
+                + "cdr.nombre AS responsable_categoria, "
                 + "j1.tipo_vinculacion AS responsable_vinculacion, "
                 + "j1.requiere_revision AS responsable_revision, "
                 + "j2.id AS pareja_jugador_id, j2.nombre AS pareja_nombre, j2.apellido AS pareja_apellido, "
                 + "j2.telefono AS pareja_telefono, j2.cliente_id AS pareja_cliente_id, "
+                + "j2.perfil_jugador_id AS pareja_perfil_id, pp.estado AS pareja_perfil_estado, "
+                + "cdp.nombre AS pareja_categoria, "
                 + "j2.tipo_vinculacion AS pareja_vinculacion, "
                 + "j2.requiere_revision AS pareja_revision "
                 + "FROM torneo_inscripciones i "
@@ -34,6 +38,12 @@ public class ConsultaInscripcionTorneoService {
                 + "ON j1.inscripcion_id = i.id AND j1.orden_integrante = 1 "
                 + "INNER JOIN torneo_inscripcion_jugadores j2 "
                 + "ON j2.inscripcion_id = i.id AND j2.orden_integrante = 2 "
+                + "LEFT JOIN perfiles_jugador pr ON pr.id=j1.perfil_jugador_id "
+                + "LEFT JOIN jugador_categorias jcr ON jcr.perfil_jugador_id=pr.id AND jcr.estado='VIGENTE' "
+                + "LEFT JOIN categorias_deportivas cdr ON cdr.id=jcr.categoria_deportiva_id "
+                + "LEFT JOIN perfiles_jugador pp ON pp.id=j2.perfil_jugador_id "
+                + "LEFT JOIN jugador_categorias jcp ON jcp.perfil_jugador_id=pp.id AND jcp.estado='VIGENTE' "
+                + "LEFT JOIN categorias_deportivas cdp ON cdp.id=jcp.categoria_deportiva_id "
                 + "ORDER BY CASE i.estado WHEN 'PENDIENTE' THEN 0 "
                 + "WHEN 'LISTA_ESPERA' THEN 1 WHEN 'CONFIRMADA' THEN 2 ELSE 3 END, "
                 + "i.fecha_solicitud DESC, i.id DESC";
@@ -74,8 +84,16 @@ public class ConsultaInscripcionTorneoService {
                 rs.getString(prefijo + "_apellido"),
                 rs.getString(prefijo + "_telefono"),
                 valorClienteId,
+                nullableLong(rs, prefijo + "_perfil_id"),
+                rs.getString(prefijo + "_perfil_estado"),
+                rs.getString(prefijo + "_categoria"),
                 rs.getString(prefijo + "_vinculacion"),
                 rs.getBoolean(prefijo + "_revision"));
+    }
+
+    private Long nullableLong(ResultSet rs, String columna) throws SQLException {
+        long valor = rs.getLong(columna);
+        return rs.wasNull() ? null : valor;
     }
 
     private LocalDateTime fecha(ResultSet rs, String columna) throws SQLException {
@@ -84,12 +102,27 @@ public class ConsultaInscripcionTorneoService {
     }
 
     public record JugadorResumen(long jugadorId, String nombre, String apellido, String telefono,
-            Long clienteId, String tipoVinculacion, boolean requiereRevision) {
+            Long clienteId, Long perfilJugadorId, String estadoPerfil, String categoria,
+            String tipoVinculacion, boolean requiereRevision) {
+        public JugadorResumen(long jugadorId, String nombre, String apellido,
+                String telefono, Long clienteId, String tipoVinculacion,
+                boolean requiereRevision) {
+            this(jugadorId, nombre, apellido, telefono, clienteId, null, null,
+                    null, tipoVinculacion, requiereRevision);
+        }
         public String nombreCompleto() {
             return ((nombre == null ? "" : nombre.trim()) + " "
                     + (apellido == null ? "" : apellido.trim())).trim();
         }
         public boolean vinculado() { return clienteId != null && clienteId > 0; }
+        public boolean tienePerfil() { return perfilJugadorId != null && perfilJugadorId > 0; }
+        public String identidadDeportiva() {
+            if (!tienePerfil()) return "PERFIL PENDIENTE";
+            return "DEFINITIVO".equals(estadoPerfil) ? "VINCULADO" : "SIN FICHA";
+        }
+        public String categoriaVisible() {
+            return categoria == null || categoria.isBlank() ? "Sin categoría asignada" : categoria;
+        }
         public String estadoVinculacion() {
             if (vinculado()) return "Cliente #" + clienteId + " - " + tipoVinculacion;
             return requiereRevision ? "Sin vincular - requiere revision" : "Sin vincular";

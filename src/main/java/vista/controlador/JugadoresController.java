@@ -34,6 +34,10 @@ import servicio.ConsultaJugadoresService.JugadorResumen;
 import vista.Navegacion;
 
 public class JugadoresController {
+    private static Long perfilSolicitado;
+    public static void preseleccionarPerfil(Long perfilId) {
+        perfilSolicitado = perfilId != null && perfilId > 0 ? perfilId : null;
+    }
     private static final DateTimeFormatter FECHA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private final ConsultaJugadoresService service = new ConsultaJugadoresService();
     private final IdentidadDeportivaService identidadService = new IdentidadDeportivaService();
@@ -42,8 +46,13 @@ public class JugadoresController {
     private FilteredList<JugadorResumen> filtrados;
     private boolean cargaEnCurso;
     private boolean categoriasCargadas;
-    private Long perfilAReseleccionar;
+    private Long perfilAReseleccionar = consumirPerfilSolicitado();
     private boolean operacionEnCurso;
+    private static Long consumirPerfilSolicitado() {
+        Long solicitado = perfilSolicitado;
+        perfilSolicitado = null;
+        return solicitado;
+    }
 
     @FXML private TextField campoBuscar;
     @FXML private Button botonActualizar, botonVincular, botonEstadoPerfil, botonAsignarCategoria, botonSuspenderCategoria, botonFinalizarCategoria;

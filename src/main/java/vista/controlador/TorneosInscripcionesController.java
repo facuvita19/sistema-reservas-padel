@@ -93,6 +93,9 @@ public class TorneosInscripcionesController {
     @FXML private TextArea detalleComentarios;
     @FXML private TextArea detalleObservaciones;
     @FXML private Button botonWhatsappResponsable;
+    @FXML private Button botonPerfilResponsable, botonPerfilPareja;
+    @FXML private Label responsableIdentidad, responsableCategoria;
+    @FXML private Label parejaIdentidad, parejaCategoria;
     @FXML private Button botonWhatsappPareja;
     @FXML private Button botonVincularResponsable;
     @FXML private Button botonDesvincularResponsable;
@@ -356,10 +359,12 @@ public class TorneosInscripcionesController {
                         ? "Sin cargo"
                         : FormateadorMoneda.pesos(valor.precioInscripcion()));
         cargarJugador(valor.responsable(), responsableNombre, responsableTelefono,
-                responsableVinculacion, botonWhatsappResponsable,
+                responsableVinculacion, responsableIdentidad, responsableCategoria,
+                botonWhatsappResponsable, botonPerfilResponsable,
                 botonVincularResponsable, botonDesvincularResponsable);
         cargarJugador(valor.pareja(), parejaNombre, parejaTelefono,
-                parejaVinculacion, botonWhatsappPareja,
+                parejaVinculacion, parejaIdentidad, parejaCategoria,
+                botonWhatsappPareja, botonPerfilPareja,
                 botonVincularPareja, botonDesvincularPareja);
         detalleComentarios.setText(valor.comentarios() == null ? "" : valor.comentarios());
         observacionOriginal = valor.observacionesAdministrativas() == null ? "" : valor.observacionesAdministrativas();
@@ -390,7 +395,8 @@ public class TorneosInscripcionesController {
     }
 
     private void cargarJugador(JugadorResumen jugador, Label nombre, Label telefono,
-            Label vinculacion, Button whatsapp, Button vincular, Button desvincular) {
+            Label vinculacion, Label identidad, Label categoria,
+            Button whatsapp, Button perfil, Button vincular, Button desvincular) {
         nombre.setText(jugador.nombreCompleto());
         telefono.setText(formatearTelefonoVisible(jugador.telefono()));
         vinculacion.setText(jugador.vinculado()
@@ -399,6 +405,20 @@ public class TorneosInscripcionesController {
         vinculacion.getStyleClass().removeAll("link-status-linked", "link-status-pending");
         vinculacion.getStyleClass().add(jugador.vinculado()
                 ? "link-status-linked" : "link-status-pending");
+        identidad.setText(jugador.identidadDeportiva());
+        identidad.getStyleClass().removeAll("player-profile-linked", "player-profile-provisional", "player-profile-pending");
+        identidad.getStyleClass().add(!jugador.tienePerfil() ? "player-profile-pending"
+                : jugador.vinculado() ? "player-profile-linked" : "player-profile-provisional");
+        categoria.setText(jugador.categoriaVisible());
+        categoria.getStyleClass().removeAll(
+                "player-sport-category-assigned",
+                "player-sport-category-empty");
+        categoria.getStyleClass().add(
+                jugador.categoria() == null || jugador.categoria().isBlank()
+                        ? "player-sport-category-empty"
+                        : "player-sport-category-assigned");
+        perfil.setVisible(jugador.tienePerfil());
+        perfil.setManaged(jugador.tienePerfil());
         whatsapp.setVisible(jugador.telefono() != null && !jugador.telefono().isBlank());
         whatsapp.setManaged(whatsapp.isVisible());
         vincular.setText(jugador.vinculado()
@@ -560,6 +580,13 @@ public class TorneosInscripcionesController {
                 + "\n\n" + mensaje;
         return Dialogos.confirmarPeligro(titulo, detalle);
     }
+    @FXML private void abrirPerfilResponsable() { abrirPerfil(seleccionada == null ? null : seleccionada.responsable()); }
+    @FXML private void abrirPerfilPareja() { abrirPerfil(seleccionada == null ? null : seleccionada.pareja()); }
+    private void abrirPerfil(JugadorResumen jugador) {
+        if (jugador == null || !jugador.tienePerfil()) return;
+        Navegacion.mostrarJugadores(jugador.perfilJugadorId());
+    }
+
     @FXML private void vincularResponsable() {
         vincular(seleccionada == null ? null : seleccionada.responsable());
     }

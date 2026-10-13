@@ -1045,3 +1045,18 @@
 .tournaments-root .inscription-field-help-v2 { -fx-font-family: "Segoe UI"; -fx-font-size: 9.5px; -fx-text-fill: #788991; }
 .tournaments-root .tournament-action-reject { -fx-background-color: #6f303b; -fx-border-color: #aa5361; -fx-text-fill: #ffe9ec; }
 .tournaments-root .tournament-action-cancel { -fx-background-color: #34282c; -fx-border-color: #76505a; -fx-text-fill: #f4dbe0; }
+
+/* W2.1C2 identidad deportiva en integrantes */
+.player-profile-badge { -fx-padding:4 8; -fx-background-radius:9; -fx-border-radius:9; -fx-font-family:"Segoe UI"; -fx-font-size:9px; -fx-font-weight:900; }
+.player-profile-linked { -fx-background-color:#1e352b; -fx-border-color:#4d856b; -fx-text-fill:#a9ddc4; }
+.player-profile-provisional { -fx-background-color:#34301f; -fx-border-color:#7d6d35; -fx-text-fill:#e3ce80; }
+.player-profile-pending { -fx-background-color:#292f33; -fx-border-color:#555f64; -fx-text-fill:#aeb8bc; }
+.player-sport-category { -fx-text-fill:#8fd3b2; -fx-font-family:"Segoe UI"; -fx-font-size:10px; -fx-font-weight:900; }
+.player-profile-button { -fx-min-height:32; -fx-pref-height:32; -fx-padding:0 10; -fx-background-color:#242d31; -fx-border-color:#4b6257; -fx-background-radius:8; -fx-border-radius:8; -fx-text-fill:#d9e8e0; -fx-font-family:"Segoe UI"; -fx-font-size:9px; -fx-font-weight:900; -fx-content-display:LEFT; -fx-graphic-text-gap:7; -fx-cursor:hand; }
+.player-profile-button:hover { -fx-background-color:#2d3a35; -fx-border-color:-color-principal; -fx-text-fill:#ffffff; }
+.player-profile-button:pressed { -fx-scale-x:.985; -fx-scale-y:.985; }
+.player-profile-button .inscriptions-icon-v4 { -fx-stroke:#9fd0b8; }
+
+/* W2.1C2 distincion semantica de categoria */
+.player-sport-category-empty { -fx-text-fill:#8b999f; }
+.player-sport-category-assigned { -fx-text-fill:#8fd3b2; }

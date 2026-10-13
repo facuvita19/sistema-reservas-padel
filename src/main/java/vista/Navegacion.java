@@ -139,10 +139,15 @@ public final class Navegacion {
 	}
 
 	public static void mostrarJugadores() {
-		verificarSesion();
-		mostrarVista("/fxml/jugadores.fxml", 1440, 860, true);
-		escenario.setTitle("Padel Reservas - Jugadores");
-	}
+              mostrarJugadores(null);
+      }
+
+      public static void mostrarJugadores(Long perfilJugadorId) {
+              verificarSesion();
+              vista.controlador.JugadoresController.preseleccionarPerfil(perfilJugadorId);
+              mostrarVista("/fxml/jugadores.fxml", 1440, 860, true);
+              escenario.setTitle("Padel Reservas - Jugadores");
+      }
 
 	public static void mostrarClientes() {
 		verificarSesion();
