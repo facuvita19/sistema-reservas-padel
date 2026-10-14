@@ -218,7 +218,7 @@ mvn clean test
 mvn javafx:run
 ```
 
-Resultado vigente esperado: 250 pruebas y `BUILD SUCCESS`.
+Resultado esperado: todas las pruebas vigentes y `BUILD SUCCESS`. No fijar una cantidad en este documento porque la suite aumenta con cada bloque.
 
 ### Web
 
@@ -377,7 +377,7 @@ Antes de cada push, clasificar el cambio:
 - La web activa es `web-publica-v2`.
 - El puerto web vigente es `4321`.
 - `database/docker-init` está versionado deliberadamente.
-- Las 27 migraciones se conservan.
+- Todas las migraciones versionadas se conservan; las de pagos incorporan el núcleo de órdenes e intentos sin reescribir el historial.
 - La API espera la salud final de MySQL.
 - Las pruebas temporales no tocan la base principal.
 - La API usa usuario no privilegiado y filesystem de solo lectura.
@@ -398,3 +398,41 @@ Actualizar este documento cuando cambie:
 - el procedimiento de entrega o validación.
 
 El estado funcional y la hoja de ruta pertenecen a `PLAN_DESARROLLO.md`. Este documento conserva el método para llegar al siguiente estado de forma segura.
+
+## 13. Estado vigente del bloque de pagos
+
+Cierre funcional alcanzado el 14 de octubre de 2026:
+
+- P4.1: núcleo transaccional de órdenes de pago.
+- P4.2: modelo de intentos y estados online.
+- P4.3: configuración neutral de pasarela.
+- P4.4A: cliente y contratos de Mercado Pago.
+- P4.4B: creación y consulta pública de órdenes online.
+- P4.5: webhook, eventos e idempotencia de acreditación.
+- P4.6: experiencia de pago en Reservar y Mi cuenta.
+- P4.6b: corrección visual del selector y compatibilidad de capacidades.
+
+### Validación confirmada
+
+La transferencia manual fue probada correctamente desde el Paso 4: selección del método, creación de la orden, alias, importe exacto, contador, comprobante y seguimiento. Mi cuenta conserva el estado de la reserva.
+
+### Pendiente antes de declarar Mercado Pago productivo
+
+1. Configurar credenciales privadas de prueba sin imprimirlas.
+2. Comprobar que la API informe pago online disponible.
+3. Crear un checkout real de prueba.
+4. Probar retorno aprobado, pendiente y rechazado.
+5. Confirmar recepción e idempotencia del webhook.
+6. Verificar acreditación, conciliación y actualización de la reserva.
+7. Ejecutar la suite completa y CI por tratarse de un cambio Nivel 3.
+
+No considerar una reserva pagada por la URL de retorno. La fuente de verdad es la consulta del proveedor procesada por el backend y registrada transaccionalmente.
+
+## 14. Cierre Git del bloque P4
+
+Los cambios P4.1 a P4.6 forman un núcleo interdependiente. Si permanecen acumulados en el mismo árbol de trabajo, se prefieren dos commits íntegros y compilables:
+
+1. `Agregar pagos transaccionales y experiencia de reserva en W2`.
+2. `Actualizar documentación y continuidad de pagos W2`.
+
+Los diagnósticos, aplicadores, ZIP y carpetas `.backup-*` no se versionan.

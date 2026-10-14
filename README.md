@@ -121,11 +121,18 @@ database/docker-init/
 
 El sistema incluye:
 
-- Disponibilidad pública en tiempo real.
-- Solicitudes web con vencimiento configurable.
-- Seguimiento mediante código.
-- Transferencia y contacto por WhatsApp.
-- Prevención de doble envío y concurrencia.
-- Procesador independiente de vencimientos.
-- Persistencia, backup y restauración.
+- Disponibilidad pública en tiempo real y protección temporal del turno.
+- Reservas desde Plataforma Deportiva W2 con cuenta de cliente, historial y seguimiento.
+- Seña por transferencia manual, alias, importe exacto, comprobante por WhatsApp y verificación administrativa.
+- Núcleo transaccional de órdenes, intentos y eventos de pago.
+- Integración preparada con Mercado Pago para checkout online, retorno, webhook e idempotencia.
+- Acreditación transaccional sin confiar en parámetros del navegador.
+- Prevención de doble envío, concurrencia y procesamiento repetido de eventos.
+- Persistencia, migraciones, backup y restauración.
 - Compatibilidad con computadora y celular.
+
+### Estado de pagos
+
+La transferencia manual fue validada visual y funcionalmente el 14 de octubre de 2026. El pago online queda condicionado a configurar credenciales privadas de Mercado Pago y completar una prueba integral con una cuenta de prueba.
+
+Las credenciales se suministran mediante variables de entorno y nunca deben escribirse en el repositorio, documentación, logs ni capturas. Antes de ejecutar diagnósticos de configuración, usar salidas redactadas que informen únicamente si cada variable está presente.

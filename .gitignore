@@ -73,3 +73,8 @@ inspeccion-bloque-10*.txt
 
 # Estado local de observabilidad
 .estado-salud.json
+.backup-*
+diagnostico-*.txt
+aplicar-p4-*.mjs
+cerrar-w2-*.mjs
+perfeccionar-w2-*.mjs

@@ -1,46 +1,61 @@
-# Astro Starter Kit: Basics
+# Plataforma Deportiva W2
 
-```sh
-npm create astro@latest -- --template basics
+Aplicación web pública del sistema de reservas de pádel, construida con Astro y TypeScript.
+
+## Funciones principales
+
+- Inicio deportivo y navegación responsive.
+- Autenticación y cuenta de cliente.
+- Reserva de cancha por fecha, horario y datos de contacto.
+- Protección temporal del turno con contador.
+- Elección del medio de pago según capacidades informadas por la API.
+- Transferencia manual con alias, importe exacto, WhatsApp y seguimiento.
+- Integración preparada con Mercado Pago para checkout, retorno y actualización de estado.
+- Historial de reservas, filtros y consulta por código.
+- Torneos, perfiles deportivos y rankings públicos.
+
+## Desarrollo
+
+Desde esta carpeta:
+
+```powershell
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+La web queda disponible normalmente en `http://localhost:4321`. Las llamadas públicas se realizan contra `/api/publica` y en el entorno Docker son encaminadas por Nginx a la API Java.
 
-## 🚀 Project Structure
+## Validación
 
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+```powershell
+npm run build
+npm run test:e2e
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+Las pruebas E2E completas se reservan para cierres funcionales amplios. Para ajustes visuales aislados se utiliza `npm run build` y una comprobación manual proporcional al cambio.
 
-## 🧞 Commands
+## Flujo de reserva y pago
 
-All commands are run from the root of the project, from a terminal:
+1. El cliente selecciona cancha, fecha y horario.
+2. La API vuelve a comprobar disponibilidad.
+3. Se crea una reserva temporal.
+4. La web consulta las capacidades de pago.
+5. El cliente elige transferencia manual o pago online cuando esté habilitado.
+6. La confirmación y Mi cuenta consultan el estado real en el servidor.
+7. Un retorno del proveedor nunca confirma por sí solo una reserva.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+### Transferencia manual
 
-## 👀 Want to learn more?
+Validada visual y funcionalmente el 14 de octubre de 2026. Muestra alias, importe, vencimiento, código de seguimiento y envío de comprobante. La acreditación final es administrativa.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+### Mercado Pago
+
+El código contempla creación de checkout, intentos, retorno, webhook, procesamiento idempotente y acreditación transaccional. Para habilitarlo se requieren credenciales privadas fuera de Git y una prueba integral con credenciales de prueba.
+
+## Seguridad
+
+- No guardar tokens, contraseñas ni credenciales en el código.
+- No confiar en parámetros de retorno para acreditar pagos.
+- Validar en backend el proveedor, monto, moneda, referencia y estado.
+- Mantener idempotencia en webhooks y acreditaciones.
+- No imprimir variables privadas en comandos destinados a compartirse.
