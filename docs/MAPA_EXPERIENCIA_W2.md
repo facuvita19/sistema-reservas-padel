@@ -222,3 +222,44 @@ Este recorrido precede a Comunidad para asegurar identidad, control de privacida
 - convocatorias completadas;
 - inscripciones que requieren excepción;
 - tiempo de respuesta del organizador.
+
+<!-- MAPA-PAGO-P49 -->
+## 13. Recorrido de reserva y pago validado
+
+### 13.1 Camino principal online
+
+1. Iniciar sesión.
+2. Elegir cancha, fecha y horario.
+3. Crear una reserva temporal con vencimiento.
+4. Elegir Mercado Pago.
+5. El backend valida identidad y capacidades del entorno.
+6. Crear o reutilizar la orden idempotente.
+7. Crear la preferencia y redirigir al checkout.
+8. Completar el pago con comprador tester en sandbox.
+9. Volver a la web por `MP_RETURN_BASE_URL`.
+10. Mostrar seguimiento mientras backend, webhook o conciliación resuelven el estado real.
+11. Acreditar la seña y confirmar la reserva.
+12. Actualizar todo el drawer y retirar acciones de pago.
+
+### 13.2 Caminos alternativos
+
+- Checkout no creado: conservar la reserva y ofrecer reintento sobre la misma orden.
+- Checkout vigente: reutilizar el enlace; no crear otra preferencia.
+- Reserva vencida: invalidar acciones y ofrecer una única creación nueva.
+- Webhook demorado: conciliar por referencia externa.
+- Retorno sin sesión: no acreditar por URL; la reserva se confirma igualmente por backend y se consulta desde la sesión válida.
+- Transferencia: mostrar exclusivamente alias, titular, entidad e instrucciones manuales.
+
+### 13.3 Uso local y túneles
+
+Para un retorno automático con sesión, la reserva debe comenzar en el mismo origen configurado en `MP_RETURN_BASE_URL`. En desarrollo, un túnel apunta a la API para el webhook y otro a Astro para el retorno. Al cambiar las URLs se actualizan `.env`, el host permitido de Vite y el webhook de prueba.
+
+## 14. Próximo recorrido prioritario: centro competitivo por categoría
+
+1. Entrar a un torneo publicado.
+2. Elegir categoría mediante selector persistente.
+3. Consultar Resumen, Posiciones, Partidos y Cuadro.
+4. Navegar por grupos, próximos partidos y resultados sin perder categoría ni pestaña.
+5. Explicar clasificación y desempates con datos auditables.
+6. Usar un cuadro adaptado específicamente a móvil.
+7. Mantener navegación por URL, estados de carga atómicos y continuidad visual W2.

@@ -609,3 +609,32 @@ Cada fase debe:
 - validar experiencia móvil y teclado;
 - no exponer secretos;
 - actualizar este documento y el plan estratégico.
+
+<!-- ESTADO-PAGOS-P49 -->
+## 17. Estado validado de pagos externos al 14 de octubre de 2026
+
+La integración sandbox dejó de ser una fase prevista: el recorrido completo fue validado con una cuenta vendedora tester y una cuenta compradora tester distintas.
+
+### Capacidades operativas
+
+- identidad sandbox validada antes de publicar la pasarela;
+- orden externa e intentos idempotentes;
+- preferencia de Checkout Pro;
+- retorno diferenciado de la URL del webhook;
+- webhook firmado, auditable y durable;
+- acreditación transaccional de la seña;
+- conciliación por referencia externa;
+- confirmación automática de la reserva;
+- recuperación de checkout no creado;
+- expiración segura y bloqueo de enlaces vencidos;
+- interfaz con estados online, transferencia, acreditado, vencido y sin método sin mezclar mensajes.
+
+### Estado de fases corregido
+
+- W2.7 Mercado Pago en pruebas: completado en sandbox.
+- W2.8 Mercado Pago en producción: pendiente. Requiere dominio único y estable, HTTPS, credenciales productivas, webhook público estable, observabilidad, pago real controlado, reembolso y rollback.
+- W2.4 experiencia web deportiva: cuenta, reservas personales y pagos están operativos. El próximo bloque activo es el centro competitivo por categoría.
+
+### Límite entre sandbox y producción
+
+La validación sandbox no autoriza producción. Producción debe reemplazar túneles temporales por un dominio estable donde web y API compartan una estrategia de origen coherente, conservar el preflight adecuado al entorno y completar las verificaciones operativas de W2.8.

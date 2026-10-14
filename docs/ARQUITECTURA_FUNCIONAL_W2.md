@@ -248,3 +248,43 @@ Las tecnologías nuevas se incorporarán con evaluación explícita de beneficio
 - pruebas visuales y E2E para flujos críticos.
 
 No se adoptará una herramienta por novedad. La innovación debe reducir fricción, elevar calidad o habilitar una capacidad diferencial sostenible.
+
+<!-- ARQUITECTURA-PAGOS-P49 -->
+## 14. Arquitectura implementada de pagos externos
+
+### 14.1 Configuración y publicación segura
+
+- `MP_PUBLIC_BASE_URL` se reserva para API y webhook.
+- `MP_RETURN_BASE_URL` se reserva para el retorno del navegador.
+- `MP_ENVIRONMENT=sandbox` exige `MP_TEST_USER_ID`.
+- El preflight consulta `/users/me` y exige coincidencia exacta con el vendedor tester previsto.
+- Si configuración, identidad o comunicación fallan, pasarela, capacidades y webhook permanecen cerrados.
+
+### 14.2 Flujo implementado
+
+1. La reserva temporal define la seña y el vencimiento.
+2. El cliente elige pago online o transferencia.
+3. El backend crea o reutiliza una orden idempotente.
+4. La pasarela crea la preferencia y persiste el checkout.
+5. El proveedor notifica por webhook; el evento se audita antes de procesarse.
+6. El backend consulta el pago externo y valida referencia, importe, moneda y estado.
+7. La acreditación registra pago, caja y confirmación de reserva en forma transaccional.
+8. La conciliación repara demoras o pérdida temporal del webhook sin duplicar cobros.
+
+### 14.3 Estados y recuperación
+
+- `CREADA` sin URL: la misma orden permite reintentar la creación del checkout.
+- `ESPERANDO_PAGO` con URL: se reutiliza el checkout vigente.
+- `APROBADA`: se ocultan todas las acciones financieras.
+- `EXPIRADA`: se inutiliza el enlace y se ofrece crear otra reserva.
+- Transferencia manual y pago online se renderizan como experiencias excluyentes.
+
+### 14.4 Frontend W2
+
+El drawer de reservas usa render atómico: muestra un skeleton integrado, consulta orden y capacidades en paralelo y presenta una sola composición definitiva. El cierre funciona por X, fondo y Escape; el foco vuelve al disparador. La URL de retorno nunca se toma como prueba de acreditación.
+
+### 14.5 Riesgos aún abiertos
+
+- Los túneles rápidos son únicamente una herramienta de desarrollo y cambian de URL.
+- La sesión no se comparte entre localhost y un dominio de túnel distinto.
+- Producción necesita un origen estable, política CORS/cookies definitiva y observabilidad del proveedor.

@@ -29,7 +29,7 @@ Estado técnico confirmado:
 3. Mantener la web actual operativa hasta alcanzar paridad funcional, visual, responsive, accesible y de pruebas en W2.
 4. Actualizar la matriz de paridad en cada cierre antes de retirar rutas, componentes o scripts anteriores.
 
-### Estado W2 al 13 de octubre de 2026
+### Estado W2 al 14 de octubre de 2026
 
 - W2.0: arquitectura, dirección visual, mapa de experiencia y prototipos iniciales completados.
 - W2.1: identidad deportiva, categorías históricas y administración completadas.
@@ -547,3 +547,63 @@ Actualizar este plan cuando ocurra alguno de estos eventos:
 - release estable.
 
 La actualización debe realizarse después del commit y push, usando hashes reales. Los detalles operativos de colaboración y cambio de conversación se mantienen en `docs/CONTINUIDAD_DEL_PROYECTO.md`.
+
+<!-- CIERRE-P49-2026-10-14 -->
+## 13. Punto de continuidad al 14 de octubre de 2026
+
+### Cierre efectivo de P4.9: pagos con Mercado Pago en sandbox
+
+El bloque P4.9 quedó implementado, probado de punta a punta y publicado en `32f77b7` con el mensaje `Completar el flujo sandbox y mejorar la experiencia de pagos`.
+
+Capacidades validadas:
+
+- preflight de identidad del vendedor de prueba mediante `/users/me` y `MP_TEST_USER_ID`;
+- cierre seguro de pasarela, capacidades y webhook cuando el preflight falla;
+- creación idempotente de orden y preferencia de Checkout Pro;
+- webhook con validación de firma, auditoría durable y acreditación transaccional;
+- conciliación defensiva para confirmar pagos aunque el webhook se demore;
+- prevención de doble cobro y reutilización de la orden vigente;
+- recuperación de una orden `CREADA` cuando la preferencia no llegó a generarse;
+- expiración de reserva y desactivación del checkout al finalizar la protección;
+- retorno web separado del webhook mediante `MP_RETURN_BASE_URL`;
+- estados excluyentes para pago online, transferencia, acreditado, vencido y sin método;
+- experiencia sandbox visible, render atómico, skeleton, foco, teclado y cierre accesible;
+- pago tester aprobado, seña acreditada y reserva confirmada con datos reales del backend.
+
+### Operación local de la integración de pago
+
+Variables mínimas:
+
+```dotenv
+MP_ENABLED=true
+MP_ENVIRONMENT=sandbox
+MP_ACCESS_TOKEN=...
+MP_WEBHOOK_SECRET=...
+MP_TEST_USER_ID=...
+MP_PUBLIC_BASE_URL=https://TUNEL-API.trycloudflare.com
+MP_RETURN_BASE_URL=https://TUNEL-WEB.trycloudflare.com
+```
+
+Reglas operativas:
+
+1. `MP_PUBLIC_BASE_URL` apunta al túnel de la API, puerto 8080, y construye el webhook `/api/publica/pagos/mercado-pago/webhook`.
+2. `MP_RETURN_BASE_URL` apunta al origen desde el que navega el cliente. Para probar el retorno con sesión conservada, la reserva debe iniciarse desde el mismo dominio público del retorno.
+3. El host temporal del túnel web debe habilitarse al iniciar Astro con `__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS`; no usar `allowedHosts: true`.
+4. Cada reinicio de un túnel rápido genera otra URL. Hay que actualizar `.env` y, para la API, también el webhook de prueba en Mercado Pago.
+5. Nunca usar cuenta personal ni tarjeta real. El comprador tester debe ser distinto del vendedor tester.
+6. El enlace de retorno no confirma el pago. La confirmación proviene del backend, webhook o conciliación.
+7. Sin túneles activos se puede desarrollar en localhost, pero no debe ejecutarse otra prueba externa completa.
+
+### Próximo objetivo inmediato
+
+La continuidad principal vuelve a Plataforma Deportiva W2, Fase 4: centro competitivo por categoría.
+
+Orden previsto:
+
+1. selector de categoría persistente por URL;
+2. Resumen competitivo;
+3. Posiciones por grupo con reglas y desempates auditables;
+4. Partidos, próximos encuentros y resultados;
+5. Cuadro eliminatorio;
+6. navegación persistente y experiencia móvil específica;
+7. validaciones automáticas proporcionales y revisión visual definitiva.

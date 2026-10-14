@@ -183,3 +183,26 @@ Una pantalla W2 se aprueba cuando:
 - teclado, contraste y movimiento reducido funcionan;
 - la página mantiene presupuesto de rendimiento;
 - la estética es coherente con Inicio, Reservas y Competencia.
+
+<!-- DIRECCION-PAGOS-P49 -->
+## 11. Sistema visual consolidado para pagos y estados
+
+La experiencia de pagos debe conservar la identidad general de W2 y usar color semántico de manera controlada:
+
+- grafito: estructura, superficies y continuidad general;
+- rojo W2: navegación y acciones principales;
+- verde: reserva confirmada, cancha asegurada y pago acreditado;
+- ámbar cobrizo: vencimiento, tiempo crítico y advertencias;
+- azul: únicamente acento del proveedor Mercado Pago, nunca identidad dominante de la pantalla;
+- ámbar técnico: insignia sandbox y aviso de prueba.
+
+Reglas consolidadas:
+
+- los estados confirmada, vencida, online, transferencia y sin método son excluyentes;
+- una experiencia online no muestra alias ni instrucciones de transferencia;
+- una reserva vencida elimina semántica financiera pendiente y conserva una única acción;
+- el sandbox se identifica con texto explícito, sin depender solo del color;
+- carga inicial mediante skeleton grafito, sin flash de la composición heredada;
+- cursor, foco visible, X, Escape, backdrop y restauración de foco son obligatorios;
+- móvil mantiene áreas táctiles mínimas, ancho completo cuando corresponde y cero desplazamiento horizontal;
+- éxito y advertencia pueden usar superficies diferenciadas, pero deben conservar geometría, tipografía y contraste propios de W2.
