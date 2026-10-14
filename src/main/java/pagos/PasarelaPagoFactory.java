@@ -1,3 +1,3 @@
 package pagos;
 import config.ConfiguracionMercadoPago;
-public final class PasarelaPagoFactory {private PasarelaPagoFactory(){}public static PasarelaPagoOnline crear(ConfiguracionMercadoPago c){if(c==null||!c.disponible())return new PasarelaPagoNoDisponible("Mercado Pago no está configurado.");return new MercadoPagoPasarela(c);}}
+public final class PasarelaPagoFactory {private PasarelaPagoFactory(){}public static PasarelaPagoOnline crear(ConfiguracionMercadoPago c){return crear(c,new PreflightMercadoPago());}static PasarelaPagoOnline crear(ConfiguracionMercadoPago c,PreflightMercadoPago preflight){if(c==null||!c.disponible())return new PasarelaPagoNoDisponible("Mercado Pago no está configurado.");PreflightMercadoPago.Resultado r=preflight.verificar(c);if(!r.valido())return new PasarelaPagoNoDisponible("Mercado Pago deshabilitado: preflight no superado ("+r.estado()+").");return new MercadoPagoPasarela(c);}}

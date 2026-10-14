@@ -99,7 +99,9 @@ public final class ApiPublicaServer {
                 new CuentaClienteService(),
                 mapper);
         config.ConfiguracionMercadoPago mp = config.ConfiguracionMercadoPago.cargar();
-        mercadoPagoWebhookHandler = mp.disponible() ? new MercadoPagoWebhookHandler(seguridad, mapper, mp) : null;
+        pagos.PasarelaPagoOnline pasarelaMp = pagos.PasarelaPagoFactory.crear(mp);
+        mercadoPagoWebhookHandler = pasarelaMp.disponible() ? new MercadoPagoWebhookHandler(seguridad, mapper, mp) : null;
+        System.out.println(pasarelaMp.disponible()?"Mercado Pago "+mp.entorno()+": identidad verificada.":"Mercado Pago deshabilitado: preflight no superado.");
         // inscripcionTorneoPublicaV1
         torneoPublicoHandler = new TorneoPublicoHandler(
                 new TorneoPublicoService(),
