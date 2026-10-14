@@ -436,3 +436,9 @@ Los cambios P4.1 a P4.6 forman un núcleo interdependiente. Si permanecen acumul
 2. `Actualizar documentación y continuidad de pagos W2`.
 
 Los diagnósticos, aplicadores, ZIP y carpetas `.backup-*` no se versionan.
+
+### P4.7: configuración segura de Mercado Pago
+
+La configuración de Mercado Pago se transporta al contenedor API mediante variables `MP_*`, documentadas sin secretos en `.env.example`. El valor predeterminado de `MP_ENABLED` es `false`; por lo tanto, una instalación nueva conserva transferencia manual y no intenta conectarse al proveedor.
+
+Para pruebas integrales, `MP_PUBLIC_BASE_URL` debe ser HTTPS y públicamente accesible. Nunca imprimir `MP_ACCESS_TOKEN` ni `MP_WEBHOOK_SECRET`; los inspectores solo deben informar `CONFIGURADA` o `AUSENTE`.

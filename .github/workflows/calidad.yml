@@ -82,7 +82,7 @@ jobs:
         run: npm ci
       - name: Instalar Chromium y dependencias
         run: npx playwright install --with-deps chromium
-      - name: Ejecutar 129 pruebas E2E
+      - name: Ejecutar suite E2E
         run: npm run test:e2e
       - name: Publicar reporte Playwright
         if: ${{ !cancelled() }}

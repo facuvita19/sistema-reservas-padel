@@ -136,3 +136,13 @@ El sistema incluye:
 La transferencia manual fue validada visual y funcionalmente el 14 de octubre de 2026. El pago online queda condicionado a configurar credenciales privadas de Mercado Pago y completar una prueba integral con una cuenta de prueba.
 
 Las credenciales se suministran mediante variables de entorno y nunca deben escribirse en el repositorio, documentación, logs ni capturas. Antes de ejecutar diagnósticos de configuración, usar salidas redactadas que informen únicamente si cada variable está presente.
+
+### Configuración segura de Mercado Pago
+
+Mercado Pago permanece deshabilitado por defecto. Para un entorno de prueba se configuran exclusivamente en el archivo privado `.env` las variables `MP_ENABLED`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `MP_API_BASE_URL`, `MP_PUBLIC_BASE_URL` y `MP_ENVIRONMENT`.
+
+- Usar `MP_ENVIRONMENT=sandbox` durante las pruebas.
+- `MP_PUBLIC_BASE_URL` debe ser una URL HTTPS pública alcanzable por el webhook.
+- No compartir ni versionar el token o el secreto.
+- Si la configuración está ausente o incompleta, la transferencia manual continúa disponible.
+- La URL de retorno no acredita pagos: la confirmación se realiza desde el backend mediante consulta y webhook firmado.

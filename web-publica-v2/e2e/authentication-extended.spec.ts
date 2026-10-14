@@ -53,7 +53,7 @@ test('registro controla contrasenas y botones mostrar ocultar',async({page,isMob
  await abrirRegistro(page,isMobile);await completarPaso1(page);await page.locator('#registroContinuar').click();
  const pass=page.locator('#registroPassword'),repeat=page.locator('#registroPasswordRepetido'),submit=page.locator('#enviarRegistro');
  await pass.fill('corta');await expect(submit).toBeDisabled();
- await expect(page.locator('#reglaRegistroPassword')).toContainText('8 caracteres');
+ await expect(page.locator('#reglaRegistroPassword')).toContainText('todavía es corta');
  await pass.fill('ClaveE2E123');await repeat.fill('OtraClave123');
  await expect(page.locator('#coincidenciaRegistroPassword')).toContainText('no coinciden');await expect(submit).toBeDisabled();
  await repeat.fill('ClaveE2E123');await expect(submit).toBeEnabled();
