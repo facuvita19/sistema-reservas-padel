@@ -48,6 +48,7 @@ public final class ApiPublicaServer {
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
     private final AutenticacionClienteHandler autenticacionHandler;
     private final CuentaClienteHandler cuentaClienteHandler;
+    private final MercadoPagoWebhookHandler mercadoPagoWebhookHandler;
     // torneoPublicoHandlerV1
     private final TorneoPublicoHandler torneoPublicoHandler;
     private HttpServer servidor;
@@ -97,6 +98,8 @@ public final class ApiPublicaServer {
                 autenticacionClienteService,
                 new CuentaClienteService(),
                 mapper);
+        config.ConfiguracionMercadoPago mp = config.ConfiguracionMercadoPago.cargar();
+        mercadoPagoWebhookHandler = mp.disponible() ? new MercadoPagoWebhookHandler(seguridad, mapper, mp) : null;
         // inscripcionTorneoPublicaV1
         torneoPublicoHandler = new TorneoPublicoHandler(
                 new TorneoPublicoService(),
@@ -147,6 +150,11 @@ public final class ApiPublicaServer {
         String ruta = normalizar(x.getRequestURI().getPath());
         try {
             seguridad.validarGeneral(ip);
+
+            if (mercadoPagoWebhookHandler != null && mercadoPagoWebhookHandler.puedeProcesar(ruta)) {
+                mercadoPagoWebhookHandler.procesar(x, metodo, operacionId);
+                return;
+            }
 
             if (recuperacionPasswordHandler.puedeProcesar(ruta)) {
                 recuperacionPasswordHandler.procesar(

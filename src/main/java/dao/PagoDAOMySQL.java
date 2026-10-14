@@ -15,6 +15,7 @@ import config.ConexionBD;
 import negocio.EstadoPago;
 import negocio.MetodoPago;
 import negocio.Pago;
+import negocio.OrigenAcreditacion;
 
 public class PagoDAOMySQL implements PagoDAO {
 
@@ -25,8 +26,8 @@ public class PagoDAOMySQL implements PagoDAO {
     }
 
     private void insertar(Pago pago) {
-        String sql = "INSERT INTO pagos (reserva_id, importe, metodo_pago, "
-                + "estado, referencia, fecha_pago) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO pagos (reserva_id, orden_pago_id, importe, metodo_pago, origen_acreditacion, "
+                + "estado, referencia, referencia_externa, fecha_pago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(
                      sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -43,13 +44,13 @@ public class PagoDAOMySQL implements PagoDAO {
     }
 
     private void actualizar(Pago pago) {
-        String sql = "UPDATE pagos SET reserva_id = ?, importe = ?, "
-                + "metodo_pago = ?, estado = ?, referencia = ?, fecha_pago = ? "
+        String sql = "UPDATE pagos SET reserva_id = ?, orden_pago_id = ?, importe = ?, "
+                + "metodo_pago = ?, origen_acreditacion = ?, estado = ?, referencia = ?, referencia_externa = ?, fecha_pago = ? "
                 + "WHERE id = ?";
         try (Connection conexion = ConexionBD.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
             cargarParametros(sentencia, pago);
-            sentencia.setLong(7, pago.getId());
+            sentencia.setLong(10, pago.getId());
             if (sentencia.executeUpdate() == 0) {
                 throw new IllegalArgumentException("El pago no existe.");
             }
@@ -58,17 +59,16 @@ public class PagoDAOMySQL implements PagoDAO {
         }
     }
 
-    private void cargarParametros(PreparedStatement sentencia, Pago pago)
-            throws SQLException {
+    private void cargarParametros(PreparedStatement sentencia, Pago pago) throws SQLException {
         sentencia.setLong(1, pago.getReservaId());
-        sentencia.setBigDecimal(2, pago.getImporte());
-        sentencia.setString(3, pago.getMetodoPago().name());
-        sentencia.setString(4, pago.getEstado().name());
-        if (pago.getReferencia() == null || pago.getReferencia().isBlank()) {
-            sentencia.setNull(5, Types.VARCHAR);
-        } else sentencia.setString(5, pago.getReferencia());
-        if (pago.getFechaPago() == null) sentencia.setNull(6, Types.TIMESTAMP);
-        else sentencia.setTimestamp(6, Timestamp.valueOf(pago.getFechaPago()));
+        if (pago.getOrdenPagoId() <= 0) sentencia.setNull(2, Types.BIGINT); else sentencia.setLong(2, pago.getOrdenPagoId());
+        sentencia.setBigDecimal(3, pago.getImporte());
+        sentencia.setString(4, pago.getMetodoPago().name());
+        sentencia.setString(5, (pago.getOrigenAcreditacion() == null ? OrigenAcreditacion.ADMINISTRACION : pago.getOrigenAcreditacion()).name());
+        sentencia.setString(6, pago.getEstado().name());
+        if (pago.getReferencia() == null || pago.getReferencia().isBlank()) sentencia.setNull(7, Types.VARCHAR); else sentencia.setString(7, pago.getReferencia());
+        if (pago.getReferenciaExterna() == null || pago.getReferenciaExterna().isBlank()) sentencia.setNull(8, Types.VARCHAR); else sentencia.setString(8, pago.getReferenciaExterna());
+        if (pago.getFechaPago() == null) sentencia.setNull(9, Types.TIMESTAMP); else sentencia.setTimestamp(9, Timestamp.valueOf(pago.getFechaPago()));
     }
 
     @Override
@@ -152,18 +152,21 @@ public class PagoDAOMySQL implements PagoDAO {
     }
 
     private String consultaBase() {
-        return "SELECT id, reserva_id, importe, metodo_pago, estado, "
-                + "referencia, fecha_pago, fecha_creacion FROM pagos";
+        return "SELECT id, reserva_id, orden_pago_id, importe, metodo_pago, origen_acreditacion, estado, "
+                + "referencia, referencia_externa, fecha_pago, fecha_creacion FROM pagos";
     }
 
     private Pago convertir(ResultSet resultado) throws SQLException {
         Pago pago = new Pago();
         pago.setId(resultado.getLong("id"));
         pago.setReservaId(resultado.getLong("reserva_id"));
+        pago.setOrdenPagoId(resultado.getLong("orden_pago_id"));
         pago.setImporte(resultado.getBigDecimal("importe"));
         pago.setMetodoPago(MetodoPago.valueOf(resultado.getString("metodo_pago")));
+        pago.setOrigenAcreditacion(OrigenAcreditacion.valueOf(resultado.getString("origen_acreditacion")));
         pago.setEstado(EstadoPago.valueOf(resultado.getString("estado")));
         pago.setReferencia(resultado.getString("referencia"));
+        pago.setReferenciaExterna(resultado.getString("referencia_externa"));
         Timestamp fechaPago = resultado.getTimestamp("fecha_pago");
         if (fechaPago != null) pago.setFechaPago(fechaPago.toLocalDateTime());
         Timestamp fechaCreacion = resultado.getTimestamp("fecha_creacion");

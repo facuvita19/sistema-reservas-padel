@@ -8,10 +8,13 @@ public class Pago {
 
     private long id;
     private long reservaId;
+    private long ordenPagoId;
     private BigDecimal importe = BigDecimal.ZERO;
     private MetodoPago metodoPago;
+    private OrigenAcreditacion origenAcreditacion = OrigenAcreditacion.ADMINISTRACION;
     private EstadoPago estado = EstadoPago.PENDIENTE;
     private String referencia;
+    private String referenciaExterna;
     private LocalDateTime fechaPago;
     private LocalDateTime fechaCreacion;
 
@@ -30,6 +33,13 @@ public class Pago {
     public void setReservaId(long reservaId) {
         this.reservaId = reservaId;
     }
+
+    public long getOrdenPagoId() { return ordenPagoId; }
+    public void setOrdenPagoId(long valor) { ordenPagoId = valor; }
+    public OrigenAcreditacion getOrigenAcreditacion() { return origenAcreditacion; }
+    public void setOrigenAcreditacion(OrigenAcreditacion valor) { origenAcreditacion = valor; }
+    public String getReferenciaExterna() { return referenciaExterna; }
+    public void setReferenciaExterna(String valor) { referenciaExterna = valor; }
 
     public BigDecimal getImporte() {
         return importe;

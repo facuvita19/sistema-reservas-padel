@@ -1,0 +1,3 @@
+package servicio;
+import static org.junit.jupiter.api.Assertions.*;import java.util.Map;import org.junit.jupiter.api.Test;import config.ConfiguracionMercadoPago;
+class CapacidadesPagoConfiguradasTest {@Test void onlineSoloSePublicaConConfiguracionCompleta(){var apagada=new CapacidadesPagoService(ConfiguracionMercadoPago.desde(Map.of("MP_ENABLED","false"))).obtener();assertFalse(apagada.pagoOnlineDisponible());assertNull(apagada.proveedorOnline());var activa=new CapacidadesPagoService(ConfiguracionMercadoPago.desde(Map.of("MP_ENABLED","true","MP_ACCESS_TOKEN","x","MP_WEBHOOK_SECRET","y","MP_PUBLIC_BASE_URL","https://club.example"))).obtener();assertTrue(activa.pagoOnlineDisponible());assertEquals("MERCADO_PAGO",activa.proveedorOnline());}}

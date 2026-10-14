@@ -1,0 +1,3 @@
+package dao;
+import java.util.List;import negocio.*;
+public interface OrdenPagoDAO { OrdenPago guardar(OrdenPago orden); OrdenPago buscar(long id); OrdenPago buscarPorIdempotencia(String clave); OrdenPago buscarPorReferencia(ProveedorPago proveedor,String referencia); OrdenPago buscarPorPagoExterno(ProveedorPago proveedor,String pagoExternoId); boolean asociarPagoExterno(long id,String pagoExternoId); List<OrdenPago> listarPorReserva(long reservaId); boolean actualizarEstado(long id,long version,EstadoOrdenPago estado,String referenciaExterna); boolean completarCheckout(long id,long version,String preferenciaExternaId,String urlPago); }

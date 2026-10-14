@@ -12,6 +12,7 @@ import api.publica.CuentaClienteDTO.CambiarPassword;
 import servicio.AutenticacionClienteService;
 import servicio.AutenticacionClienteService.SesionAutenticada;
 import servicio.CuentaClienteService;
+import api.publica.PagoClienteDTO.OrdenPagoPublica;
 import servicio.CuentaClienteService.ConflictoPerfilException;
 import servicio.CuentaClienteService.RecursoClienteNoEncontradoException;
 
@@ -22,6 +23,7 @@ public final class CuentaClienteHandler {
     private final AutenticacionClienteService autenticacionService;
     private final CuentaClienteService cuentaService;
     private final ObjectMapper mapper;
+    private final PagoClienteCuentaService pagoCuentaService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -36,6 +38,7 @@ public final class CuentaClienteHandler {
         this.autenticacionService = autenticacionService;
         this.cuentaService = cuentaService;
         this.mapper = mapper;
+        this.pagoCuentaService = new PagoClienteCuentaService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -70,6 +73,34 @@ public final class CuentaClienteHandler {
             if (ruta.equals(PREFIJO + "/password")
                     && "PUT".equals(metodo)) {
                 cambiarPassword(intercambio, autenticada);
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/pagos/capacidades") && "GET".equals(metodo)) {
+                responder(intercambio, 200, pagoCuentaService.capacidades());
+                return;
+            }
+
+            String pagoBase = PREFIJO + "/reservas/";
+            if (ruta.startsWith(pagoBase) && ruta.endsWith("/pago")) {
+                String valor = ruta.substring(pagoBase.length(), ruta.length() - "/pago".length());
+                long reservaId = parsearId(valor);
+                if ("GET".equals(metodo)) {
+                    OrdenPagoPublica actual = pagoCuentaService.actual(autenticada.cliente().getId(), reservaId);
+                    responder(intercambio, 200, actual == null ? new SinOrdenPago("La reserva todavía no tiene una orden de pago.") : actual);
+                    return;
+                }
+                if ("POST".equals(metodo)) {
+                    byte[] cuerpo = intercambio.getRequestBody().readAllBytes();
+                    PagoClienteDTO.CrearOrdenPago entrada = cuerpo.length == 0 ? new PagoClienteDTO.CrearOrdenPago("TRANSFERENCIA_MANUAL") : mapper.readValue(cuerpo, PagoClienteDTO.CrearOrdenPago.class);
+                    responder(intercambio, 201, pagoCuentaService.crear(autenticada.cliente().getId(), reservaId, entrada.metodo()));
+                    return;
+                }
+            }
+
+            if (ruta.startsWith(pagoBase) && ruta.endsWith("/pagos") && "GET".equals(metodo)) {
+                String valor = ruta.substring(pagoBase.length(), ruta.length() - "/pagos".length());
+                responder(intercambio, 200, pagoCuentaService.historial(autenticada.cliente().getId(), parsearId(valor)));
                 return;
             }
 
@@ -199,6 +230,9 @@ public final class CuentaClienteHandler {
     }
 
     private record MensajeCuenta(String mensaje) {
+    }
+
+    private record SinOrdenPago(String mensaje) {
     }
 
     private record ErrorCuenta(

@@ -1,0 +1,2 @@
+package pagos;
+public class PasarelaPagoNoDisponible implements PasarelaPagoOnline {private final String motivo;public PasarelaPagoNoDisponible(String motivo){this.motivo=motivo==null?"El pago online no está disponible.":motivo;}public boolean disponible(){return false;}public CheckoutCreado crearCheckout(SolicitudCheckout s){throw new IllegalStateException(motivo);}public PagoExterno consultarPago(String id){throw new IllegalStateException(motivo);}}

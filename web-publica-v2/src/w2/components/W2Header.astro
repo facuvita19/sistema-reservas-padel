@@ -18,9 +18,9 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
     </button>
     <div id="desplegableUsuario" class="w2-account-menu hidden" role="menu" aria-label="Opciones de la cuenta" aria-hidden="true">
      <header><span id="avatarUsuarioMenu">PR</span><div><small>Cuenta activa</small><strong id="nombreUsuarioMenu">Cuenta</strong><em id="correoUsuarioMenu">Perfil de cliente</em></div></header>
-     <a href="/mis-reservas" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5zM8 12h3v3H8z"/></svg></span><div><b>Mis reservas</b><small>Turnos, pagos y seguimiento</small></div><i>→</i></a>
-     <a href="/mis-datos" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3M18 5l1 1 2-2"/></svg></span><div><b>Mis datos y seguridad</b><small>Información personal y acceso</small></div><i>→</i></a>
-     <a href="/w2/jugador" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8M9 13h6"/></svg></span><div><b>Mi perfil deportivo <em>EN INTEGRACIÓN</em></b><small>Categoría, ranking e historial personal</small></div><i>→</i></a>
+     <a href="/w2/cuenta?seccion=reservas" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5zM8 12h3v3H8z"/></svg></span><div><b>Mis reservas</b><small>Turnos, pagos y seguimiento</small></div><i>→</i></a>
+     <a href="/w2/cuenta?seccion=datos" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3M18 5l1 1 2-2"/></svg></span><div><b>Mis datos y seguridad</b><small>Información personal y acceso</small></div><i>→</i></a>
+     <a href="/w2/cuenta?seccion=deporte" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8M9 13h6"/></svg></span><div><b>Mi perfil deportivo</b><small>Categoría, ranking e historial personal</small></div><i>→</i></a>
      <button id="cerrarSesion" type="button" role="menuitem"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5H5v14h5M14 8l4 4-4 4M8 12h10"/></svg></span><div><b>Cerrar sesión</b><small>Salir de esta cuenta</small></div></button>
     </div>
    </div>
@@ -35,7 +35,7 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
   <button id="abrirAutenticacionMovil" class="w2-mobile-login hidden" type="button">Ingresar o crear cuenta</button>
   <div id="cuentaUsuarioMovil" class="w2-mobile-account hidden">
    <div><span id="avatarUsuarioMovil">PR</span><p><small>Tu cuenta</small><strong id="nombreUsuarioMovil">Cuenta</strong><em id="correoUsuarioMovil">Sesión activa</em></p></div>
-   <a href="/mis-reservas"><i><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5z"/></svg></i><span>Mis reservas</span><b>→</b></a><a href="/mis-datos"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3"/></svg></i><span>Mis datos y seguridad</span><b>→</b></a><a href="/w2/jugador"><i><svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8"/></svg></i><span>Mi perfil deportivo <em>EN INTEGRACIÓN</em></span><b>→</b></a>
+   <a href="/w2/cuenta?seccion=reservas"><i><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5z"/></svg></i><span>Mis reservas</span><b>→</b></a><a href="/w2/cuenta?seccion=datos"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3"/></svg></i><span>Mis datos y seguridad</span><b>→</b></a><a href="/w2/cuenta?seccion=deporte"><i><svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8"/></svg></i><span>Mi perfil deportivo</span><b>→</b></a>
    <button id="cerrarSesionMovil" type="button">Cerrar sesión</button>
   </div>
   <footer><span>Sesión segura</span><span>Plataforma W2</span></footer>
