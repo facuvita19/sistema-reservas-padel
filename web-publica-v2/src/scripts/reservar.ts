@@ -1,5 +1,5 @@
 import { api, type Cancha, type Complejo, type SolicitudReservaCreada, type OrdenPagoPublica } from './api';
-import { fecha, fechaHora, hora, moneda } from './formatos';
+import { fecha, hora, moneda } from './formatos';
 
 type Horario={horaInicio:string;horaFin:string;precio:number;importeSenia:number};
 type Disponibilidad={fecha:string;cancha:Cancha;disponibleEseDia:boolean;horarios:Horario[]};
@@ -9,7 +9,6 @@ const el=<T extends HTMLElement>(id:string)=>document.getElementById(id) as T;
 const valor=(id:string)=>el<HTMLInputElement|HTMLTextAreaElement>(id).value.trim();
 const esc=(v:unknown)=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]||c));
 function fechaLocal(d=new Date()){const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
-function iniciarContadorReserva(vencimiento:string){const destino=new Date(vencimiento).getTime(),n=document.getElementById('contadorReserva');if(!n||Number.isNaN(destino))return;const actualizar=()=>{const restante=Math.max(0,destino-Date.now()),total=Math.ceil(restante/1000),m=Math.floor(total/60),s=total%60;n.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');n.classList.toggle('urgent',restante>0&&restante<=120000);if(restante<=0){n.textContent='Vencida';clearInterval(timer)}};actualizar();const timer=window.setInterval(actualizar,1000)}
 function fechaUrl(){const p=new URLSearchParams(location.search).get('fecha');return p&&/^\d{4}-\d{2}-\d{2}$/.test(p)&&p>=fechaLocal()?p:fechaLocal()}
 function mensaje(texto='',desplazar=true){const c=el('mensajeReserva');c.textContent=texto;c.classList.toggle('hidden',!texto);if(texto){c.focus({preventScroll:true});if(desplazar)c.scrollIntoView({behavior:movimientoReducidoReserva()?'auto':'smooth',block:'center'})}}
 function movimientoReducidoReserva(){return matchMedia('(prefers-reduced-motion: reduce)').matches}
