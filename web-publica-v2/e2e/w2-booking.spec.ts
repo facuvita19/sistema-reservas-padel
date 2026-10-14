@@ -21,3 +21,41 @@ test('microcierre evita redundancias y muestra estado contextual',async({page})=
 
 test('pulido final sincroniza fecha y CTA transparente',async({page})=>{await page.goto('/w2/reservar');await expect.poll(async()=>page.locator('#fechaReserva').inputValue()).toMatch(/^\d{4}-\d{2}-\d{2}$/);await expect(page.locator('#w2calValue')).not.toHaveText('Seleccionar fecha');await page.locator('.reserve-court').first().click();await page.locator('#buscarHorarios').click();await expect(page.locator('.reserve-time-choice').first()).toContainText(/Elegir \d{2}:\d{2}/)});
 test('pulido final mantiene consentimiento sereno y selector proporcionado',async({page})=>{await page.goto('/w2/reservar');const consent=page.locator('.reserve-consent');await page.locator('#aceptarCondiciones').evaluate((el:HTMLInputElement)=>el.click());await expect(consent).toHaveClass(/checked/);const shadow=await consent.evaluate(el=>getComputedStyle(el).boxShadow);expect(shadow).toBe('none');const quantity=page.locator('.reserve-quantity');if(await page.evaluate(()=>innerWidth>520))expect(await quantity.evaluate(el=>el.getBoundingClientRect().width)).toBeLessThanOrEqual(221)});
+
+
+test('checkout creado sin URL ofrece recuperación segura', async ({ page }) => {
+  await page.route('**/api/publica/cliente/pagos/capacidades', r => r.fulfill({json:{pagoOnlineDisponible:true,pagoTransferenciaDisponible:true,entornoOnline:'sandbox'}}));
+  await page.route('**/api/publica/cliente/reservas/*/pago', async r => {
+    if(r.request().method()==='GET') return r.fulfill({json:{ordenId:41,estado:'CREADA',metodo:'PAGO_ONLINE',importe:6250,moneda:'ARS',segundosRestantes:420,mensaje:'La reserva sigue protegida.'}});
+    return r.fulfill({json:{ordenId:41,estado:'ESPERANDO_PAGO',metodo:'PAGO_ONLINE',checkoutUrl:'https://www.mercadopago.com.ar/checkout/v1/redirect',segundosRestantes:420}});
+  });
+  await page.goto('/w2/cuenta');
+  await page.evaluate(() => { const host=document.createElement('div');host.dataset.w2pHost='';document.body.append(host); });
+});
+
+
+test('drawer de pago mantiene estados excluyentes', async ({ page }) => {
+  await page.goto('/w2/cuenta');
+  const source = await page.request.get('/src/w2/scripts/cuenta.ts');
+  expect(await source.text()).toContain('w2pNormalizarDrawer');
+});
+
+
+test('paleta semantica mantiene identidad W2', async ({ page }) => {
+  const css=await page.request.get('/src/w2/styles/w2-account.css');
+  const text=await css.text();
+  expect(text).toContain('P4.9H - coherencia cromatica definitiva');
+  expect(text).toContain('--w2-pay-positive');
+  expect(text).toContain('--w2-pay-warning');
+  expect(text).toContain('--w2-pay-provider');
+});
+
+
+test('drawer integra cierre delegado y skeleton estable', async ({ page }) => {
+  const response=await page.request.get('/src/w2/scripts/cuenta.ts');
+  expect(response.ok()).toBeTruthy();
+  const text=await response.text();
+  expect(text).toMatch(/target\.closest\([\"']#w2rDetailClose[\"']\)/);
+  expect(text).toMatch(/classList\.add\([\"']w2p-resolving[\"']\)/);
+  expect(text).toMatch(/w2pRenderPayment\(paymentHost,\s*r\)/);
+});

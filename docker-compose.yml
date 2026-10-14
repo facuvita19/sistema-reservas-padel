@@ -57,7 +57,9 @@ services:
       MP_WEBHOOK_SECRET: ${MP_WEBHOOK_SECRET:-}
       MP_API_BASE_URL: ${MP_API_BASE_URL:-https://api.mercadopago.com}
       MP_PUBLIC_BASE_URL: ${MP_PUBLIC_BASE_URL:-http://localhost:4321}
+      MP_RETURN_BASE_URL: ${MP_RETURN_BASE_URL:-http://localhost:4321}
       MP_ENVIRONMENT: ${MP_ENVIRONMENT:-sandbox}
+      MP_TEST_USER_ID: ${MP_TEST_USER_ID:-}
       TZ: "America/Argentina/Buenos_Aires"
       DB_URL: "jdbc:mysql://mysql:3306/${MYSQL_DATABASE}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=America/Argentina/Buenos_Aires"
       DB_USER: "${MYSQL_USER}"

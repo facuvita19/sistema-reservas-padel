@@ -34,3 +34,60 @@
 
 /* P4.6 seguimiento de pago online */
 .w2p-payment{margin-top:22px;padding:22px;border:1px solid #d8e2dc;border-radius:18px;background:#f7faf8}.w2p-payment.online{border-color:#9db8df;background:linear-gradient(145deg,#f8fbff,#edf4ff)}.w2p-payment.approved{border-color:#9bd1b2;background:#effaf3}.w2p-payment-head,.w2p-payment-grid,.w2p-actions{display:flex;justify-content:space-between;gap:12px}.w2p-payment-head span,.w2p-payment-grid small{font-size:11px;letter-spacing:.08em;color:#607168}.w2p-payment-grid{margin:18px 0}.w2p-payment-grid span{display:flex;flex-direction:column}.w2p-payment-grid strong{font-size:22px}.w2p-actions{flex-wrap:wrap;justify-content:flex-start}.w2p-actions button,.w2p-actions a{padding:12px 16px;border-radius:12px;border:1px solid #b8c7bf;background:#fff;color:#17221d;text-decoration:none;font-weight:700}.w2p-actions .primary{background:#071f45;color:#fff;border-color:#071f45}.w2p-payment.urgent .w2p-timer strong{color:#b76500}.w2p-payment.expired{opacity:.72}.w2p-return{position:fixed;z-index:9999;top:18px;left:50%;transform:translateX(-50%);width:min(560px,calc(100% - 28px));padding:15px 18px;border-radius:14px;background:#071f45;color:#fff;box-shadow:0 18px 50px #0004}.w2p-return b,.w2p-return span{display:block}.w2p-return span{margin-top:3px;opacity:.78;font-size:13px}@media(max-width:520px){.w2p-payment-head,.w2p-payment-grid{flex-direction:column}}
+
+.w2-sandbox-banner{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-4px 0 16px;padding:10px 12px;border:1px solid #d39b2d;border-radius:12px;background:#fff4cf;color:#4a3300}.w2-sandbox-banner b,.w2-sandbox-badge{font-size:11px;font-weight:900;letter-spacing:.08em}.w2-sandbox-banner span,.w2-sandbox-help{font-size:12px;line-height:1.35}.w2-sandbox-badge{display:inline-flex;margin-top:8px;padding:5px 8px;border:1px solid #d39b2d;border-radius:999px;background:#fff4cf;color:#4a3300;font-style:normal}.w2-sandbox-help{display:block;margin-top:5px;color:#715521}.reserve-payment-choice button .w2-sandbox-badge,.reserve-payment-choice button .w2-sandbox-help{width:max-content;max-width:100%;text-align:left}@media(max-width:520px){.w2-sandbox-banner{align-items:flex-start;flex-direction:column}}
+
+.w2p-payment.approved b{color:#123923;font-size:16px}.w2p-payment.approved p{color:#315f45;font-weight:650}.w2p-payment.approved{box-shadow:inset 4px 0 0 #2f9e61}
+
+.w2p-retry-error{margin:12px 0;color:#8a2d35!important;font-weight:700}.w2p-payment.online:not(.expired) [data-w2p-online]{min-width:210px}
+
+/* P4.9G - estados excluyentes del drawer de pagos */
+#w2rDetailBody [hidden]{display:none!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2r-detail-pay,
+#w2rDetailBody[data-w2p-state="online"] .w2r-detail-pay,
+#w2rDetailBody[data-w2p-state="confirmada"] .w2r-detail-pay{display:none!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired{opacity:1;border-color:#b96a2f;background:linear-gradient(145deg,#fffaf2,#f7ead8);box-shadow:inset 4px 0 0 #c97832}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired .w2p-payment-head b{background:#f3dfbf;color:#74410e}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired p{color:#5f4a34}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-actions{margin-top:14px}
+#w2rDetailBody .w2r-secondary-action{background:transparent!important;color:#66bd8f!important;border-color:#4ba979!important;box-shadow:none!important}
+.w2-sandbox-note{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:12px}
+.w2-sandbox-note .w2-sandbox-badge{display:inline-flex;margin:0;font-style:normal;line-height:1.15}
+.w2-sandbox-note .w2-sandbox-help{display:block;margin:0;max-width:34ch;line-height:1.45}
+.reserve-payment-choice button{align-content:start}
+.reserve-payment-choice>div{align-items:stretch}
+.reserve-payment-choice button.online,.reserve-payment-choice button[data-pay-manual]{min-height:154px}
+@media(max-width:520px){
+  #w2rDetailBody .w2p-payment{padding:18px}
+  #w2rDetailBody .w2p-actions button,#w2rDetailBody .w2p-actions a,#w2rDetailBody .w2r-secondary-action{min-height:44px;width:100%}
+  #w2rDetailBody [data-copy-tracking]{min-height:44px;min-width:64px}
+  .reserve-payment-choice button.online,.reserve-payment-choice button[data-pay-manual]{min-height:auto}
+}
+
+/* P4.9H - coherencia cromatica definitiva de pagos */
+:root{--w2-pay-positive:#4fb37f;--w2-pay-warning:#c7863d;--w2-pay-provider:#2874c6;--w2-pay-danger:#e71936}
+.w2-sandbox-note{display:flex!important;flex-direction:column;align-items:flex-start;gap:7px;margin-top:12px}
+.w2-sandbox-note .w2-sandbox-badge{display:inline-flex!important;margin:0!important;padding:5px 9px;border:1px solid rgba(213,157,61,.58);border-radius:999px;background:rgba(190,126,31,.16);color:#f2c66f!important;font-size:10px!important;font-style:normal!important;font-weight:900!important;line-height:1.2;letter-spacing:.075em}
+.w2-sandbox-note .w2-sandbox-help{display:block!important;margin:0!important;color:#bac8c1!important;font-size:11px!important;line-height:1.45;max-width:34ch}
+.reserve-payment-choice button.online{border-color:rgba(51,132,219,.76)!important;background:linear-gradient(145deg,rgba(31,93,158,.7),rgba(17,38,59,.96))!important;box-shadow:inset 3px 0 0 #3489df}
+.reserve-payment-choice button.online:hover{border-color:#4b9be8!important;background:linear-gradient(145deg,rgba(34,105,180,.79),rgba(18,42,65,.98))!important}
+.reserve-payment-choice button.online,.reserve-payment-choice button[data-pay-manual]{min-height:154px;align-content:start}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired{opacity:1!important;border:1px solid rgba(199,134,61,.7)!important;border-left:4px solid var(--w2-pay-warning)!important;background:linear-gradient(145deg,#16191a,#111719)!important;box-shadow:none!important;color:#fff!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired .w2p-payment-head span{color:#d9b784!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired .w2p-payment-head b{background:rgba(199,134,61,.16)!important;color:#edbd76!important;border:1px solid rgba(199,134,61,.32)}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired p{color:#c5c0b8!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-actions .primary{background:var(--w2-pay-danger)!important;border-color:var(--w2-pay-danger)!important;color:#fff!important}
+#w2rDetailBody[data-w2p-state="vencida"] .w2p-actions .primary:hover{background:#c9132d!important;border-color:#c9132d!important}
+#w2rDetailBody[data-w2p-state="confirmada"] .w2p-payment.approved{border-color:rgba(79,179,127,.52)!important;border-left:4px solid var(--w2-pay-positive)!important;background:linear-gradient(145deg,#effaf3,#e3f4e9)!important}
+#w2rDetailBody[data-w2p-state="confirmada"] .w2r-secondary-action{background:transparent!important;border:1px solid #47a978!important;color:#68c895!important}
+#w2rDetailBody[data-w2p-state="confirmada"] .w2r-secondary-action:hover{background:rgba(71,169,120,.1)!important}
+#w2rDetailBody[data-w2p-state="vencida"] [data-w2r-financial],#w2rDetailBody[data-w2p-state="vencida"] .w2r-detail-financial,#w2rDetailBody[data-w2p-state="vencida"] .w2r-detail-status-copy{display:none!important}
+@media(max-width:520px){
+ .w2-sandbox-note .w2-sandbox-help{font-size:10px!important;max-width:30ch}
+ .reserve-payment-choice button.online,.reserve-payment-choice button[data-pay-manual]{min-height:auto}
+ #w2rDetailBody[data-w2p-state="vencida"] .w2p-payment.expired{padding:18px!important}
+ #w2rDetailBody[data-w2p-state="vencida"] .w2p-actions .primary{width:100%!important;min-height:46px}
+}
+
+/* P4.9I V2 - interaccion y render atomico */
+[data-w2r-detail],#w2rDetailClose,#w2rDetailBackdrop,[data-copy],[data-w2p-refresh],[data-w2p-checkout],[data-w2p-online],[data-w2p-manual],[data-w2p-new]{cursor:pointer}#w2rDetailClose{position:relative;z-index:4;pointer-events:auto}#w2rDetailClose:focus-visible,[data-w2r-detail]:focus-visible{outline:2px solid rgba(231,25,54,.72);outline-offset:3px}#w2rDetailBody.w2p-resolving>.w2r-detail-money,#w2rDetailBody.w2p-resolving>.w2r-detail-message,#w2rDetailBody.w2p-resolving>.w2r-detail-pay,#w2rDetailBody.w2p-resolving>.w2-button{visibility:hidden}#w2rDetailBody.w2p-resolving [data-w2p-host]{display:block;min-height:164px;margin-top:18px}.w2p-skeleton{display:grid!important;place-items:stretch!important;gap:12px;min-height:150px;background:linear-gradient(145deg,#11191d,#0d1417)!important;border-color:#27343a!important;overflow:hidden}.w2p-skeleton i{display:block;height:16px;border-radius:999px;background:linear-gradient(90deg,#1a2428 20%,#26343a 45%,#1a2428 70%);background-size:240% 100%;animation:w2pSkeleton 1.15s ease-in-out infinite}.w2p-skeleton i:nth-child(1){width:42%}.w2p-skeleton i:nth-child(2){width:78%;height:36px}.w2p-skeleton i:nth-child(3){width:58%}@keyframes w2pSkeleton{0%{background-position:100% 0}100%{background-position:-100% 0}}@media(prefers-reduced-motion:reduce){.w2p-skeleton i{animation:none}}
