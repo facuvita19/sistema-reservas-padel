@@ -8,12 +8,13 @@ test('navegación principal recorre las rutas públicas',async({page,isMobile})=
  if(isMobile){
   await page.locator('#menuButton').click();
   await expect(page.locator('#mainMenu')).toHaveAttribute('aria-hidden','false');
-  await page.locator('#mainMenu a[href="/torneos"]').click();
+  await page.locator('#mainMenu a[href="/w2/torneos"]').click();
  }else{
-  await page.locator('.site-nav-v59 a[href="/torneos"]').click();
+  await page.locator('.site-nav-v59 a[href="/w2/torneos"]').click();
  }
- await expect(page).toHaveURL(/\/torneos$/);
- await expect(page.locator('h1')).toContainText('competencia');
+ await expect(page).toHaveURL(/\/w2\/torneos$/);
+ await expect(page.locator('.w2t-hero')).toBeVisible();
+ await expect(page.locator('.w2t-card').first()).toBeVisible();
 });
 
 test('menú móvil contiene el foco y cierra con Escape',async({page,isMobile})=>{
