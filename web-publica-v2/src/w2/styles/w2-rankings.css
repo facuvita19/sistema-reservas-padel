@@ -1,0 +1,9 @@
+#rankCategories{max-height:34rem;overflow-y:auto;overscroll-behavior:contain;padding-right:.2rem;scrollbar-width:thin;scrollbar-color:#e71939 #11171c}#rankCategories::-webkit-scrollbar{width:6px}#rankCategories::-webkit-scrollbar-track{background:#11171c}#rankCategories::-webkit-scrollbar-thumb{background:#e71939;border-radius:999px}.w2c2-categories{align-self:start;position:sticky;top:7rem}.w2c2-categories footer{margin-top:.7rem}#rankingsContent[aria-busy="true"] main{opacity:.72}#rankingsContent main{transition:opacity .18s ease}#rankCategories button:focus-visible,#w2RankingSearch:focus-visible,#rankRetry:focus-visible{outline:3px solid rgba(231,25,57,.3);outline-offset:3px}@media(max-width:900px){#rankCategories{max-height:none;overflow:visible}.w2c2-categories{position:static}}@media(prefers-reduced-motion:reduce){#rankingsContent main{transition:none}}
+
+/* R1.1A - respuesta interactiva de categorias */
+#rankCategories button{cursor:pointer;transition:background-color .18s ease,border-color .18s ease,color .18s ease,transform .18s ease}
+#rankCategories button> b{transition:transform .18s ease,color .18s ease}
+@media(hover:hover) and (pointer:fine){#rankCategories button:hover{background:#0a0d10;border-color:rgba(231,25,57,.48);transform:translateX(2px)}#rankCategories button:hover> b{color:#fff;transform:translateX(3px)}}
+#rankCategories button:active{transform:translateX(1px) scale(.995)}
+#rankCategories button[aria-selected="true"]{cursor:default}
+#rankCategories button:disabled{cursor:not-allowed;opacity:.58}
