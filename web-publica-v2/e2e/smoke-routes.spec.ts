@@ -3,7 +3,7 @@ import { mockPublicApi } from './fixtures/api-mock';
 import { monitorPage } from './fixtures/quality';
 
 const routes=[
- ['Inicio','/'],['Reservar','/reservar'],['Mis reservas','/mis-reservas'],['Mi cuenta','/mis-datos'],['Torneos','/torneos'],['Restablecer','/restablecer?token=e2e-token'],['404','/ruta-e2e-inexistente']
+ ['Inicio','/'],['Reservar','/reservar'],['Mis reservas','/mis-reservas'],['Mi cuenta','/mis-datos'],['Torneos W2','/w2/torneos'],['Puente Torneos','/torneos'],['Restablecer','/restablecer?token=e2e-token'],['404','/ruta-e2e-inexistente']
 ] as const;
 
 test.beforeEach(async({page})=>mockPublicApi(page));
