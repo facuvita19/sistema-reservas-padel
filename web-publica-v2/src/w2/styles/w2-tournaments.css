@@ -392,3 +392,67 @@
  .w2cc-center .f4-position-card.qualified{border-left-color:#65b98a!important;background:linear-gradient(145deg,rgba(25,60,45,.32),#10151a)!important}
  .w2cc-center .f4-position-card.qualified>header>i{border-color:rgba(101,185,138,.48)!important;background:rgba(101,185,138,.13)!important;color:#a7e2bf!important}
 }
+/* F4.7A1 - hero del catalogo alineado con la cabecera W2 */
+/* .w2t-catalog envuelve hero, explorador y recorrido; no debe aportar padding externo. */
+.w2t-catalog{padding-block:0!important}
+/* F4.7A2 - hero editorial compacto y nomenclatura definitiva */
+/* El catálogo debe presentar la propuesta y dejar visible el calendario sin ocupar un viewport completo. */
+@media(min-width:900px){
+ .w2t-hero{min-height:0!important}
+ .w2t-hero-grid{min-height:0!important;align-items:center!important;padding-block:clamp(2.4rem,4.5vh,3.5rem)!important}
+ .w2t-hero-copy h1{font-size:clamp(4.1rem,5.35vw,6.2rem)!important;line-height:.88!important}
+ .w2t-hero-copy>p:last-of-type{margin-top:1rem!important}
+ .w2t-season-signals{margin-top:1.25rem!important}
+ .w2t-season-signals button{min-height:54px!important}
+ .w2t-featured{padding:1.3rem 1.45rem!important}
+ .w2t-featured h2{font-size:clamp(2.55rem,3.3vw,3.85rem)!important}
+ .w2t-featured footer{margin-top:1rem!important;padding-top:.85rem!important}
+ .w2t-explorer{padding-top:clamp(3.4rem,5vw,4.5rem)!important}
+ .w2t-section-head h2{font-size:clamp(3.15rem,4.35vw,4.8rem)!important}
+}
+@media(min-width:900px) and (min-height:760px){
+ .w2t-hero-grid{min-height:min(610px,calc(100dvh - var(--header-height,76px) - 100px))!important}
+}
+@media(max-width:899px){
+ .w2t-hero-grid{padding-block:2.5rem 2.9rem!important}
+ .w2t-hero-copy h1{font-size:clamp(3rem,12.5vw,4rem)!important}
+ .w2t-featured{margin-top:1.1rem!important}
+ .w2t-explorer{padding-top:3rem!important}
+}
+@media(max-width:650px){
+ .w2t-hero-grid{padding-block:2.15rem 2.55rem!important}
+ .w2t-season-signals{margin-top:1.05rem!important}
+}
+/* F4.7A3 - selector limpio y contrato geometrico real */
+/* La seleccion conserva su indicador propio; el menu ya no dibuja una segunda linea superpuesta. */
+.w2t-select-menu:before{display:none!important}
+/* F4.7A4 - fases cromaticas en llave completa y selector movil estable */
+/* La llave completa comparte la misma semantica cromatica del cuadro integrado. */
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .bracket-card{border-top-color:#64aaa4!important;box-shadow:inset 0 1px 0 rgba(100,170,164,.18)!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .bracket-card{border-top-color:#609cc7!important;box-shadow:inset 0 1px 0 rgba(96,156,199,.18)!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card{border-top-color:#9b72cf!important;box-shadow:inset 0 1px 0 rgba(155,114,207,.18)!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card{border-color:#9b7e25!important;border-top-color:#d8b84e!important;box-shadow:inset 0 1px 0 rgba(216,184,78,.2)!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .elimination-match-header span{color:#82c4be!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .elimination-match-header span{color:#80bae1!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .elimination-match-header span{color:#b894e2!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .elimination-match-header span{color:#e0c15d!important}
+/* F4.7A5 - rotulos de partido por fase y contrato de llave dinamica */
+/* Los rótulos reales de la tarjeta son hijos directos de .bracket-card, no elimination-match-header. */
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .bracket-card>header>small:first-child{color:#82c4be!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .bracket-card>header>small:first-child{color:#80bae1!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card>header>small:first-child{color:#b894e2!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>small:first-child{color:#e0c15d!important}
+/* F4.7A6 - igualdad cromatica exacta entre rotulo y contorno */
+/* El rótulo y el contorno superior usan ahora el mismo valor, no una variante aclarada. */
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(1) .bracket-card>header>small:first-child{color:#64aaa4!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(2) .bracket-card>header>small:first-child{color:#609cc7!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card>header>small:first-child{color:#9b72cf!important}
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>span:first-child,
+#modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>small:first-child{color:#d8b84e!important}

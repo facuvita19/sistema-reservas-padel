@@ -1,58 +1,36 @@
 ---
-import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
-import ModalInscripcionTorneo from '../components/ModalInscripcionTorneo.astro';
-import ModalCuadroTorneo from '../components/ModalCuadroTorneo.astro';
+const destino='/w2/torneos';
 ---
-<!-- portada-torneos-premium-v51-20261011 -->
-<!-- perfeccion-portada-torneos-v52b-20261011 -->
-<!-- cierre-portada-torneos-v53-20261011 -->
-<!-- refinamiento-interaccion-torneos-v54-20261011 -->
-<!-- cierre-estructural-torneos-v55-20261011 -->
-<!-- pulido-final-portada-torneos-v56-20261011 -->
-<!-- ajuste-final-filtros-torneos-v57-20261011 -->
-<!-- correccion-definitiva-fila-filtros-v58-20261011 -->
-<LayoutPrincipal titulo="Torneos | Pádel Reservas" descripcion="Descubrí torneos, categorías, posiciones, partidos y cuadros actualizados del club." actual="torneos">
-  <section class="tournament-v51 container-site tournament-catalog-shell">
-    <div id="vistaCatalogoTorneos" class="tournament-catalog-view">
-      <header class="t51-hero">
-        <div class="t51-hero-copy">
-          <p class="site-kicker">Calendario competitivo</p>
-          <h1>Tu próxima competencia<br><span>empieza acá.</span></h1>
-          <p>Compará categorías, disponibilidad y formatos. Inscribite y seguí cada etapa desde un único lugar.</p>
-          <div id="resumenTorneos" class="t51-summary" aria-live="polite"></div>
-        </div>
-        <aside id="torneoDestacado" class="t51-featured" aria-live="polite">
-          <div class="t51-featured-loading">Buscando la próxima oportunidad...</div>
-        </aside>
-      </header>
-
-      <section class="t51-discovery" aria-label="Explorar torneos">
-        <nav id="pestanasTorneos" class="tournament-catalog-tabs" aria-label="Estados de torneos"></nav>
-        <div class="t55-filter-row">
-          <label class="tournament-search"><span class="sr-only">Buscar torneo o categoría</span><input id="buscarTorneo" type="search" placeholder="Buscar por torneo, categoría, rama o formato" autocomplete="off"><i aria-hidden="true">⌕</i></label>
-          <aside id="panelFiltrosTorneos" class="tournament-filter-panel" aria-label="Filtros de torneos">
-            <header><div><p class="site-kicker">Afiná tu búsqueda</p><h3>Filtros</h3></div><button id="cerrarFiltrosTorneos" type="button" aria-label="Cerrar filtros">×</button></header>
-            <label class="tournament-filter-field"><span>Rama</span><select id="filtroRama" data-premium-select="Rama"><option value="">Todas las ramas</option></select></label>
-            <label class="tournament-filter-field"><span>Formato</span><select id="filtroFormato" data-premium-select="Formato"><option value="">Todos los formatos</option></select></label>
-            <label class="tournament-check"><input id="filtroInscripcion" type="checkbox"><span>Inscripción abierta</span></label>
-            <footer><button id="limpiarFiltrosTorneos" type="button">Limpiar todo</button><button id="aplicarFiltrosTorneos" class="btn btn-primary" type="button">Aplicar filtros</button></footer>
-          </aside>
-          <button id="abrirFiltrosTorneos" class="tournament-filter-trigger" type="button" aria-controls="panelFiltrosTorneos" aria-expanded="false">Filtros <span id="cantidadFiltrosTorneos" class="hidden">0</span></button>
-        </div>
-        <div class="tournament-results-header"><div><p class="site-kicker">Competencias</p><div id="estadoCatalogoTorneos" class="tournament-results-meta"></div></div><div class="t55-active-filter-actions"><div id="chipsFiltrosTorneos" class="tournament-filter-chips" aria-live="polite"></div><button id="limpiarFiltrosTorneosInline" class="t55-clear-inline hidden" type="button">Limpiar todo</button></div></div>
-      </section>
-
-      <main class="tournament-results"><div id="listaTorneos" class="tournament-catalog-grid"></div><button id="mostrarMasTorneos" class="tournament-load-more hidden" type="button">Mostrar más torneos</button></main>
-
-      <section class="t51-journey" aria-labelledby="t51JourneyTitle">
-        <div><p class="site-kicker">Todo el torneo, en un solo lugar</p><h2 id="t51JourneyTitle">De la inscripción<br>a la final.</h2><p>Una experiencia clara para elegir, competir y seguir cada resultado.</p></div>
-        <ol><li><span>01</span><div><b>Elegí tu categoría</b><small>Compará rama, formato, precio y disponibilidad.</small></div></li><li><span>02</span><div><b>Inscribí a tu pareja</b><small>Enviá la solicitud con todos los datos necesarios.</small></div></li><li><span>03</span><div><b>Seguí la competencia</b><small>Grupos, posiciones, agenda y resultados actualizados.</small></div></li><li><span>04</span><div><b>Viví la definición</b><small>Cuadro eliminatorio, recorrido y campeones.</small></div></li></ol>
-      </section>
-    </div>
-    <div id="vistaDetalleTorneo" class="tournament-detail-view hidden"><div id="detalleTorneoHost"></div></div>
-    <div id="fondoFiltrosTorneos" class="tournament-filter-backdrop hidden"></div>
-  </section>
-  <ModalInscripcionTorneo />
-  <ModalCuadroTorneo />
-  <script>import '../scripts/torneos';</script>
-</LayoutPrincipal>
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Torneos | Plataforma Deportiva W2</title>
+    <meta name="robots" content="noindex, follow" />
+    <meta name="description" content="Torneos ahora vive en Plataforma Deportiva W2." />
+    <link rel="canonical" href="/w2/torneos" />
+    <meta http-equiv="refresh" content="0;url=/w2/torneos" />
+    <script is:inline define:vars={{ destino }}>
+      const url=new URL(destino,window.location.origin);
+      url.search=window.location.search;
+      url.hash=window.location.hash;
+      window.location.replace(url.href);
+    </script>
+    <style>
+      :root{color-scheme:dark;background:#080b0d;color:#f4f7f5;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+      *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0,rgba(215,25,45,.12),transparent 34%),#080b0d}
+      main{width:min(620px,100%);padding:clamp(24px,6vw,48px);border:1px solid #30383d;border-top:3px solid #d7192d;border-radius:24px;background:#101519;box-shadow:0 28px 70px rgba(0,0,0,.35)}
+      span{display:block;margin-bottom:12px;color:#ff7c89;font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}h1{margin:0;font-size:clamp(2.25rem,7vw,4.5rem);line-height:.94;letter-spacing:-.04em}p{margin:20px 0;color:#aeb8b3;line-height:1.65}a{display:inline-flex;min-height:46px;align-items:center;justify-content:center;padding:0 18px;border-radius:10px;background:#d7192d;color:white;font-weight:900;text-decoration:none}a:focus-visible{outline:3px solid #fff;outline-offset:4px}
+    </style>
+  </head>
+  <body>
+    <main>
+      <span>Plataforma Deportiva W2</span>
+      <h1>Torneos ahora vive en W2.</h1>
+      <p>Estamos trasladando la navegación al nuevo centro de competencias. Los enlaces y parámetros se conservarán automáticamente.</p>
+      <a id="continuarTorneosW2" href="/w2/torneos">Continuar a Torneos W2</a>
+    </main>
+  </body>
+</html>
+<!-- ruta-canonica-torneos-w2-f47a-20261015 -->

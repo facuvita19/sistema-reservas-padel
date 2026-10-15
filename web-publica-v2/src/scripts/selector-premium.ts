@@ -2,7 +2,7 @@ const esc=(v:string)=>v.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;
 const mobile=()=>matchMedia('(max-width:760px)').matches;
 const instances=new Set<PremiumSelect>();
 function closeOthers(except?:PremiumSelect){for(const item of instances)if(item!==except)item.close(false)}
-function isTournamentPage(){return location.pathname==='/torneos'||location.pathname.startsWith('/torneos/')||location.pathname==='/w2/torneos'||location.pathname.startsWith('/w2/torneos/')}
+function isTournamentPage(){return location.pathname==='/w2/torneos'||location.pathname.startsWith('/w2/torneos/')}
 function shouldEnhance(select:HTMLSelectElement){if(isTournamentPage())return false;if(select.hasAttribute('data-native-select')||select.disabled)return false;if(select.closest('[data-premium-select],[data-custom-select],.select-premium,.custom-select,.tournament-filters,.tournament-select'))return false;if(select.getAttribute('aria-hidden')==='true')return false;const style=getComputedStyle(select);if(style.display==='none'||style.visibility==='hidden')return false;return true}
 class PremiumSelect{
  select:HTMLSelectElement;root:HTMLElement;trigger:HTMLButtonElement;panel:HTMLElement;backdrop:HTMLElement;options:HTMLOptionElement[]=[];active=0;listId='ps-list-'+Math.random().toString(36).slice(2);outside:(e:PointerEvent)=>void;
