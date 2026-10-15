@@ -1,57 +1,53 @@
 ---
 import '../../styles/global.css';
+import '../../w2/styles/w2-tournaments.css';
 import W2Layout from '../../w2/layouts/W2Layout.astro';
 import ModalInscripcionTorneo from '../../components/ModalInscripcionTorneo.astro';
 import ModalCuadroTorneo from '../../components/ModalCuadroTorneo.astro';
 ---
-<!-- portada-torneos-premium-v51-20261011 -->
-<!-- perfeccion-portada-torneos-v52b-20261011 -->
-<!-- cierre-portada-torneos-v53-20261011 -->
-<!-- refinamiento-interaccion-torneos-v54-20261011 -->
-<!-- cierre-estructural-torneos-v55-20261011 -->
-<!-- pulido-final-portada-torneos-v56-20261011 -->
-<!-- ajuste-final-filtros-torneos-v57-20261011 -->
-<!-- correccion-definitiva-fila-filtros-v58-20261011 -->
 <W2Layout titulo="Torneos | Plataforma Deportiva W2" actual="torneos">
-  <section class="tournament-v51 container-site tournament-catalog-shell">
-    <div id="vistaCatalogoTorneos" class="tournament-catalog-view">
-      <header class="t51-hero">
-        <div class="t51-hero-copy">
-          <p class="site-kicker">Calendario competitivo</p>
-          <h1>Tu próxima competencia<br><span>empieza acá.</span></h1>
-          <p>Compará categorías, disponibilidad y formatos. Inscribite y seguí cada etapa desde un único lugar.</p>
-          <div id="resumenTorneos" class="t51-summary" aria-live="polite"></div>
+  <section class="w2t-shell">
+    <div id="vistaCatalogoTorneos" class="w2t-catalog">
+      <header class="w2t-hero">
+        <div class="w2-container w2t-hero-grid">
+          <div class="w2t-hero-copy">
+            <p class="w2-kicker">Circuito competitivo W2</p>
+            <h1>Elegí el desafío.<br/><strong>Seguí cada punto.</strong></h1>
+            <p>Descubrí competencias, inscribí a tu pareja y acompañá el torneo desde el primer partido hasta la definición.</p>
+            <div id="resumenTorneos" class="w2t-season-signals" aria-live="polite"></div>
+          </div>
+          <aside id="torneoDestacado" class="w2t-featured" aria-live="polite">
+            <div class="w2t-featured-loading"><span></span><b>Preparando el próximo desafío</b><small>Consultando el calendario oficial.</small></div>
+          </aside>
         </div>
-        <aside id="torneoDestacado" class="t51-featured" aria-live="polite">
-          <div class="t51-featured-loading">Buscando la próxima oportunidad...</div>
-        </aside>
+        <span class="w2t-court-mark" aria-hidden="true"></span>
       </header>
 
-      <section class="t51-discovery" aria-label="Explorar torneos">
-        <nav id="pestanasTorneos" class="tournament-catalog-tabs" aria-label="Estados de torneos"></nav>
-        <div class="t55-filter-row">
-          <label class="tournament-search"><span class="sr-only">Buscar torneo o categoría</span><input id="buscarTorneo" type="search" placeholder="Buscar por torneo, categoría, rama o formato" autocomplete="off"><i aria-hidden="true">⌕</i></label>
-          <aside id="panelFiltrosTorneos" class="tournament-filter-panel" aria-label="Filtros de torneos">
-            <header><div><p class="site-kicker">Afiná tu búsqueda</p><h3>Filtros</h3></div><button id="cerrarFiltrosTorneos" type="button" aria-label="Cerrar filtros">×</button></header>
-            <label class="tournament-filter-field"><span>Rama</span><select id="filtroRama" data-premium-select="Rama"><option value="">Todas las ramas</option></select></label>
-            <label class="tournament-filter-field"><span>Formato</span><select id="filtroFormato" data-premium-select="Formato"><option value="">Todos los formatos</option></select></label>
-            <label class="tournament-check"><input id="filtroInscripcion" type="checkbox"><span>Inscripción abierta</span></label>
-            <footer><button id="limpiarFiltrosTorneos" type="button">Limpiar todo</button><button id="aplicarFiltrosTorneos" class="btn btn-primary" type="button">Aplicar filtros</button></footer>
+      <section class="w2-container w2t-explorer" aria-labelledby="w2tExplorerTitle">
+        <header class="w2t-section-head">
+          <div><p class="w2-kicker">Calendario oficial</p><h2 id="w2tExplorerTitle">Competencias W2</h2></div>
+          <p>Filtrá por estado, rama o formato. Cada inscripción de pádel se realiza exclusivamente por pareja.</p>
+        </header>
+        <nav id="pestanasTorneos" class="w2t-state-tabs" aria-label="Estados de torneos"></nav>
+        <div class="w2t-tools">
+          <label class="w2t-search"><span>Buscar competencia</span><div><input id="buscarTorneo" type="search" placeholder="Torneo, categoría, rama o formato" autocomplete="off"/><i aria-hidden="true">⌕</i></div></label>
+          <aside id="panelFiltrosTorneos" class="w2t-filters" aria-label="Filtros de torneos">
+            <header><div><p class="w2-kicker">Afiná la búsqueda</p><h3>Filtros</h3></div><button id="cerrarFiltrosTorneos" type="button" aria-label="Cerrar filtros">×</button></header>
+            <label class="w2t-field"><span>Rama</span><select id="filtroRama" data-premium-select="Rama"><option value="">Todas las ramas</option></select></label>
+            <label class="w2t-field"><span>Formato</span><select id="filtroFormato" data-premium-select="Formato"><option value="">Todos los formatos</option></select></label>
+            <label class="w2t-open-only"><input id="filtroInscripcion" type="checkbox"/><span><b>Solo con inscripción abierta</b><small>Mostrar oportunidades disponibles</small></span></label>
+            <footer><button id="limpiarFiltrosTorneos" type="button">Limpiar</button><button id="aplicarFiltrosTorneos" class="w2t-apply" type="button">Aplicar filtros</button></footer>
           </aside>
-          <button id="abrirFiltrosTorneos" class="tournament-filter-trigger" type="button" aria-controls="panelFiltrosTorneos" aria-expanded="false">Filtros <span id="cantidadFiltrosTorneos" class="hidden">0</span></button>
+          <button id="abrirFiltrosTorneos" class="w2t-filter-trigger" type="button" aria-controls="panelFiltrosTorneos" aria-expanded="false">Filtros <span id="cantidadFiltrosTorneos" class="hidden">0</span></button>
         </div>
-        <div class="tournament-results-header"><div><p class="site-kicker">Competencias</p><div id="estadoCatalogoTorneos" class="tournament-results-meta"></div></div><div class="t55-active-filter-actions"><div id="chipsFiltrosTorneos" class="tournament-filter-chips" aria-live="polite"></div><button id="limpiarFiltrosTorneosInline" class="t55-clear-inline hidden" type="button">Limpiar todo</button></div></div>
+        <div class="w2t-results-head"><div id="estadoCatalogoTorneos" class="w2t-results-meta"></div><div class="w2t-active-filters"><div id="chipsFiltrosTorneos" aria-live="polite"></div><button id="limpiarFiltrosTorneosInline" class="hidden" type="button">Limpiar todo</button></div></div>
+        <main class="w2t-results"><div id="listaTorneos" class="w2t-grid"></div><button id="mostrarMasTorneos" class="w2t-more hidden" type="button">Mostrar más competencias</button></main>
       </section>
 
-      <main class="tournament-results"><div id="listaTorneos" class="tournament-catalog-grid"></div><button id="mostrarMasTorneos" class="tournament-load-more hidden" type="button">Mostrar más torneos</button></main>
-
-      <section class="t51-journey" aria-labelledby="t51JourneyTitle">
-        <div><p class="site-kicker">Todo el torneo, en un solo lugar</p><h2 id="t51JourneyTitle">De la inscripción<br>a la final.</h2><p>Una experiencia clara para elegir, competir y seguir cada resultado.</p></div>
-        <ol><li><span>01</span><div><b>Elegí tu categoría</b><small>Compará rama, formato, precio y disponibilidad.</small></div></li><li><span>02</span><div><b>Inscribí a tu pareja</b><small>Enviá la solicitud con todos los datos necesarios.</small></div></li><li><span>03</span><div><b>Seguí la competencia</b><small>Grupos, posiciones, agenda y resultados actualizados.</small></div></li><li><span>04</span><div><b>Viví la definición</b><small>Cuadro eliminatorio, recorrido y campeones.</small></div></li></ol>
-      </section>
+      <section class="w2t-journey"><div class="w2-container"><div><p class="w2-kicker">Una experiencia conectada</p><h2>De la inscripción<br/>a la final.</h2><p>La competencia deja de ser una sucesión de mensajes. Todo el recorrido oficial vive en W2.</p></div><ol><li><span>01</span><b>Elegí la competencia</b><small>Rama, categoría, formato y cupos claros.</small></li><li><span>02</span><b>Inscribí a tu pareja</b><small>Una única solicitud con todos los datos.</small></li><li><span>03</span><b>Seguí el torneo</b><small>Posiciones, partidos y resultados oficiales.</small></li><li><span>04</span><b>Viví la definición</b><small>Cuadro, recorrido y campeones.</small></li></ol></div></section>
     </div>
     <div id="vistaDetalleTorneo" class="tournament-detail-view hidden"><div id="detalleTorneoHost"></div></div>
-    <div id="fondoFiltrosTorneos" class="tournament-filter-backdrop hidden"></div>
+    <div id="fondoFiltrosTorneos" class="w2t-filter-backdrop hidden"></div>
   </section>
   <ModalInscripcionTorneo />
   <ModalCuadroTorneo />
