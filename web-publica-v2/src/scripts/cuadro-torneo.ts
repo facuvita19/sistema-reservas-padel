@@ -1,3 +1,5 @@
+// F4.2B: vocabulario publico de rama en la llave completa.
+const ramaPublicaCuadro=(v:string)=>{const x=String(v||'').toUpperCase();return x==='MASCULINA'||x==='MASCULINO'?'Abierto':x==='FEMENINA'||x==='FEMENINO'?'Femenino':x==='MIXTA'||x==='MIXTO'?'Mixto':etiqueta(v)};
 import { api, type CuadroCategoriaPublico, type PartidoCuadroPublico, type ParejaCuadroPublica } from './api';
 import { etiqueta, fecha, rangoFechas } from './formatos';
 
@@ -78,7 +80,7 @@ function render(cuadro: CuadroCategoriaPublico) {
   escala = 1;
   indiceRondaMovil = 0;
   contenido?.classList.remove('mobile-full-bracket','mobile-round-bracket');
-  if (titulo) titulo.textContent = `${cuadro.categoria.nombre} · ${etiqueta(cuadro.categoria.rama)}`;
+  if (titulo) titulo.textContent = `${cuadro.categoria.nombre} · ${ramaPublicaCuadro(cuadro.categoria.rama)}`;
   if (subtitulo) subtitulo.innerHTML = `<span class="bracket-tournament-name">${escapeHtml(cuadro.torneo.nombre)}</span><span class="bracket-tournament-separator" aria-hidden="true">·</span><span class="bracket-tournament-dates">${escapeHtml(rangoFechas(cuadro.torneo.fechaInicio,cuadro.torneo.fechaFin))}</span>`;
   if (!contenido) return;
   const fases = cuadro.fases.filter(f => f.nombre !== 'GRUPOS');
