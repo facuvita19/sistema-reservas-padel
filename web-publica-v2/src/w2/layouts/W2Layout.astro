@@ -4,7 +4,7 @@ import '../styles/w2-auth.css';
 import W2Header from '../components/W2Header.astro';
 import W2ThemeScript from '../components/W2ThemeScript.astro';
 import ModalAutenticacion from '../../components/ModalAutenticacion.astro';
-interface Props { titulo:string; actual?:'inicio'|'reservar'|'rankings'|'jugador'|'cuenta'; }
+interface Props { titulo:string; actual?:'inicio'|'reservar'|'torneos'|'rankings'|'jugador'|'cuenta'; }
 const {titulo,actual='inicio'}=Astro.props;
 ---
 <!doctype html><html lang="es-AR" data-logout-redirect="/w2"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><meta name="robots" content="noindex,nofollow"/><W2ThemeScript/><meta name="theme-color" content="#07100d"/><title>{titulo}</title></head><body class="w2-body"><a class="w2-skip" href="#w2-content">Saltar al contenido</a><W2Header actual={actual}/><main id="w2-content"><slot/></main><footer class="w2-footer"><div class="w2-container"><strong>Plataforma Deportiva W2</strong><span>Plataforma deportiva conectada con resultados oficiales y datos auditables.</span><a href="/">Volver a la web actual</a></div></footer><ModalAutenticacion/><script>

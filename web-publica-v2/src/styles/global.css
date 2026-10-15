@@ -4429,3 +4429,17 @@ body>.site-menu-v59-panel{z-index:1309!important}
  .site-brand-v59-copy strong{max-width:145px}
 }
 @media(prefers-reduced-motion:reduce){.error-page *{scroll-behavior:auto!important}}
+
+/* F4.1 - nucleo premium del centro competitivo */
+#detalleTorneoHost[aria-busy="true"]{min-height:620px}
+.f4-shell-skeleton{display:grid;gap:12px;min-height:540px;padding:clamp(1rem,2.5vw,2rem);border:1px solid #26383e;border-radius:24px;background:linear-gradient(145deg,#0e181d,#091115);overflow:hidden}
+.f4-shell-skeleton>i,.f4-shell-skeleton b,.f4-shell-skeleton div i{display:block;border-radius:12px;background:linear-gradient(90deg,#142126 20%,#213239 48%,#142126 76%);background-size:240% 100%;animation:f41-shimmer 1.2s ease-in-out infinite}
+.f4-shell-skeleton>i:first-of-type{width:28%;height:42px}.f4-shell-skeleton>i:nth-of-type(2){height:210px;border-radius:22px}.f4-shell-skeleton div{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.f4-shell-skeleton div i{height:112px}.f4-shell-skeleton b{height:160px}
+@keyframes f41-shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
+.f4-load-error{display:grid;justify-items:start;gap:.5rem;padding:2rem;border:1px solid rgba(215,25,45,.45);border-radius:20px;background:linear-gradient(145deg,#17161a,#10161a)}
+.f4-load-error button{min-height:44px;border:1px solid #d7192d;border-radius:11px;background:#d7192d;padding:0 1rem;color:#fff;font-weight:900;cursor:pointer}
+.f4-nav button{cursor:pointer}.f4-nav button:focus-visible,.f4-group-tabs button:focus-visible,.f4-phase-index button:focus-visible,.f4-round-tabs button:focus-visible{outline:2px solid #69ca98;outline-offset:3px}
+.f4-content:focus{outline:none}
+@supports(view-transition-name:none){.f4-content{view-transition-name:f4-content}.f4-hero{view-transition-name:f4-hero}::view-transition-old(f4-content),::view-transition-new(f4-content){animation-duration:.18s}}
+@media(max-width:700px){#detalleTorneoHost[aria-busy="true"]{min-height:520px}.f4-shell-skeleton{min-height:470px;padding:.8rem}.f4-shell-skeleton>i:nth-of-type(2){height:180px}.f4-shell-skeleton div{grid-template-columns:1fr}.f4-shell-skeleton div i{height:70px}}
+@media(prefers-reduced-motion:reduce){.f4-shell-skeleton>i,.f4-shell-skeleton b,.f4-shell-skeleton div i{animation:none}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}

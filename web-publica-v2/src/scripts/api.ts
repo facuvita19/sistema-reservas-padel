@@ -2,12 +2,17 @@ const API_BASE = '/api/publica';
 
 export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<T> {
   const controlador = new AbortController();
-  const temporizador = window.setTimeout(() => controlador.abort(), 15000);
+  const señalExterna = opciones.signal;
+  let vencio = false;
+  const cancelarExternamente = () => controlador.abort(señalExterna?.reason);
+  if (señalExterna?.aborted) cancelarExternamente();
+  else señalExterna?.addEventListener('abort', cancelarExternamente, { once: true });
+  const temporizador = window.setTimeout(() => { vencio = true; controlador.abort(); }, 15000);
   try {
     const respuesta = await fetch(`${API_BASE}${ruta}`, {
+      ...opciones,
       credentials: 'include',
       headers: { 'Content-Type': 'application/json', ...(opciones.headers || {}) },
-      ...opciones,
       signal: controlador.signal,
     });
     let datos: unknown;
@@ -21,9 +26,15 @@ export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<
     }
     return datos as T;
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') throw new Error('La consulta demoró demasiado. Intentá nuevamente.');
+    if (error instanceof DOMException && error.name === 'AbortError') {
+      if (vencio) throw new Error('La consulta demoró demasiado. Intentá nuevamente.');
+      throw error;
+    }
     throw error;
-  } finally { window.clearTimeout(temporizador); }
+  } finally {
+    window.clearTimeout(temporizador);
+    señalExterna?.removeEventListener('abort', cancelarExternamente);
+  }
 }
 
 export interface Complejo {
