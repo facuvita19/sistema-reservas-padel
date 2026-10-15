@@ -48,6 +48,7 @@ export async function mockPublicApi(page:Page,options:PublicApiMockOptions={}){
   const request=route.request(),url=new URL(request.url()),p=url.pathname.replace('/api/publica',''),method=request.method();
   if(p==='/complejo')return json(route,complejo);
   if(p==='/rankings/categorias')return json(route,categoriasRankingE2E);
+  if(p==='/rankings/auditoria')return json(route,auditoriaRankingE2E);
   if(p==='/rankings'){const id=Number(url.searchParams.get('categoriaId'))||61;return json(route,rankingsE2E[id as keyof typeof rankingsE2E]||rankingsE2E[61]);}
   if(p==='/jugadores/7001')return json(route,perfilDeportivoE2E);
   if(p.startsWith('/jugadores/'))return json(route,{mensaje:'Perfil deportivo de prueba inexistente.'},404);
@@ -82,3 +83,5 @@ export async function mockPublicApi(page:Page,options:PublicApiMockOptions={}){
   return json(route,{mensaje:'Endpoint E2E no simulado: '+p},404);
  });
 }
+
+const auditoriaRankingE2E={perfilId:7001,categoriaId:61,actualizado:'2026-10-15T18:30:00',aportes:[{partidoId:901,torneo:'Copa Primavera',categoria:'5ta Abierto',fase:'FINAL',resultado:'GANADOR',base:4,bonus:8,total:12,fecha:'2026-10-12T19:20:00'},{partidoId:887,torneo:'Copa Primavera',categoria:'5ta Abierto',fase:'SEMIFINAL',resultado:'GANADOR',base:4,bonus:4,total:8,fecha:'2026-10-11T18:10:00'},{partidoId:842,torneo:'Liga Metropolitana',categoria:'5ta Abierto',fase:'CUARTOS',resultado:'PERDEDOR',base:1,bonus:1,total:2,fecha:'2026-09-28T20:00:00'}]};
