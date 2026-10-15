@@ -7,3 +7,39 @@
 #rankCategories button:active{transform:translateX(1px) scale(.995)}
 #rankCategories button[aria-selected="true"]{cursor:default}
 #rankCategories button:disabled{cursor:not-allowed;opacity:.58}
+
+/* R1.2 - densidad premium y estado sin resultados */
+.w2c2-rank-hero{min-height:clamp(31rem,62vh,42rem)}
+.w2c2-rank-hero>.w2-container{padding-top:clamp(5.5rem,10vh,8rem);padding-bottom:clamp(3rem,7vh,5rem)}
+.w2c2-rank-hero h1{font-size:clamp(3.9rem,7vw,7.4rem);line-height:.9;max-width:71rem}
+.w2c2-rank-layout{align-items:start;padding-top:2.4rem;padding-bottom:4rem;min-height:0}
+.w2r-empty-state{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2rem;align-items:center;padding:2rem;border:1px solid #2b353b;border-left:5px solid var(--lf-red);border-radius:24px;background:linear-gradient(145deg,#11171c,#090c0f);box-shadow:0 24px 60px rgba(0,0,0,.22)}
+.w2r-empty-mark{position:relative;display:grid;place-items:center;width:8.5rem;aspect-ratio:1;border:1px solid #354148;border-radius:50%;background:radial-gradient(circle at 32% 28%,#222d32,#0b0f12 68%);color:#fff}
+.w2r-empty-mark:before,.w2r-empty-mark:after{content:"";position:absolute;background:var(--lf-red)}
+.w2r-empty-mark:before{width:62%;height:2px}.w2r-empty-mark:after{width:2px;height:62%}
+.w2r-empty-mark span{font:900 1.15rem/1 Inter,"Segoe UI",sans-serif;letter-spacing:.12em;z-index:1}.w2r-empty-mark b{position:absolute;right:.65rem;bottom:.85rem;color:#73827b;font-size:.72rem}.w2r-empty-mark i{position:absolute;inset:1.1rem;border:1px dashed rgba(255,255,255,.14);border-radius:50%}
+.w2r-empty-state h3{max-width:42rem;margin:.45rem 0 .7rem;font-size:clamp(1.8rem,3vw,3rem);line-height:1.02}.w2r-empty-state>div>p:not(.w2-kicker){max-width:47rem;color:#91a39b;line-height:1.65}
+.w2r-empty-actions{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:1.35rem}.w2r-empty-actions a,.w2r-empty-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.75rem 1rem;border:1px solid #39464d;border-radius:12px;background:#141a1e;color:#fff;font:800 .76rem/1 Inter,"Segoe UI",sans-serif;letter-spacing:.03em;cursor:pointer;transition:transform .18s ease,border-color .18s ease,background .18s ease}.w2r-empty-actions a{border-color:var(--lf-red);background:var(--lf-red)}
+.w2r-empty-state>dl{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);margin:0;padding-top:1.4rem;border-top:1px solid #293238}.w2r-empty-state>dl>div{display:grid;grid-template-columns:auto 1fr;gap:.8rem;padding:0 1.25rem}.w2r-empty-state>dl>div+div{border-left:1px solid #293238}.w2r-empty-state dt{color:#7fd0a8;font-weight:900}.w2r-empty-state dd{margin:0}.w2r-empty-state dd b,.w2r-empty-state dd span{display:block}.w2r-empty-state dd span{margin-top:.35rem;color:#7f9189;font-size:.78rem;line-height:1.5}
+.w2c2-audit{margin-top:1.1rem}.w2c2-audit>div>p:not(.w2-kicker){max-width:31rem;color:#81928b;line-height:1.5}.w2c2-audit footer{grid-column:1/-1;display:flex;justify-content:space-between;gap:1rem;margin-top:1.15rem;padding-top:1rem;border-top:1px solid #2c363b;color:#7e9088;font-size:.72rem}.w2c2-audit footer b{color:#b6c1bc;text-align:right}
+@media(hover:hover) and (pointer:fine){.w2r-empty-actions a:hover,.w2r-empty-actions button:hover{transform:translateY(-2px);border-color:#e71939}.w2r-empty-actions a:hover{background:#ff2444}}
+@media(max-width:900px){.w2c2-rank-hero{min-height:34rem}.w2c2-rank-hero>.w2-container{padding-top:5.5rem}.w2c2-rank-hero h1{font-size:clamp(3.3rem,13vw,5.5rem)}.w2c2-rank-layout{padding-top:1.25rem}.w2r-empty-state{grid-template-columns:1fr;padding:1.35rem}.w2r-empty-mark{width:6.5rem}.w2r-empty-state>dl{grid-template-columns:1fr;gap:1rem}.w2r-empty-state>dl>div{padding:.2rem 0}.w2r-empty-state>dl>div+div{border-left:0}.w2c2-audit footer{display:grid}.w2c2-audit footer b{text-align:left}}
+@media(max-width:560px){.w2c2-rank-hero{min-height:30rem}.w2c2-rank-hero h1{font-size:clamp(3rem,14vw,4.3rem)}.w2r-empty-actions{display:grid}.w2r-empty-actions a,.w2r-empty-actions button{width:100%}}
+
+/* R1.2A - cierre visual definitivo */
+.w2c2-rank-hero{min-height:clamp(28rem,54vh,35rem)}
+.w2c2-rank-hero>.w2-container{padding-top:clamp(4.5rem,8vh,6rem);padding-bottom:clamp(2.25rem,5vh,3.5rem)}
+.w2c2-rank-hero h1{font-size:clamp(3.55rem,6.35vw,6.45rem);line-height:.88;max-width:64rem}
+.w2c2-rank-hero>div>.w2-kicker{margin-bottom:1.25rem}.w2c2-rank-hero>div>p:not(.w2-kicker){margin-top:1.15rem}.w2c2-rank-hero aside{margin-top:1.75rem}
+.w2c2-rank-layout{gap:1.2rem;padding-top:1.5rem;padding-bottom:3rem}
+.w2c2-rank-head{margin-bottom:1.1rem}.w2c2-rank-head h2{font-size:clamp(2rem,3vw,3.2rem)}
+.w2r-empty-state{gap:1.45rem;padding:1.55rem 1.75rem;border-radius:20px}
+.w2r-empty-mark{width:7rem}.w2r-empty-mark i{inset:.9rem}.w2r-empty-mark b{right:.45rem;bottom:.65rem}
+.w2r-empty-state h3{max-width:38rem;margin:.35rem 0 .55rem;font-size:clamp(1.7rem,2.45vw,2.55rem);line-height:1.04}
+.w2r-empty-state>div>p:not(.w2-kicker){line-height:1.5}.w2r-empty-actions{margin-top:1rem}
+.w2r-empty-state>dl{padding-top:1rem}.w2r-empty-state>dl>div{padding:0 1rem}.w2r-empty-state dd span{margin-top:.25rem;line-height:1.4}
+.w2c2-audit{align-items:start;padding:1.45rem 1.55rem;min-height:0}.w2c2-audit>div h3{font-size:clamp(1.65rem,2.15vw,2.35rem);line-height:1.12}.w2c2-audit>div>p:not(.w2-kicker){margin:.65rem 0 0;line-height:1.45}
+.w2c2-audit dl{align-items:start}.w2c2-audit dl>div{align-content:start;min-height:8rem;padding:0 1.2rem}.w2c2-audit dl dd span{margin-top:.5rem;line-height:1.45}.w2c2-audit footer{margin-top:.8rem;padding-top:.8rem}
+@media(max-width:1100px){.w2c2-rank-hero h1{font-size:clamp(3.35rem,7.6vw,5.8rem)}.w2r-empty-state{grid-template-columns:6rem minmax(0,1fr)}.w2r-empty-mark{width:6rem}}
+@media(max-width:900px){.w2c2-rank-hero{min-height:29rem}.w2c2-rank-hero>.w2-container{padding-top:4.4rem;padding-bottom:2.6rem}.w2c2-rank-hero h1{font-size:clamp(3.1rem,12vw,5rem)}.w2c2-rank-layout{padding-top:1rem}.w2r-empty-state{grid-template-columns:1fr;gap:1rem}.w2r-empty-mark{width:5.75rem}.w2r-empty-state>dl{gap:.7rem}.w2c2-audit{padding:1.25rem}.w2c2-audit dl>div{min-height:0;padding:.45rem 0}}
+@media(max-width:560px){.w2c2-rank-hero{min-height:25.5rem}.w2c2-rank-hero>.w2-container{padding-top:3.7rem}.w2c2-rank-hero h1{font-size:clamp(2.75rem,13vw,3.85rem)}.w2c2-rank-hero aside{margin-top:1.2rem}.w2r-empty-state{padding:1.1rem}.w2r-empty-state h3{font-size:1.65rem}.w2r-empty-mark{width:5rem}.w2c2-audit footer b{font-size:.68rem;line-height:1.45}}
