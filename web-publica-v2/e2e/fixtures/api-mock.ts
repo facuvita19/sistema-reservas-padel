@@ -48,7 +48,7 @@ export async function mockPublicApi(page:Page,options:PublicApiMockOptions={}){
   const request=route.request(),url=new URL(request.url()),p=url.pathname.replace('/api/publica',''),method=request.method();
   if(p==='/complejo')return json(route,complejo);
   if(p==='/rankings/categorias')return json(route,categoriasRankingE2E);
-  if(p==='/rankings/auditoria')return json(route,auditoriaRankingE2E);
+  if(p==='/rankings/auditoria'){const perfilId=Number(url.searchParams.get('perfilId')),categoriaId=Number(url.searchParams.get('categoriaId'))||61;if(perfilId===7999)return json(route,{perfilId,categoriaId,actualizado:'2026-10-16T10:45:00',aportes:[]});return json(route,auditoriaRankingE2E);}
   if(p==='/rankings'){const id=Number(url.searchParams.get('categoriaId'))||61;return json(route,rankingsE2E[id as keyof typeof rankingsE2E]||rankingsE2E[61]);}
   if(p==='/jugadores/7001')return json(route,perfilDeportivoE2E);
   if(p.startsWith('/jugadores/'))return json(route,{mensaje:'Perfil deportivo de prueba inexistente.'},404);
