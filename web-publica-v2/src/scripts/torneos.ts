@@ -4,11 +4,11 @@ import { normalizarBusquedaTorneo, ramaPublica, textoFormato } from './torneos/d
 import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos } from './torneos/estado-catalogo-torneos';
 import { adaptarResumenTorneo } from './torneos/adaptador-catalogo-torneos';
 import { crearDatosTorneos } from './torneos/datos-torneos';
-import { detallePremium, renderPanelDetalleTorneo, type PestanaDetalle } from './torneos/presentacion-detalle-torneo';
 import { capturarRetornoCatalogo, restaurarRetornoCatalogo } from './torneos/retorno-catalogo-torneos';
 import { poblarSelectCatalogo, renderCatalogoTorneos, renderPortadaCatalogoTorneos } from './torneos/presentacion-catalogo-torneos';
 import { crearInteraccionCatalogoTorneos } from './torneos/interaccion-catalogo-torneos';
 import { crearInscripcionParejaTorneos } from './torneos/inscripcion-pareja-torneos';
+import { crearCoordinacionDetalleTorneos } from './torneos/coordinacion-detalle-torneos';
 
 const escapeHtml=(valor:unknown)=>String(valor??'').replace(/[&<>"']/g,caracter=>({
  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -44,8 +44,6 @@ const interaccionCatalogo=crearInteraccionCatalogoTorneos({
  movimientoReducido
 });
 const inicializarSelectsPremium=()=>interaccionCatalogo.inicializarSelectsPremium();
-let detalleActual:TorneoDetalle|null=null;
-let pestanaDetalle:PestanaDetalle='informacion';
 // R2.1C4 carga, cache e invalidacion extraidas del coordinador
 const datosTorneos=crearDatosTorneos<TorneoResumen,TorneoDetalle>({
  cargarCatalogo:signal=>api<unknown[]>('/torneos',{signal}).then(items=>items.map(adaptarResumenTorneo)),
@@ -54,7 +52,18 @@ const datosTorneos=crearDatosTorneos<TorneoResumen,TorneoDetalle>({
 });
 const obtenerCatalogo=(signal:AbortSignal,forzar=false)=>datosTorneos.obtenerCatalogo(signal,forzar);
 const obtenerDetalleTorneo=(id:number,signal:AbortSignal)=>datosTorneos.obtenerDetalle(id,signal);
-const invalidarDatosTorneos=()=>datosTorneos.invalidar(detalleActual?.id);
+const detalleTorneo=crearCoordinacionDetalleTorneos({
+ nuevaSolicitud:()=>datosTorneos.nuevaSolicitudDetalle(),
+ obtener:obtenerDetalleTorneo,
+ vigente:version=>datosTorneos.esSolicitudDetalleVigente(version),
+ abortada:error=>datosTorneos.esAbortada(error),
+ restaurarCatalogo:restaurarRetornoCatalogo,
+ movimientoReducido,
+ escapeHtml
+});
+function abrirTorneo(id:number,actualizarUrl=true){return detalleTorneo.abrir(id,actualizarUrl)}
+function volverCatalogo(actualizarUrl=true){detalleTorneo.volver(actualizarUrl)}
+const invalidarDatosTorneos=()=>datosTorneos.invalidar(detalleTorneo.torneoActual()?.id);
 const inscripcionPareja=crearInscripcionParejaTorneos({
  api,
  alCompletar:async()=>{invalidarDatosTorneos();await cargar(true)}
@@ -71,11 +80,6 @@ const inscripcionPareja=crearInscripcionParejaTorneos({
 
 
 
-function renderPanelDetalle(t:TorneoDetalle){renderPanelDetalleTorneo(t,pestanaDetalle)}
-function seleccionarPestanaDetalle(tab:PestanaDetalle,actualizarUrl=true){if(!detalleActual)return;pestanaDetalle=tab;renderPanelDetalle(detalleActual);if(actualizarUrl){const u=new URL(location.href);u.searchParams.set('seccion',tab);history.replaceState(history.state,'',u);}requestAnimationFrame(()=>document.getElementById('premiumDetailTabs')?.scrollIntoView({behavior:movimientoReducido()?'auto':'smooth',block:'start'}));}
-async function compartirTorneo(){try{if(navigator.share)await navigator.share({title:detalleActual?.nombre||'Torneo',url:location.href});else{await navigator.clipboard.writeText(location.href);const b=document.querySelector<HTMLButtonElement>('[data-share-tournament]');if(b){const original=b.textContent;b.textContent='Enlace copiado';setTimeout(()=>b.textContent=original,1800);}}}catch{}}
-async function abrirTorneo(id:number,actualizarUrl=true){const catalog=document.getElementById('vistaCatalogoTorneos')!,detail=document.getElementById('vistaDetalleTorneo')!,host=document.getElementById('detalleTorneoHost')!;catalog.classList.add('hidden');detail.classList.remove('hidden');host.setAttribute('aria-busy','true');host.innerHTML='<div class="competition-loading">Cargando torneo...</div>';if(actualizarUrl){const u=new URL(location.href);u.searchParams.set('torneo',String(id));['seccion','categoria','vista','grupo','instancia','ronda'].forEach(x=>u.searchParams.delete(x));history.pushState({nivel:'detalle',torneo:id},'',u)}const solicitud=datosTorneos.nuevaSolicitudDetalle();const controlador=solicitud.controlador;const version=solicitud.version;try{const t=await obtenerDetalleTorneo(id,controlador.signal);if(!datosTorneos.esSolicitudDetalleVigente(version))return;detalleActual=t;pestanaDetalle=(new URLSearchParams(location.search).get('seccion') as PestanaDetalle)||'informacion';if(!['informacion','categorias','reglamento'].includes(pestanaDetalle))pestanaDetalle='informacion';host.removeAttribute('aria-busy');host.innerHTML=detallePremium(t,pestanaDetalle);document.title=`${t.nombre} | Plataforma Deportiva W2`;scrollTo({top:0,behavior:movimientoReducido()?'auto':'smooth'})}catch(error){if(!datosTorneos.esSolicitudDetalleVigente(version)||datosTorneos.esAbortada(error))return;host.removeAttribute('aria-busy');host.innerHTML=`<div class="competition-error"><b>No pudimos abrir el torneo</b><p>${escapeHtml(error instanceof Error?error.message:'Intentá nuevamente.')}</p><button class="btn btn-secondary" type="button" data-retry-torneo="${id}">Reintentar</button></div>`}}
-function volverCatalogo(actualizarUrl=true){detalleActual=null;document.getElementById('vistaDetalleTorneo')?.classList.add('hidden');document.getElementById('vistaCatalogoTorneos')?.classList.remove('hidden');document.title='Torneos | Plataforma Deportiva W2';if(actualizarUrl){const u=new URL(location.href);['torneo','seccion','categoria','vista','grupo','instancia','ronda'].forEach(x=>u.searchParams.delete(x));history.pushState({},'',u)}restaurarRetornoCatalogo();}
 // perfeccion-portada-torneos-v52b-20261011
 // cierre-portada-torneos-v53-20261011
 // refinamiento-interaccion-torneos-v54-20261011
@@ -83,15 +87,10 @@ function volverCatalogo(actualizarUrl=true){detalleActual=null;document.getEleme
 // pulido-final-portada-torneos-v56-20261011
 // refinamiento-interaccion-torneos-v54-20261011
 
-async function cargar(forzar=false){const contenedor=document.getElementById('listaTorneos');if(!contenedor)return;const solicitud=datosTorneos.nuevaSolicitudCatalogo();const controlador=solicitud.controlador;const version=solicitud.version;contenedor.setAttribute('aria-busy','true');contenedor.innerHTML=Array.from({length:6},()=>'<div class="w2t-skeleton" aria-hidden="true"></div>').join('');try{const dato=await obtenerCatalogo(controlador.signal,forzar);if(!datosTorneos.esSolicitudCatalogoVigente(version))return;catalogo.torneos=dato;contenedor.removeAttribute('aria-busy');leerEstadoCatalogo();renderPortadaCatalogoTorneos(catalogo);poblarSelectCatalogo('filtroRama',catalogo.torneos.flatMap(t=>t.ramas),ramaPublica);poblarSelectCatalogo('filtroFormato',catalogo.torneos.flatMap(t=>t.formatos),textoFormato);inicializarSelectsPremium();reflejarEstadoCatalogo();renderCatalogo();escribirEstadoCatalogo('replace');const parametros=new URLSearchParams(location.search),directo=Number(parametros.get('torneo'));if(Number.isInteger(directo)&&directo>0){await abrirTorneo(directo,false);const categoriaDirecta=Number(parametros.get('categoria'));if(categoriaDirecta>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,categoriaDirecta,(parametros.get('vista')||'resumen') as VistaCentro,false)}}catch(error){if(!datosTorneos.esSolicitudCatalogoVigente(version)||datosTorneos.esAbortada(error))return;contenedor.removeAttribute('aria-busy');contenedor.innerHTML=`<div class="w2t-error"><b>No pudimos cargar los torneos</b><p>${escapeHtml(error instanceof Error?error.message:'Revisá la conexión e intentá nuevamente.')}</p><button id="reintentarTorneos" class="btn btn-secondary" type="button">Reintentar</button></div>`;document.getElementById('reintentarTorneos')?.addEventListener('click',()=>cargar(true),{once:true})}}
+async function cargar(forzar=false){const contenedor=document.getElementById('listaTorneos');if(!contenedor)return;const solicitud=datosTorneos.nuevaSolicitudCatalogo();const controlador=solicitud.controlador;const version=solicitud.version;contenedor.setAttribute('aria-busy','true');contenedor.innerHTML=Array.from({length:6},()=>'<div class="w2t-skeleton" aria-hidden="true"></div>').join('');try{const dato=await obtenerCatalogo(controlador.signal,forzar);if(!datosTorneos.esSolicitudCatalogoVigente(version))return;catalogo.torneos=dato;contenedor.removeAttribute('aria-busy');leerEstadoCatalogo();renderPortadaCatalogoTorneos(catalogo);poblarSelectCatalogo('filtroRama',catalogo.torneos.flatMap(t=>t.ramas),ramaPublica);poblarSelectCatalogo('filtroFormato',catalogo.torneos.flatMap(t=>t.formatos),textoFormato);inicializarSelectsPremium();reflejarEstadoCatalogo();renderCatalogo();escribirEstadoCatalogo('replace');const parametros=new URLSearchParams(location.search),directo=Number(parametros.get('torneo'));if(Number.isInteger(directo)&&directo>0){await abrirTorneo(directo,false);const categoriaDirecta=Number(parametros.get('categoria')),detalleActual=detalleTorneo.torneoActual();if(categoriaDirecta>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,categoriaDirecta,(parametros.get('vista')||'resumen') as VistaCentro,false)}}catch(error){if(!datosTorneos.esSolicitudCatalogoVigente(version)||datosTorneos.esAbortada(error))return;contenedor.removeAttribute('aria-busy');contenedor.innerHTML=`<div class="w2t-error"><b>No pudimos cargar los torneos</b><p>${escapeHtml(error instanceof Error?error.message:'Revisá la conexión e intentá nuevamente.')}</p><button id="reintentarTorneos" class="btn btn-secondary" type="button">Reintentar</button></div>`;document.getElementById('reintentarTorneos')?.addEventListener('click',()=>cargar(true),{once:true})}}
 
 
-type EstadoScrollDetalle={mover:boolean;y:number};
-function estadoScrollDetalle():EstadoScrollDetalle{const contenido=document.getElementById('premiumDetailContent'),tabs=document.querySelector<HTMLElement>('.premium-detail-tabs'),y=scrollY;if(!contenido||!tabs)return {mover:false,y};const rectTabs=tabs.getBoundingClientRect(),rectContenido=contenido.getBoundingClientRect(),topConfigurado=parseFloat(getComputedStyle(tabs).top)||0,tolerancia=3,tabsFijas=rectTabs.top<=topConfigurado+tolerancia,contenidoAvanzado=rectContenido.top<rectTabs.bottom-Math.max(32,rectTabs.height*.55);return {mover:tabsFijas&&contenidoAvanzado,y}}
-function estabilizarScrollDetalle(estado:EstadoScrollDetalle){requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!estado.mover){scrollTo({top:estado.y,behavior:'auto'});return}const contenido=document.getElementById('premiumDetailContent'),tabs=document.querySelector<HTMLElement>('.premium-detail-tabs');if(!contenido||!tabs)return;const margen=8,destino=Math.max(0,contenido.getBoundingClientRect().top+scrollY-tabs.offsetHeight-margen);scrollTo({top:destino,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}))}
-// F4.1C2: desplazamiento explicito de accesos rapidos.
-function irAlContenidoDetalle(){requestAnimationFrame(()=>requestAnimationFrame(()=>{const contenido=document.getElementById('premiumDetailContent'),tabs=document.querySelector<HTMLElement>('.w2td-tabs,.premium-detail-tabs'),cabecera=document.querySelector<HTMLElement>('[data-w2-header],header[data-site-header]');if(!contenido)return;const altoCabecera=cabecera?.getBoundingClientRect().height||0,altoTabs=tabs?.getBoundingClientRect().height||0,margen=12,destino=Math.max(0,contenido.getBoundingClientRect().top+scrollY-altoCabecera-altoTabs-margen);scrollTo({top:destino,behavior:movimientoReducido()?'auto':'smooth'})}))}
-document.addEventListener('click',e=>{const target=e.target as HTMLElement;const inscripcionPremium=target.closest<HTMLButtonElement>('.inscribir-pareja');if(inscripcionPremium&&!inscripcionPremium.disabled){if(!inscripcionPremium.dataset.resumen){const torneoNombre=inscripcionPremium.dataset.torneoNombre||detalleActual?.nombre||'Torneo';const categoriaNombre=inscripcionPremium.dataset.categoriaNombre||'Categoría';inscripcionPremium.dataset.resumen=torneoNombre+' · '+categoriaNombre;}void inscripcionPareja.abrir(inscripcionPremium);return;}if(manejarCentroCompetitivoClick(target))return;const abrirCompetenciaPremium=target.closest<HTMLButtonElement>('[data-open-competition]');if(abrirCompetenciaPremium&&detalleActual){abrirCentroCompetitivo(detalleActual,Number(abrirCompetenciaPremium.dataset.openCompetition),'resumen');return;}if(target.closest('[data-back-catalog]')){volverCatalogo();return;}if(target.closest('[data-share-tournament]')){compartirTorneo();return;}if(target.closest('[data-go-categories]')){seleccionarPestanaDetalle('categorias');irAlContenidoDetalle();return;}if(target.closest('[data-go-rules]')){seleccionarPestanaDetalle('reglamento');irAlContenidoDetalle();return;}const tab=target.closest<HTMLButtonElement>('[data-detail-tab]');if(tab){const estado=estadoScrollDetalle();seleccionarPestanaDetalle(tab.dataset.detailTab as PestanaDetalle);estabilizarScrollDetalle(estado);return;}});
+document.addEventListener('click',e=>{const target=e.target as HTMLElement;const inscripcion=target.closest<HTMLButtonElement>('.inscribir-pareja');if(inscripcion&&!inscripcion.disabled){if(!inscripcion.dataset.resumen){const torneo=inscripcion.dataset.torneoNombre||detalleTorneo.torneoActual()?.nombre||'Torneo',categoria=inscripcion.dataset.categoriaNombre||'Categoría';inscripcion.dataset.resumen=torneo+' · '+categoria}void inscripcionPareja.abrir(inscripcion);return}if(manejarCentroCompetitivoClick(target))return;const competencia=target.closest<HTMLButtonElement>('[data-open-competition]'),actual=detalleTorneo.torneoActual();if(competencia&&actual){void abrirCentroCompetitivo(actual,Number(competencia.dataset.openCompetition),'resumen');return}detalleTorneo.manejarClick(target)});
 document.getElementById('listaTorneos')?.addEventListener('click', evento => {
   const abrir=(evento.target as HTMLElement).closest<HTMLButtonElement>('.catalog-open');if(abrir){capturarRetornoCatalogo(abrir);abrirTorneo(Number(abrir.dataset.torneoId));return;}const retry=(evento.target as HTMLElement).closest<HTMLButtonElement>('[data-retry-torneo]');if(retry){abrirTorneo(Number(retry.dataset.retryTorneo),false);return;}
   const boton = (evento.target as HTMLElement).closest<HTMLButtonElement>('.inscribir-pareja');
@@ -101,8 +100,8 @@ document.getElementById('listaTorneos')?.addEventListener('click', evento => {
 
 
 document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>volverCatalogo());
-addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);if(cat>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{estadoCatalogo.restaurarHistorial(()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false)})}});
-addEventListener('f4-back',(e:any)=>{detalleActual=e.detail.torneo;pestanaDetalle='categorias';document.getElementById('detalleTorneoHost')!.innerHTML=detallePremium(detalleActual!,pestanaDetalle);seleccionarPestanaDetalle('categorias',false);});
+addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);const actual=detalleTorneo.torneoActual();if(cat>0&&actual)await abrirCentroCompetitivo(actual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{estadoCatalogo.restaurarHistorial(()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false)})}});
+addEventListener('f4-back',(e:Event)=>detalleTorneo.restaurarDesdeCentro((e as CustomEvent<{torneo:TorneoDetalle}>).detail.torneo));
 cargar();
 
 // F4.1: navegación accesible y precarga controlada del centro competitivo.
