@@ -1,208 +1,122 @@
 # Dirección visual W2
 
-> Sistema creativo para convertir la web en una plataforma deportiva premium, reconocible y coherente.
+> Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente.
 
 ## 1. Principio creativo
 
-La exigencia visual es máxima: la plataforma debe sentirse premium, profesional, moderna e imponente en cada pantalla, estado y transición. Ningún detalle se considera demasiado pequeño si mejora lectura, confianza, visibilidad, respuesta o percepción de calidad. Se permite rehacer componentes, páginas o recorridos completos cuando el resultado final sea superior.
+Cada pantalla debe cerrarse con calidad visual definitiva antes de avanzar. Se acepta rehacer cualquier componente cuando mejora claridad, jerarquía, confianza, accesibilidad o rendimiento.
 
-La experiencia debe combinar energía competitiva, precisión operativa y confianza comercial. No se buscará una web cargada de efectos, sino una presencia editorial fuerte donde cada imagen, movimiento y bloque ayude a reservar, competir o entender información.
+Modo oscuro es la experiencia principal. Modo claro debe conservar calidad, contraste y coherencia.
 
 ## 2. Lenguaje visual
 
-- fondos grafito y negros suaves;
-- verdes luminosos como acento, no como relleno masivo;
-- blanco cálido y grises claros para lectura;
-- profundidad mediante capas y gradientes ambientales;
-- bordes finos y radios consistentes;
-- glassmorphism limitado a superficies flotantes;
-- tipografía de alta jerarquía;
-- números deportivos grandes;
+- grafito y negro suave como estructura;
+- rojo W2 para navegación y acción principal;
+- verde para éxito, clasificación y acreditación;
+- ámbar para advertencias y vencimientos;
+- azul exclusivamente cuando representa al proveedor Mercado Pago;
+- tipografía editorial con jerarquía fuerte;
 - iconografía SVG compacta;
-- fotografía con iluminación de cancha, contraste y movimiento.
+- profundidad moderada, sin efectos gratuitos;
+- movimiento útil de 160 a 280 ms y respeto de `prefers-reduced-motion`.
 
-## 3. Tokens conceptuales
+## 3. Diseño responsive
 
-### Color
-
-- fondo principal: grafito profundo;
-- superficie: grafito elevado;
-- superficie clara: blanco cálido;
-- acción primaria: verde deportivo;
-- éxito: verde nítido;
-- advertencia: ámbar;
-- error: rojo contenido;
-- información: azul frío;
-- línea: blanco con baja opacidad.
-
-### Espaciado y geometría
-
-- escala base de 4 y 8 px;
-- contenedores amplios en desktop;
-- tarjetas con densidad variable según función;
+- escritorio y móvil tienen composiciones propias;
 - objetivo táctil mínimo de 44 px;
-- bloques hero con altura adaptable, nunca texto perdido sobre imagen.
+- filtros móviles en panel u hoja modal;
+- sin desplazamiento horizontal accidental;
+- cuadros, rankings y cronologías con solución específica para móvil;
+- foco visible, navegación por teclado y zoom soportado.
 
-## 4. Estrategia de imágenes
+## 4. Imágenes
 
-### 4.1 Fotografía real
-
-Prioridad cuando existan imágenes del complejo: canchas, iluminación, recepción, torneos, premios y ambiente. Deben optimizarse a AVIF/WebP con variantes responsive.
-
-### 4.2 Imágenes generadas
-
-Se usarán para conceptos o fondos que no pretendan documentar el complejo real:
-
-- hero deportivo nocturno;
-- competencia y ranking;
-- comunidad;
-- reservas inteligentes;
-- fondos abstractos de transición;
-- estados vacíos editoriales.
-
-Nunca deben inducir a creer que muestran instalaciones reales si no es así.
-
-### 4.3 Recursos de usuario
-
-Avatares e imágenes de torneo quedan para una fase posterior con almacenamiento seguro, validación MIME, límite de tamaño, miniaturas, moderación y privacidad.
-
-### 4.4 Rendimiento
-
-- lazy loading fuera del primer viewport;
-- dimensiones declaradas;
-- `srcset` y tamaños adaptativos;
-- evitar imágenes de fondo gigantes en móvil;
-- fallback cromático coherente;
-- presupuesto de rendimiento por página.
+- fotografía real del complejo cuando exista;
+- imágenes generadas solo para conceptos o fondos no documentales;
+- AVIF/WebP, `srcset`, dimensiones declaradas y lazy loading;
+- ninguna imagen generada debe presentarse como instalación real;
+- cada imagen debe tener función comercial, informativa o identitaria.
 
 ## 5. Componentes premium
 
 - hero editorial;
-- panel de disponibilidad inmediata;
+- disponibilidad inmediata;
 - tarjetas de torneo con identidad;
-- podio de ranking;
-- tabla deportiva responsive;
-- tarjeta de jugador;
+- podio y tabla deportiva;
+- perfil de jugador;
 - línea de tiempo competitiva;
-- marcador de partido;
+- marcador y cuadro;
 - convocatoria comunitaria;
-- checkout de seña;
-- estado de pago;
+- drawer de reserva y pago;
 - skeletons específicos;
-- estados vacíos ilustrados;
-- toast y feedback no invasivo.
+- estados vacíos, error y éxito diseñados.
 
-## 6. Movimiento
+## 6. Torneos
 
-- transiciones de 160 a 280 ms;
-- aparición escalonada solo en contenido principal;
-- feedback inmediato al seleccionar turno;
-- cambios de ranking con movimiento breve y accesible;
-- respeto de `prefers-reduced-motion`;
-- ninguna animación bloquea acciones ni lectura.
+### Catálogo
 
-## 7. Páginas clave
+Las tarjetas usan un contrato geométrico uniforme:
 
-### Inicio
+- estado y fecha;
+- cantidad de categorías;
+- título de hasta dos líneas;
+- descripción opcional con espacio estable;
+- etiquetas jerarquizadas;
+- precio y disponibilidad alineados;
+- progreso cuando corresponde;
+- acción anclada al pie.
 
-Hero cinematográfico, CTA Reservar, acceso rápido a disponibilidad, torneos, ranking destacado, cambios de categoría y convocatorias.
+No reducir tipografía según contenido, no inventar descripciones y no usar márgenes particulares por torneo.
 
-### Reservar
+### Etiquetas
 
-Matriz de canchas y horarios, filtros compactos, alternativas, resumen lateral en desktop y panel inferior en móvil.
+- Rama: Libre, Femenino, Mixto.
+- Formato: Eliminación directa o Grupos + eliminación.
+- Condición: 4.ª, 4.ª + 5.ª, Suma 8, Suma 10, Suma 12, etc.
+- Americano: distintivo específico.
+- Modalidad y dinámica: información secundaria del detalle.
 
-### Rankings
+No mostrar “Convencional”. No mezclar Americano, Suma o modalidad de partido dentro del filtro Formato.
 
-Cabecera de categoría, podio, tabla, búsqueda, posición propia, variación y explicación de puntos.
+### Detalle
 
-### Jugador
+Debe explicar claramente:
 
-Cabecera deportiva, categoría, ranking, métricas, cronología, torneos, partidos y parejas frecuentes.
+- tipo especial si es Americano;
+- rama;
+- condición de inscripción;
+- formato competitivo;
+- modalidad de partido;
+- duración prevista;
+- inscripción por pareja.
 
-### Competir
+### Centro competitivo
 
-Torneos, calendario, resultados, categorías y acceso al centro competitivo.
+- selector de categoría persistente;
+- navegación estable entre Resumen, Posiciones, Partidos y Cuadro;
+- ronda visible cuando corresponde;
+- color semántico sin invadir la estructura;
+- mobile con controles persistentes y cuadro adaptado.
 
-### Comunidad
+## 7. Cuenta, reserva y pagos
 
-Convocatorias con cupos, categoría, fecha, modalidad y solicitud protegida.
+- visitante, carga, autenticado, error y sesión vencida diseñados;
+- centro personal une identidad comercial y deportiva;
+- drawer de pago con render atómico y skeleton integrado;
+- estados online, transferencia, acreditado, vencido y sin método son excluyentes;
+- X, Escape, backdrop y restauración de foco obligatorios;
+- sandbox identificado mediante texto explícito.
 
-### Pago
+## 8. Criterios de aprobación visual
 
-Detalle de reserva, total, seña, saldo, temporizador, proveedor, estado y recuperación segura.
+Una pantalla se aprueba cuando:
 
-## 7A. Shell autenticado y centro personal
-
-La cabecera W2 debe resolver con la misma calidad que el resto de la plataforma:
-
-- ingreso y registro;
-- avatar o iniciales;
-- menú de cuenta accesible;
-- Mis reservas, Mis datos, Seguridad y Perfil deportivo;
-- cierre de sesión;
-- estados visitante, cargando, autenticado, error y sesión vencida;
-- navegación móvil propia, no una reducción literal de escritorio.
-
-El centro de cuenta debe organizar información comercial y deportiva con jerarquía clara, resumen accionable, privacidad explícita y continuidad visual con Reservas, Competir, Rankings y Comunidad.
-
-## 7B. Innovación visual responsable
-
-Se evaluarán de manera continua tecnologías modernas de interfaz, interacción, imagen, rendimiento y personalización. Toda incorporación deberá tener fallback, respetar movimiento reducido, mantener contraste y no comprometer carga, SEO ni navegación por teclado.
-
-
-## 8. Mobile first real
-
-- navegación inferior o menú compacto según contexto;
-- ranking convertible a filas deportivas, no tabla horizontal ilegible;
-- filtros en hoja modal;
-- acciones principales al alcance del pulgar;
-- cuadros y cronologías con navegación específica;
-- imágenes recortadas por foco;
-- carga progresiva.
-
-## 9. Accesibilidad
-
-- contraste AA como mínimo;
-- foco visible;
-- navegación por teclado;
-- etiquetas y mensajes asociados;
-- color acompañado por texto o icono;
-- orden semántico;
-- contenido útil sin imágenes;
-- soporte de zoom y texto ampliado.
-
-## 10. Criterios de aprobación visual
-
-Una pantalla W2 se aprueba cuando:
-
-- la acción principal se entiende en menos de cinco segundos;
-- no parece una colección repetitiva de tarjetas;
-- escritorio y móvil tienen composición propia;
-- imágenes tienen finalidad concreta;
-- estados vacíos, carga, error y éxito están diseñados;
+- la acción principal se entiende rápidamente;
+- la composición no parece una repetición indiscriminada de tarjetas;
+- contenido corto y largo mantienen geometría coherente;
+- oscuro y claro conservan calidad;
+- escritorio y móvil están resueltos;
+- carga, vacío, error y éxito están diseñados;
 - teclado, contraste y movimiento reducido funcionan;
-- la página mantiene presupuesto de rendimiento;
-- la estética es coherente con Inicio, Reservas y Competencia.
-
-<!-- DIRECCION-PAGOS-P49 -->
-## 11. Sistema visual consolidado para pagos y estados
-
-La experiencia de pagos debe conservar la identidad general de W2 y usar color semántico de manera controlada:
-
-- grafito: estructura, superficies y continuidad general;
-- rojo W2: navegación y acciones principales;
-- verde: reserva confirmada, cancha asegurada y pago acreditado;
-- ámbar cobrizo: vencimiento, tiempo crítico y advertencias;
-- azul: únicamente acento del proveedor Mercado Pago, nunca identidad dominante de la pantalla;
-- ámbar técnico: insignia sandbox y aviso de prueba.
-
-Reglas consolidadas:
-
-- los estados confirmada, vencida, online, transferencia y sin método son excluyentes;
-- una experiencia online no muestra alias ni instrucciones de transferencia;
-- una reserva vencida elimina semántica financiera pendiente y conserva una única acción;
-- el sandbox se identifica con texto explícito, sin depender solo del color;
-- carga inicial mediante skeleton grafito, sin flash de la composición heredada;
-- cursor, foco visible, X, Escape, backdrop y restauración de foco son obligatorios;
-- móvil mantiene áreas táctiles mínimas, ancho completo cuando corresponde y cero desplazamiento horizontal;
-- éxito y advertencia pueden usar superficies diferenciadas, pero deben conservar geometría, tipografía y contraste propios de W2.
+- no hay saltos, flashes ni contenido heredado visible durante cargas;
+- la página mantiene presupuesto de rendimiento.

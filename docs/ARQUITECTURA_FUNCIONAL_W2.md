@@ -1,31 +1,21 @@
 # Arquitectura funcional W2
 
-> Especificación funcional y técnica base de Plataforma Deportiva W2. No representa todavía una migración aplicada.
+> Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 16 de octubre de 2026.
 
 ## 1. Objetivo
 
-Crear una capa deportiva global sobre clientes, cuentas, torneos, inscripciones, partidos, reservas y pagos existentes, conservando toda la historia y evitando personas duplicadas.
+Construir una plataforma deportiva global sobre clientes, cuentas, torneos, inscripciones, partidos, reservas y pagos, conservando historia y evitando personas duplicadas.
 
-## 2. Decisiones estructurales
+## 2. Fronteras del sistema
 
-### 2.0 Convergencia del frontend
+- Administración JavaFX: aplicación independiente.
+- API Java: contratos, seguridad y reglas de negocio.
+- MySQL: fuente persistente.
+- `web-publica-v2`: única web activa y base de W2.
+- `api.ts` y sesión global: infraestructura compartida, no duplicada.
+- Rutas heredadas: se retiran solo después de paridad y redirección.
 
-- `web-publica-v2` es la única web activa y la base de la evolución W2.
-- `W2Layout.astro` debe converger con la autenticación, cuenta y navegación funcionales existentes.
-- `api.ts` y `sesion-global.ts` son infraestructura compartida; no se duplicarán clientes HTTP ni estados de sesión.
-- Las páginas actuales se mantienen hasta que su reemplazo W2 apruebe paridad funcional y E2E.
-- Componentes de encabezado, menú, formularios y estados deben extraerse o refactorizarse para reutilización.
-
-### 2.1 Identidad única
-
-- `clientes` continúa siendo la persona comercial central.
-- `usuarios` mantiene autenticación, rol, contraseña y sesión.
-- `perfiles_jugador` agrega identidad deportiva sin duplicar nombre, documento, correo ni teléfono.
-- `torneo_inscripcion_jugadores` conserva la fotografía histórica con la que una persona participó.
-- Un participante sin cuenta puede tener una identidad deportiva provisional.
-- La vinculación posterior conserva puntos, torneos y partidos previos.
-
-Relación objetivo:
+## 3. Identidad
 
 ```text
 clientes 1 ----- 0..1 usuarios
@@ -35,256 +25,158 @@ perfiles_jugador 1 ----- N ranking_movimientos
 torneo_inscripcion_jugadores N ----- 0..1 perfiles_jugador
 ```
 
-### 2.2 Perfil deportivo
+El teléfono normalizado sirve como señal de vinculación, nunca como autorización automática irreversible.
 
-Campos previstos:
+## 4. Dominio deportivo
 
-- identificador;
-- cliente vinculado opcional;
-- estado DEFINITIVO o PROVISIONAL;
-- nombre público derivado o histórico;
-- posición preferida;
-- mano dominante pendiente de definición;
-- disponibilidad para jugar;
-- aceptación de invitaciones;
-- fechas de creación y actualización;
-- estado activo;
-- metadatos de vinculación revisada.
+### Categorías
 
-El teléfono normalizado se usa como señal para proponer vínculos, nunca como autorización automática irreversible.
+Catálogo 1.ª a 8.ª con orden explícito, vigencia, estado e historial.
 
-## 3. Categorías globales
+### Elegibilidad
 
-### 3.1 Catálogo
-
-Valores iniciales: 1.ª, 2.ª, 3.ª, 4.ª, 5.ª, 6.ª, 7.ª y 8.ª.
-
-Cada categoría define código, nombre, nivel ordenado, color, estado y vigencia. El orden competitivo es explícito: 1.ª es superior a 8.ª.
-
-### 3.2 Historial
-
-`jugador_categorias` conserva:
-
-- perfil;
-- categoría;
-- vigencia desde y hasta;
-- estado PROVISIONAL, VIGENTE, SUSPENDIDA o FINALIZADA;
-- origen ADMINISTRATIVA, RESULTADOS, IMPORTADA o PROVISIONAL;
-- motivo;
-- usuario responsable;
-- fecha de registro.
-
-Solo una asignación VIGENTE será la categoría principal, salvo una futura decisión explícita de admitir múltiples categorías simultáneas.
-
-### 3.3 Publicación de cambios
-
-`publicaciones_cambios_categoria` agrupa ascensos y descensos con título, fecha de publicación, vigencia y detalle. La publicación informa, pero no ejecuta automáticamente decisiones deportivas.
-
-## 4. Elegibilidad de torneos
-
-### 4.1 Tipos
+Tipo de condición:
 
 - CATEGORIA_UNICA;
 - CATEGORIAS_COMBINADAS;
 - SUMA_CATEGORIAS;
-- ABIERTO_CON_REVISION;
-- AMERICANO.
+- REQUIERE_REVISION o excepción administrativa.
 
-### 4.2 Evaluación
+Americano no pertenece a elegibilidad.
 
-El sistema genera un resultado:
+Resultado de evaluación:
 
 - COMPATIBLE;
 - REQUIERE_REVISION;
 - AUTORIZADA_EXCEPCION;
 - RECHAZADA_CATEGORIA.
 
-El organizador tiene decisión final. Una excepción registra motivo, usuario, fecha y categorías comparadas, sin modificar la categoría personal.
-
-### 4.3 Suma configurable
-
-La regla admite valor objetivo, suma exacta o rango, niveles mínimo y máximo y excepción administrativa. Ejemplo: Suma 12 acepta 6.ª + 6.ª si el valor numérico de ambas categorías totaliza 12.
-
-## 5. Formatos de competencia y partido
-
-### 5.1 Formatos
-
-- eliminación directa;
-- grupos más eliminación;
-- Americano configurable;
-- futuras variantes sin alterar resultados históricos.
-
-### 5.2 Configuración de partido
-
-- cantidad de sets;
-- juegos por set;
-- diferencia mínima;
-- tie-break;
-- super tie-break decisivo;
-- reglas de retiro, ausencia y walkover;
-- puntuación y desempate del Americano;
-- clasificación individual o por pareja.
-
-La configuración efectiva queda congelada en el torneo o categoría para conservar interpretación histórica.
-
-## 6. Historial competitivo
-
-La primera versión se deriva desde datos existentes:
+### Taxonomía de competencia
 
 ```text
-partido -> inscripción -> integrantes -> perfil jugador
+Torneo
+├── tipo de evento: estándar interno o AMERICANO
+├── dinámica: MISMO_DIA o VARIOS_DIAS
+└── categorías
+    ├── rama: LIBRE, FEMENINO, MIXTO
+    ├── condición: única, combinada o SUMA_CATEGORIAS
+    ├── formato: ELIMINACION_DIRECTA o GRUPOS_ELIMINACION
+    └── modalidad: UN_SET, DOS_SETS_SUPER_TIE_BREAK o MEJOR_DE_TRES
 ```
 
-Debe entregar torneos, pareja, categoría, grupo, posición, partidos, sets, rivales, fase alcanzada, títulos y cronología.
+La interfaz no debe mostrar “Convencional”. El tipo estándar puede ser interno y sin distintivo público.
 
-No se copiarán resultados a tablas redundantes salvo que sea necesario congelar una publicación o mejorar rendimiento con una proyección reconstruible.
+Todas las inscripciones son por pareja.
 
-## 7. Ranking
+## 5. Torneos web
 
-### 7.1 Principios
-
-- individual;
-- ventana móvil de 12 meses;
-- misma acreditación para ambos integrantes;
-- puntos por fase;
-- walkovers según regla publicada;
-- recálculo auditado ante correcciones;
-- participantes provisionales incluidos;
-- publicación histórica inmutable.
-
-### 7.2 Entidades
-
-- `temporadas_ranking`;
-- `reglas_ranking` versionadas;
-- `ranking_movimientos`;
-- `publicaciones_ranking`;
-- `ranking_posiciones`.
-
-### 7.3 Flujo
-
-1. Finalización o corrección del torneo.
-2. Generación preliminar.
-3. Validación de integridad.
-4. Revisión administrativa.
-5. Publicación.
-6. Actualización de posiciones y variaciones.
-7. Notificación futura.
-
-### 7.4 Masters
-
-El Master pertenece a una categoría, toma clasificados del ranking y conserva cupos, formato y puntos configurables. El organizador confirma la nómina final.
-
-## 8. Contratos preliminares de API
-
-Rutas previstas, sujetas a diseño final:
+Ruta canónica:
 
 ```text
-GET  /api/publica/rankings/categorias                  [implementado]
-GET  /api/publica/rankings?categoriaId=                 [implementado inicial]
-GET  /api/publica/rankings/auditoria?categoriaId=&perfilId= [implementado]
-GET  /api/publica/jugadores/{id}                        [implementado]
-GET  /api/publica/rankings/mi-posicion                  [pendiente]
-GET  /api/publica/cliente/perfil-deportivo              [pendiente W2.4]
-PUT  /api/publica/cliente/perfil-deportivo              [pendiente W2.4]
-GET  /api/publica/cambios-categoria
-GET  /api/publica/convocatorias
-POST /api/publica/convocatorias
+/w2/torneos
 ```
 
-Las rutas privadas requieren cookie de sesión. Las públicas nunca entregan teléfono, correo, documento, datos comerciales ni pagos.
+Niveles de navegación:
 
-## 9. Pagos externos
+1. catálogo;
+2. detalle;
+3. centro competitivo por categoría;
+4. vista: resumen, posiciones, partidos o cuadro;
+5. ronda cuando corresponde.
 
-Separación obligatoria:
+El estado relevante persiste en URL y `popstate`.
 
-- orden externa;
-- evento del proveedor;
-- pago interno;
-- movimiento de caja;
-- reembolso o contracargo.
+### Arquitectura actual del frontend
 
-La confirmación se produce por backend después de validar proveedor, orden, importe, moneda y estado. La operación es idempotente y transaccional.
+```text
+src/scripts/torneos.ts                    coordinador temporal
+src/scripts/torneos/dominio-torneos.ts    vocabulario y formato
+src/scripts/torneos/estado-catalogo-torneos.ts
+                                           filtros, URL e historial
+src/scripts/torneos/adaptador-catalogo-torneos.ts
+                                           frontera tolerante de API
+src/scripts/torneos/datos-torneos.ts      caché, abortos y versiones
+src/scripts/centro-competitivo-premium.ts motor del centro competitivo
+src/scripts/cuadro-torneo.ts              llave completa
+```
 
-## 10. Migraciones previstas
+### Reglas de datos asíncronos
 
-Orden preliminar:
+- una solicitud nueva cancela la anterior del mismo alcance;
+- una respuesta obsoleta nunca actualiza la interfaz;
+- caché temporal por catálogo, detalle y categoría;
+- recarga forzada omite caché;
+- una inscripción confirmada invalida catálogo y detalle relacionado;
+- skeleton y composición final deben ser atómicos.
 
-1. catálogo y perfiles deportivos;
-2. historial de categorías y publicaciones;
-3. vínculo de participantes históricos;
-4. reglas de elegibilidad y formatos;
-5. temporadas y ranking;
-6. convocatorias;
-7. órdenes y eventos de pago externo.
+## 6. Ranking e historial
 
-Cada migración deberá existir también en `database/docker-init`, ser idempotente cuando corresponda y aprobar instalación limpia y restauración.
+Ranking individual, por categoría, auditable y versionado. Ventana móvil prevista de 12 meses. Publicaciones históricas inmutables y correcciones transaccionales.
 
-## 11. Riesgos y mitigación
+El historial se deriva desde partido, inscripción, integrantes y perfil. Las proyecciones de rendimiento deben ser reconstruibles.
 
-- Duplicación de jugadores: propuestas revisadas, no fusiones automáticas.
-- Pérdida histórica: datos de inscripción no se sobrescriben.
-- Ranking doble: claves únicas por origen, jugador y regla.
-- Recalculo inconsistente: transacciones y versión de regla.
-- Exposición privada: DTO públicos específicos.
-- Formatos rígidos: configuración congelada por torneo.
-- Pagos duplicados: idempotencia y conciliación.
+## 7. API pública
 
-## 12. Primer bloque funcional W2.1
+Contratos implementados o activos:
 
-El primer cambio de base contendrá únicamente catálogo 1.ª a 8.ª, perfiles deportivos, historial de categorías y servicios de administración. Ranking, comunidad y pagos quedarán fuera de ese commit para mantener alcance controlado.
+```text
+GET /api/publica/torneos
+GET /api/publica/torneos/{id}
+GET /api/publica/torneos/{id}/categorias/{categoriaId}/competencia
+GET /api/publica/rankings/categorias
+GET /api/publica/rankings
+GET /api/publica/rankings/auditoria
+GET /api/publica/jugadores/{id}
+GET /api/publica/cliente/perfil-deportivo
+```
 
+Las rutas privadas usan cookie de sesión. Los DTO públicos nunca exponen teléfono, correo, documento, historial comercial ni pagos.
 
-## 13. Criterios de modernización técnica
+## 8. Pagos
 
-Las tecnologías nuevas se incorporarán con evaluación explícita de beneficio, madurez, seguridad, compatibilidad, accesibilidad, rendimiento y costo operativo. Se priorizan:
+Separación obligatoria entre orden externa, evento del proveedor, pago interno, caja y reembolso.
 
-- arquitectura por componentes reutilizables;
-- islas interactivas solo donde aporten valor;
-- carga progresiva, streaming o renderizado híbrido cuando el despliegue lo justifique;
-- imágenes AVIF/WebP, srcset, lazy loading y presupuestos de rendimiento;
-- View Transitions con degradación segura cuando mejoren continuidad;
-- PWA, notificaciones y sincronización resiliente en su fase prevista;
-- observabilidad de experiencia y errores sin exponer datos personales;
+Flujo implementado en sandbox:
+
+1. reserva temporal;
+2. elección de pago;
+3. orden idempotente;
+4. preferencia;
+5. webhook auditable;
+6. consulta y validación del proveedor;
+7. acreditación transaccional;
+8. conciliación defensiva.
+
+Producción requiere dominio estable, HTTPS, credenciales productivas, observabilidad, pago controlado y rollback.
+
+## 9. Migraciones
+
+- Toda migración debe existir también en `database/docker-init`.
+- Instalación limpia y actualización deben llegar al mismo esquema.
+- No borrar historia.
+- No modificar la base principal durante pruebas.
+- La taxonomía de Torneos se incorporará en migraciones explícitas y compatibles, no mediante reinterpretaciones silenciosas.
+
+## 10. Modernización técnica
+
+Adoptar herramientas modernas solo con beneficio explícito. Prioridades:
+
+- componentes reutilizables;
+- contratos tipados;
+- carga progresiva;
+- AVIF/WebP y `srcset`;
+- View Transitions con degradación segura;
+- PWA y notificaciones en su fase;
+- observabilidad sin datos personales;
 - pruebas visuales y E2E para flujos críticos.
 
-No se adoptará una herramienta por novedad. La innovación debe reducir fricción, elevar calidad o habilitar una capacidad diferencial sostenible.
+## 11. Riesgos y mitigaciones
 
-<!-- ARQUITECTURA-PAGOS-P49 -->
-## 14. Arquitectura implementada de pagos externos
-
-### 14.1 Configuración y publicación segura
-
-- `MP_PUBLIC_BASE_URL` se reserva para API y webhook.
-- `MP_RETURN_BASE_URL` se reserva para el retorno del navegador.
-- `MP_ENVIRONMENT=sandbox` exige `MP_TEST_USER_ID`.
-- El preflight consulta `/users/me` y exige coincidencia exacta con el vendedor tester previsto.
-- Si configuración, identidad o comunicación fallan, pasarela, capacidades y webhook permanecen cerrados.
-
-### 14.2 Flujo implementado
-
-1. La reserva temporal define la seña y el vencimiento.
-2. El cliente elige pago online o transferencia.
-3. El backend crea o reutiliza una orden idempotente.
-4. La pasarela crea la preferencia y persiste el checkout.
-5. El proveedor notifica por webhook; el evento se audita antes de procesarse.
-6. El backend consulta el pago externo y valida referencia, importe, moneda y estado.
-7. La acreditación registra pago, caja y confirmación de reserva en forma transaccional.
-8. La conciliación repara demoras o pérdida temporal del webhook sin duplicar cobros.
-
-### 14.3 Estados y recuperación
-
-- `CREADA` sin URL: la misma orden permite reintentar la creación del checkout.
-- `ESPERANDO_PAGO` con URL: se reutiliza el checkout vigente.
-- `APROBADA`: se ocultan todas las acciones financieras.
-- `EXPIRADA`: se inutiliza el enlace y se ofrece crear otra reserva.
-- Transferencia manual y pago online se renderizan como experiencias excluyentes.
-
-### 14.4 Frontend W2
-
-El drawer de reservas usa render atómico: muestra un skeleton integrado, consulta orden y capacidades en paralelo y presenta una sola composición definitiva. El cierre funciona por X, fondo y Escape; el foco vuelve al disparador. La URL de retorno nunca se toma como prueba de acreditación.
-
-### 14.5 Riesgos aún abiertos
-
-- Los túneles rápidos son únicamente una herramienta de desarrollo y cambian de URL.
-- La sesión no se comparte entre localhost y un dominio de túnel distinto.
-- Producción necesita un origen estable, política CORS/cookies definitiva y observabilidad del proveedor.
+- duplicación de jugadores: revisión humana;
+- pérdida histórica: no sobrescribir fotografías de inscripción;
+- ranking doble: claves únicas por origen y regla;
+- respuestas asíncronas obsoletas: abortos y versiones;
+- exposición privada: DTO públicos específicos;
+- formatos rígidos: dimensiones independientes y configuración congelada;
+- pagos duplicados: idempotencia y conciliación;
+- documentación obsoleta: actualización al cerrar bloques significativos.
