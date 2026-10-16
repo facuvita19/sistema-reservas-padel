@@ -3242,3 +3242,39 @@ body>.site-menu-v59-panel{z-index:1309!important}
 @supports(view-transition-name:none){.f4-content{view-transition-name:f4-content}.f4-hero{view-transition-name:f4-hero}::view-transition-old(f4-content),::view-transition-new(f4-content){animation-duration:.18s}}
 @media(max-width:700px){#detalleTorneoHost[aria-busy="true"]{min-height:520px}.f4-shell-skeleton{min-height:470px;padding:.8rem}.f4-shell-skeleton>i:nth-of-type(2){height:180px}.f4-shell-skeleton div{grid-template-columns:1fr}.f4-shell-skeleton div i{height:70px}}
 @media(prefers-reduced-motion:reduce){.f4-shell-skeleton>i,.f4-shell-skeleton b,.f4-shell-skeleton div i{animation:none}::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none!important}}
+
+/* r2.1c6v3-sticky-centro-consolidado */
+/* Regla unica y final. La cubierta pertenece al mismo plano del sticky y tapa la
+   separacion visual sin alterar la geometria ni la interaccion de los controles. */
+#detalleTorneoHost .f4-center > nav.f4-nav{
+  top:var(--header-height,88px)!important;
+  margin-top:0!important;
+  z-index:120!important;
+  isolation:isolate!important;
+  overflow:visible!important;
+  background:#080d0f!important;
+  border-color:#293b43!important;
+  box-shadow:0 -12px 0 #080d0f,0 10px 22px rgba(0,0,0,.3)!important;
+  backdrop-filter:none!important;
+}
+#detalleTorneoHost .f4-center > nav.f4-nav::before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  z-index:0!important;
+  left:-2px!important;
+  right:-2px!important;
+  bottom:calc(100% - 1px)!important;
+  top:auto!important;
+  height:14px!important;
+  background:#080d0f!important;
+  pointer-events:none!important;
+}
+#detalleTorneoHost .f4-center > nav.f4-nav::after{display:none!important;content:none!important}
+#detalleTorneoHost .f4-center > nav.f4-nav > button{position:relative!important;z-index:1!important}
+#detalleTorneoHost .f4-center .f4-content{scroll-margin-top:calc(var(--header-height,88px) + 62px)!important}
+@media(max-width:960px){
+  #detalleTorneoHost .f4-center > nav.f4-nav{top:var(--header-height,72px)!important;box-shadow:0 -6px 0 #080d0f,0 9px 20px rgba(0,0,0,.24)!important}
+  #detalleTorneoHost .f4-center > nav.f4-nav::before{height:6px!important}
+  #detalleTorneoHost .f4-center .f4-content{scroll-margin-top:calc(var(--header-height,72px) + 60px)!important}
+}
