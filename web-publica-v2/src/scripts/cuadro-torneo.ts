@@ -1,5 +1,5 @@
 // F4.2B: vocabulario publico de rama en la llave completa.
-const ramaPublicaCuadro=(v:string)=>{const x=String(v||'').toUpperCase();return x==='MASCULINA'||x==='MASCULINO'?'Abierto':x==='FEMENINA'||x==='FEMENINO'?'Femenino':x==='MIXTA'||x==='MIXTO'?'Mixto':etiqueta(v)};
+const ramaPublicaCuadro=(v:string)=>{const x=String(v||'').toUpperCase();return x==='LIBRE'||x==='MASCULINA'||x==='MASCULINO'||x==='ABIERTO'?'Libre':x==='FEMENINA'||x==='FEMENINO'?'Femenino':x==='MIXTA'||x==='MIXTO'?'Mixto':etiqueta(v)};
 import { api, type CuadroCategoriaPublico, type PartidoCuadroPublico, type ParejaCuadroPublica } from './api';
 import { etiqueta, fecha, rangoFechas } from './formatos';
 
