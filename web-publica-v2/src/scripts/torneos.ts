@@ -1,6 +1,9 @@
 import { api, type TorneoDetalle, type TorneoResumen } from './api';
 import { abrirCentroCompetitivo, manejarCentroCompetitivoClick, manejarCentroCompetitivoTeclado, precargarCentroCompetitivo, centroActivo, restaurarCentroDesdeUrl, type VistaCentro } from './centro-competitivo-premium';
-import { etiqueta, moneda, rangoFechas } from './formatos';
+import { rangoFechas } from './formatos';
+import { etapaTexto, normalizarBusquedaTorneo, precioCategoria, ramaPublica, textoFormato } from './torneos/dominio-torneos';
+import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos, type EstadoPortalTorneo } from './torneos/estado-catalogo-torneos';
+import { adaptarResumenTorneo } from './torneos/adaptador-catalogo-torneos';
 
 type Perfil = { nombre?: string; apellido?: string; telefono?: string };
 type SolicitudCreada = { inscripcionId: number; estado: string; mensaje: string };
@@ -19,8 +22,6 @@ let ultimoFoco: HTMLElement | null = null;
 let enviandoInscripcion = false;
 let inscripcionCompletada = false;
 
-function precioCategoria(valor:number){return Number(valor)===0?'Gratis':moneda(valor)}
-function etapaTexto(valor:string){return ({PREPARACION:'Preparación',GRUPOS_EN_PREPARACION:'Grupos en preparación',GRUPOS_EN_CURSO:'Fase de grupos',GRUPOS_FINALIZADOS:'Grupos finalizados',DESEMPATE_PENDIENTE:'Desempate pendiente',ELIMINATORIAS:'Etapa eliminatoria',FINALIZADA:'Competencia finalizada'} as Record<string,string>)[valor]||etiqueta(valor)}
 const movimientoReducido=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 async function completarPerfil() {
   try {
@@ -94,40 +95,17 @@ function cerrarInscripcion(){
 function elementosEnfocables(){return [...modal.querySelectorAll<HTMLElement>('button:not([disabled]):not(.hidden),input:not([disabled]),textarea:not([disabled]),[tabindex="0"]')].filter(x=>x.offsetParent!==null)}
 function atraparFoco(evento:KeyboardEvent){if(evento.key!=='Tab')return;const elementos=elementosEnfocables();if(!elementos.length)return;const primero=elementos[0],ultimo=elementos[elementos.length-1];if(evento.shiftKey&&document.activeElement===primero){evento.preventDefault();ultimo.focus()}else if(!evento.shiftKey&&document.activeElement===ultimo){evento.preventDefault();primero.focus()}}
 
-type EstadoPortal='PROXIMO'|'EN_CURSO'|'FINALIZADO';
-const ramaPublica=(v:string)=>v==='LIBRE'||v==='MASCULINA'||v==='MASCULINO'||v==='ABIERTO'?'Libre':v==='FEMENINA'||v==='FEMENINO'?'Femenino':v==='MIXTA'||v==='MIXTO'?'Mixto':etiqueta(v);
-const catalogo={torneos:[] as TorneoResumen[],estado:'PROXIMO' as EstadoPortal,busqueda:'',rama:'',formato:'',soloInscripcion:false,visibles:9};
-// R2.1A1 estado navegable y carga protegida
-const ESTADOS_PORTAL:EstadoPortal[]=['PROXIMO','EN_CURSO','FINALIZADO'];
-let restaurandoHistorial=false;
-function leerEstadoCatalogo(){const p=new URLSearchParams(location.search),estado=p.get('estado') as EstadoPortal|null;catalogo.estado=estado&&ESTADOS_PORTAL.includes(estado)?estado:'PROXIMO';catalogo.busqueda=p.get('buscar')||'';catalogo.rama=p.get('rama')||'';catalogo.formato=p.get('formato')||'';catalogo.soloInscripcion=p.get('inscripcion')==='abierta';catalogo.visibles=9}
-// R2.1A2 fix sincronizacion de selectores
-function reflejarEstadoCatalogo(){const buscar=document.getElementById('buscarTorneo') as HTMLInputElement|null,rama=document.getElementById('filtroRama') as HTMLSelectElement|null,formato=document.getElementById('filtroFormato') as HTMLSelectElement|null,inscripcion=document.getElementById('filtroInscripcion') as HTMLInputElement|null;if(buscar)buscar.value=catalogo.busqueda;if(rama)rama.value=catalogo.rama;if(formato)formato.value=catalogo.formato;if(inscripcion)inscripcion.checked=catalogo.soloInscripcion;[rama,formato].forEach(select=>select?.dispatchEvent(new Event('change')))}
-function escribirEstadoCatalogo(modo:'push'|'replace'='replace'){if(restaurandoHistorial||new URLSearchParams(location.search).has('torneo'))return;const u=new URL(location.href);catalogo.estado==='PROXIMO'?u.searchParams.delete('estado'):u.searchParams.set('estado',catalogo.estado);catalogo.busqueda?u.searchParams.set('buscar',catalogo.busqueda):u.searchParams.delete('buscar');catalogo.rama?u.searchParams.set('rama',catalogo.rama):u.searchParams.delete('rama');catalogo.formato?u.searchParams.set('formato',catalogo.formato):u.searchParams.delete('formato');catalogo.soloInscripcion?u.searchParams.set('inscripcion','abierta'):u.searchParams.delete('inscripcion');history[modo==='push'?'pushState':'replaceState']({nivel:'catalogo',estado:catalogo.estado},'',u)}
-const listaSegura=(v:unknown):string[]=>Array.isArray(v)?v.filter((x):x is string=>typeof x==='string'&&x.trim().length>0):[];
-const numeroSeguro=(v:unknown)=>Number.isFinite(Number(v))?Number(v):0;
-function adaptarResumen(raw:any):TorneoResumen{
-  const estado=String(raw?.estado??'PUBLICADO');
-  const hoy=new Date();hoy.setHours(0,0,0,0);const inicio=new Date(String(raw?.fechaInicio||'')+'T00:00:00'),fin=new Date(String(raw?.fechaFin||'')+'T23:59:59');
-  const estadoDeclarado:EstadoPortal=raw?.estadoPortal==='EN_CURSO'||estado==='EN_CURSO'?'EN_CURSO':raw?.estadoPortal==='FINALIZADO'||estado==='FINALIZADO'?'FINALIZADO':'PROXIMO';
-  const estadoPortal:EstadoPortal=Number.isNaN(fin.getTime())?estadoDeclarado:fin<hoy?'FINALIZADO':!Number.isNaN(inicio.getTime())&&inicio<=hoy?'EN_CURSO':estadoDeclarado;
-  const categorias=listaSegura(raw?.categorias);
-  const ramas=listaSegura(raw?.ramas);
-  const formatos=listaSegura(raw?.formatos);
-  return {...raw,descripcion:String(raw?.descripcion??''),estado,estadoPortal,
-    inscripcionDisponible:Boolean(raw?.inscripcionDisponible),categorias,ramas,formatos,
-    cantidadCategorias:numeroSeguro(raw?.cantidadCategorias),categoriasDisponibles:numeroSeguro(raw?.categoriasDisponibles),
-    cupoTotal:numeroSeguro(raw?.cupoTotal),parejasConfirmadas:numeroSeguro(raw?.parejasConfirmadas),cuposDisponibles:numeroSeguro(raw?.cuposDisponibles),
-    precioMinimo:numeroSeguro(raw?.precioMinimo),precioMaximo:numeroSeguro(raw?.precioMaximo),
-    etapaCompetitiva:String(raw?.etapaCompetitiva??(estadoPortal==='EN_CURSO'?'PREPARACION':estadoPortal==='FINALIZADO'?'FINALIZADA':'PREPARACION')),
-    partidosTotales:numeroSeguro(raw?.partidosTotales),partidosFinalizados:numeroSeguro(raw?.partidosFinalizados),partidosCancelados:numeroSeguro(raw?.partidosCancelados),
-    resultadosDisponibles:Boolean(raw?.resultadosDisponibles),campeonesDisponibles:Boolean(raw?.campeonesDisponibles)} as TorneoResumen;
-}
-const normalizar=(v:unknown)=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+type EstadoPortal=EstadoPortalTorneo;
+const catalogo:EstadoCatalogoTorneos<TorneoResumen>={torneos:[],estado:'PROXIMO',busqueda:'',rama:'',formato:'',soloInscripcion:false,visibles:9};
+// R2.1C2 estado y URL del catalogo extraidos del coordinador
+const estadoCatalogo=crearEstadoCatalogoTorneos(catalogo);
+const leerEstadoCatalogo=()=>estadoCatalogo.leerDesdeUrl();
+const reflejarEstadoCatalogo=()=>estadoCatalogo.reflejarEnControles();
+const escribirEstadoCatalogo=(modo:'push'|'replace'='replace')=>estadoCatalogo.escribirEnUrl(modo);
+
 const tituloEstado=(e:EstadoPortal)=>e==='PROXIMO'?'Próximos':e==='EN_CURSO'?'En curso':'Finalizados';
-const textoFormato=(v:string)=>v==='GRUPOS_ELIMINACION'?'Grupos + eliminación':v?etiqueta(v):'Sin especificar';
 const valorPrecio=(t:TorneoResumen)=>t.precioMinimo===t.precioMaximo?precioCategoria(t.precioMinimo):'Desde '+precioCategoria(t.precioMinimo);
-function resultadosCatalogo(){const q=normalizar(catalogo.busqueda);return catalogo.torneos.filter(t=>t.estadoPortal===catalogo.estado&&(!q||normalizar([t.nombre,t.descripcion,...t.categorias,...t.ramas,...t.formatos].join(' ')).includes(q))&&(!catalogo.rama||t.ramas.includes(catalogo.rama))&&(!catalogo.formato||t.formatos.includes(catalogo.formato))&&(!catalogo.soloInscripcion||t.inscripcionDisponible));}
+function resultadosCatalogo(){const q=normalizarBusquedaTorneo(catalogo.busqueda);return catalogo.torneos.filter(t=>t.estadoPortal===catalogo.estado&&(!q||normalizarBusquedaTorneo([t.nombre,t.descripcion,...t.categorias,...t.ramas,...t.formatos].join(' ')).includes(q))&&(!catalogo.rama||t.ramas.includes(catalogo.rama))&&(!catalogo.formato||t.formatos.includes(catalogo.formato))&&(!catalogo.soloInscripcion||t.inscripcionDisponible));}
 // portada-torneos-premium-v51-20261011
 function descripcionCatalogo(v:unknown){const x=String(v??'').trim();return x.length>=12?x:'';}
 function porcentajeOcupacion(t:TorneoResumen){return t.cupoTotal?Math.min(100,Math.round(t.parejasConfirmadas/t.cupoTotal*100)):0;}
@@ -137,7 +115,7 @@ function tarjetaCatalogo(t:TorneoResumen){
  const progreso=t.partidosTotales?Math.round(t.partidosFinalizados/t.partidosTotales*100):0,ocupacion=porcentajeOcupacion(t),estado=estadoVisualCatalogo(t),descripcion=descripcionCatalogo(t.descripcion);
  const ramas=t.ramas.slice(0,2).map(x=>`<span>${escapeHtml(ramaPublica(x))}</span>`).join(''),formatos=t.formatos.slice(0,1).map(x=>`<span>${escapeHtml(textoFormato(x))}</span>`).join('');
  const progresoHtml=t.estadoPortal==='EN_CURSO'&&t.partidosTotales?`<div class="w2t-progress"><header><small>Progreso competitivo</small><b>${progreso}%</b></header><div><span style="width:${progreso}%"></span></div><small>${t.partidosFinalizados} de ${t.partidosTotales} partidos finalizados</small></div>`:t.estadoPortal==='PROXIMO'&&t.cupoTotal?`<div class="w2t-progress"><header><small>Ocupación por parejas</small><b>${ocupacion}%</b></header><div><span style="width:${ocupacion}%"></span></div><small>${t.parejasConfirmadas} de ${t.cupoTotal} parejas confirmadas</small></div>`:'';
- return `<article class="w2t-card state-${t.estadoPortal.toLowerCase()} status-${estado.clase}"><header><span class="w2t-status"><i></i>${escapeHtml(estado.texto)}</span><time>${escapeHtml(rangoFechas(t.fechaInicio,t.fechaFin))}</time></header><div class="w2t-card-body"><div class="w2t-card-heading"><small>${t.cantidadCategorias} ${t.cantidadCategorias===1?'categoría':'categorías'}</small><h3>${escapeHtml(t.nombre)}</h3>${descripcion?`<p>${escapeHtml(descripcion)}</p>`:''}</div><div class="w2t-tags">${ramas}${formatos}</div><div class="w2t-facts"><span><small>Inscripción por pareja</small><b>${valorPrecio(t)}</b></span><span><small>Disponibilidad</small><b>${t.cuposDisponibles>0?t.cuposDisponibles+' cupos':'Sin cupos'}</b></span></div>${progresoHtml}</div><footer><button class="catalog-open" type="button" data-torneo-id="${t.id}">${accionCatalogo(t)} <span aria-hidden="true">→</span></button></footer></article>`;
+ return `<article class="w2t-card state-${t.estadoPortal.toLowerCase()} status-${estado.clase}"><header><span class="w2t-status"><i></i>${escapeHtml(estado.texto)}</span><time>${escapeHtml(rangoFechas(t.fechaInicio,t.fechaFin))}</time></header><div class="w2t-card-body"><div class="w2t-card-heading"><small>${t.cantidadCategorias} ${t.cantidadCategorias===1?'categoría':'categorías'}</small><h3>${escapeHtml(t.nombre)}</h3><p class="w2t-card-description ${descripcion?'':'is-empty'}" ${descripcion?'':'aria-hidden="true"'}>${descripcion?escapeHtml(descripcion):'&nbsp;'}</p></div><div class="w2t-tags">${ramas}${formatos}</div><div class="w2t-facts"><span><small>Inscripción por pareja</small><b>${valorPrecio(t)}</b></span><span><small>Disponibilidad</small><b>${t.cuposDisponibles>0?t.cuposDisponibles+' cupos':'Sin cupos'}</b></span></div>${progresoHtml}</div><footer><button class="catalog-open" type="button" data-torneo-id="${t.id}">${accionCatalogo(t)} <span aria-hidden="true">→</span></button></footer></article>`;
 }
 function poblarSelect(id:string,valores:string[],formato:(x:string)=>string){const select=document.getElementById(id) as HTMLSelectElement;if(!select)return;const inicial=select.options[0]?.outerHTML||'';select.innerHTML=inicial+[...new Set(valores)].sort().map(x=>`<option value="${escapeHtml(x)}">${escapeHtml(formato(x))}</option>`).join('');}
 function renderCatalogo(){const filtrados=resultadosCatalogo();const lista=document.getElementById('listaTorneos')!,cantidad=Math.min(catalogo.visibles,filtrados.length);lista.classList.remove('results-1','results-2','results-many');lista.classList.add(filtrados.length===1?'results-1':filtrados.length===2?'results-2':'results-many');lista.innerHTML=filtrados.slice(0,cantidad).map(tarjetaCatalogo).join('')||`<div class="w2t-empty"><span>Sin coincidencias</span><b>No encontramos torneos con esos criterios</b><p>Probá otra búsqueda o eliminá los filtros activos.</p><button id="vaciarFiltrosTorneos" type="button">Ver todos los torneos</button></div>`;const meta=document.getElementById('estadoCatalogoTorneos');if(meta){const titulo=catalogo.estado==='PROXIMO'?'Próximas competencias':catalogo.estado==='EN_CURSO'?'Competencias en curso':'Competencias finalizadas';meta.innerHTML=`<strong>${titulo}</strong><span>${filtrados.length} ${filtrados.length===1?'torneo disponible':'torneos disponibles'}${cantidad<filtrados.length?' · mostrando '+cantidad:''}</span>`;}document.getElementById('mostrarMasTorneos')?.classList.toggle('hidden',cantidad>=filtrados.length);document.getElementById('vaciarFiltrosTorneos')?.addEventListener('click',limpiarFiltros);renderPestanas();actualizarFiltrosActivos();}
@@ -162,7 +140,7 @@ type EntradaCatalogo={dato:TorneoResumen[];vence:number};
 let cacheCatalogo:EntradaCatalogo|null=null;
 let solicitudCatalogo:AbortController|null=null,versionCatalogo=0;
 const CACHE_CATALOGO_MS=60_000;
-async function obtenerCatalogo(signal:AbortSignal,forzar=false){if(!forzar&&cacheCatalogo&&cacheCatalogo.vence>Date.now())return cacheCatalogo.dato;const dato=(await api<unknown[]>('/torneos',{signal})).map(adaptarResumen);cacheCatalogo={dato,vence:Date.now()+CACHE_CATALOGO_MS};return dato}
+async function obtenerCatalogo(signal:AbortSignal,forzar=false){if(!forzar&&cacheCatalogo&&cacheCatalogo.vence>Date.now())return cacheCatalogo.dato;const dato=(await api<unknown[]>('/torneos',{signal})).map(adaptarResumenTorneo);cacheCatalogo={dato,vence:Date.now()+CACHE_CATALOGO_MS};return dato}
 function invalidarDatosTorneos(){cacheCatalogo=null;if(detalleActual)cacheDetalles.delete(detalleActual.id)}
 async function obtenerDetalleTorneo(id:number,signal:AbortSignal){const entrada=cacheDetalles.get(id);if(entrada&&entrada.vence>Date.now())return entrada.dato;const dato=await api<TorneoDetalle>(`/torneos/${id}`,{signal});cacheDetalles.set(id,{dato,vence:Date.now()+CACHE_DETALLE_MS});return dato}
 const categoriaDisponible=(c:TorneoDetalle['categorias'][number],t:TorneoDetalle)=>Boolean(t.inscripcionDisponible&&c.disponible&&c.cuposDisponibles>0);
@@ -303,7 +281,7 @@ document.getElementById('fondoFiltrosTorneos')?.addEventListener('click',()=>pan
 document.getElementById('limpiarFiltrosTorneos')?.addEventListener('click',limpiarFiltros);document.getElementById('limpiarFiltrosTorneosInline')?.addEventListener('click',limpiarFiltros);
 const aplicarFiltros=()=>{catalogo.rama=(document.getElementById('filtroRama') as HTMLSelectElement).value;catalogo.formato=(document.getElementById('filtroFormato') as HTMLSelectElement).value;catalogo.soloInscripcion=(document.getElementById('filtroInscripcion') as HTMLInputElement).checked;catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('replace')};document.getElementById('aplicarFiltrosTorneos')?.addEventListener('click',()=>{aplicarFiltros();panelFiltros(false)});['filtroRama','filtroFormato','filtroInscripcion'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{if(matchMedia('(min-width: 900px)').matches)aplicarFiltros()}));document.getElementById('torneoDestacado')?.addEventListener('click',e=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('.catalog-open');if(b){sessionStorage.setItem('torneos-scroll',String(scrollY));abrirTorneo(Number(b.dataset.torneoId))}});
 document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>volverCatalogo());
-addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);if(cat>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{restaurandoHistorial=true;leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false);restaurandoHistorial=false}});
+addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);if(cat>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{estadoCatalogo.restaurarHistorial(()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false)})}});
 addEventListener('f4-back',(e:any)=>{detalleActual=e.detail.torneo;pestanaDetalle='categorias';document.getElementById('detalleTorneoHost')!.innerHTML=detallePremium(detalleActual!);seleccionarPestanaDetalle('categorias',false);});
 cargar();
 

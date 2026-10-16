@@ -456,3 +456,13 @@
 #modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(3) .bracket-card>header>small:first-child{color:#9b72cf!important}
 #modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>span:first-child,
 #modalCuadroTorneo[data-bracket-version="46"] .bracket-round:nth-child(4) .bracket-card>header>small:first-child{color:#d8b84e!important}
+/* R2.1C2V - contrato geometrico de tarjetas del catalogo */
+.w2t-card-heading{display:grid;grid-template-rows:auto auto auto;align-content:start}
+.w2t-card-heading>small{min-height:1em}
+.w2t-card h3{display:-webkit-box;min-height:2em;max-height:2em;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;text-wrap:balance}
+.w2t-card-description{display:-webkit-box;min-height:3em;max-height:3em;overflow:hidden;margin:0;color:var(--text-secondary);line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2}
+.w2t-card-description.is-empty{visibility:hidden}
+.w2t-tags{align-content:start;min-height:2rem}
+.w2t-facts{min-height:4.8rem}
+.w2t-card-body{min-height:0}
+@media(max-width:650px){.w2t-card h3{min-height:2em;max-height:2em}.w2t-card-description{min-height:3em;max-height:3em}.w2t-tags{min-height:2rem}.w2t-facts{min-height:4.8rem}}
