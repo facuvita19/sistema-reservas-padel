@@ -1,5 +1,5 @@
 import { api, type TorneoDetalle, type TorneoResumen } from './api';
-import { abrirCentroCompetitivo, manejarCentroCompetitivoClick, manejarCentroCompetitivoTeclado, precargarCentroCompetitivo, centroActivo, restaurarCentroDesdeUrl, type VistaCentro } from './centro-competitivo-premium';
+import { abrirCentroCompetitivo, manejarCentroCompetitivoClick, manejarCentroCompetitivoTeclado, precargarCentroCompetitivo, centroActivo, restaurarCentroDesdeUrl } from './centro-competitivo-premium';
 import { normalizarBusquedaTorneo, ramaPublica, textoFormato } from './torneos/dominio-torneos';
 import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos } from './torneos/estado-catalogo-torneos';
 import { adaptarResumenTorneo } from './torneos/adaptador-catalogo-torneos';
@@ -10,6 +10,7 @@ import { crearInteraccionCatalogoTorneos } from './torneos/interaccion-catalogo-
 import { crearInscripcionParejaTorneos } from './torneos/inscripcion-pareja-torneos';
 import { crearCoordinacionDetalleTorneos } from './torneos/coordinacion-detalle-torneos';
 import { crearArranquePortalTorneos } from './torneos/arranque-portal-torneos';
+import { crearIntegracionNavegacionTorneos } from './torneos/integracion-navegacion-torneos';
 
 const escapeHtml=(valor:unknown)=>String(valor??'').replace(/[&<>"']/g,caracter=>({
  '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -85,18 +86,22 @@ const arranquePortal=crearArranquePortalTorneos({
 });
 const cargar=(forzar=false)=>arranquePortal.cargar(forzar);
 
-document.addEventListener('click',e=>{const target=e.target as HTMLElement;const inscripcion=target.closest<HTMLButtonElement>('.inscribir-pareja');if(inscripcion&&!inscripcion.disabled){if(!inscripcion.dataset.resumen){const torneo=inscripcion.dataset.torneoNombre||detalleTorneo.torneoActual()?.nombre||'Torneo',categoria=inscripcion.dataset.categoriaNombre||'Categoría';inscripcion.dataset.resumen=torneo+' · '+categoria}void inscripcionPareja.abrir(inscripcion);return}if(manejarCentroCompetitivoClick(target))return;const competencia=target.closest<HTMLButtonElement>('[data-open-competition]'),actual=detalleTorneo.torneoActual();if(competencia&&actual){void abrirCentroCompetitivo(actual,Number(competencia.dataset.openCompetition),'resumen');return}detalleTorneo.manejarClick(target)});
-document.getElementById('listaTorneos')?.addEventListener('click', evento => {
-  const abrir=(evento.target as HTMLElement).closest<HTMLButtonElement>('.catalog-open');if(abrir){capturarRetornoCatalogo(abrir);abrirTorneo(Number(abrir.dataset.torneoId));return;}const retry=(evento.target as HTMLElement).closest<HTMLButtonElement>('[data-retry-torneo]');if(retry){abrirTorneo(Number(retry.dataset.retryTorneo),false);return;}
-  const boton = (evento.target as HTMLElement).closest<HTMLButtonElement>('.inscribir-pareja');
-  if (boton && !boton.disabled) { void inscripcionPareja.abrir(boton); return; }
+crearIntegracionNavegacionTorneos({
+ abrirInscripcion:boton=>inscripcionPareja.abrir(boton),
+ torneoActual:()=>detalleTorneo.torneoActual(),
+ manejarCentroClick:manejarCentroCompetitivoClick,
+ abrirCentro:abrirCentroCompetitivo,
+ manejarDetalleClick:target=>detalleTorneo.manejarClick(target),
+ capturarRetorno:capturarRetornoCatalogo,
+ abrirTorneo,
+ volverCatalogo,
+ centroActivo,
+ restaurarCentroDesdeUrl,
+ restaurarCatalogoDesdeHistorial:restaurar=>estadoCatalogo.restaurarHistorial(restaurar),
+ restaurarEstadoCatalogo:()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo()},
+ restaurarDetalleDesdeCentro:torneo=>detalleTorneo.restaurarDesdeCentro(torneo),
+ manejarCentroTeclado:manejarCentroCompetitivoTeclado,
+ precargarCentro:precargarCentroCompetitivo
 });
 
-document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>volverCatalogo());
-addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);const actual=detalleTorneo.torneoActual();if(cat>0&&actual)await abrirCentroCompetitivo(actual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{estadoCatalogo.restaurarHistorial(()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false)})}});
-addEventListener('f4-back',(e:Event)=>detalleTorneo.restaurarDesdeCentro((e as CustomEvent<{torneo:TorneoDetalle}>).detail.torneo));
-cargar();
-
-// F4.1: navegación accesible y precarga controlada del centro competitivo.
-document.addEventListener('keydown',evento=>{manejarCentroCompetitivoTeclado(evento)});
-document.addEventListener('pointerover',evento=>{const boton=(evento.target as HTMLElement).closest<HTMLElement>('[data-open-competition],[data-f4-category]');const id=Number(boton?.dataset.openCompetition||boton?.dataset.f4Category);if(id>0)precargarCentroCompetitivo(id)},{passive:true});
+void cargar();
