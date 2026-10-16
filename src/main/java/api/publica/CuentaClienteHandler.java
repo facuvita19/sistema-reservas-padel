@@ -24,6 +24,7 @@ public final class CuentaClienteHandler {
     private final CuentaClienteService cuentaService;
     private final ObjectMapper mapper;
     private final PagoClienteCuentaService pagoCuentaService;
+    private final JugadorPublicoService jugadorPublicoService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -39,6 +40,7 @@ public final class CuentaClienteHandler {
         this.cuentaService = cuentaService;
         this.mapper = mapper;
         this.pagoCuentaService = new PagoClienteCuentaService();
+        this.jugadorPublicoService = new JugadorPublicoService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -60,6 +62,14 @@ public final class CuentaClienteHandler {
                 responder(intercambio, 200,
                         cuentaService.obtenerPerfil(
                                 autenticada.cliente()));
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/perfil-deportivo")
+                    && "GET".equals(metodo)) {
+                responder(intercambio, 200,
+                        jugadorPublicoService.buscarPorCliente(
+                                autenticada.cliente().getId()));
                 return;
             }
 
@@ -138,6 +148,10 @@ public final class CuentaClienteHandler {
                     CookieSesionCliente.debeSerSegura());
             error(intercambio, 401, "NO_AUTENTICADO",
                     exception.getMessage(), operacionId);
+        } catch (JugadorPublicoService.PerfilPublicoNoEncontradoException exception) {
+            error(intercambio, 404, "PERFIL_DEPORTIVO_NO_VINCULADO",
+                    "Tu cuenta todavía no tiene un perfil deportivo vinculado.",
+                    operacionId);
         } catch (RecursoClienteNoEncontradoException exception) {
             error(intercambio, 404, "RECURSO_NO_ENCONTRADO",
                     exception.getMessage(), operacionId);
