@@ -1,6 +1,6 @@
 import type { TorneoDetalle } from '../api';
+import type { VistaCentro } from '../centro-competitivo-premium';
 
-type VistaCentro='resumen'|'posiciones'|'partidos'|'cuadro';
 type EventoRetornoCentro=CustomEvent<{torneo:TorneoDetalle}>;
 type Dependencias={
  abrirInscripcion:(boton:HTMLButtonElement)=>Promise<void>;

@@ -18,7 +18,6 @@ const escapeHtml=(valor:unknown)=>String(valor??'').replace(/[&<>"']/g,caracter=
 const movimientoReducido=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 const catalogo:EstadoCatalogoTorneos<TorneoResumen>={torneos:[],estado:'PROXIMO',busqueda:'',rama:'',formato:'',soloInscripcion:false,visibles:9};
-// R2.1C2 estado y URL del catalogo extraidos del coordinador
 const estadoCatalogo=crearEstadoCatalogoTorneos(catalogo);
 const leerEstadoCatalogo=()=>estadoCatalogo.leerDesdeUrl();
 const reflejarEstadoCatalogo=()=>estadoCatalogo.reflejarEnControles();
@@ -39,7 +38,6 @@ const interaccionCatalogo=crearInteraccionCatalogoTorneos({
  movimientoReducido
 });
 const inicializarSelectsPremium=()=>interaccionCatalogo.inicializarSelectsPremium();
-// R2.1C4 carga, cache e invalidacion extraidas del coordinador
 const datosTorneos=crearDatosTorneos<TorneoResumen,TorneoDetalle>({
  cargarCatalogo:signal=>api<unknown[]>('/torneos',{signal}).then(items=>items.map(adaptarResumenTorneo)),
  cargarDetalle:(id,signal)=>api<TorneoDetalle>(`/torneos/${id}`,{signal}),

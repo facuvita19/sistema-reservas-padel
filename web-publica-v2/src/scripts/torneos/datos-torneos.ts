@@ -2,7 +2,7 @@ export type CargadorCatalogo<T>=(signal:AbortSignal)=>Promise<T[]>;
 export type CargadorDetalle<D>=(id:number,signal:AbortSignal)=>Promise<D>;
 
 type EntradaCache<T>={dato:T;vence:number};
-type Solicitud={controlador:AbortController;version:number};
+export type SolicitudTorneos={controlador:AbortController;version:number};
 
 export function crearDatosTorneos<T,D>(config:{cargarCatalogo:CargadorCatalogo<T>;cargarDetalle:CargadorDetalle<D>;duracionCacheMs?:number}){
  const duracion=config.duracionCacheMs??60_000;
@@ -10,8 +10,8 @@ export function crearDatosTorneos<T,D>(config:{cargarCatalogo:CargadorCatalogo<T
  const detalles=new Map<number,EntradaCache<D>>();
  let controladorCatalogo:AbortController|null=null,controladorDetalle:AbortController|null=null;
  let versionCatalogo=0,versionDetalle=0;
- function nuevaSolicitudCatalogo():Solicitud{controladorCatalogo?.abort();controladorCatalogo=new AbortController();return {controlador:controladorCatalogo,version:++versionCatalogo}}
- function nuevaSolicitudDetalle():Solicitud{controladorDetalle?.abort();controladorDetalle=new AbortController();return {controlador:controladorDetalle,version:++versionDetalle}}
+ function nuevaSolicitudCatalogo():SolicitudTorneos{controladorCatalogo?.abort();controladorCatalogo=new AbortController();return {controlador:controladorCatalogo,version:++versionCatalogo}}
+ function nuevaSolicitudDetalle():SolicitudTorneos{controladorDetalle?.abort();controladorDetalle=new AbortController();return {controlador:controladorDetalle,version:++versionDetalle}}
  function esSolicitudCatalogoVigente(version:number){return version===versionCatalogo}
  function esSolicitudDetalleVigente(version:number){return version===versionDetalle}
  async function obtenerCatalogo(signal:AbortSignal,forzar=false){if(!forzar&&catalogo&&catalogo.vence>Date.now())return catalogo.dato;const dato=await config.cargarCatalogo(signal);catalogo={dato,vence:Date.now()+duracion};return dato}

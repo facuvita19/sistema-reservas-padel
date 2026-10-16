@@ -1,9 +1,9 @@
 import type { TorneoDetalle } from '../api';
+import type { SolicitudTorneos } from './datos-torneos';
 import { detallePremium, renderPanelDetalleTorneo, type PestanaDetalle } from './presentacion-detalle-torneo';
 
-type SolicitudDetalle={controlador:AbortController;version:number};
 type Dependencias={
- nuevaSolicitud:()=>SolicitudDetalle;
+ nuevaSolicitud:()=>SolicitudTorneos;
  obtener:(id:number,signal:AbortSignal)=>Promise<TorneoDetalle>;
  vigente:(version:number)=>boolean;
  abortada:(error:unknown)=>boolean;

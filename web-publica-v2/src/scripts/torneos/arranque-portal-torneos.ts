@@ -1,11 +1,11 @@
 import type { TorneoDetalle, TorneoResumen } from '../api';
+import type { VistaCentro } from '../centro-competitivo-premium';
+import type { SolicitudTorneos } from './datos-torneos';
 import type { EstadoCatalogoTorneos } from './estado-catalogo-torneos';
 
-type Solicitud={controlador:AbortController;version:number};
-type VistaCentro='resumen'|'posiciones'|'partidos'|'cuadro';
 type Dependencias={
  catalogo:EstadoCatalogoTorneos<TorneoResumen>;
- nuevaSolicitud:()=>Solicitud;
+ nuevaSolicitud:()=>SolicitudTorneos;
  obtener:(signal:AbortSignal,forzar?:boolean)=>Promise<TorneoResumen[]>;
  vigente:(version:number)=>boolean;
  abortada:(error:unknown)=>boolean;
