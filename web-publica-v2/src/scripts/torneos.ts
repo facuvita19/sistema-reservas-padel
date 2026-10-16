@@ -8,96 +8,12 @@ import { detallePremium, renderPanelDetalleTorneo, type PestanaDetalle } from '.
 import { capturarRetornoCatalogo, restaurarRetornoCatalogo } from './torneos/retorno-catalogo-torneos';
 import { poblarSelectCatalogo, renderCatalogoTorneos, renderPortadaCatalogoTorneos } from './torneos/presentacion-catalogo-torneos';
 import { crearInteraccionCatalogoTorneos } from './torneos/interaccion-catalogo-torneos';
+import { crearInscripcionParejaTorneos } from './torneos/inscripcion-pareja-torneos';
 
-type Perfil = { nombre?: string; apellido?: string; telefono?: string };
-type SolicitudCreada = { inscripcionId: number; estado: string; mensaje: string };
-
-const escapeHtml = (valor: unknown) => String(valor ?? '').replace(/[&<>"']/g, caracter => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-}[caracter] || caracter));
-
-const campo = (id: string) => document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement;
-const modal = document.getElementById('modalInscripcion') as HTMLElement;
-const formulario = document.getElementById('formInscripcion') as HTMLFormElement;
-const errorCaja = document.getElementById('errorInscripcion') as HTMLElement;
-const exitoCaja = document.getElementById('exitoInscripcion') as HTMLElement;
-const enviar = document.getElementById('enviarInscripcion') as HTMLButtonElement;
-let ultimoFoco: HTMLElement | null = null;
-let enviandoInscripcion = false;
-let inscripcionCompletada = false;
-
+const escapeHtml=(valor:unknown)=>String(valor??'').replace(/[&<>"']/g,caracter=>({
+ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+}[caracter]||caracter));
 const movimientoReducido=()=>window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-async function completarPerfil() {
-  try {
-    const perfil = await api<Perfil>('/cliente/perfil');
-    campo('responsableNombre').value = perfil.nombre || '';
-    campo('responsableApellido').value = perfil.apellido || '';
-    campo('responsableTelefono').value = perfil.telefono || '';
-  } catch { /* La inscripción también admite visitantes. */ }
-}
-
-const cuerpoModalInscripcion=()=>formulario.querySelector<HTMLElement>('.registration-modal-body')||formulario;
-const contenidoFormulario=()=>document.getElementById('contenidoFormularioInscripcion') as HTMLElement;
-const botonCancelar=()=>document.getElementById('cancelarInscripcion') as HTMLButtonElement;
-const botonCerrarExito=()=>document.getElementById('cerrarExitoInscripcion') as HTMLButtonElement;
-const idsCampos=['responsableNombre','responsableApellido','responsableTelefono','parejaNombre','parejaApellido','parejaTelefono','comentariosInscripcion'];
-
-function limpiarErroresInscripcion(){
-  errorCaja.classList.add('hidden');errorCaja.textContent='';
-  idsCampos.forEach(id=>{
-    const input=campo(id);input.removeAttribute('aria-invalid');input.classList.remove('field-invalid');
-    const mensaje=document.getElementById('error-'+id);if(mensaje){mensaje.textContent='';mensaje.classList.add('hidden')}
-  });
-}
-function primerCampoVacio(){return ['responsableNombre','responsableApellido','responsableTelefono','parejaNombre','parejaApellido','parejaTelefono'].map(campo).find(x=>!x.value.trim())||campo('parejaNombre')}
-function actualizarContadorComentarios(){document.getElementById('contadorComentarios')!.textContent=`${campo('comentariosInscripcion').value.length}/500`}
-function telefonoNormalizado(valor:string){return valor.replace(/\D/g,'')}
-function telefonosIguales(){const a=telefonoNormalizado(campo('responsableTelefono').value),b=telefonoNormalizado(campo('parejaTelefono').value);return Boolean(a&&b&&a===b)}
-function validarCampo(id:string){
-  const valor=campo(id).value.trim();let mensaje='';
-  const nombres:Record<string,string>={responsableNombre:'Ingresá el nombre del primer integrante.',responsableApellido:'Ingresá el apellido del primer integrante.',responsableTelefono:'Ingresá el teléfono del primer integrante.',parejaNombre:'Ingresá el nombre del segundo integrante.',parejaApellido:'Ingresá el apellido del segundo integrante.',parejaTelefono:'Ingresá el teléfono del segundo integrante.'};
-  if(id!=='comentariosInscripcion'&&!valor)mensaje=nombres[id]||'Completá este campo.';
-  if(id==='parejaTelefono'&&valor&&telefonosIguales())mensaje='Este teléfono coincide con el del primer integrante.';
-  if(id==='comentariosInscripcion'&&valor.length>500)mensaje='Los comentarios no pueden superar 500 caracteres.';
-  const caja=document.getElementById('error-'+id);campo(id).classList.toggle('field-invalid',Boolean(mensaje));campo(id).toggleAttribute('aria-invalid',Boolean(mensaje));if(caja){caja.textContent=mensaje;caja.classList.toggle('hidden',!mensaje)}
-  return !mensaje;
-}
-function validar(){
-  limpiarErroresInscripcion();
-  const requeridos=['responsableNombre','responsableApellido','responsableTelefono','parejaNombre','parejaApellido','parejaTelefono'];
-  const validos=requeridos.map(validarCampo);validos.push(validarCampo('comentariosInscripcion'));
-  const primero=requeridos.find((_,i)=>!validos[i]);if(primero){campo(primero).focus();return false}return validos.every(Boolean);
-}
-function establecerEnviando(valor:boolean){
-  enviandoInscripcion=valor;enviar.disabled=valor;botonCancelar().disabled=valor;
-  enviar.innerHTML=valor?'<span class="registration-spinner" aria-hidden="true"></span> Enviando inscripción...':'Enviar inscripción';
-  idsCampos.forEach(id=>campo(id).disabled=valor);
-  document.getElementById('cerrarInscripcion')?.toggleAttribute('disabled',valor);
-}
-function mostrarFormulario(){
-  inscripcionCompletada=false;contenidoFormulario().classList.remove('hidden');exitoCaja.classList.add('hidden');
-  botonCancelar().classList.remove('hidden');enviar.classList.remove('hidden');botonCerrarExito().classList.add('hidden');
-}
-function mostrarExito(creada:SolicitudCreada){
-  inscripcionCompletada=true;contenidoFormulario().classList.add('hidden');errorCaja.classList.add('hidden');
-  exitoCaja.innerHTML=`<div class="registration-success-icon" aria-hidden="true">✓</div><p class="site-kicker">Solicitud recibida</p><h3>Inscripción enviada</h3><div class="registration-success-data"><span><small>Número de solicitud</small><b>#${creada.inscripcionId}</b></span><span><small>Estado</small><b>Pendiente de revisión</b></span></div><p>La organización revisará los datos de la pareja antes de confirmar la inscripción.</p>`;
-  exitoCaja.classList.remove('hidden');botonCancelar().classList.add('hidden');enviar.classList.add('hidden');botonCerrarExito().classList.remove('hidden');
-  cuerpoModalInscripcion().scrollTop=0;requestAnimationFrame(()=>{exitoCaja.focus();botonCerrarExito().focus()});
-}
-async function abrirInscripcion(boton:HTMLButtonElement){
-  ultimoFoco=boton;formulario.reset();limpiarErroresInscripcion();mostrarFormulario();establecerEnviando(false);
-  campo('torneoCategoriaId').value=boton.dataset.categoriaId||'';
-  const resumen=document.getElementById('resumenInscripcion');if(resumen)resumen.textContent=boton.dataset.resumen||'';
-  actualizarContadorComentarios();modal.classList.remove('hidden');modal.classList.add('flex');document.body.style.overflow='hidden';
-  formulario.scrollTop=0;await completarPerfil();formulario.scrollTop=0;requestAnimationFrame(()=>primerCampoVacio().focus());
-}
-function cerrarInscripcion(){
-  if(enviandoInscripcion)return;
-  modal.classList.add('hidden');modal.classList.remove('flex');document.body.style.overflow='';
-  limpiarErroresInscripcion();ultimoFoco?.focus();
-}
-function elementosEnfocables(){return [...modal.querySelectorAll<HTMLElement>('button:not([disabled]):not(.hidden),input:not([disabled]),textarea:not([disabled]),[tabindex="0"]')].filter(x=>x.offsetParent!==null)}
-function atraparFoco(evento:KeyboardEvent){if(evento.key!=='Tab')return;const elementos=elementosEnfocables();if(!elementos.length)return;const primero=elementos[0],ultimo=elementos[elementos.length-1];if(evento.shiftKey&&document.activeElement===primero){evento.preventDefault();ultimo.focus()}else if(!evento.shiftKey&&document.activeElement===ultimo){evento.preventDefault();primero.focus()}}
 
 const catalogo:EstadoCatalogoTorneos<TorneoResumen>={torneos:[],estado:'PROXIMO',busqueda:'',rama:'',formato:'',soloInscripcion:false,visibles:9};
 // R2.1C2 estado y URL del catalogo extraidos del coordinador
@@ -139,6 +55,10 @@ const datosTorneos=crearDatosTorneos<TorneoResumen,TorneoDetalle>({
 const obtenerCatalogo=(signal:AbortSignal,forzar=false)=>datosTorneos.obtenerCatalogo(signal,forzar);
 const obtenerDetalleTorneo=(id:number,signal:AbortSignal)=>datosTorneos.obtenerDetalle(id,signal);
 const invalidarDatosTorneos=()=>datosTorneos.invalidar(detalleActual?.id);
+const inscripcionPareja=crearInscripcionParejaTorneos({
+ api,
+ alCompletar:async()=>{invalidarDatosTorneos();await cargar(true)}
+});
 
 
 
@@ -171,44 +91,13 @@ function estadoScrollDetalle():EstadoScrollDetalle{const contenido=document.getE
 function estabilizarScrollDetalle(estado:EstadoScrollDetalle){requestAnimationFrame(()=>requestAnimationFrame(()=>{if(!estado.mover){scrollTo({top:estado.y,behavior:'auto'});return}const contenido=document.getElementById('premiumDetailContent'),tabs=document.querySelector<HTMLElement>('.premium-detail-tabs');if(!contenido||!tabs)return;const margen=8,destino=Math.max(0,contenido.getBoundingClientRect().top+scrollY-tabs.offsetHeight-margen);scrollTo({top:destino,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}))}
 // F4.1C2: desplazamiento explicito de accesos rapidos.
 function irAlContenidoDetalle(){requestAnimationFrame(()=>requestAnimationFrame(()=>{const contenido=document.getElementById('premiumDetailContent'),tabs=document.querySelector<HTMLElement>('.w2td-tabs,.premium-detail-tabs'),cabecera=document.querySelector<HTMLElement>('[data-w2-header],header[data-site-header]');if(!contenido)return;const altoCabecera=cabecera?.getBoundingClientRect().height||0,altoTabs=tabs?.getBoundingClientRect().height||0,margen=12,destino=Math.max(0,contenido.getBoundingClientRect().top+scrollY-altoCabecera-altoTabs-margen);scrollTo({top:destino,behavior:movimientoReducido()?'auto':'smooth'})}))}
-document.addEventListener('click',e=>{const target=e.target as HTMLElement;const inscripcionPremium=target.closest<HTMLButtonElement>('.inscribir-pareja');if(inscripcionPremium&&!inscripcionPremium.disabled){if(!inscripcionPremium.dataset.resumen){const torneoNombre=inscripcionPremium.dataset.torneoNombre||detalleActual?.nombre||'Torneo';const categoriaNombre=inscripcionPremium.dataset.categoriaNombre||'Categoría';inscripcionPremium.dataset.resumen=torneoNombre+' · '+categoriaNombre;}abrirInscripcion(inscripcionPremium);return;}if(manejarCentroCompetitivoClick(target))return;const abrirCompetenciaPremium=target.closest<HTMLButtonElement>('[data-open-competition]');if(abrirCompetenciaPremium&&detalleActual){abrirCentroCompetitivo(detalleActual,Number(abrirCompetenciaPremium.dataset.openCompetition),'resumen');return;}if(target.closest('[data-back-catalog]')){volverCatalogo();return;}if(target.closest('[data-share-tournament]')){compartirTorneo();return;}if(target.closest('[data-go-categories]')){seleccionarPestanaDetalle('categorias');irAlContenidoDetalle();return;}if(target.closest('[data-go-rules]')){seleccionarPestanaDetalle('reglamento');irAlContenidoDetalle();return;}const tab=target.closest<HTMLButtonElement>('[data-detail-tab]');if(tab){const estado=estadoScrollDetalle();seleccionarPestanaDetalle(tab.dataset.detailTab as PestanaDetalle);estabilizarScrollDetalle(estado);return;}});
+document.addEventListener('click',e=>{const target=e.target as HTMLElement;const inscripcionPremium=target.closest<HTMLButtonElement>('.inscribir-pareja');if(inscripcionPremium&&!inscripcionPremium.disabled){if(!inscripcionPremium.dataset.resumen){const torneoNombre=inscripcionPremium.dataset.torneoNombre||detalleActual?.nombre||'Torneo';const categoriaNombre=inscripcionPremium.dataset.categoriaNombre||'Categoría';inscripcionPremium.dataset.resumen=torneoNombre+' · '+categoriaNombre;}void inscripcionPareja.abrir(inscripcionPremium);return;}if(manejarCentroCompetitivoClick(target))return;const abrirCompetenciaPremium=target.closest<HTMLButtonElement>('[data-open-competition]');if(abrirCompetenciaPremium&&detalleActual){abrirCentroCompetitivo(detalleActual,Number(abrirCompetenciaPremium.dataset.openCompetition),'resumen');return;}if(target.closest('[data-back-catalog]')){volverCatalogo();return;}if(target.closest('[data-share-tournament]')){compartirTorneo();return;}if(target.closest('[data-go-categories]')){seleccionarPestanaDetalle('categorias');irAlContenidoDetalle();return;}if(target.closest('[data-go-rules]')){seleccionarPestanaDetalle('reglamento');irAlContenidoDetalle();return;}const tab=target.closest<HTMLButtonElement>('[data-detail-tab]');if(tab){const estado=estadoScrollDetalle();seleccionarPestanaDetalle(tab.dataset.detailTab as PestanaDetalle);estabilizarScrollDetalle(estado);return;}});
 document.getElementById('listaTorneos')?.addEventListener('click', evento => {
   const abrir=(evento.target as HTMLElement).closest<HTMLButtonElement>('.catalog-open');if(abrir){capturarRetornoCatalogo(abrir);abrirTorneo(Number(abrir.dataset.torneoId));return;}const retry=(evento.target as HTMLElement).closest<HTMLButtonElement>('[data-retry-torneo]');if(retry){abrirTorneo(Number(retry.dataset.retryTorneo),false);return;}
   const boton = (evento.target as HTMLElement).closest<HTMLButtonElement>('.inscribir-pareja');
-  if (boton && !boton.disabled) { abrirInscripcion(boton); return; }
+  if (boton && !boton.disabled) { void inscripcionPareja.abrir(boton); return; }
 });
 
-document.getElementById('cerrarInscripcion')?.addEventListener('click',cerrarInscripcion);
-document.getElementById('cancelarInscripcion')?.addEventListener('click',cerrarInscripcion);
-document.getElementById('cerrarExitoInscripcion')?.addEventListener('click',cerrarInscripcion);
-// El fondo no cierra el modal: evita cierres accidentales al seleccionar texto o soltar el mouse fuera.
-document.addEventListener('keydown',evento=>{
-  if(modal.classList.contains('hidden'))return;
-  if(evento.key==='Escape'){evento.preventDefault();cerrarInscripcion();return}
-  atraparFoco(evento);
-});
-idsCampos.forEach(id=>{
-  campo(id).addEventListener('blur',()=>validarCampo(id));
-  campo(id).addEventListener('input',()=>{if(campo(id).hasAttribute('aria-invalid'))validarCampo(id);if(id==='responsableTelefono'||id==='parejaTelefono'){if(campo('parejaTelefono').value)validarCampo('parejaTelefono')}if(id==='comentariosInscripcion')actualizarContadorComentarios()});
-});
-formulario.addEventListener('submit',async evento=>{
-  evento.preventDefault();if(enviandoInscripcion||inscripcionCompletada)return;
-  errorCaja.classList.add('hidden');exitoCaja.classList.add('hidden');
-  if(!validar())return;
-  try{
-    establecerEnviando(true);
-    const creada=await api<SolicitudCreada>('/torneos/inscripciones',{method:'POST',body:JSON.stringify({
-      torneoCategoriaId:Number(campo('torneoCategoriaId').value),
-      responsable:{nombre:campo('responsableNombre').value.trim(),apellido:campo('responsableApellido').value.trim(),telefono:campo('responsableTelefono').value.trim()},
-      pareja:{nombre:campo('parejaNombre').value.trim(),apellido:campo('parejaApellido').value.trim(),telefono:campo('parejaTelefono').value.trim()},
-      comentarios:campo('comentariosInscripcion').value.trim()||null,
-    })});
-    establecerEnviando(false);mostrarExito(creada);invalidarDatosTorneos();await cargar(true);
-  }catch(error){
-    establecerEnviando(false);errorCaja.textContent=error instanceof Error?error.message:'No se pudo enviar la inscripción. Revisá los datos e intentá nuevamente.';
-    errorCaja.classList.remove('hidden');errorCaja.focus();errorCaja.scrollIntoView({behavior:'smooth',block:'center'});
-  }
-});
 
 
 document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>volverCatalogo());
