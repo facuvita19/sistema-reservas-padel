@@ -489,3 +489,66 @@
 @media(max-width:650px){.w2t-hero-grid{padding-block:2.1rem 2.5rem!important}.w2t-hero h1{font-size:clamp(2.95rem,13vw,4rem)!important}.w2t-season-signals{grid-template-columns:repeat(3,minmax(0,1fr))}.w2t-season-signals button{min-height:60px;padding:.5rem .3rem}.w2t-season-signals b{font-size:1.2rem}.w2t-featured{margin-top:1rem!important;padding:1rem}.w2t-featured h2{font-size:2.2rem!important}.w2t-section-head h2{font-size:clamp(2.55rem,11vw,3.25rem)}.w2t-state-tabs button{min-width:0;min-height:58px;padding-inline:.2rem}.w2t-tools{gap:.55rem;padding:.6rem}.w2t-search input,.w2t-filter-trigger{min-height:50px}.w2t-results-head{margin-top:1.35rem}.w2t-card>header{gap:.5rem}.w2t-card-body{padding:.95rem}.w2t-facts span{min-height:66px;padding:.65rem}.w2t-card>footer{padding:0 .95rem .95rem}}
 @media(max-width:380px){.w2t-season-signals span{font-size:.5rem}.w2t-state-tabs button{font-size:.64rem}.w2t-state-tabs b{min-width:22px;height:22px}.w2t-tools{grid-template-columns:minmax(0,1fr) auto}.w2t-filter-trigger{padding-inline:.65rem}}
 @media(prefers-reduced-motion:reduce){.w2t-primary,.w2t-card{transition:none}.w2t-primary:hover,.w2t-card:hover{transform:none}}
+/* R2.2A2 - listado semantico y adaptativo */
+.w2t-grid.results-1{grid-template-columns:minmax(0,min(820px,100%));justify-content:center}
+.w2t-grid.results-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.w2t-grid.results-1 .w2t-card,.w2t-grid.results-2 .w2t-card{min-height:0}
+.w2t-grid.results-1 .w2t-card-description.is-empty,.w2t-grid.results-2 .w2t-card-description.is-empty{display:none}
+.w2t-grid.results-1 .w2t-card-description.is-empty+.w2t-tags,.w2t-grid.results-2 .w2t-card-description.is-empty+.w2t-tags{margin-top:1rem}
+.w2t-card.state-finalizado:before{background:#687278}.w2t-card.state-finalizado .w2t-status{color:#d9dfdc}.w2t-card.state-finalizado .w2t-facts span{background:linear-gradient(145deg,#0b0f12,#10151a)}
+.w2t-card.state-finalizado .w2t-progress.is-complete>div span{background:linear-gradient(90deg,#687278,#aab3af)}
+.w2t-empty{min-height:240px}.w2t-empty b{max-width:28ch}.w2t-empty p{margin:.45rem 0 1rem}
+.w2t-journey li span{font-size:.72rem}.w2t-journey li b{letter-spacing:-.01em}.w2t-journey li{transition:background .18s ease}.w2t-journey li:hover{background:color-mix(in srgb,var(--panel-raised) 58%,transparent)}
+@media(max-width:899px){.w2t-grid.results-1,.w2t-grid.results-2{grid-template-columns:1fr}.w2t-grid.results-1{justify-content:stretch}}
+@media(max-width:650px){.w2t-empty{min-height:220px;padding:1.35rem}.w2t-journey li:hover{background:transparent}}
+@media(prefers-reduced-motion:reduce){.w2t-journey li{transition:none}}
+/* R2.2A2C - coherencia final de tarjetas */
+.w2t-grid.results-1{grid-template-columns:minmax(0,min(780px,100%))}
+.w2t-grid.results-1 .w2t-card-body,.w2t-grid.results-2 .w2t-card-body{padding-block:.95rem}
+.w2t-grid.results-1 .w2t-card-heading,.w2t-grid.results-2 .w2t-card-heading{grid-template-rows:auto auto auto}
+.w2t-grid.results-1 .w2t-card h3,.w2t-grid.results-2 .w2t-card h3{min-height:0;max-height:none;-webkit-line-clamp:2;line-clamp:2}
+.w2t-grid.results-1 .w2t-card-description.is-empty,.w2t-grid.results-2 .w2t-card-description.is-empty{display:none;min-height:0;max-height:0}
+.w2t-grid.results-1 .w2t-tags,.w2t-grid.results-2 .w2t-tags{min-height:0;margin-top:.85rem}
+.w2t-grid.results-1 .w2t-facts,.w2t-grid.results-2 .w2t-facts{min-height:0;margin:.8rem 0}
+.w2t-card.state-finalizado .w2t-progress.is-complete>div span{background:linear-gradient(90deg,#687278,#9da7a2)}
+.w2t-card.state-finalizado .w2t-progress.is-complete.is-total>div span{background:linear-gradient(90deg,#78837e,#bac2be)}
+.w2t-card.state-finalizado .w2t-progress.is-complete:not(.is-total)>header b{color:#c6ceca}
+.w2t-card.state-finalizado .w2t-progress.is-complete:not(.is-total)>div{background:#1a2024}
+.w2t-card.state-finalizado .w2t-facts small{letter-spacing:.035em}
+@media(max-width:899px){.w2t-grid.results-1{grid-template-columns:1fr}}
+/* R2.2A2D - color y densidad de finalizados */
+.w2t-card.state-finalizado{--w2t-final-accent:#64aaa4;--w2t-final-accent-soft:rgba(100,170,164,.13);--w2t-final-accent-line:rgba(100,170,164,.42)}
+.w2t-card.state-finalizado:before{background:var(--w2t-final-accent)}
+.w2t-card.state-finalizado .w2t-status{color:#a8d7d2}
+.w2t-card.state-finalizado .w2t-status i{background:var(--w2t-final-accent);box-shadow:0 0 0 4px var(--w2t-final-accent-soft)}
+.w2t-card.state-finalizado .w2t-card-heading>small{color:#8fc7c1}
+.w2t-card.state-finalizado .w2t-tags span{border-color:var(--w2t-final-accent-line);background:rgba(100,170,164,.07);color:#c8e4e1}
+.w2t-card.state-finalizado .w2t-facts span{border-color:rgba(100,170,164,.22);background:linear-gradient(145deg,rgba(100,170,164,.075),#0c1114)}
+.w2t-card.state-finalizado .w2t-facts small{color:#91bbb7}
+.w2t-card.state-finalizado .w2t-progress header b{color:#b8deda}
+.w2t-card.state-finalizado .w2t-progress.is-complete>div span{background:linear-gradient(90deg,#4f918b,var(--w2t-final-accent))}
+.w2t-card.state-finalizado .w2t-progress.is-complete.is-total>div span{background:linear-gradient(90deg,#64aaa4,#9bd1cb)}
+.w2t-card.state-finalizado>footer button:hover{border-color:var(--w2t-final-accent);background:rgba(100,170,164,.1)}
+.w2t-card.state-finalizado>footer button:hover span{color:#9bd1cb}
+.w2t-grid.results-many .w2t-card.state-finalizado .w2t-card-description.is-empty{display:none;min-height:0;max-height:0}
+.w2t-grid.results-many .w2t-card.state-finalizado .w2t-card-heading{grid-template-rows:auto auto auto}
+.w2t-grid.results-many .w2t-card.state-finalizado .w2t-tags{margin-top:.9rem}
+.w2t-grid.results-many .w2t-card.state-finalizado .w2t-facts{margin:.8rem 0}
+.w2t-grid.results-many .w2t-card.state-finalizado .w2t-card-body{padding-block:.95rem}
+.w2t-grid.results-many .w2t-card.state-finalizado h3{min-height:2em;max-height:2em}
+@media(max-width:650px){.w2t-card.state-finalizado{--w2t-final-accent:#70b7b1}.w2t-grid.results-many .w2t-card.state-finalizado h3{min-height:0;max-height:none}}
+/* R2.2A2E - finalizados grafito y cobre */
+.w2t-card.state-finalizado{--w2t-final-accent:#b58a52;--w2t-final-accent-soft:rgba(181,138,82,.11);--w2t-final-accent-line:rgba(181,138,82,.34)}
+.w2t-card.state-finalizado:before{background:linear-gradient(180deg,#c79b60,#7f603d)}
+.w2t-card.state-finalizado .w2t-status{color:#d9c3a4}
+.w2t-card.state-finalizado .w2t-status i{background:#b58a52;box-shadow:0 0 0 4px rgba(181,138,82,.1)}
+.w2t-card.state-finalizado .w2t-card-heading>small{color:#bca17d}
+.w2t-card.state-finalizado .w2t-tags span{border-color:rgba(181,138,82,.3);background:rgba(181,138,82,.055);color:#ddd0bd}
+.w2t-card.state-finalizado .w2t-facts span{border-color:rgba(181,138,82,.18);background:linear-gradient(145deg,rgba(181,138,82,.052),#0c1013)}
+.w2t-card.state-finalizado .w2t-facts small{color:#bba486}
+.w2t-card.state-finalizado .w2t-progress header b{color:#d9c3a4}
+.w2t-card.state-finalizado .w2t-progress.is-complete>div span{background:linear-gradient(90deg,#84613c,#b58a52)}
+.w2t-card.state-finalizado .w2t-progress.is-complete.is-total>div span{background:linear-gradient(90deg,#9b7447,#d0aa72)}
+.w2t-card.state-finalizado>footer button:hover{border-color:#b58a52;background:rgba(181,138,82,.08)}
+.w2t-card.state-finalizado>footer button:hover span{color:#d0aa72}
+@media(max-width:650px){.w2t-card.state-finalizado{--w2t-final-accent:#bd925c}}
