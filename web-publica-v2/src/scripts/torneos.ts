@@ -1,12 +1,13 @@
 import { api, type TorneoDetalle, type TorneoResumen } from './api';
 import { abrirCentroCompetitivo, manejarCentroCompetitivoClick, manejarCentroCompetitivoTeclado, precargarCentroCompetitivo, centroActivo, restaurarCentroDesdeUrl, type VistaCentro } from './centro-competitivo-premium';
 import { normalizarBusquedaTorneo, ramaPublica, textoFormato } from './torneos/dominio-torneos';
-import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos, type EstadoPortalTorneo } from './torneos/estado-catalogo-torneos';
+import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos } from './torneos/estado-catalogo-torneos';
 import { adaptarResumenTorneo } from './torneos/adaptador-catalogo-torneos';
 import { crearDatosTorneos } from './torneos/datos-torneos';
 import { detallePremium, renderPanelDetalleTorneo, type PestanaDetalle } from './torneos/presentacion-detalle-torneo';
 import { capturarRetornoCatalogo, restaurarRetornoCatalogo } from './torneos/retorno-catalogo-torneos';
 import { poblarSelectCatalogo, renderCatalogoTorneos, renderPortadaCatalogoTorneos } from './torneos/presentacion-catalogo-torneos';
+import { crearInteraccionCatalogoTorneos } from './torneos/interaccion-catalogo-torneos';
 
 type Perfil = { nombre?: string; apellido?: string; telefono?: string };
 type SolicitudCreada = { inscripcionId: number; estado: string; mensaje: string };
@@ -98,7 +99,6 @@ function cerrarInscripcion(){
 function elementosEnfocables(){return [...modal.querySelectorAll<HTMLElement>('button:not([disabled]):not(.hidden),input:not([disabled]),textarea:not([disabled]),[tabindex="0"]')].filter(x=>x.offsetParent!==null)}
 function atraparFoco(evento:KeyboardEvent){if(evento.key!=='Tab')return;const elementos=elementosEnfocables();if(!elementos.length)return;const primero=elementos[0],ultimo=elementos[elementos.length-1];if(evento.shiftKey&&document.activeElement===primero){evento.preventDefault();ultimo.focus()}else if(!evento.shiftKey&&document.activeElement===ultimo){evento.preventDefault();primero.focus()}}
 
-type EstadoPortal=EstadoPortalTorneo;
 const catalogo:EstadoCatalogoTorneos<TorneoResumen>={torneos:[],estado:'PROXIMO',busqueda:'',rama:'',formato:'',soloInscripcion:false,visibles:9};
 // R2.1C2 estado y URL del catalogo extraidos del coordinador
 const estadoCatalogo=crearEstadoCatalogoTorneos(catalogo);
@@ -118,12 +118,16 @@ function renderCatalogo(){renderCatalogoTorneos(catalogo,resultadosCatalogo(),li
 
 
 function limpiarFiltros(){catalogo.busqueda='';catalogo.rama='';catalogo.formato='';catalogo.soloInscripcion=false;catalogo.visibles=9;(document.getElementById('buscarTorneo') as HTMLInputElement).value='';(document.getElementById('filtroRama') as HTMLSelectElement).value='';(document.getElementById('filtroFormato') as HTMLSelectElement).value='';(document.getElementById('filtroInscripcion') as HTMLInputElement).checked=false;renderCatalogo();escribirEstadoCatalogo('replace')}
-let origenPanelFiltros:ParentNode|null=null;
-let siguientePanelFiltros:ChildNode|null=null;
-function montarPortalFiltros(panel:HTMLElement,fondo:HTMLElement){if(!origenPanelFiltros){origenPanelFiltros=panel.parentNode;siguientePanelFiltros=panel.nextSibling}if(fondo.parentNode!==document.body)document.body.appendChild(fondo);if(panel.parentNode!==document.body)document.body.appendChild(panel);panel.classList.add('tournament-filter-portal')}
-function restaurarPanelFiltros(panel:HTMLElement){if(origenPanelFiltros&&panel.parentNode!==origenPanelFiltros){if(siguientePanelFiltros&&siguientePanelFiltros.parentNode===origenPanelFiltros)origenPanelFiltros.insertBefore(panel,siguientePanelFiltros);else origenPanelFiltros.appendChild(panel)}panel.classList.remove('tournament-filter-portal')}
-function panelFiltros(abierto:boolean){const panel=document.getElementById('panelFiltrosTorneos'),fondo=document.getElementById('fondoFiltrosTorneos'),disparador=document.getElementById('abrirFiltrosTorneos') as HTMLButtonElement|null,movil=matchMedia('(max-width: 899px)').matches;if(!panel||!fondo)return;if(abierto&&movil)montarPortalFiltros(panel,fondo);panel.classList.toggle('open',abierto);panel.classList.toggle('filters-visible',abierto);panel.setAttribute('aria-hidden',String(!abierto));fondo.classList.toggle('hidden',!abierto);fondo.classList.toggle('filters-visible',abierto);disparador?.setAttribute('aria-expanded',String(abierto));document.body.classList.toggle('tournament-filters-open',abierto&&movil);if(abierto&&movil)requestAnimationFrame(()=>{panel.scrollTop=0;const cerrar=panel.querySelector<HTMLElement>('#cerrarFiltrosTorneos');(cerrar||panel.querySelector<HTMLElement>('select,input,button'))?.focus({preventScroll:true})});else if(!abierto){disparador?.focus({preventScroll:true});requestAnimationFrame(()=>{if(!matchMedia('(max-width: 899px)').matches)restaurarPanelFiltros(panel)})}}
-addEventListener('resize',()=>{const panel=document.getElementById('panelFiltrosTorneos');if(!panel)return;if(!matchMedia('(max-width: 899px)').matches){panelFiltros(false);restaurarPanelFiltros(panel)}},{passive:true});
+const interaccionCatalogo=crearInteraccionCatalogoTorneos({
+ catalogo,
+ renderCatalogo,
+ limpiarFiltros,
+ escribirEstadoCatalogo,
+ abrirTorneo,
+ capturarRetornoCatalogo,
+ movimientoReducido
+});
+const inicializarSelectsPremium=()=>interaccionCatalogo.inicializarSelectsPremium();
 let detalleActual:TorneoDetalle|null=null;
 let pestanaDetalle:PestanaDetalle='informacion';
 // R2.1C4 carga, cache e invalidacion extraidas del coordinador
@@ -152,33 +156,6 @@ function seleccionarPestanaDetalle(tab:PestanaDetalle,actualizarUrl=true){if(!de
 async function compartirTorneo(){try{if(navigator.share)await navigator.share({title:detalleActual?.nombre||'Torneo',url:location.href});else{await navigator.clipboard.writeText(location.href);const b=document.querySelector<HTMLButtonElement>('[data-share-tournament]');if(b){const original=b.textContent;b.textContent='Enlace copiado';setTimeout(()=>b.textContent=original,1800);}}}catch{}}
 async function abrirTorneo(id:number,actualizarUrl=true){const catalog=document.getElementById('vistaCatalogoTorneos')!,detail=document.getElementById('vistaDetalleTorneo')!,host=document.getElementById('detalleTorneoHost')!;catalog.classList.add('hidden');detail.classList.remove('hidden');host.setAttribute('aria-busy','true');host.innerHTML='<div class="competition-loading">Cargando torneo...</div>';if(actualizarUrl){const u=new URL(location.href);u.searchParams.set('torneo',String(id));['seccion','categoria','vista','grupo','instancia','ronda'].forEach(x=>u.searchParams.delete(x));history.pushState({nivel:'detalle',torneo:id},'',u)}const solicitud=datosTorneos.nuevaSolicitudDetalle();const controlador=solicitud.controlador;const version=solicitud.version;try{const t=await obtenerDetalleTorneo(id,controlador.signal);if(!datosTorneos.esSolicitudDetalleVigente(version))return;detalleActual=t;pestanaDetalle=(new URLSearchParams(location.search).get('seccion') as PestanaDetalle)||'informacion';if(!['informacion','categorias','reglamento'].includes(pestanaDetalle))pestanaDetalle='informacion';host.removeAttribute('aria-busy');host.innerHTML=detallePremium(t,pestanaDetalle);document.title=`${t.nombre} | Plataforma Deportiva W2`;scrollTo({top:0,behavior:movimientoReducido()?'auto':'smooth'})}catch(error){if(!datosTorneos.esSolicitudDetalleVigente(version)||datosTorneos.esAbortada(error))return;host.removeAttribute('aria-busy');host.innerHTML=`<div class="competition-error"><b>No pudimos abrir el torneo</b><p>${escapeHtml(error instanceof Error?error.message:'Intentá nuevamente.')}</p><button class="btn btn-secondary" type="button" data-retry-torneo="${id}">Reintentar</button></div>`}}
 function volverCatalogo(actualizarUrl=true){detalleActual=null;document.getElementById('vistaDetalleTorneo')?.classList.add('hidden');document.getElementById('vistaCatalogoTorneos')?.classList.remove('hidden');document.title='Torneos | Plataforma Deportiva W2';if(actualizarUrl){const u=new URL(location.href);['torneo','seccion','categoria','vista','grupo','instancia','ronda'].forEach(x=>u.searchParams.delete(x));history.pushState({},'',u)}restaurarRetornoCatalogo();}
-// cierre-catalogo-movil-v80h-20261011
-function limpiarInscripcionAlCambiarEstado(){
- if(!catalogo.soloInscripcion)return;
- catalogo.soloInscripcion=false;
- const input=document.getElementById('filtroInscripcion') as HTMLInputElement|null;
- if(input)input.checked=false;
-}
-function actualizarPlaceholderTorneos(){
- const input=document.getElementById('buscarTorneo') as HTMLInputElement|null;
- if(!input)return;
- input.placeholder=matchMedia('(max-width: 639px)').matches?'Buscar torneo o categoría':'Buscar por torneo, categoría, rama o formato';
-}
-document.addEventListener('click',evento=>{
- const tab=(evento.target as HTMLElement).closest<HTMLButtonElement>('[data-catalog-state]');
- if(!tab)return;
- limpiarInscripcionAlCambiarEstado();
-},true);
-addEventListener('resize',actualizarPlaceholderTorneos,{passive:true});
-if(document.readyState==='loading')addEventListener('DOMContentLoaded',actualizarPlaceholderTorneos,{once:true});else actualizarPlaceholderTorneos();
-
-// accesos-rapidos-y-filtros-nativos-v80e-20261011
-function sincronizarFiltroInscripcion(valor:boolean){catalogo.soloInscripcion=valor;const input=document.getElementById('filtroInscripcion') as HTMLInputElement|null;if(input)input.checked=valor}
-function irAResultadosCatalogo(){requestAnimationFrame(()=>document.getElementById('pestanasTorneos')?.scrollIntoView({behavior:movimientoReducido()?'auto':'smooth',block:'start'}))}
-document.addEventListener('click',evento=>{const target=evento.target as HTMLElement;const estado=target.closest<HTMLButtonElement>('[data-summary-state]');const abiertas=target.closest<HTMLButtonElement>('[data-summary-open]');if(estado){evento.preventDefault();evento.stopImmediatePropagation();catalogo.estado=estado.dataset.summaryState as EstadoPortal;sincronizarFiltroInscripcion(false);catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('push');irAResultadosCatalogo();return}if(abiertas){evento.preventDefault();evento.stopImmediatePropagation();catalogo.estado='PROXIMO';sincronizarFiltroInscripcion(true);catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('push');irAResultadosCatalogo();return}},true);
-document.addEventListener('click',evento=>{const target=evento.target as HTMLElement;if(target.closest('#abrirFiltrosTorneos')){evento.preventDefault();panelFiltros(true);return}if(target.closest('#cerrarFiltrosTorneos,#aplicarFiltrosTorneos,#fondoFiltrosTorneos')){evento.preventDefault();panelFiltros(false)}},true);
-document.addEventListener('keydown',evento=>{if(evento.key==='Escape'&&document.body.classList.contains('tournament-filters-open')){evento.preventDefault();panelFiltros(false)}});
-
 // perfeccion-portada-torneos-v52b-20261011
 // cierre-portada-torneos-v53-20261011
 // refinamiento-interaccion-torneos-v54-20261011
@@ -234,45 +211,10 @@ formulario.addEventListener('submit',async evento=>{
 });
 
 
-function cerrarSelectsPremium(excepto?:HTMLElement){document.querySelectorAll<HTMLElement>('.premium-select.open').forEach(x=>{if(x!==excepto){x.classList.remove('open');x.querySelector<HTMLButtonElement>('.premium-select-trigger')?.setAttribute('aria-expanded','false')}})}
-// F4.1B3: selectores nativos de interfaz W2 y consistencia temporal.
-function crearSelectPremium(select:HTMLSelectElement){
- if(select.dataset.premiumReady==='true')return;select.dataset.premiumReady='true';
- const prefijo='w2t-select';
- const raiz=document.createElement('div');raiz.className=prefijo;
- const boton=document.createElement('button');boton.type='button';boton.className=prefijo+'-trigger';boton.setAttribute('aria-haspopup','listbox');boton.setAttribute('aria-expanded','false');
- const lista=document.createElement('div');lista.className=prefijo+'-menu';lista.setAttribute('role','listbox');lista.tabIndex=-1;
- select.insertAdjacentElement('afterend',raiz);raiz.append(select,boton,lista);select.classList.add(prefijo+'-native');
- const rotulo=select.dataset.premiumSelect||'Seleccionar';
- const textoOpcion=(o:HTMLOptionElement)=>select.id==='filtroRama'&&o.value?ramaPublica(o.value):o.text;
- const dibujar=()=>{const opciones=[...select.options];const actual=opciones.find(o=>o.value===select.value)||opciones[0];boton.innerHTML=`<span><small>${escapeHtml(rotulo)}</small><b>${escapeHtml(textoOpcion(actual!))}</b></span><i aria-hidden="true"></i>`;lista.innerHTML=opciones.map(o=>`<button type="button" role="option" data-value="${escapeHtml(o.value)}" aria-selected="${o.value===select.value}" tabindex="-1"><span>${escapeHtml(textoOpcion(o))}</span><i aria-hidden="true">${o.value===select.value?'✓':''}</i></button>`).join('')};
- const cerrar=(devolverFoco=false)=>{raiz.classList.remove('open','open-up');boton.setAttribute('aria-expanded','false');if(devolverFoco)boton.focus({preventScroll:true})};
- const abrir=()=>{cerrarSelectsPremium();document.querySelectorAll<HTMLElement>('.w2t-select.open').forEach(x=>{if(x!==raiz){x.classList.remove('open','open-up');x.querySelector<HTMLButtonElement>('.w2t-select-trigger')?.setAttribute('aria-expanded','false')}});raiz.classList.remove('open-up');raiz.classList.add('open');boton.setAttribute('aria-expanded','true');const rect=raiz.getBoundingClientRect(),espacioAbajo=innerHeight-rect.bottom-12;lista.style.maxHeight=String(espacioAbajo>96?espacioAbajo:96)+'px';lista.style.overflowY='auto';requestAnimationFrame(()=>lista.querySelector<HTMLElement>('[aria-selected="true"]')?.focus())};
- boton.addEventListener('click',()=>raiz.classList.contains('open')?cerrar(true):abrir());
- lista.addEventListener('click',e=>{const opcion=(e.target as HTMLElement).closest<HTMLButtonElement>('[data-value]');if(!opcion)return;select.value=opcion.dataset.value||'';select.dispatchEvent(new Event('change',{bubbles:true}));dibujar();cerrar(true)});
- raiz.addEventListener('keydown',e=>{const items=[...lista.querySelectorAll<HTMLButtonElement>('[data-value]')];if(e.key==='Escape'){e.preventDefault();e.stopPropagation();cerrar(true);return}if(!raiz.classList.contains('open')&&['ArrowDown','ArrowUp','Enter',' '].includes(e.key)){e.preventDefault();abrir();return}const actual=Math.max(0,items.indexOf(document.activeElement as HTMLButtonElement));if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();items[(actual+(e.key==='ArrowDown'?1:-1)+items.length)%items.length]?.focus()}if(e.key==='Home'){e.preventDefault();items[0]?.focus()}if(e.key==='End'){e.preventDefault();items.at(-1)?.focus()}if((e.key==='Enter'||e.key===' ')&&document.activeElement?.hasAttribute('data-value')){e.preventDefault();(document.activeElement as HTMLButtonElement).click()}});
- select.addEventListener('change',dibujar);new MutationObserver(dibujar).observe(select,{childList:true,subtree:true});dibujar();
-}function inicializarSelectsPremium(){document.querySelectorAll<HTMLSelectElement>('select[data-premium-select]').forEach(crearSelectPremium)}
-document.addEventListener('click',e=>{const objetivo=e.target as HTMLElement;if(!objetivo.closest('.premium-select,.w2t-select')){cerrarSelectsPremium();document.querySelectorAll<HTMLElement>('.w2t-select.open').forEach(x=>{x.classList.remove('open','open-up');x.querySelector<HTMLButtonElement>('.w2t-select-trigger')?.setAttribute('aria-expanded','false')})}});
-document.getElementById('pestanasTorneos')?.addEventListener('click',e=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('[data-catalog-state]');if(!b)return;catalogo.estado=b.dataset.catalogState as EstadoPortal;catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('push')});
-document.getElementById('buscarTorneo')?.addEventListener('input',e=>{catalogo.busqueda=(e.target as HTMLInputElement).value;catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('replace')});
-document.getElementById('mostrarMasTorneos')?.addEventListener('click',()=>{catalogo.visibles+=9;renderCatalogo();});
-document.getElementById('chipsFiltrosTorneos')?.addEventListener('click',e=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('[data-remove-filter]');if(!b)return;const tipo=b.dataset.removeFilter;if(tipo==='inscripcion'){catalogo.soloInscripcion=false;(document.getElementById('filtroInscripcion') as HTMLInputElement).checked=false;}if(tipo==='rama'){catalogo.rama='';(document.getElementById('filtroRama') as HTMLSelectElement).value='';}if(tipo==='formato'){catalogo.formato='';(document.getElementById('filtroFormato') as HTMLSelectElement).value='';}catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('replace')});
-document.getElementById('abrirFiltrosTorneos')?.addEventListener('click',()=>panelFiltros(true));
-document.getElementById('cerrarFiltrosTorneos')?.addEventListener('click',()=>panelFiltros(false));
-document.getElementById('fondoFiltrosTorneos')?.addEventListener('click',()=>panelFiltros(false));
-document.getElementById('limpiarFiltrosTorneos')?.addEventListener('click',limpiarFiltros);document.getElementById('limpiarFiltrosTorneosInline')?.addEventListener('click',limpiarFiltros);
-const aplicarFiltros=()=>{catalogo.rama=(document.getElementById('filtroRama') as HTMLSelectElement).value;catalogo.formato=(document.getElementById('filtroFormato') as HTMLSelectElement).value;catalogo.soloInscripcion=(document.getElementById('filtroInscripcion') as HTMLInputElement).checked;catalogo.visibles=9;renderCatalogo();escribirEstadoCatalogo('replace')};document.getElementById('aplicarFiltrosTorneos')?.addEventListener('click',()=>{aplicarFiltros();panelFiltros(false)});['filtroRama','filtroFormato','filtroInscripcion'].forEach(id=>document.getElementById(id)?.addEventListener('change',()=>{if(matchMedia('(min-width: 900px)').matches)aplicarFiltros()}));document.getElementById('torneoDestacado')?.addEventListener('click',e=>{const b=(e.target as HTMLElement).closest<HTMLButtonElement>('.catalog-open');if(b){capturarRetornoCatalogo(b);abrirTorneo(Number(b.dataset.torneoId))}});
 document.getElementById('volverCatalogoTorneos')?.addEventListener('click',()=>volverCatalogo());
 addEventListener('popstate',async()=>{const p=new URLSearchParams(location.search),id=Number(p.get('torneo')),cat=Number(p.get('categoria'));if(cat>0&&centroActivo()&&restaurarCentroDesdeUrl())return;if(id>0){await abrirTorneo(id,false);if(cat>0&&detalleActual)await abrirCentroCompetitivo(detalleActual,cat,(p.get('vista')||'resumen') as VistaCentro,false)}else{estadoCatalogo.restaurarHistorial(()=>{leerEstadoCatalogo();reflejarEstadoCatalogo();renderCatalogo();volverCatalogo(false)})}});
 addEventListener('f4-back',(e:any)=>{detalleActual=e.detail.torneo;pestanaDetalle='categorias';document.getElementById('detalleTorneoHost')!.innerHTML=detallePremium(detalleActual!,pestanaDetalle);seleccionarPestanaDetalle('categorias',false);});
 cargar();
-
-// accesibilidad-web-v85-20261011
-function accesibilidadFiltrosTorneos(){const panel=document.getElementById('panelFiltrosTorneos');if(!panel)return;const abierto=panel.classList.contains('open');panel.toggleAttribute('inert',!abierto&&matchMedia('(max-width:899px)').matches)}
-document.addEventListener('keydown',ev=>{const panel=document.getElementById('panelFiltrosTorneos');if(!panel?.classList.contains('open')||ev.key!=='Tab'||!matchMedia('(max-width:899px)').matches)return;const f=[...panel.querySelectorAll<HTMLElement>('button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex="0"]')].filter(x=>x.offsetParent!==null);if(!f.length)return;if(ev.shiftKey&&document.activeElement===f[0]){ev.preventDefault();f.at(-1)?.focus()}else if(!ev.shiftKey&&document.activeElement===f.at(-1)){ev.preventDefault();f[0].focus()}});
-new MutationObserver(accesibilidadFiltrosTorneos).observe(document.getElementById('panelFiltrosTorneos')!,{attributes:true,attributeFilter:['class']});accesibilidadFiltrosTorneos();
-
 
 // F4.1: navegación accesible y precarga controlada del centro competitivo.
 document.addEventListener('keydown',evento=>{manejarCentroCompetitivoTeclado(evento)});
