@@ -330,3 +330,20 @@
 @media(min-width:901px) and (max-width:1180px){
  .w2c2-rank-hero h1{max-width:840px!important;font-size:clamp(3.25rem,6.1vw,5rem)!important}
 }
+/* R3.1C2 - cabecera operativa integrada */
+@media(min-width:901px){
+ .w2c2-rank-head{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(18rem,28rem)!important;align-items:end!important;gap:clamp(1.5rem,3vw,3.5rem)!important;margin-bottom:.8rem!important;padding:.15rem 0 .8rem!important;border-bottom:1px solid rgba(112,123,129,.18)!important}
+ .w2c2-rank-head>div{min-width:0!important}
+ .w2c2-rank-head h2{margin:.28rem 0 .42rem!important;line-height:.95!important}
+ .w2c2-rank-head #rankSummary{max-width:46rem!important;margin:0!important;line-height:1.45!important}
+ .w2c2-rank-head>label{align-self:end!important;width:100%!important;margin:0!important}
+ .w2c2-rank-head>label>span{display:block!important;margin:0 0 .42rem!important;color:var(--text-secondary,#8fa39a)!important;font-size:.58rem!important;font-weight:900!important;letter-spacing:.07em!important;text-transform:uppercase!important}
+ .w2c2-rank-head input{width:100%!important;min-height:52px!important;margin:0!important;border-color:rgba(112,123,129,.32)!important;background:#10161a!important}
+ .w2c2-podium{margin-top:.75rem!important}
+}
+@media(max-width:900px){
+ .w2c2-rank-head{gap:1rem!important}
+ .w2c2-rank-head>label{width:100%!important;margin:0!important}
+ .w2c2-rank-head input{min-height:48px!important}
+}
+html[data-theme="light"] .w2c2-rank-head input,body[data-theme="light"] .w2c2-rank-head input,.w2-body.theme-light .w2c2-rank-head input{background:var(--panel-bg,#fff)!important}
