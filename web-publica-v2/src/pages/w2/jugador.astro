@@ -9,7 +9,24 @@ import '../../w2/styles/w2-jugador.css';
  <section id="profileError" class="w2-container w2jp-error hidden"><span aria-hidden="true">W2</span><p class="w2-kicker">Perfil deportivo</p><h1>No pudimos abrir este perfil</h1><p id="profileErrorText"></p><div><a class="w2-button primary" href="/w2/rankings">Explorar rankings</a><a href="/w2">Volver a Plataforma W2 →</a></div></section>
  <div id="profileContent" class="hidden">
   <nav class="w2-container w2jp-context" aria-label="Contexto del perfil"><a id="w2pBackToRanking" href="/w2/rankings">← Volver al ranking</a><span id="w2pContextLabel">Perfil público</span></nav>
-  <section class="w2jp-hero"><div class="w2-container w2jp-hero-grid"><div class="w2jp-identity"><span id="profileInitials">PJ</span><div><p class="w2-kicker">Identidad deportiva pública</p><h1 id="profileName">Jugador W2</h1><div class="w2jp-badges"><b id="profilePosition">FLEXIBLE</b><em id="profileCategory">SIN CATEGORÍA</em></div></div></div><aside><article><small>PUESTO ACTUAL</small><strong id="profileRank">—</strong><span id="profileRankHelp">Sin posición publicada</span></article><article><small>PUNTOS PUBLICADOS</small><strong id="profilePoints">0</strong><a id="w2pAuditPoints" href="/w2/rankings">Cómo se forman →</a></article><article><small>EFECTIVIDAD</small><strong id="profileEffectiveness">0%</strong><span id="profileRecord">Sin partidos oficiales</span></article></aside></div></section>
+  <section id="w2jpHero" class="w2jp-hero" aria-labelledby="profileName" data-publication="SIN_CATEGORIA">
+   <div class="w2jp-hero-atmosphere" aria-hidden="true"><i></i><i></i></div>
+   <div class="w2-container w2jp-hero-grid">
+    <div class="w2jp-identity">
+     <div class="w2jp-monogram" aria-hidden="true"><span id="profileInitials">PJ</span><i></i></div>
+     <div class="w2jp-identity-copy">
+      <p class="w2-kicker"><span></span> Identidad deportiva pública</p>
+      <h1 id="profileName">Jugador W2</h1>
+      <div class="w2jp-badges" aria-label="Información deportiva principal"><b id="profileCategory">SIN CATEGORÍA</b><em id="profilePosition">FLEXIBLE</em><span id="w2jpPublicationBadge">PERFIL PÚBLICO</span></div>
+     </div>
+    </div>
+    <aside class="w2jp-hero-metrics" aria-label="Resumen competitivo del jugador">
+     <article class="w2jp-rank-metric"><small>PUESTO ACTUAL</small><strong id="profileRank">—</strong><span id="profileRankHelp">Sin posición publicada</span></article>
+     <article><small>PUNTOS PUBLICADOS</small><strong id="profilePoints">0</strong><a id="w2pAuditPoints" href="/w2/rankings">Cómo se forman →</a></article>
+     <article><small>EFECTIVIDAD</small><strong id="profileEffectiveness">0%</strong><span id="profileRecord">Sin partidos oficiales</span></article>
+    </aside>
+   </div>
+  </section>
   <section class="w2-container w2jp-body">
    <main>
     <section id="profileReadyNotice" class="w2jp-ready hidden"><span>✓</span><div><b>Perfil listo para competir</b><p>El ranking se actualizará automáticamente cuando se publiquen resultados oficiales.</p></div></section>
