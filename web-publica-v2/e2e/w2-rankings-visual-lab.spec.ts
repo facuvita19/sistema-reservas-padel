@@ -1,0 +1,10 @@
+import {test,expect} from '@playwright/test';
+import {mockRankingsVisualLab} from './fixtures/rankings-visual-lab';
+
+test.beforeEach(async({page})=>mockRankingsVisualLab(page,{authenticated:true}));
+
+test('R3.1A ranking extenso conserva 24 posiciones, podio y búsqueda',async({page})=>{await page.goto('/w2/rankings?categoria=161');await expect(page.locator('#rankPodium>a')).toHaveCount(3);await expect(page.locator('#w2RankingRows>a')).toHaveCount(24);await expect(page.locator('#rankFullCount')).toHaveText('24 jugadores');await page.locator('#w2RankingSearch').fill('Montenegro');await expect(page.locator('#w2RankingRows>a')).toHaveCount(1)});
+test('R3.1A ranking breve y vacío conservan sus composiciones',async({page})=>{await page.goto('/w2/rankings?categoria=162');await expect(page.locator('#w2RankingRows>a')).toHaveCount(5);await expect(page.locator('#rankPodium>a')).toHaveCount(3);await page.locator('[data-category="163"]').click();await expect(page.locator('#rankEmptyState')).toBeVisible();await expect(page.locator('#w2RankingRows>a')).toHaveCount(0)});
+test('R3.1A auditoría extensa soporta scroll y doce aportes',async({page})=>{await page.goto('/w2/rankings?categoria=161');await page.locator('[data-audit-profile="9101"]').click();await expect(page.locator('#w2rAuditDrawer')).toBeVisible();await expect(page.locator('.w2r-audit-item')).toHaveCount(12);await expect(page.locator('#w2rAuditMatches')).toHaveText('12')});
+test('R3.1A perfil extenso conserva trayectoria completa',async({page})=>{await page.goto('/w2/jugador?perfilId=9101&categoria=161');await expect(page.locator('#profileName')).toHaveText('María de los Ángeles Rodríguez');await expect(page.locator('#profileMatches article')).toHaveCount(8);await expect(page.locator('#profileCategories li')).toHaveCount(3)});
+test('R3.1A no produce desborde horizontal',async({page})=>{for(const url of ['/w2/rankings?categoria=161','/w2/jugador?perfilId=9101&categoria=161','/w2/cuenta?seccion=deporte']){await page.goto(url);await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1)).toBe(true)}});
