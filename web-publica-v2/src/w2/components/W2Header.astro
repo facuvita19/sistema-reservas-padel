@@ -4,7 +4,7 @@ interface Props { actual?:string } const {actual='inicio'}=Astro.props;
 const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['torneos','/w2/torneos','Torneos'],['rankings','/w2/rankings','Rankings'],['comunidad','/w2#comunidad','Comunidad']];
 ---
 <header class="w2-header" data-w2-header>
- <nav class="w2-container w2-nav" aria-label="Navegación principal W2">
+ <nav class="w2-container w2-nav" aria-label="Navegación principal">
   <a class="w2-brand" href="/w2" aria-label="Pádel Las Flores, inicio"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a>
   <div class="w2-links">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']} aria-current={actual===id?'page':undefined}>{label}</a>)}</div>
   <W2ThemeToggle/>
@@ -30,7 +30,7 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
  <div id="w2MenuBackdrop" class="w2-menu-backdrop" aria-hidden="true"></div>
  <aside id="w2Menu" class="w2-menu" aria-hidden="true" inert>
   <header><a href="/w2"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a><button data-w2-menu-close type="button" aria-label="Cerrar menú">×</button></header>
-  <nav aria-label="Navegación móvil W2">{links.map(([id,href,label],index)=><a href={href} class:list={[actual===id&&'active']}><i>{String(index+1).padStart(2,'0')}</i><b>{label}</b><span>→</span></a>)}</nav>
+  <nav aria-label="Navegación móvil">{links.map(([id,href,label],index)=><a href={href} class:list={[actual===id&&'active']}><i>{String(index+1).padStart(2,'0')}</i><b>{label}</b><span>→</span></a>)}</nav>
   <a class="w2-mobile-reserve" href="/w2/reservar">Reservar una cancha <span>→</span></a>
   <button id="abrirAutenticacionMovil" class="w2-mobile-login hidden" type="button">Ingresar o crear cuenta</button>
   <div id="cuentaUsuarioMovil" class="w2-mobile-account hidden">
@@ -38,6 +38,6 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
    <a href="/w2/cuenta?seccion=reservas"><i><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5z"/></svg></i><span>Mis reservas</span><b>→</b></a><a href="/w2/cuenta?seccion=datos"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3"/></svg></i><span>Mis datos y seguridad</span><b>→</b></a><a href="/w2/cuenta?seccion=deporte"><i><svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8"/></svg></i><span>Mi perfil deportivo</span><b>→</b></a>
    <button id="cerrarSesionMovil" type="button">Cerrar sesión</button>
   </div>
-  <footer><span>Sesión segura</span><span>Plataforma W2</span></footer>
+  <footer><span>Sesión segura</span><span>Pádel Las Flores</span></footer>
  </aside>
 </header>
