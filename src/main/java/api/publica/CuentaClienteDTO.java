@@ -29,6 +29,11 @@ public final class CuentaClienteDTO {
             String posicionPreferida) {
     }
 
+    public record ActualizarPreferenciasDeportivas(
+            Boolean disponibleParaJugar,
+            Boolean aceptaInvitaciones) {
+    }
+
     public record ReservaResumen(
             long reservaId,
             String codigoSeguimiento,

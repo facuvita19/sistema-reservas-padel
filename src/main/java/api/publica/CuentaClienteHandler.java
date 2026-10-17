@@ -9,6 +9,8 @@ import com.sun.net.httpserver.HttpExchange;
 
 import api.publica.CuentaClienteDTO.ActualizarPerfil;
 import api.publica.CuentaClienteDTO.CambiarPassword;
+import api.publica.CuentaClienteDTO.ActualizarPreferenciasDeportivas;
+import servicio.IdentidadDeportivaService;
 import servicio.AutenticacionClienteService;
 import servicio.AutenticacionClienteService.SesionAutenticada;
 import servicio.CuentaClienteService;
@@ -25,6 +27,7 @@ public final class CuentaClienteHandler {
     private final ObjectMapper mapper;
     private final PagoClienteCuentaService pagoCuentaService;
     private final JugadorPublicoService jugadorPublicoService;
+    private final IdentidadDeportivaService identidadDeportivaService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -41,6 +44,7 @@ public final class CuentaClienteHandler {
         this.mapper = mapper;
         this.pagoCuentaService = new PagoClienteCuentaService();
         this.jugadorPublicoService = new JugadorPublicoService();
+        this.identidadDeportivaService = new IdentidadDeportivaService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -70,6 +74,12 @@ public final class CuentaClienteHandler {
                 responder(intercambio, 200,
                         jugadorPublicoService.buscarPorCliente(
                                 autenticada.cliente().getId()));
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/perfil-deportivo/preferencias")
+                    && "PUT".equals(metodo)) {
+                actualizarPreferenciasDeportivas(intercambio, autenticada);
                 return;
             }
 
@@ -180,6 +190,26 @@ public final class CuentaClienteHandler {
         responder(intercambio, 200,
                 new MensajeCuenta(
                         "La contrasena fue actualizada correctamente."));
+    }
+
+    private void actualizarPreferenciasDeportivas(
+            HttpExchange intercambio,
+            SesionAutenticada autenticada) throws IOException {
+        ActualizarPreferenciasDeportivas entrada = mapper.readValue(
+                intercambio.getRequestBody(),
+                ActualizarPreferenciasDeportivas.class);
+        if (entrada.disponibleParaJugar() == null
+                || entrada.aceptaInvitaciones() == null) {
+            throw new IllegalArgumentException(
+                    "Las dos preferencias deportivas son obligatorias.");
+        }
+        identidadDeportivaService.actualizarPreferenciasPorCliente(
+                autenticada.cliente().getId(),
+                entrada.disponibleParaJugar(),
+                entrada.aceptaInvitaciones());
+        responder(intercambio, 200,
+                jugadorPublicoService.buscarPorCliente(
+                        autenticada.cliente().getId()));
     }
 
     private void actualizarPerfil(
