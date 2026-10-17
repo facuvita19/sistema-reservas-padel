@@ -52,3 +52,15 @@ test('R3.1C3 reserva el rojo para hover o foco sin romper el acceso al perfil',a
  if(!isMobile){await fila.hover();await expect.poll(()=>fila.evaluate(e=>getComputedStyle(e).borderLeftColor)).toBe('rgb(215, 25, 45)')}
  await fila.focus();await expect(fila).toBeFocused();await expect.poll(()=>fila.evaluate(e=>getComputedStyle(e).borderLeftColor)).toBe('rgb(215, 25, 45)');
 });
+test('R3.1C4 auditoria extensa conserva cabecera sticky y doce aportes legibles',async({page,isMobile})=>{
+ await page.goto('/w2/rankings?categoria=161');await page.locator('[data-audit-profile="9101"]').click();
+ const drawer=page.locator('#w2rAuditDrawer'),items=page.locator('.w2r-audit-item');await expect(drawer).toBeVisible();await expect(items).toHaveCount(12);
+ await expect(page.locator('.w2r-audit-summary dt')).toHaveCount(4);await expect(page.locator('#w2rAuditMatches')).toHaveText('12');
+ const data=await page.evaluate(()=>{const d=document.querySelector<HTMLElement>('#w2rAuditDrawer')!,h=d.querySelector<HTMLElement>(':scope>header')!;return{scroll:d.scrollHeight> d.clientHeight,position:getComputedStyle(h).position,top:h.getBoundingClientRect().top,drawerTop:d.getBoundingClientRect().top,width:d.getBoundingClientRect().width,viewport:innerWidth}});
+ expect(data.scroll).toBe(true);expect(data.position).toBe('sticky');expect(Math.abs(data.top-data.drawerTop)).toBeLessThanOrEqual(3);expect(data.width).toBeLessThanOrEqual(data.viewport);
+ if(isMobile)expect(data.width).toBeGreaterThanOrEqual(data.viewport-2);
+});
+
+test('R3.1C4 auditoria cierra con Escape y devuelve foco al disparador',async({page})=>{
+ await page.goto('/w2/rankings?categoria=161');const boton=page.locator('[data-audit-profile="9101"]');await boton.click();await expect(page.locator('#w2rAuditDrawer')).toBeVisible();await page.keyboard.press('Escape');await expect(page.locator('#w2rAuditDrawer')).toBeHidden();await expect(boton).toBeFocused();await expect(page).not.toHaveURL(/auditoria=/);
+});
