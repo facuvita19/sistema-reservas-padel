@@ -347,3 +347,21 @@
  .w2c2-rank-head input{min-height:48px!important}
 }
 html[data-theme="light"] .w2c2-rank-head input,body[data-theme="light"] .w2c2-rank-head input,.w2-body.theme-light .w2c2-rank-head input{background:var(--panel-bg,#fff)!important}
+/* R3.1C3 - clasificacion extensa premium */
+/* Reduce el recorrido vertical y reserva el rojo para interaccion y foco. */
+@media(min-width:901px){
+ .w2r-row{min-height:3.75rem!important;padding:.42rem .88rem!important;border-left:2px solid rgba(112,123,129,.24)!important;transition:background .16s ease,border-color .16s ease,box-shadow .16s ease!important}
+ .w2r-row:hover,.w2r-row:focus-visible,.w2r-row:focus-within{border-left-color:var(--lf-red)!important}
+ .w2r-avatar{width:2.15rem!important;height:2.15rem!important}
+ .w2r-player-copy>strong{font-size:.82rem!important;line-height:1.18!important}
+ .w2r-player-copy>small{margin-top:.18rem!important;font-size:.61rem!important;line-height:1.25!important}
+ .w2r-audit-action{min-height:2.35rem!important;padding:.42rem .62rem!important}
+}
+@media(max-width:900px){
+ .w2r-row{border-left:2px solid rgba(112,123,129,.2)!important}
+ .w2r-row:focus-visible,.w2r-row:focus-within{border-left-color:var(--lf-red)!important}
+ .w2r-audit-action{min-height:44px!important}
+}
+html[data-theme="light"] .w2r-row,body[data-theme="light"] .w2r-row,.w2-body.theme-light .w2r-row{border-left-color:rgba(42,53,59,.2)!important}
+html[data-theme="light"] .w2r-row:hover,html[data-theme="light"] .w2r-row:focus-visible,html[data-theme="light"] .w2r-row:focus-within,body[data-theme="light"] .w2r-row:hover,body[data-theme="light"] .w2r-row:focus-visible,body[data-theme="light"] .w2r-row:focus-within,.w2-body.theme-light .w2r-row:hover,.w2-body.theme-light .w2r-row:focus-visible,.w2-body.theme-light .w2r-row:focus-within{border-left-color:var(--lf-red)!important}
+@media(prefers-reduced-motion:reduce){.w2r-row{transition:none!important}}
