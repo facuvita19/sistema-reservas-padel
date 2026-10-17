@@ -471,3 +471,8 @@ html[data-theme="light"] .w2r-row:hover,html[data-theme="light"] .w2r-row:focus-
 }
 :root[data-w2-theme="light"] #w2rAuditClose:hover{border-color:#ef334f!important;background:rgba(239,51,79,.09)!important;color:#a9122a!important;box-shadow:0 0 0 3px rgba(239,51,79,.12)!important}
 :root[data-w2-theme="light"] #w2rAuditClose:focus-visible{border-color:#ef334f!important;background:rgba(239,51,79,.11)!important;color:#a9122a!important;box-shadow:0 0 0 4px rgba(239,51,79,.2)!important}
+
+/* R3.2C1B - titulo compacto de auditoria privada */
+#w2rAuditDrawer #w2rAuditTitle{max-width:16ch;margin:.38rem 0 .5rem;line-height:.92;text-wrap:balance}
+#w2rAuditDrawer #w2rAuditTitle+*{margin-top:0}
+@media(max-width:520px){#w2rAuditDrawer #w2rAuditTitle{max-width:15ch;line-height:.95}}
