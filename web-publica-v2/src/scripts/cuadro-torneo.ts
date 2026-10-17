@@ -25,7 +25,7 @@ const faseColor = (fase: string) => fase.startsWith('ACCESO_') ? 'access' : fase
 const faseTitulo = (fase: string) => fase.startsWith('ACCESO_') ? `Acceso · Ronda ${fase.slice(-1)}` : etiqueta(fase);
 const integrantes = (pareja?: ParejaCuadroPublica | null) => pareja?.jugadores?.length ? pareja.jugadores.map(j => `<span>${escapeHtml(j)}</span>`).join('') : '';
 const resumenPareja = (pareja?: ParejaCuadroPublica | null) => pareja?.jugadores?.length ? pareja.jugadores.map(escapeHtml).join(' / ') : 'Por definir';
-const agenda = (p: PartidoCuadroPublico) => p.bye ? 'Clasificación directa por BYE' : p.fecha ? `${fecha(p.fecha)}${p.horaInicio ? ' · ' + p.horaInicio.slice(0,5) : ''}${p.cancha ? ' · ' + escapeHtml(p.cancha) : ''}` : 'Horario por definir';
+const agenda = (p: PartidoCuadroPublico) => p.bye ? 'Clasificación directa por BYE' : p.fecha ? `${fecha(p.fecha)}${p.horaInicio ? ' · ' + p.horaInicio.slice(0,5) : ''}${p.cancha ? ' · ' + escapeHtml(p.cancha) : ''}` : 'Fecha y horario por definir';
 const claveEntrada = (partidoId: number, lado: 1|2) => `${partidoId}-${lado}`;
 
 function construirReferencias(cuadro: CuadroCategoriaPublico) {
@@ -51,8 +51,7 @@ function piePartido(p: PartidoCuadroPublico) {
   if (p.estado === 'FINALIZADO') return `<footer><strong>${escapeHtml(p.resultado || 'Resultado registrado')}</strong><small>${agenda(p)}</small></footer>`;
   if (p.estado === 'PROGRAMADO') return `<footer class="bracket-card-status scheduled"><strong>${agenda(p)}</strong></footer>`;
   if (p.estado === 'EN_CURSO') return `<footer class="bracket-card-status live"><strong>${escapeHtml(p.resultado || 'Partido en curso')}</strong>${p.fecha ? `<small>${agenda(p)}</small>` : ''}</footer>`;
-  const tieneParejas = Boolean(p.pareja1 || p.pareja2);
-  return tieneParejas ? '<footer class="bracket-card-status pending"><strong>Pendiente de programación</strong></footer>' : '';
+  return '<footer class="bracket-card-status pending"><strong>'+(p.fase==='FINAL'?'Final pendiente':'Programación pendiente')+'</strong><small>Fecha y horario por definir</small></footer>';
 }
 
 function tarjeta(p: PartidoCuadroPublico) {
@@ -229,7 +228,7 @@ function ajustar(recentrar=false) {
   if(!viewport||!columns)return;
   const alto=Math.max(320,viewport.clientHeight-30);
   const porAlto=alto/Math.max(columns.scrollHeight,1);
-  const escalaInicial=Math.max(.68,Math.min(.9,porAlto));
+  const porAncho=(viewport.clientWidth-32)/Math.max(columns.scrollWidth,1);const escalaInicial=Math.max(.75,Math.min(.9,Math.max(porAlto,Math.min(.84,porAncho))));
   aplicarEscala(escalaInicial,false);
   if(recentrar)requestAnimationFrame(()=>requestAnimationFrame(()=>{
     const shell=contenido?.querySelector<HTMLElement>('.bracket-size-shell');
@@ -328,8 +327,8 @@ function dibujarConexiones() {
   });
 }
 
-export async function abrirCuadroTorneo(categoriaId:number,disparador?:HTMLElement){if(!modal||!contenido)return;if(matchMedia('(max-width: 760px)').matches)return;ultimoFoco=disparador||null;contenido.innerHTML='<div class="bracket-loading">Cargando cuadro...</div>';modal.classList.remove('hidden');modal.classList.add('flex','bracket-v41-open');document.body.classList.add('bracket-modal-open');document.body.style.overflow='hidden';try{render(await api<CuadroCategoriaPublico>(`/torneos/categorias/${categoriaId}/cuadro`));}catch(error){contenido.innerHTML=`<div class="bracket-error">${escapeHtml(error instanceof Error?error.message:'No se pudo cargar el cuadro.')}</div>`;}}
-function cerrar(){if(!modal)return;observador?.disconnect();if(zoomFrame)cancelAnimationFrame(zoomFrame);zoomFrame=0;zoomEnCurso=false;modal.classList.add('hidden');modal.classList.remove('flex','bracket-v41-open');contenido?.classList.remove('mobile-full-bracket','mobile-round-bracket');document.body.classList.remove('bracket-modal-open','bracket-drag-active');document.body.style.removeProperty('overflow');ultimoFoco?.focus();}
+export async function abrirCuadroTorneo(categoriaId:number,disparador?:HTMLElement){if(!modal||!contenido)return;if(matchMedia('(max-width: 760px)').matches)return;ultimoFoco=disparador||null;modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');modal.setAttribute('aria-labelledby','tituloCuadroTorneo');contenido.innerHTML='<div class="bracket-loading">Cargando cuadro...</div>';modal.classList.remove('hidden');modal.classList.add('flex','bracket-v41-open');document.body.classList.add('bracket-modal-open');document.body.style.overflow='hidden';try{render(await api<CuadroCategoriaPublico>(`/torneos/categorias/${categoriaId}/cuadro`));}catch(error){contenido.innerHTML=`<div class="bracket-error">${escapeHtml(error instanceof Error?error.message:'No se pudo cargar el cuadro.')}</div>`;}}
+function cerrar(){if(!modal)return;observador?.disconnect();if(zoomFrame)cancelAnimationFrame(zoomFrame);zoomFrame=0;zoomEnCurso=false;modal.classList.add('hidden');modal.removeAttribute('aria-modal');modal.classList.remove('flex','bracket-v41-open');contenido?.classList.remove('mobile-full-bracket','mobile-round-bracket');document.body.classList.remove('bracket-modal-open','bracket-drag-active');document.body.style.removeProperty('overflow');ultimoFoco?.focus();}
 document.addEventListener('click',event=>{const target=event.target as Element|null;if(target?.closest('#cerrarCuadroTorneo,#cerrarCuadroTorneoTexto')){event.preventDefault();event.stopPropagation();cerrar();return}if(target===modal)cerrar()},true);
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&modal&&!modal.classList.contains('hidden')){event.preventDefault();cerrar()}},true);
 
