@@ -100,14 +100,32 @@ Debe explicar claramente:
 
 ## 7. Cuenta, reserva y pagos
 
-- visitante, carga, autenticado, error y sesión vencida diseñados;
+- visitante, carga, autenticado, error y sesion vencida disenados;
 - centro personal une identidad comercial y deportiva;
-- drawer de pago con render atómico y skeleton integrado;
-- estados online, transferencia, acreditado, vencido y sin método son excluyentes;
-- X, Escape, backdrop y restauración de foco obligatorios;
-- sandbox identificado mediante texto explícito.
+- drawer de pago con render atomico y skeleton integrado;
+- estados online, transferencia, acreditado, vencido y sin metodo son excluyentes;
+- X, Escape, backdrop y restauracion de foco obligatorios;
+- sandbox identificado mediante texto explicito.
 
-## 8. Criterios de aprobación visual
+## 8. Patron segmentado y metodo de cierre
+
+Torneos establece el patron de referencia para navegacion secundaria W2: contenedor grafito redondeado y opaco, controles sin divisores, opcion activa elevada con matiz rojo, indicador corto de 32 px, foco visible, comportamiento sticky y variantes principal, secundaria y compacta. En movil debe existir desplazamiento controlado sin desborde global. El modo oscuro es el fallback real y el claro solo se activa mediante tema explicito.
+
+El patron se reutiliza solo despues de auditar la jerarquia de cada seccion. No debe copiarse como una nueva capa de parches.
+
+Cada seccion se cierra con el metodo validado en Torneos:
+
+1. auditoria documental, funcional y visual;
+2. inventario de contratos y codigo vigente;
+3. bloques pequenos con pruebas proporcionales;
+4. revision visual en oscuro, claro, escritorio y movil;
+5. correccion de regresiones sin relajar contratos validos;
+6. auditoria tecnica antes de limpiar cascadas historicas;
+7. suite especifica completa;
+8. suite E2E integral y CI verde;
+9. actualizacion documental y cierre oficial.
+
+## 9. Criterios de aprobación visual
 
 Una pantalla se aprueba cuando:
 

@@ -1,6 +1,6 @@
 # Mapa de experiencia W2
 
-> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 16 de octubre de 2026.
+> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos.
 
 ## 1. Navegación principal
 
@@ -53,9 +53,12 @@ Operativo en W2:
 - Mercado Pago sandbox;
 - rankings y auditoría;
 - perfiles públicos y privados;
-- Torneos con catálogo, detalle y centro competitivo;
-- navegación profunda mediante URL;
-- desktop, 390 px y 320 px cubiertos por Playwright.
+- Torneos cerrado con catálogo, detalle, inscripción por pareja y centro competitivo;
+- navegación profunda mediante URL y `popstate`;
+- desktop, 390 px y 320 px cubiertos por Playwright;
+- suite específica de Torneos: 345 aprobadas;
+- suite integral: 701 aprobadas, 4 omitidas y 0 fallidas;
+- CI verde en `26e1e30`.
 
 Pendiente:
 
@@ -180,14 +183,15 @@ La URL de retorno nunca acredita por sí sola.
 
 ## 12. Punto de continuidad
 
-Continuar con **R2.1C5**:
+Torneos esta terminado y no debe reabrirse salvo error real, requisito nuevo o evolucion transversal planificada.
 
-- separar presentación del detalle;
-- pestañas Información, Categorías y Reglamento;
-- métricas, precios y estado temporal;
-- tarjetas de categorías;
-- compartir;
-- apertura y regreso;
-- foco, scroll y URL.
+La continuidad pasa a W2.3, Rankings y perfiles deportivos:
 
-Mantener intactos diseño, inscripción por pareja, nomenclatura Libre/Femenino/Mixto, formatos competitivos, centro competitivo, backend y base de datos.
+1. auditar el estado visual, funcional, documental y tecnico real;
+2. identificar que parte del motor avanzado sigue pendiente;
+3. separar pantallas estabilizadas de deuda autentica;
+4. revisar temporadas, reglas versionadas, ventana movil, publicaciones historicas, variaciones y Masters;
+5. definir bloques de cierre sin reconstruir auditoria, podio, tabla y perfiles que ya funcionan;
+6. aplicar el mismo metodo de cierre usado en Torneos.
+
+Despues de W2.3, el orden estrategico continua con reserva inteligente, Comunidad, Mercado Pago productivo y engagement/PWA.

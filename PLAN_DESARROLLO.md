@@ -1,51 +1,46 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
-> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 16 de octubre de 2026 después del commit `b8bc937` (`Separar la carga y caché de torneos`).
+> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos en `26e1e30`.
 
 ## 1. Punto actual de continuidad
 
 ### Estado ejecutivo
 
-El producto combina una aplicación administrativa JavaFX, una API pública Java, MySQL y la web activa `web-publica-v2`. La evolución principal se denomina **Plataforma Deportiva W2** y debe superar a la versión anterior en arquitectura, diseño, experiencia, accesibilidad, rendimiento, seguridad y mantenibilidad.
+Plataforma Deportiva W2 es la reconstruccion integral de la web publica y debe superar a la experiencia anterior en arquitectura, diseno, accesibilidad, rendimiento, seguridad y mantenibilidad.
 
-Estado confirmado:
+Estado confirmado al 17 de octubre de 2026:
 
 - rama estable: `master`;
-- commit de referencia: `b8bc937`;
-- repositorio limpio después del push;
+- commit de referencia: `26e1e30` (`Unificar los menus y filtros de Torneos`);
+- repositorio limpio y CI verde;
 - web activa: `web-publica-v2`;
-- Astro y TypeScript: `0 errores`, con 3 hints preexistentes ajenos a Torneos;
-- Torneos W2: 177 pruebas cubiertas, incluidas 3 validaciones específicas de descarte de solicitudes obsoletas;
-- Mercado Pago sandbox: flujo completo validado;
-- modo oscuro: experiencia principal de la web pública;
-- modo claro: alternativa real y mantenida;
-- aplicación administrativa: producto independiente de la web pública.
+- Astro y TypeScript: 0 errores y 3 hints preexistentes;
+- Torneos W2: seccion cerrada visual, funcional y tecnicamente;
+- validacion especifica de Torneos: 345 pruebas aprobadas;
+- validacion E2E integral: 701 aprobadas, 4 omitidas y 0 fallidas;
+- modo oscuro principal y modo claro alternativo real;
+- aplicacion administrativa independiente de la web publica.
 
 ### Objetivo inmediato
 
-Continuar la reconstrucción interna de Torneos W2 desde el estado real de `/w2/torneos`.
+La continuidad pasa a W2.3, Rankings y perfiles deportivos. Primero se debe auditar el estado real para distinguir pantallas ya estabilizadas de la deuda autentica del motor avanzado. No se debe reconstruir podio, tabla, auditoria o perfiles sin evidencia de una necesidad concreta.
 
-Bloques completados recientemente:
+Torneos queda cerrado con:
 
-1. R2.1A: contrato de navegación, URL, historial, caché y solicitudes protegidas.
-2. R2.1B: nomenclatura pública **Libre**, separada de **Mixto**.
-3. R2.1C1: dominio compartido de Torneos.
-4. R2.1C2: estado y persistencia URL del catálogo.
-5. R2.1C2V: geometría uniforme de tarjetas.
-6. R2.1C3: adaptador tolerante del catálogo.
-7. R2.1C4: carga, caché, cancelación, versiones e invalidación selectiva.
+1. catalogo, detalle y centro competitivo completos;
+2. Informacion, Categorias y Reglamento;
+3. Resumen, Posiciones, Partidos y Cuadro;
+4. URL profunda, `popstate`, cache, abortos y descarte de respuestas obsoletas;
+5. inscripcion exclusivamente por pareja;
+6. navegacion segmentada premium, filtros compactos y responsive especifico;
+7. ruta canonica `/w2/torneos` y puente heredado `/torneos`;
+8. auditoria tecnica final sin limpieza riesgosa de la cascada.
 
-Próximo bloque: **R2.1C5**, separación de la presentación y navegación del detalle del torneo, sin alterar la interfaz validada.
+### Arquitectura vigente de Torneos
 
-### Módulos extraídos de `torneos.ts`
+`torneos.ts` funciona como composition root y delega dominio, estado, datos, presentacion, interaccion, navegacion, inscripcion, arranque y retorno en `src/scripts/torneos/`. `centro-competitivo-premium.ts` sigue siendo el motor del centro y `cuadro-torneo.ts` controla la llave completa.
 
-```text
-web-publica-v2/src/scripts/torneos/
-├── adaptador-catalogo-torneos.ts
-├── datos-torneos.ts
-├── dominio-torneos.ts
-└── estado-catalogo-torneos.ts
-```
+`w2-tournaments.css` es la capa visual autoritativa. `global.css` conserva infraestructura historica compartida. Las clases `.premium-*` y `.f4-*` siguen siendo contratos activos y solo se migraran dentro de una evolucion transversal explicita.
 
 ## 2. Forma de trabajo acordada
 
@@ -163,7 +158,7 @@ Nunca usar “suma máxima”. Los nombres públicos son **Suma 8**, **Suma 10**
 - W2.1: identidad deportiva y categorías históricas, alcance inicial completado.
 - W2.2: historial competitivo auditable, alcance inicial completado.
 - W2.3: ranking y perfiles públicos reales operativos; quedan temporadas, reglas versionadas, ventana móvil, publicaciones históricas, variaciones y Masters.
-- W2.4: cuenta, reservas, pagos y Torneos en convergencia avanzada.
+- W2.4: cuenta, reservas y pagos operativos; Torneos cerrado integralmente.
 - Mercado Pago sandbox: completado.
 - Mercado Pago producción: pendiente de dominio estable, HTTPS, credenciales productivas y operación controlada.
 
@@ -177,7 +172,7 @@ Ruta canónica:
 
 No existe una sección principal llamada Competir. Torneos es la sección principal y contiene catálogo, detalle y centro competitivo.
 
-Recorrido previsto:
+Recorrido completado:
 
 1. catálogo;
 2. detalle con Información, Categorías y Reglamento;
@@ -234,4 +229,4 @@ Un bloque se considera terminado cuando:
 
 ## 10. Instrucción para un chat nuevo
 
-Al comenzar otro chat, indicar que la continuidad real está en **Plataforma Deportiva W2, Torneos, R2.1C5**, y que deben respetarse las reglas de trabajo de la sección 2. No volver al estado documental anterior ni asumir que “Copa Metropolitana E2E” es un torneo real: es un fixture controlado de Playwright.
+Indicar que Torneos esta terminado y que la continuidad real esta en Plataforma Deportiva W2, auditoria de Rankings y perfiles deportivos para completar W2.3. Se debe partir del estado visual y funcional real, respetar la forma de trabajo de la seccion 2 y no reconstruir pantallas estabilizadas. Copa Metropolitana E2E es un fixture controlado de Playwright, no un torneo real.

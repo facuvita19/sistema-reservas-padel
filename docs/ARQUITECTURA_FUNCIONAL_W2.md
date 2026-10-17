@@ -1,6 +1,6 @@
 # Arquitectura funcional W2
 
-> Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 16 de octubre de 2026.
+> Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 17 de octubre de 2026 después del cierre integral de Torneos.
 
 ## 1. Objetivo
 
@@ -88,17 +88,15 @@ El estado relevante persiste en URL y `popstate`.
 
 ### Arquitectura actual del frontend
 
-```text
-src/scripts/torneos.ts                    coordinador temporal
-src/scripts/torneos/dominio-torneos.ts    vocabulario y formato
-src/scripts/torneos/estado-catalogo-torneos.ts
-                                           filtros, URL e historial
-src/scripts/torneos/adaptador-catalogo-torneos.ts
-                                           frontera tolerante de API
-src/scripts/torneos/datos-torneos.ts      caché, abortos y versiones
-src/scripts/centro-competitivo-premium.ts motor del centro competitivo
-src/scripts/cuadro-torneo.ts              llave completa
-```
+`src/scripts/torneos.ts` actua como composition root. El directorio `src/scripts/torneos/` separa dominio, estado del catalogo, adaptacion de API, datos y cache, presentacion, interaccion, coordinacion del detalle, navegacion, inscripcion, arranque y retorno. `centro-competitivo-premium.ts` conserva el motor unico del centro; `cuadro-torneo.ts` controla la llave completa; `w2-tournaments.css` es la capa visual autoritativa.
+
+Decisiones de cierre:
+
+- `w2-tournaments.css` se carga despues de `global.css`;
+- `global.css` conserva infraestructura historica compartida y no se limpia desde una seccion aislada;
+- `.premium-*` y `.f4-*` siguen siendo contratos productivos y de pruebas;
+- reducir `!important`, modularizar `global.css` y extraer globalmente el sistema segmentado son deuda transversal;
+- esa deuda no bloquea Torneos porque la cobertura especifica e integral esta verde.
 
 ### Reglas de datos asíncronos
 

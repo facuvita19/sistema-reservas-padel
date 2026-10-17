@@ -1,6 +1,6 @@
 # Plataforma Deportiva W2
 
-> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 16 de octubre de 2026.
+> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos.
 
 ## 1. Visión
 
@@ -136,44 +136,34 @@ Obligatorios:
 
 ## 9. Torneos W2: estado real
 
-Ruta principal:
+Ruta canonica: `/w2/torneos`. No existe una seccion principal llamada Competir.
 
-```text
-/w2/torneos
-```
+Estado cerrado:
 
-No existe una sección principal llamada Competir.
-
-Estado completado:
-
-- catálogo W2;
-- detalle nativo;
+- catalogo con Proximos, En curso y Finalizados;
+- busqueda, filtros compactos y estado persistente en URL;
+- detalle con Informacion, Categorias y Reglamento;
+- inscripcion exclusivamente por pareja;
 - centro competitivo con Resumen, Posiciones, Partidos y Cuadro;
-- persistencia de categoría, vista, ronda y filtros;
-- caché y cancelación de solicitudes;
-- nomenclatura pública Libre;
-- tarjetas con geometría uniforme;
-- modularización progresiva de `torneos.ts`.
+- categoria, vista, grupo, instancia y ronda persistentes;
+- cache, cancelacion y descarte de respuestas obsoletas;
+- nomenclatura publica Libre, Femenino y Mixto;
+- oscuro principal, claro explicito y responsive en escritorio, 390 px y 320 px;
+- ruta canonica y puente heredado seguro;
+- arquitectura modular para catalogo, detalle, navegacion, inscripcion y arranque;
+- 345 pruebas especificas y 701 integrales aprobadas;
+- 4 pruebas omitidas por configuracion y 0 fallidas;
+- CI verde en `26e1e30`.
 
-Módulos actuales:
-
-```text
-src/scripts/torneos/
-├── adaptador-catalogo-torneos.ts
-├── datos-torneos.ts
-├── dominio-torneos.ts
-└── estado-catalogo-torneos.ts
-```
-
-Próximo bloque: R2.1C5, presentación y navegación del detalle.
+Torneos queda como referencia de metodo y calidad. No se reabre salvo error real, requisito nuevo o evolucion transversal planificada.
 
 ## 10. Fases
 
 - W2.0: dirección y arquitectura, completado.
 - W2.1: identidad y categorías, alcance inicial completado.
 - W2.2: historial competitivo, alcance inicial completado.
-- W2.3: ranking inicial operativo; motor avanzado pendiente.
-- W2.4: experiencia web deportiva y convergencia, en curso.
+- W2.3: rankings, auditoría y perfiles operativos; motor avanzado, temporadas y publicaciones históricas pendientes de auditoría y cierre.
+- W2.4: experiencia web deportiva en curso; Torneos cerrado integralmente.
 - W2.5: reserva inteligente.
 - W2.6: comunidad.
 - W2.7: Mercado Pago sandbox, completado.
