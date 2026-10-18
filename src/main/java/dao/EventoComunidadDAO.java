@@ -1,0 +1,1 @@
+package dao; import java.sql.Connection; import negocio.EventoComunidad; public interface EventoComunidadDAO { void guardar(Connection c,EventoComunidad v); }

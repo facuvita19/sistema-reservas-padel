@@ -1,0 +1,3 @@
+package migracion;
+import static org.junit.jupiter.api.Assertions.*; import java.nio.file.*; import org.junit.jupiter.api.Test;
+class MigracionComunidadR33AContratoTest { @Test void conservaTablasRestriccionesEIndiceActivo() throws Exception {String s=Files.readString(Path.of("src/main/java/migracion/MigracionComunidadR33A.java"));for(String t:new String[]{"comunidad_preferencias","comunidad_convocatorias","comunidad_participantes","comunidad_solicitudes","comunidad_eventos"})assertTrue(s.contains("CREATE TABLE IF NOT EXISTS "+t));assertTrue(s.contains("uk_comunidad_convocatoria_activa"));assertTrue(s.contains("MIGRACION_COMUNIDAD_R33A_OK"));assertTrue(s.contains("ON DELETE RESTRICT"));}}

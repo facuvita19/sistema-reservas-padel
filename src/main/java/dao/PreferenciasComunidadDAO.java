@@ -1,0 +1,1 @@
+package dao; import java.sql.Connection; import negocio.PreferenciasComunidad; public interface PreferenciasComunidadDAO { PreferenciasComunidad buscar(Connection c,long clienteId); void guardar(Connection c,PreferenciasComunidad p); }

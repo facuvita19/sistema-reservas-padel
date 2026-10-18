@@ -1,0 +1,11 @@
+package negocio;
+import static org.junit.jupiter.api.Assertions.*; import java.time.LocalDateTime; import org.junit.jupiter.api.Test;
+class ComunidadDominioTest {
+ @Test void distingueEstadosActivosYFinales(){assertTrue(EstadoConvocatoriaComunidad.ABIERTA.esActiva());assertTrue(EstadoConvocatoriaComunidad.EN_COORDINACION.esActiva());assertFalse(EstadoConvocatoriaComunidad.CERRADA_EXTERNAMENTE.esActiva());assertTrue(EstadoConvocatoriaComunidad.CERRADA_EXTERNAMENTE.esFinal());}
+ @Test void validaMaximoCuatroParticipantes(){ConvocatoriaComunidad c=base();c.setParticipantesConfirmados(3);c.setLugaresBuscados(2);assertThrows(IllegalArgumentException.class,c::validar);c.setLugaresBuscados(1);assertDoesNotThrow(c::validar);}
+ @Test void claveActivaSoloExisteMientrasBusca(){ConvocatoriaComunidad c=base();c.setEstado(EstadoConvocatoriaComunidad.ABIERTA);assertEquals(1,c.getClaveActiva());c.setEstado(EstadoConvocatoriaComunidad.CERRADA_EXTERNAMENTE);assertNull(c.getClaveActiva());}
+ @Test void rechazaAutoSolicitud(){SolicitudComunidad s=new SolicitudComunidad();s.setConvocatoriaId(1);s.setPerfilSolicitanteId(7);assertThrows(IllegalArgumentException.class,()->s.validar(7));}
+ @Test void participanteExternoNoGuardaPerfil(){ParticipanteComunidad p=new ParticipanteComunidad();p.setConvocatoriaId(1);p.setTipo(TipoParticipanteComunidad.EXTERNO);p.setEstado(EstadoParticipanteComunidad.CONFIRMADO);p.setOrigen(OrigenParticipanteComunidad.EXTERNO);p.setPerfilJugadorId(9L);assertThrows(IllegalArgumentException.class,p::validar);p.setPerfilJugadorId(null);assertDoesNotThrow(p::validar);}
+ @Test void consentimientoWhatsappDebeQuedarFechado(){PreferenciasComunidad p=new PreferenciasComunidad();p.setClienteId(1);p.setContactoWhatsapp(true);assertThrows(IllegalArgumentException.class,p::validar);p.setFechaConsentimientoWhatsapp(LocalDateTime.now());assertDoesNotThrow(p::validar);}
+ private ConvocatoriaComunidad base(){ConvocatoriaComunidad c=new ConvocatoriaComunidad();c.setReservaId(1);c.setClienteCreadorId(2);c.setPerfilCreadorId(3);c.setParticipantesConfirmados(1);c.setLugaresBuscados(1);c.setEstado(EstadoConvocatoriaComunidad.BORRADOR);c.setFechaExpiracion(LocalDateTime.now().plusDays(1));return c;}
+}

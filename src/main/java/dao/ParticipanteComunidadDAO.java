@@ -1,0 +1,1 @@
+package dao; import java.sql.Connection; import java.util.List; import negocio.ParticipanteComunidad; public interface ParticipanteComunidadDAO { void guardar(Connection c,ParticipanteComunidad v); List<ParticipanteComunidad> listarPorConvocatoria(Connection c,long convocatoriaId,boolean bloquear); int contarConfirmados(Connection c,long convocatoriaId); }
