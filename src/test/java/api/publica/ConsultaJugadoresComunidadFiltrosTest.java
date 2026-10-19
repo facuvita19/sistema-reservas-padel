@@ -12,8 +12,7 @@ class ConsultaJugadoresComunidadFiltrosTest {
         assertEquals("maria rodriguez",
                 ConsultaJugadoresComunidadService.normalizarBusqueda(
                         "  MARIA   RODRIGUEZ "));
-        String barra = Character.toString(92);
-        assertEquals("100" + barra + "% drive" + barra + "_",
+        assertEquals("100!% drive!_",
                 ConsultaJugadoresComunidadService.escaparLike("100% drive_"));
         assertThrows(IllegalArgumentException.class,
                 () -> ConsultaJugadoresComunidadService.normalizarBusqueda(
