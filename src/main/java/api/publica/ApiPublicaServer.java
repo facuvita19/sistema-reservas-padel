@@ -43,6 +43,8 @@ public final class ApiPublicaServer {
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final RankingPublicoService rankingPublicoService = new RankingPublicoService();
     private final JugadorPublicoService jugadorPublicoService = new JugadorPublicoService();
+    private final ConsultaJugadoresComunidadService consultaJugadoresComunidadService =
+            new ConsultaJugadoresComunidadService();
     private final ObjectMapper mapper;
     private final AutenticacionClienteService autenticacionClienteService;
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
@@ -225,6 +227,24 @@ public final class ApiPublicaServer {
                 return;
             }
 
+            if (ruta.equals(PREFIJO + "/comunidad/jugadores")) {
+                Map<String, String> p = parametros(x.getRequestURI());
+                int pagina = enteroPositivo(p.get("pagina"), 1, "La pagina");
+                int tamano = enteroPositivo(p.get("tamano"),
+                        ConsultaJugadoresComunidadService.TAMANO_PREDETERMINADO,
+                        "El tamano");
+                Long categoriaId = idOpcional(p.get("categoriaId"));
+                Boolean acepta = booleanoOpcional(p.get("aceptaInvitaciones"));
+                var filtros = new ConsultaJugadoresComunidadService.Filtros(
+                        p.get("buscar"), categoriaId,
+                        ConsultaJugadoresComunidadService.posicion(p.get("posicion")),
+                        ConsultaJugadoresComunidadService.objetivo(p.get("objetivo")),
+                        acepta, ConsultaJugadoresComunidadService.orden(p.get("orden")));
+                responder(x, 200, consultaJugadoresComunidadService.listar(
+                        filtros, pagina, tamano));
+                return;
+            }
+
             if (ruta.startsWith(PREFIJO + "/jugadores/")) {
                 String valor = ruta.substring((PREFIJO + "/jugadores/").length());
                 responder(x, 200, jugadorPublicoService.buscar(id(valor)));
@@ -327,6 +347,27 @@ public final class ApiPublicaServer {
         } catch (RuntimeException e) {
             throw new IllegalArgumentException(
                     "El ID de la cancha debe ser un número positivo.");
+        }
+    }
+
+    private Long idOpcional(String valor) { return valor == null || valor.isBlank() ? null : id(valor); }
+
+    private Boolean booleanoOpcional(String valor) {
+        if (valor == null || valor.isBlank()) return null;
+        if ("true".equalsIgnoreCase(valor)) return true;
+        if ("false".equalsIgnoreCase(valor)) return false;
+        throw new IllegalArgumentException("aceptaInvitaciones debe ser true o false.");
+    }
+
+    private int enteroPositivo(String valor, int predeterminado, String nombre) {
+        if (valor == null || valor.isBlank()) return predeterminado;
+        try {
+            int numero = Integer.parseInt(valor);
+            if (numero < 1) throw new NumberFormatException();
+            return numero;
+        } catch (RuntimeException e) {
+            throw new IllegalArgumentException(
+                    nombre + " debe ser un numero positivo.");
         }
     }
 
