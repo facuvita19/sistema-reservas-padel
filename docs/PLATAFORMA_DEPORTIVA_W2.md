@@ -1,54 +1,59 @@
 # Plataforma Deportiva W2
 
-> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos.
+> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 19 de octubre de 2026.
 
 ## 1. Visión
 
-W2 es la reconstrucción definitiva de la web pública. Une reservas, identidad deportiva, categorías, rankings auditables, historial, perfiles, parejas, comunidad, torneos, notificaciones y pagos reales sin duplicar personas ni fragmentar la experiencia.
+W2 es la reconstrucción definitiva de la web pública. Une reservas, identidad deportiva, categorías, rankings auditables, historial, perfiles, parejas, Comunidad, torneos, notificaciones y pagos reales sin duplicar personas ni fragmentar la experiencia.
 
-## 2. Principios obligatorios
+## 2. Emblema permanente
+
+Plataforma Deportiva W2 debe ser **profesional, moderna e imponente**. Puede incorporar cualquier mejora mínima, costosa o una reconstrucción completa cuando eleve la experiencia, visibilidad, código, arquitectura, estructura, diseño, accesibilidad, rendimiento, seguridad o mantenibilidad.
+
+La versión anterior es referencia funcional y nada más. La nueva web debe superarla en todos los sentidos. El costo no es una razón suficiente para rechazar una mejora valiosa.
+
+## 3. Principios obligatorios
 
 - W2 reemplaza integralmente la experiencia anterior.
 - Ninguna función se retira antes de una alternativa igual o superior.
-- La web anterior es referencia funcional, no límite visual ni técnico.
 - Modo oscuro es la experiencia principal; modo claro es una alternativa real.
 - La aplicación administrativa es independiente de la web pública.
-- Cuenta, cliente y perfil deportivo representan responsabilidades distintas de una misma persona.
-- Ranking, categorías y correcciones deben ser auditables.
+- Cuenta, cliente y perfil deportivo son responsabilidades distintas de una misma persona.
+- Ranking, categorías, Comunidad y correcciones deben ser auditables.
 - Pagos se confirman en backend, nunca por la URL de retorno.
-- La excelencia visual, accesibilidad y mantenibilidad prevalecen sobre el costo de implementación.
+- Privacidad, accesibilidad, seguridad y mantenibilidad no se sacrifican por velocidad visual.
+- Cada pantalla se cierra con calidad definitiva antes de avanzar.
+- Las herramientas modernas se incorporan cuando aportan valor real y sostenible.
 
-## 3. Identidad deportiva
+## 4. Identidad deportiva
 
 - Cuenta: autenticación y seguridad.
 - Cliente: relación comercial, reservas y pagos.
 - Perfil deportivo: categoría, ranking, historial y preferencias deportivas.
-- Participantes sin cuenta: identidad provisional vinculable posteriormente con revisión segura.
+- Participante sin cuenta: identidad provisional vinculable posteriormente con revisión segura.
 - La vinculación conserva puntos, torneos y partidos y evita fusiones ambiguas.
 
-## 4. Categorías y elegibilidad
+## 5. Categorías y elegibilidad
 
-Catálogo global inicial: 1.ª a 8.ª, con orden competitivo explícito.
+Catálogo inicial: 1.ª a 8.ª, con orden competitivo explícito.
 
-La categoría vigente posee historial, vigencia, origen, motivo y responsable administrativo. Ascensos y descensos son decisiones manuales y auditables.
+La categoría vigente posee historial, vigencia, origen, motivo y responsable. Ascensos y descensos son decisiones manuales y auditables.
 
-### Condiciones de inscripción
+Condiciones:
 
 - categoría única;
-- categorías combinadas, por ejemplo 4.ª + 5.ª;
+- categorías combinadas;
 - Suma 8, Suma 10, Suma 12, etc.;
 - excepción administrativa auditable.
 
-Nunca usar “suma máxima”. La condición se nombra por su identidad pública: **Suma 8**, **Suma 10**, **Suma 12**.
+Nunca usar “suma máxima”.
 
-## 5. Taxonomía de Torneos
-
-Las siguientes dimensiones son independientes y combinables:
+## 6. Taxonomía de Torneos
 
 ### Rama
 
-- Libre;
-- Femenino;
+- Libre.
+- Femenino.
 - Mixto.
 
 Libre admite parejas integradas por personas de cualquier sexo. Mixto exige una mujer y un hombre.
@@ -58,15 +63,13 @@ Libre admite parejas integradas por personas de cualquier sexo. Mixto exige una 
 - Eliminación directa.
 - Grupos + eliminación.
 
-El filtro público Formato solo debe contener estas organizaciones competitivas.
-
 ### Condición de inscripción
 
 - Categoría única.
 - Categorías combinadas.
 - Suma 8, Suma 10, Suma 12, etc.
 
-### Modalidad de partido
+### Modalidad
 
 - Un set.
 - Dos sets más super tie-break.
@@ -79,46 +82,38 @@ El filtro público Formato solo debe contener estas organizaciones competitivas.
 
 ### Americano
 
-Americano es un tipo especial de evento rápido, no un formato competitivo ni una condición de inscripción.
+Americano es un evento rápido especial, no un formato competitivo ni una condición de inscripción. Es ocasional, normalmente termina el mismo día, siempre recibe parejas y no se modela como liga semanal o mensual.
 
-Reglas:
+No mostrar “Convencional”.
 
-- evento ocasional;
-- normalmente finaliza el mismo día;
-- inscripción siempre por pareja;
-- puede usar grupos más eliminación o eliminación directa;
-- puede usar un set o dos sets más super tie-break;
-- no se modela como competencia semanal o mensual.
-
-No mostrar “Convencional” como etiqueta pública. Los torneos estándar no necesitan distintivo; los Americanos sí.
-
-## 6. Inscripciones
+## 7. Inscripciones
 
 - Exclusivamente por pareja en todos los torneos.
 - No hay inscripción individual, tampoco en Americanos.
-- Comunidad permitirá encontrar pareja previamente.
+- Comunidad permite encontrar pareja previamente.
 - La aceptación administrativa es la decisión final de elegibilidad.
-- Las excepciones no cambian automáticamente la categoría del perfil.
+- Una excepción no cambia automáticamente la categoría del perfil.
 
-## 7. Ranking e historial
+## 8. Ranking e historial
 
 - Ranking individual por categoría.
 - Ventana móvil prevista de 12 meses.
 - Puntos reproducibles por fase y regla versionada.
-- Ambos integrantes reciben los puntos del resultado compartido.
+- Ambos integrantes reciben puntos del resultado compartido.
 - Correcciones recalculan movimientos de forma auditada.
-- Masters de fin de año por categoría con configuración propia.
-- Historial con torneos, partidos, pareja, rivales, resultado, fase y puntos.
+- Masters por categoría como evolución configurada.
+- Historial con torneo, partido, pareja, rivales, resultado, fase y puntos.
 
-## 8. Reserva, comunidad y pagos
+## 9. Reserva y pagos
 
-### Reserva inteligente
+### Reserva W2
 
-Matriz de horarios, filtros, alternativas, repetición, favoritos, lista de espera, retención temporal y resumen premium.
-
-### Comunidad
-
-Buscar pareja, completar partidos, buscar rivales, publicar disponibilidad y asociar convocatorias con reservas, siempre con privacidad y moderación.
+- Ruta canónica `/w2/reservar`.
+- `/reservar` es un puente estático que preserva parámetros y fragmento.
+- El formato es fijo: cuatro jugadores, dos contra dos.
+- La disponibilidad se valida nuevamente antes de crear la solicitud.
+- El error accesible se conserva al enfocar y se limpia cuando la persona modifica el valor.
+- La reserva temporal no equivale a confirmación.
 
 ### Mercado Pago
 
@@ -134,42 +129,64 @@ Obligatorios:
 - acreditación transaccional;
 - reembolsos y contracargos auditados.
 
-## 9. Torneos W2: estado real
+## 10. Comunidad
 
-Ruta canonica: `/w2/torneos`. No existe una seccion principal llamada Competir.
+Comunidad es infraestructura deportiva para descubrir jugadores, formar parejas y completar turnos. No es una red social genérica.
+
+### Casos principales
+
+1. Encontrar pareja para un torneo, contactar principalmente por WhatsApp, coordinar y luego inscribirse juntos.
+2. Publicar una reserva existente que necesita participantes, por ejemplo: “3 de 4, falta 1 jugador de 5.ª”.
+3. Solicitar unirse a una convocatoria compatible.
+4. Aceptar, rechazar o cancelar solicitudes.
+5. Cerrar manualmente una convocatoria completada fuera de la web sin cancelar ni modificar la reserva.
+
+### Privacidad
+
+- presencia pública solo por opt-in;
+- teléfono nunca listado públicamente;
+- contacto contextual y autorizado;
+- DTO público separado del modelo interno;
+- documento, correo, pagos e historial comercial nunca expuestos;
+- auditoría de acciones sensibles;
+- moderación y bloqueo previstos.
+
+### Estado real
+
+R3.3A completó dominio, persistencia, migración y pruebas para preferencias, convocatorias, solicitudes, participantes y eventos. R3.3B construirá el catálogo real de jugadores disponibles.
+
+## 11. Torneos W2: estado real
+
+Ruta canónica: `/w2/torneos`. No existe una sección principal llamada Competir.
 
 Estado cerrado:
 
-- catalogo con Proximos, En curso y Finalizados;
-- busqueda, filtros compactos y estado persistente en URL;
-- detalle con Informacion, Categorias y Reglamento;
-- inscripcion exclusivamente por pareja;
+- catálogo con Próximos, En curso y Finalizados;
+- búsqueda, filtros y URL persistente;
+- detalle con Información, Categorías y Reglamento;
+- inscripción exclusivamente por pareja;
 - centro competitivo con Resumen, Posiciones, Partidos y Cuadro;
-- categoria, vista, grupo, instancia y ronda persistentes;
-- cache, cancelacion y descarte de respuestas obsoletas;
-- nomenclatura publica Libre, Femenino y Mixto;
-- oscuro principal, claro explicito y responsive en escritorio, 390 px y 320 px;
-- ruta canonica y puente heredado seguro;
-- arquitectura modular para catalogo, detalle, navegacion, inscripcion y arranque;
-- 345 pruebas especificas y 701 integrales aprobadas;
-- 4 pruebas omitidas por configuracion y 0 fallidas;
-- CI verde en `26e1e30`.
+- nomenclatura Libre, Femenino y Mixto;
+- oscuro, claro y responsive;
+- arquitectura modular.
 
-Torneos queda como referencia de metodo y calidad. No se reabre salvo error real, requisito nuevo o evolucion transversal planificada.
+Torneos es referencia de método y calidad. No se reabre salvo error real, requisito nuevo o evolución transversal.
 
-## 10. Fases
+## 12. Fases y continuidad
 
 - W2.0: dirección y arquitectura, completado.
 - W2.1: identidad y categorías, alcance inicial completado.
 - W2.2: historial competitivo, alcance inicial completado.
-- W2.3: rankings, auditoría y perfiles operativos; motor avanzado, temporadas y publicaciones históricas pendientes de auditoría y cierre.
-- W2.4: experiencia web deportiva en curso; Torneos cerrado integralmente.
-- W2.5: reserva inteligente.
-- W2.6: comunidad.
+- W2.3: Rankings y perfiles estabilizados en el recorrido actual; motor avanzado pendiente como evolución posterior.
+- W2.4: experiencia deportiva pública en curso; Torneos cerrado.
+- W2.5: reserva W2 operativa, con evoluciones inteligentes futuras.
+- W2.6 / R3.3: Comunidad en construcción.
 - W2.7: Mercado Pago sandbox, completado.
 - W2.8: Mercado Pago producción, pendiente.
 - W2.9: engagement, PWA y notificaciones.
 
-## 11. Criterios de aceptación
+Próximo bloque: **R3.3B1 · Contrato público y consulta segura de jugadores**.
 
-Cada fase debe evitar duplicación de personas, preservar privacidad, admitir instalación limpia, incluir pruebas proporcionales, mantener responsive y teclado, no exponer secretos y actualizar las guías cuando cambie el punto real de continuidad.
+## 13. Criterios de aceptación
+
+Cada fase debe evitar duplicación de personas, preservar privacidad, admitir instalación limpia, incluir pruebas proporcionales, mantener responsive y teclado, no exponer secretos, cerrar visualmente oscuro y claro, actualizar las guías y dejar una continuidad inequívoca.

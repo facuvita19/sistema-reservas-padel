@@ -1,6 +1,6 @@
 # Mapa de experiencia W2
 
-> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos.
+> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 19 de octubre de 2026.
 
 ## 1. Navegación principal
 
@@ -13,74 +13,80 @@ Comunidad
 Mi cuenta
 ```
 
-**Torneos** es la sección principal. No existe una sección principal llamada Competir.
+Torneos es la sección principal. No existe una sección llamada Competir.
 
 ## 2. Páginas
 
 ### Públicas
 
-- Inicio;
-- Reservar;
-- seguimiento;
-- Torneos;
-- detalle de torneo;
-- centro competitivo;
-- Rankings;
-- jugador público limitado;
-- cambios de categoría;
-- Comunidad;
-- acceso, registro y recuperación.
+- Inicio.
+- Reservar.
+- Seguimiento.
+- Torneos.
+- Detalle de torneo.
+- Centro competitivo.
+- Rankings.
+- Perfil público limitado.
+- Cambios de categoría.
+- Comunidad.
+- Acceso, registro y recuperación.
 
 ### Privadas
 
-- resumen de cuenta;
-- mis reservas;
-- detalle y pago;
-- mis datos;
-- seguridad;
-- perfil deportivo;
-- historial;
-- torneos y partidos;
-- convocatorias;
-- pagos y preferencias.
+- Resumen de cuenta.
+- Mis reservas.
+- Detalle y pago.
+- Mis datos.
+- Seguridad.
+- Perfil deportivo.
+- Historial.
+- Torneos y partidos.
+- Preferencias de Comunidad.
+- Convocatorias y solicitudes.
+- Pagos y preferencias.
 
 ## 3. Estado real de convergencia
 
-Operativo en W2:
+Operativo:
 
 - shell autenticado;
-- cuenta y reservas personales;
+- cuenta y reservas;
 - Mercado Pago sandbox;
-- rankings y auditoría;
+- Rankings y auditoría;
 - perfiles públicos y privados;
-- Torneos cerrado con catálogo, detalle, inscripción por pareja y centro competitivo;
-- navegación profunda mediante URL y `popstate`;
-- desktop, 390 px y 320 px cubiertos por Playwright;
-- suite específica de Torneos: 345 aprobadas;
-- suite integral: 701 aprobadas, 4 omitidas y 0 fallidas;
-- CI verde en `26e1e30`.
+- Torneos completo;
+- reserva W2 canónica;
+- navegación profunda;
+- cobertura de escritorio, 390 px y 320 px;
+- fundación persistente de Comunidad R3.3A.
 
 Pendiente:
 
-- motor avanzado de ranking;
-- reserva inteligente completa;
-- Comunidad;
+- catálogo y preferencias reales de Comunidad;
+- convocatorias y solicitudes públicas;
+- motor avanzado de ranking como evolución posterior;
+- reserva inteligente ampliada;
 - Mercado Pago producción;
 - PWA y notificaciones;
-- convergencia y retiro final de duplicaciones.
+- retiro final de duplicaciones históricas.
 
 ## 4. Recorrido Reservar
 
-1. seleccionar fecha;
-2. comparar canchas y horarios;
-3. elegir turno;
-4. identificarse;
-5. crear retención temporal;
-6. elegir pago;
-7. confirmar por backend;
-8. mostrar reserva verificable.
+1. entrar a `/w2/reservar` o ser redirigido desde `/reservar`;
+2. seleccionar fecha;
+3. comparar canchas;
+4. consultar horarios;
+5. elegir turno;
+6. revisar formato fijo de cuatro jugadores;
+7. completar datos;
+8. aceptar protección temporal;
+9. revalidar disponibilidad;
+10. crear solicitud;
+11. elegir pago;
+12. confirmar por backend;
+13. consultar estado verificable.
 
-Estados: sin disponibilidad, turno tomado, sesión vencida, pago pendiente, aprobado, rechazado, vencido y revisión manual.
+Estados: sin disponibilidad, turno tomado, campo inválido, sesión vencida, pago pendiente, aprobado, rechazado, vencido, sin método y revisión manual.
 
 ## 5. Recorrido Ranking
 
@@ -90,17 +96,17 @@ Estados: sin disponibilidad, turno tomado, sesión vencida, pago pendiente, apro
 4. abrir perfil;
 5. consultar auditoría;
 6. entender movimientos y torneos computados;
-7. ver futura clasificación al Master.
+7. consultar futura clasificación al Master.
 
 ## 6. Recorrido Perfil deportivo
 
 ### Privado
 
-Categoría vigente, ranking, historial, próximos partidos, torneos, parejas, convocatorias y preferencias permitidas.
+Categoría vigente, ranking, historial, partidos, torneos, parejas, preferencias y acciones autorizadas.
 
 ### Público
 
-Nombre completo, categoría, ranking y resultados deportivos autorizados. Nunca contacto, documento, pagos ni historial comercial.
+Nombre, categoría, ranking y resultados autorizados. Nunca documento, correo, teléfono, pagos ni historial comercial.
 
 ## 7. Recorrido Torneos
 
@@ -110,10 +116,8 @@ Nombre completo, categoría, ranking y resultados deportivos autorizados. Nunca 
 2. elegir Próximos, En curso o Finalizados;
 3. buscar;
 4. filtrar por Rama y Formato;
-5. opcionalmente mostrar inscripción abierta;
+5. mostrar inscripción abierta si corresponde;
 6. abrir torneo.
-
-Filtros y búsqueda persisten en URL, actualización, Atrás y Adelante.
 
 ### Detalle
 
@@ -121,54 +125,128 @@ Filtros y búsqueda persisten en URL, actualización, Atrás y Adelante.
 2. Categorías;
 3. Reglamento;
 4. compartir;
-5. inscribir pareja cuando esté disponible;
+5. inscribir pareja;
 6. abrir centro competitivo.
 
-### Centro competitivo
+### Centro
 
 1. elegir categoría;
-2. consultar Resumen;
-3. consultar Posiciones;
-4. consultar Partidos;
-5. consultar Cuadro;
-6. cambiar grupo, fase o ronda;
+2. Resumen;
+3. Posiciones;
+4. Partidos;
+5. Cuadro;
+6. grupo, fase o ronda;
 7. volver sin perder contexto.
 
 ## 8. Recorrido Inscripción
 
-1. elegir categoría o condición;
-2. ingresar o seleccionar ambos integrantes;
+1. elegir condición;
+2. seleccionar ambos integrantes;
 3. evaluar categoría y rama;
-4. explicar categoría única, combinación o Suma;
-5. enviar inscripción por pareja;
-6. revisión administrativa cuando corresponda;
-7. aprobar, autorizar excepción o rechazar;
-8. pagar cuando se habilite.
+4. explicar compatibilidad;
+5. enviar pareja;
+6. revisión administrativa;
+7. aprobar, exceptuar o rechazar;
+8. pagar cuando corresponda.
 
 No existe inscripción individual.
 
 ## 9. Recorrido Americano
 
-1. identificar el distintivo Americano;
+1. identificar Americano;
 2. consultar rama, condición, formato y modalidad;
-3. inscribir una pareja;
-4. consultar rondas y partidos cortos;
+3. inscribir pareja;
+4. consultar rondas y partidos;
 5. ver clasificación o cuadro;
-6. resolver el evento normalmente el mismo día.
+6. finalizar normalmente el mismo día.
 
-Americano puede usar grupos más eliminación o eliminación directa. No se modela como liga semanal o mensual.
+## 10. Recorrido Comunidad: catálogo de jugadores
 
-## 10. Recorrido Comunidad
+1. entrar a Comunidad;
+2. comprender qué datos son públicos y qué requiere sesión;
+3. buscar por nombre o filtrar por categoría, posición, objetivo y disponibilidad;
+4. revisar resultados paginados;
+5. abrir un perfil público;
+6. comprobar compatibilidad;
+7. iniciar una acción permitida.
 
-1. buscar pareja o completar partido;
-2. definir categoría, disponibilidad y contexto;
-3. recibir solicitudes;
-4. aceptar o rechazar;
-5. formar pareja;
-6. inscribirse juntos o asociar una reserva;
-7. cerrar y notificar.
+Estados: carga, resultados, sin resultados, catálogo vacío, privacidad, error recuperable y sesión requerida.
 
-## 11. Recorrido Pago
+## 11. Recorrido Comunidad: preferencias
+
+1. entrar a Mi cuenta;
+2. abrir Preferencias de Comunidad;
+3. activar publicación de forma opt-in;
+4. definir objetivos;
+5. elegir posición, categorías, días y franjas;
+6. decidir si acepta invitaciones;
+7. autorizar o no contacto por WhatsApp;
+8. revisar vista previa;
+9. guardar;
+10. pausar o retirar publicación cuando quiera.
+
+La publicación nunca debe activarse silenciosamente.
+
+## 12. Recorrido para formar pareja de torneo
+
+1. buscar perfiles compatibles;
+2. revisar categoría, posición, historial permitido y disponibilidad;
+3. abrir perfil;
+4. contactar principalmente por WhatsApp cuando exista permiso;
+5. coordinar por fuera del formulario de torneo;
+6. volver al torneo;
+7. inscribirse juntos como pareja.
+
+Comunidad no reserva un cupo individual ni crea una inscripción incompleta.
+
+## 13. Recorrido para completar una reserva
+
+Caso principal:
+
+> “3 de 4, falta 1 jugador de 5.ª”.
+
+1. el titular crea una reserva real;
+2. desde la reserva elige publicar convocatoria;
+3. confirma participantes actuales y cupos faltantes;
+4. define categoría, posición y mensaje permitido;
+5. revisa qué información será pública;
+6. publica;
+7. perfiles compatibles descubren la convocatoria;
+8. una persona solicita unirse;
+9. el titular acepta o rechaza;
+10. al completar cupos, la convocatoria se cierra;
+11. la reserva conserva su flujo comercial y de pago.
+
+## 14. Recorrido de solicitud
+
+1. abrir convocatoria;
+2. validar sesión, perfil y compatibilidad;
+3. revisar reglas y datos visibles;
+4. solicitar unirse;
+5. evitar duplicados;
+6. mostrar estado pendiente;
+7. recibir aceptación, rechazo, vencimiento o cancelación;
+8. si es aceptada, incorporarse como participante de origen Comunidad.
+
+## 15. Cierre manual
+
+1. el titular completa el turno fuera de la web;
+2. abre la convocatoria;
+3. elige **Cerrar convocatoria**;
+4. confirma que no se cancela la reserva;
+5. el sistema impide nuevas solicitudes;
+6. conserva participantes, solicitudes y eventos;
+7. la reserva continúa sin cambios.
+
+Diferencias obligatorias:
+
+- cerrar convocatoria: impide nuevas solicitudes;
+- cancelar convocatoria: retira la publicación según reglas;
+- cancelar reserva: afecta el turno comercial y sigue otro flujo.
+
+Nunca deben presentarse como la misma acción.
+
+## 16. Recorrido Pago
 
 1. crear reserva temporal;
 2. elegir Mercado Pago o transferencia;
@@ -177,21 +255,37 @@ Americano puede usar grupos más eliminación o eliminación directa. No se mode
 5. procesar webhook o conciliación;
 6. acreditar seña;
 7. confirmar reserva;
-8. actualizar el drawer completo.
+8. actualizar el centro completo.
 
 La URL de retorno nunca acredita por sí sola.
 
-## 12. Punto de continuidad
+## 17. Notificaciones futuras
 
-Torneos esta terminado y no debe reabrirse salvo error real, requisito nuevo o evolucion transversal planificada.
+- nueva solicitud;
+- solicitud aceptada o rechazada;
+- convocatoria completa;
+- convocatoria cerrada;
+- recordatorio contextual;
+- PWA y push en su fase.
 
-La continuidad pasa a W2.3, Rankings y perfiles deportivos:
+Las notificaciones respetan preferencias, privacidad y límites de frecuencia.
 
-1. auditar el estado visual, funcional, documental y tecnico real;
-2. identificar que parte del motor avanzado sigue pendiente;
-3. separar pantallas estabilizadas de deuda autentica;
-4. revisar temporadas, reglas versionadas, ventana movil, publicaciones historicas, variaciones y Masters;
-5. definir bloques de cierre sin reconstruir auditoria, podio, tabla y perfiles que ya funcionan;
-6. aplicar el mismo metodo de cierre usado en Torneos.
+## 18. Punto de continuidad
 
-Despues de W2.3, el orden estrategico continua con reserva inteligente, Comunidad, Mercado Pago productivo y engagement/PWA.
+Torneos y Rankings están cerrados. El perfil público completó su recorrido R3.2B. R3.3A dejó la fundación persistente de Comunidad.
+
+El siguiente orden es:
+
+1. verificar CI de `5e3b4d3`;
+2. R3.3B1: contrato público y consulta segura;
+3. R3.3B2: filtros, orden y paginación;
+4. R3.3B3: catálogo y tarjetas premium;
+5. R3.3B4: carga, vacío, error y privacidad;
+6. R3.3B5: responsive, accesibilidad y cierre;
+7. R3.3C: preferencias desde Mi cuenta;
+8. R3.3D: pareja para torneos;
+9. R3.3E: convocatorias de reservas;
+10. R3.3F: solicitudes y cierre manual;
+11. R3.3G: participantes, concurrencia y auditoría;
+12. R3.3H: notificaciones;
+13. R3.3I: convergencia final.

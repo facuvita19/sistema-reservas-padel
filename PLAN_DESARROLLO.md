@@ -1,59 +1,52 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
-> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 17 de octubre de 2026 después del cierre integral de Torneos en `26e1e30`.
+> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 19 de octubre de 2026 después de publicar `5e3b4d3` y antes de iniciar R3.3B.
 
-## 1. Punto actual de continuidad
+## 1. Lema rector
+
+Plataforma Deportiva W2 debe ser **profesional, moderna e imponente**. Se acepta cualquier mejora, incluso mínima, costosa o una reconstrucción completa, cuando aumente la experiencia, claridad, visibilidad, calidad visual, código, arquitectura, accesibilidad, rendimiento, seguridad o mantenibilidad.
+
+La versión anterior es únicamente una referencia funcional. No es modelo, límite ni estándar visual. Cada pantalla debe cerrarse con calidad definitiva antes de avanzar.
+
+## 2. Punto actual de continuidad
 
 ### Estado ejecutivo
 
-Plataforma Deportiva W2 es la reconstruccion integral de la web publica y debe superar a la experiencia anterior en arquitectura, diseno, accesibilidad, rendimiento, seguridad y mantenibilidad.
+- Rama estable: `master`.
+- Último commit publicado: `5e3b4d3` (`Corregir regresiones de reserva y perfil público W2`).
+- GitHub Actions del commit `5e3b4d3`: pendiente de resultado al actualizar esta guía.
+- Repositorio local: limpio después del push.
+- Web activa: `web-publica-v2`.
+- Aplicación administrativa: independiente de la web pública.
+- Modo oscuro: experiencia principal.
+- Modo claro: alternativa real y obligatoria.
+- Torneos: cerrado integralmente.
+- Rankings: cerrado en `40a313e`.
+- Perfil público: recorrido R3.2B completado y convergido; el nombre excepcionalmente largo y la actividad móvil quedaron protegidos por contratos E2E.
+- Reserva W2: ruta canónica `/w2/reservar`; `/reservar` queda como puente de redirección preservando query string y hash.
+- Formato de reserva: cuatro jugadores, dos contra dos, sin selector editable.
+- Comunidad R3.3A: fundación persistente completada en `46d01a5`.
+- Próximo bloque real: **R3.3B · Catálogo real de jugadores disponibles**.
 
-Estado confirmado al 17 de octubre de 2026:
+### Validaciones recientes
 
-- rama estable: `master`;
-- commit de referencia: `26e1e30` (`Unificar los menus y filtros de Torneos`);
-- repositorio limpio y CI verde;
-- web activa: `web-publica-v2`;
-- Astro y TypeScript: 0 errores y 3 hints preexistentes;
-- Torneos W2: seccion cerrada visual, funcional y tecnicamente;
-- validacion especifica de Torneos: 345 pruebas aprobadas;
-- validacion E2E integral: 701 aprobadas, 4 omitidas y 0 fallidas;
-- modo oscuro principal y modo claro alternativo real;
-- aplicacion administrativa independiente de la web publica.
+- Fundación R3.3A: 318 pruebas Maven aprobadas, migración aplicada y aplicación JavaFX iniciada correctamente.
+- Reserva W2: 10 pruebas focalizadas aprobadas antes del cierre de CI.
+- Cierre local de regresiones: 439 pruebas aprobadas, 1 omitida y 1 contrato residual corregido después; la prueba residual focalizada quedó aprobada.
+- La validación definitiva del bloque corresponde al workflow de GitHub Actions de `5e3b4d3`.
 
-### Objetivo inmediato
+## 3. Forma de trabajo acordada
 
-La continuidad pasa a W2.3, Rankings y perfiles deportivos. Primero se debe auditar el estado real para distinguir pantallas ya estabilizadas de la deuda autentica del motor avanzado. No se debe reconstruir podio, tabla, auditoria o perfiles sin evidencia de una necesidad concreta.
-
-Torneos queda cerrado con:
-
-1. catalogo, detalle y centro competitivo completos;
-2. Informacion, Categorias y Reglamento;
-3. Resumen, Posiciones, Partidos y Cuadro;
-4. URL profunda, `popstate`, cache, abortos y descarte de respuestas obsoletas;
-5. inscripcion exclusivamente por pareja;
-6. navegacion segmentada premium, filtros compactos y responsive especifico;
-7. ruta canonica `/w2/torneos` y puente heredado `/torneos`;
-8. auditoria tecnica final sin limpieza riesgosa de la cascada.
-
-### Arquitectura vigente de Torneos
-
-`torneos.ts` funciona como composition root y delega dominio, estado, datos, presentacion, interaccion, navegacion, inscripcion, arranque y retorno en `src/scripts/torneos/`. `centro-competitivo-premium.ts` sigue siendo el motor del centro y `cuadro-torneo.ts` controla la llave completa.
-
-`w2-tournaments.css` es la capa visual autoritativa. `global.css` conserva infraestructura historica compartida. Las clases `.premium-*` y `.f4-*` siguen siendo contratos activos y solo se migraran dentro de una evolucion transversal explicita.
-
-## 2. Forma de trabajo acordada
-
-### 2.1 Entrega de cambios
+### 3.1 Entrega de cambios
 
 - Cuando estén reunidos los datos necesarios, entregar directamente un ZIP descargable.
-- El ZIP debe poder extraerse en la raíz del proyecto.
-- Debe contener un aplicador Node.js y, cuando aporte valor, un LEEME breve.
-- El aplicador debe validar precondiciones, crear respaldo local, escribir de forma atómica, ejecutar `git diff --check` y restaurar automáticamente si falla.
-- No entregar archivos sueltos cuando el cambio corresponde al proyecto.
+- El ZIP debe extraerse directamente en la raíz del proyecto.
+- Debe contener los archivos completos y un aplicador seguro; Node.js es preferido para transformaciones extensas.
+- El aplicador debe comprobar la raíz, validar precondiciones, evitar modificaciones parciales, escribir en UTF-8, ejecutar `git diff --check` y restaurar si falla.
+- No entregar archivos sueltos cuando el cambio pertenece al proyecto.
 - No enviar un aviso previo si la solución ya está preparada.
 
-### 2.2 Respuesta posterior al ZIP
+### 3.2 Respuesta posterior al ZIP
 
 Indicar solamente:
 
@@ -61,172 +54,245 @@ Indicar solamente:
 2. salida correcta esperada;
 3. un único bloque de comandos de validación;
 4. resultado esperado;
-5. comprobación visual o funcional breve, cuando corresponda.
+5. comprobación visual o funcional breve cuando corresponda.
 
-No pedir que se copie una salida correcta. El usuario solo enviará salida cuando exista un error.
+No pedir que se copie una salida correcta. Solo se comparte salida cuando aparece un error.
 
-### 2.3 Comandos
+### 3.3 Comandos y seguridad
 
-- Usar PowerShell compatible con el entorno real del usuario.
-- No usar `Min` ni `Max` en PowerShell para recortar o inspeccionar texto.
-- Preferir scripts Node.js simples para inspecciones extensas.
+- Usar PowerShell compatible con el entorno real.
+- No usar `Min` ni `Max` en PowerShell.
+- Preferir Node.js para inspecciones, reemplazos y recortes extensos.
 - No crear TXT para salidas cortas.
-- Antes de cualquier comando que pudiera exponer contraseñas, tokens o secretos, advertirlo y redactar la salida siempre que sea posible.
+- Antes de cualquier comando que pudiera mostrar contraseñas, tokens o secretos, advertirlo explícitamente y redactar la salida siempre que sea posible.
 - No solicitar comandos adicionales si no existe un error específico.
-- Evitar repetir suites costosas después de una corrección puntual cuando las pruebas restantes ya pasaron.
+- No pedir adjuntar archivos; las salidas extensas se comparten por partes.
 
-### 2.4 Validación proporcional
+### 3.4 Validación proporcional
 
-- Bloques pequeños: sintaxis, `git diff --check`, pruebas específicas y comprobación visual breve.
-- Cierres funcionales: suite amplia aplicable.
-- Cambios críticos, releases o producción: CI, instalación limpia, backups, restauración y smoke tests.
-- No repetir las 150+ pruebas E2E ni esperar CI para cada ajuste menor.
-- Las validaciones manuales o costosas se agrupan al cierre, salvo riesgo específico.
+- Cambios pequeños: sintaxis, `git diff --check`, pruebas específicas y comprobación visual breve.
+- Bloques funcionales: suite focalizada completa del área.
+- Cambios críticos, cierres amplios o releases: Maven, E2E integral, CI, instalación limpia, backups, restauración y smoke tests según riesgo.
+- No repetir suites costosas después de cada corrección puntual.
+- No esperar CI para cada ajuste menor; sí esperar CI en cierres funcionales amplios, cambios críticos o hitos.
+- Las pruebas manuales o costosas se agrupan al cierre del recorrido salvo riesgo específico.
 
-### 2.5 Commits
+### 3.5 Commits
 
-- Commits simples y descriptivos, sin prefijos como `feat:`.
-- Hacer commit y push por bloques coherentes.
+- Mensajes simples y descriptivos, sin prefijos como `feat:`.
+- Commit y push por bloques coherentes.
 - No mezclar archivos ajenos al bloque.
-- Después del push, comprobar que `git status --short` quede vacío.
+- Confirmar `git status --short` vacío al cierre.
 
-## 3. Producto y arquitectura vigente
+## 4. Producto y arquitectura vigente
 
 ### Administración
 
 - Java 25, Maven y JavaFX.
 - Roles ADMINISTRADOR y OPERADOR.
-- OPERADOR no ve Estadísticas ni resúmenes financieros mensuales.
+- OPERADOR no accede a Estadísticas ni resúmenes financieros mensuales.
 - Inicio y navegación adaptados por rol.
 - Gestión de clientes es referencia visual administrativa.
 
 ### API y datos
 
-- API Java independiente, normalmente accesible mediante `/api/`.
+- API Java independiente, accesible normalmente mediante `/api/`.
 - MySQL 8.4, base `padel_reservas`.
-- Sesiones mediante cookies seguras.
+- Cookies seguras para sesión.
 - Tokens sensibles almacenados mediante hash.
-- Instalación Docker reproducible y migraciones conservadas.
+- Migraciones reproducibles y equivalencia entre actualización e instalación limpia.
 
 ### Web pública
 
 - `web-publica-v2` es la única web activa.
 - `web-publica` es referencia histórica.
 - Astro, TypeScript y Nginx.
-- Shell W2, reservas, cuenta, pagos, rankings, perfiles y Torneos en convergencia integral.
+- Rutas W2 canónicas con puentes heredados controlados.
+- Estado persistente en URL cuando aporta navegación profunda y recuperación de contexto.
 
-## 4. Reglas deportivas obligatorias
+## 5. Reglas deportivas obligatorias
 
 ### Inscripción
 
 - Todas las inscripciones de torneos de pádel son exclusivamente por pareja.
-- No existen inscripciones individuales, tampoco en torneos Americanos.
-- La futura Comunidad servirá para encontrar pareja antes de inscribirse.
+- No existen inscripciones individuales, tampoco en Americanos.
+- Comunidad ayuda a encontrar una pareja antes de la inscripción; nunca transforma la inscripción en individual.
 
 ### Rama
 
-- **Libre**: la pareja puede estar integrada por personas de cualquier sexo.
-- **Femenino**: torneo destinado a parejas femeninas.
-- **Mixto**: exige una pareja formada por una mujer y un hombre.
-- Mixto define composición de la pareja, no categoría ni formato.
-- Los valores internos heredados `MASCULINA`, `MASCULINO` y `ABIERTO` pueden mantenerse temporalmente, pero la web publica **Libre**.
+- **Libre**: pareja integrada por personas de cualquier sexo.
+- **Femenino**: torneo de parejas femeninas.
+- **Mixto**: exige una mujer y un hombre.
+- Mixto define composición, no categoría ni formato competitivo.
+- Los valores internos heredados pueden mantenerse temporalmente, pero la web publica **Libre**.
 
 ### Dimensiones independientes
 
 - Rama: Libre, Femenino, Mixto.
-- Formato competitivo: Eliminación directa o Grupos + eliminación.
-- Condición de inscripción: categoría única, categorías combinadas, Suma 8, Suma 10, Suma 12, etc.
-- Modalidad de partido: un set, dos sets más super tie-break o mejor de tres sets.
+- Formato: Eliminación directa o Grupos + eliminación.
+- Elegibilidad: categoría única, categorías combinadas, Suma 8, Suma 10, Suma 12, etc.
+- Modalidad: un set, dos sets más super tie-break o mejor de tres sets.
 - Dinámica: mismo día o varios días.
-- Americano: tipo especial de evento rápido, no un formato competitivo.
+- Americano: tipo especial de evento rápido.
 
-Nunca usar “suma máxima”. Los nombres públicos son **Suma 8**, **Suma 10**, **Suma 12**, etc.
+Nunca usar “suma máxima”.
 
 ### Americanos
 
-- Eventos ocasionales y rápidos.
-- Normalmente terminan el mismo día.
-- Siempre se inscriben parejas.
-- Pueden usar grupos más eliminación o eliminación directa.
-- Pueden jugarse a un set o dos sets más super tie-break.
-- No se modelan como competencias semanales o mensuales.
-- No mostrar “Convencional” como etiqueta pública para el resto de los torneos. Solo los Americanos necesitan un distintivo específico.
+- Ocasionales y rápidos, normalmente resueltos el mismo día.
+- Inscripción siempre por pareja.
+- Admiten eliminación directa o grupos más eliminación.
+- Admiten un set o dos sets más super tie-break.
+- No son competencias semanales ni mensuales.
+- No mostrar “Convencional” para los demás torneos.
 
-## 5. Estado de Plataforma Deportiva W2
+## 6. Estado de Plataforma Deportiva W2
 
-- W2.0: arquitectura, dirección visual y mapa inicial completados.
+- W2.0: dirección, arquitectura y mapa inicial completados.
 - W2.1: identidad deportiva y categorías históricas, alcance inicial completado.
 - W2.2: historial competitivo auditable, alcance inicial completado.
-- W2.3: ranking y perfiles públicos reales operativos; quedan temporadas, reglas versionadas, ventana móvil, publicaciones históricas, variaciones y Masters.
+- W2.3: rankings y perfiles públicos estabilizados en su recorrido visual actual; motor avanzado, temporadas, publicaciones históricas, variaciones y Masters siguen como evolución posterior.
 - W2.4: cuenta, reservas y pagos operativos; Torneos cerrado integralmente.
+- W2.5: reserva inteligente operativa en su flujo actual; quedan evoluciones funcionales futuras.
+- W2.6 / R3.3: Comunidad en construcción.
 - Mercado Pago sandbox: completado.
-- Mercado Pago producción: pendiente de dominio estable, HTTPS, credenciales productivas y operación controlada.
+- Mercado Pago producción: pendiente de dominio, HTTPS, credenciales productivas, observabilidad y operación controlada.
 
-### Torneos W2
+## 7. Comunidad: estado y hoja de ruta
 
-Ruta canónica:
+### R3.3A · Fundación persistente — completada
 
-```text
-/w2/torneos
-```
+Incluye:
 
-No existe una sección principal llamada Competir. Torneos es la sección principal y contiene catálogo, detalle y centro competitivo.
+- dominio de preferencias, convocatorias, solicitudes, participantes y eventos;
+- estados y motivos de cierre;
+- DAOs y adaptadores MySQL;
+- migración `MigracionComunidadR33A`;
+- pruebas de dominio y contrato de migración;
+- auditoría como principio estructural.
 
-Recorrido completado:
+### R3.3B · Catálogo real de jugadores disponibles — próximo bloque
 
-1. catálogo;
-2. detalle con Información, Categorías y Reglamento;
-3. categoría persistente por URL;
-4. Resumen;
-5. Posiciones;
-6. Partidos;
-7. Cuadro;
-8. convergencia y retiro controlado.
+1. **R3.3B1 · Contrato público y consulta segura**
+   - DTO público específico;
+   - opt-in de visibilidad;
+   - exclusión de documento, correo, teléfono completo, información comercial y pagos;
+   - categoría vigente, posición, disponibilidad, objetivos y resumen deportivo permitido.
+2. **R3.3B2 · Filtros, orden y paginación**
+   - nombre, categoría, posición, objetivo, disponibilidad y aceptación de invitaciones;
+   - paginación estable y filtros persistentes en URL cuando corresponda.
+3. **R3.3B3 · Catálogo y tarjetas premium**
+   - perfil, categoría, posición, disponibilidad y acción contextual;
+   - datos reales desde el primer render funcional.
+4. **R3.3B4 · Estados completos**
+   - carga, vacío, error, recuperación, sesión y privacidad.
+5. **R3.3B5 · Responsive, accesibilidad y cierre visual**
+   - oscuro, claro, escritorio, 390 px y 320 px;
+   - teclado, foco, movimiento reducido y E2E focalizados.
 
-## 6. Dirección de producto
+### R3.3C · Preferencias desde Mi cuenta
 
-- Calidad visual definitiva antes de avanzar a la pantalla siguiente.
-- Resultado premium, profesional, moderno, imponente y contemporáneo.
-- Mejoras mínimas son válidas si elevan claridad, visibilidad o experiencia.
-- Se aceptan reconstrucciones completas cuando aportan valor real.
-- Innovación con estabilidad, accesibilidad, seguridad, rendimiento y mantenibilidad.
-- La web anterior es referencia funcional, no límite ni plantilla.
+- activar o pausar visibilidad;
+- configurar objetivos, posición, categorías, días y franjas;
+- aceptar invitaciones y contacto por WhatsApp;
+- previsualizar la publicación;
+- gestionar privacidad y solicitudes.
 
-## 7. Calidad y operación
+### R3.3D · Búsqueda de pareja para torneos
 
-- Java, Astro, TypeScript y Playwright según riesgo.
+- descubrir perfiles compatibles;
+- contactar principalmente por WhatsApp;
+- coordinar previamente;
+- inscribirse después como pareja.
+
+### R3.3E · Convocatorias para completar turnos
+
+Caso central:
+
+> “3 de 4, falta 1 jugador de 5.ª”.
+
+La convocatoria se vincula con una reserva real e informa cancha, fecha, horario, cupos, categoría buscada, posición y mensaje permitido.
+
+### R3.3F · Solicitudes y cierre manual
+
+- solicitar unirse;
+- aceptar, rechazar, cancelar o vencer solicitudes;
+- cerrar automáticamente al completar cupos;
+- cerrar manualmente cuando el titular complete el turno fuera de la web;
+- cerrar la convocatoria no cancela ni modifica la reserva.
+
+### R3.3G · Participantes, concurrencia y auditoría
+
+- impedir duplicados y sobrecupos;
+- transacciones para aceptación;
+- idempotencia;
+- origen del participante;
+- historial inmutable de acciones relevantes.
+
+### R3.3H · Notificaciones y contacto
+
+- nueva solicitud, aceptación, rechazo, cierre y convocatoria completa;
+- WhatsApp contextual según permiso;
+- base para PWA y notificaciones futuras.
+
+### R3.3I · Convergencia final
+
+- visual definitiva;
+- privacidad;
+- rendimiento;
+- accesibilidad;
+- revisión manual y E2E integral.
+
+## 8. Principios funcionales de Comunidad
+
+- Comunidad es infraestructura deportiva, no una red social genérica.
+- Nadie se publica automáticamente: la visibilidad es opt-in.
+- El teléfono no se expone en listados públicos.
+- El backend decide visibilidad y acciones permitidas.
+- Los torneos siguen requiriendo pareja completa.
+- La convocatoria de una reserva no altera el contrato comercial de la reserva.
+- El cierre manual impide nuevas solicitudes sin cancelar la reserva.
+- Toda acción sensible debe ser autorizada, transaccional y auditable.
+- No se simulan datos productivos salvo fixtures E2E identificados.
+
+## 9. Calidad y operación
+
 - `git diff --check` obligatorio.
 - Sin secretos en salidas compartidas.
-- Backups con checksum y restauración temporal para cierres operativos.
-- Despliegue y rollback documentados.
+- Backups, checksum y restauración cuando el riesgo lo requiera.
 - Mercado Pago con backend, webhooks, idempotencia y conciliación.
+- Cada bloque funcional cierra contratos, visual, responsive, accesibilidad y documentación antes de avanzar.
 
-## 8. Criterios de aceptación
+## 10. Criterios de aceptación
 
 Un bloque se considera terminado cuando:
 
 1. alcance definido;
-2. cambios coherentes con arquitectura y reglas deportivas;
-3. sintaxis válida;
-4. `git diff --check` correcto;
-5. pruebas proporcionales aprobadas;
-6. comprobación visual o funcional realizada;
-7. sin exposición de secretos;
-8. archivos previstos únicamente;
-9. commit y push por bloque cuando corresponda;
-10. repositorio limpio al cierre.
+2. reglas de negocio y privacidad explícitas;
+3. cambios coherentes con arquitectura y lema rector;
+4. sintaxis válida;
+5. `git diff --check` correcto;
+6. pruebas proporcionales aprobadas;
+7. revisión visual o funcional realizada;
+8. oscuro, claro y responsive cubiertos cuando hay interfaz;
+9. sin exposición de secretos ni datos personales;
+10. archivos previstos únicamente;
+11. documentación actualizada;
+12. commit y push por bloque;
+13. repositorio limpio;
+14. CI verde cuando el riesgo o el hito lo requieren.
 
-## 9. Archivos que deben leerse al retomar
+## 11. Archivos que deben leerse al retomar
 
 1. `PLAN_DESARROLLO.md`.
 2. `docs/PLATAFORMA_DEPORTIVA_W2.md`.
 3. `docs/ARQUITECTURA_FUNCIONAL_W2.md`.
 4. `docs/DIRECCION_VISUAL_W2.md`.
 5. `docs/MAPA_EXPERIENCIA_W2.md`.
-6. `docs/CONTINUIDAD_DEL_PROYECTO.md`, si existe y está vigente.
-7. últimos commits de `master`.
-8. `git status --short`.
+6. últimos commits de `master`.
+7. `git status --short`.
+8. resultado del último workflow de GitHub Actions.
 
-## 10. Instrucción para un chat nuevo
+## 12. Instrucción para un chat nuevo
 
-Indicar que Torneos esta terminado y que la continuidad real esta en Plataforma Deportiva W2, auditoria de Rankings y perfiles deportivos para completar W2.3. Se debe partir del estado visual y funcional real, respetar la forma de trabajo de la seccion 2 y no reconstruir pantallas estabilizadas. Copa Metropolitana E2E es un fixture controlado de Playwright, no un torneo real.
+Indicar que Torneos y Rankings están cerrados, que el perfil público completó R3.2B, que R3.3A dejó la fundación persistente de Comunidad y que el próximo bloque es R3.3B1. Antes de modificar código se debe verificar el resultado del workflow de `5e3b4d3`, leer estas cinco guías y respetar la forma de trabajo, el lema rector, la privacidad y la inscripción exclusivamente por pareja.

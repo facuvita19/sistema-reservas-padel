@@ -1,43 +1,55 @@
 # Dirección visual W2
 
-> Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente.
+> Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente. Actualizado el 19 de octubre de 2026.
 
 ## 1. Principio creativo
 
-Cada pantalla debe cerrarse con calidad visual definitiva antes de avanzar. Se acepta rehacer cualquier componente cuando mejora claridad, jerarquía, confianza, accesibilidad o rendimiento.
+Cada pantalla debe cerrarse con calidad visual definitiva antes de avanzar. Se acepta rehacer cualquier componente o pantalla cuando mejora claridad, jerarquía, confianza, diferenciación, accesibilidad o rendimiento.
 
-Modo oscuro es la experiencia principal. Modo claro debe conservar calidad, contraste y coherencia.
+La versión anterior no define el techo visual. Modo oscuro es la experiencia principal. Modo claro debe conservar jerarquía, contraste y calidad.
 
-## 2. Lenguaje visual
+## 2. Lema aplicado al diseño
+
+- profesional, no genérico;
+- moderno, no dependiente de tendencias frágiles;
+- imponente, sin sacrificar legibilidad;
+- deportivo, sin caer en decoración gratuita;
+- contextual, evitando repetir la misma grilla de tarjetas en todas las pantallas;
+- definitivo por bloque, no una sucesión de parches visibles.
+
+## 3. Lenguaje visual
 
 - grafito y negro suave como estructura;
-- rojo W2 para navegación y acción principal;
+- rojo W2 para identidad, navegación y acción principal;
 - verde para éxito, clasificación y acreditación;
 - ámbar para advertencias y vencimientos;
-- azul exclusivamente cuando representa al proveedor Mercado Pago;
+- azul exclusivamente para Mercado Pago o significado externo equivalente;
 - tipografía editorial con jerarquía fuerte;
 - iconografía SVG compacta;
-- profundidad moderada, sin efectos gratuitos;
-- movimiento útil de 160 a 280 ms y respeto de `prefers-reduced-motion`.
+- profundidad moderada;
+- movimiento útil entre 160 y 280 ms;
+- respeto de `prefers-reduced-motion`.
 
-## 3. Diseño responsive
+## 4. Diseño responsive
 
 - escritorio y móvil tienen composiciones propias;
+- cobertura explícita de escritorio, 390 px y 320 px;
 - objetivo táctil mínimo de 44 px;
-- filtros móviles en panel u hoja modal;
 - sin desplazamiento horizontal accidental;
-- cuadros, rankings y cronologías con solución específica para móvil;
-- foco visible, navegación por teclado y zoom soportado.
+- filtros móviles en panel, hoja o patrón específico;
+- cuadros, rankings, pagos, perfiles y convocatorias con solución móvil propia;
+- nombres excepcionalmente largos deben conservar identidad sin romper jerarquía;
+- foco visible, teclado y zoom soportados.
 
-## 4. Imágenes
+## 5. Imágenes
 
-- fotografía real del complejo cuando exista;
+- fotografía real cuando exista y sea documentable;
 - imágenes generadas solo para conceptos o fondos no documentales;
 - AVIF/WebP, `srcset`, dimensiones declaradas y lazy loading;
-- ninguna imagen generada debe presentarse como instalación real;
-- cada imagen debe tener función comercial, informativa o identitaria.
+- ninguna imagen generada se presenta como instalación real;
+- cada imagen cumple una función comercial, informativa o identitaria.
 
-## 5. Componentes premium
+## 6. Componentes premium
 
 - hero editorial;
 - disponibilidad inmediata;
@@ -46,27 +58,40 @@ Modo oscuro es la experiencia principal. Modo claro debe conservar calidad, cont
 - perfil de jugador;
 - línea de tiempo competitiva;
 - marcador y cuadro;
+- catálogo de jugadores;
 - convocatoria comunitaria;
-- drawer de reserva y pago;
+- centro de reserva y pago;
 - skeletons específicos;
-- estados vacíos, error y éxito diseñados.
+- estados vacíos, error, éxito y recuperación diseñados.
 
-## 6. Torneos
+## 7. Patrón global de navegación secundaria
+
+El estándar global es:
+
+- contenedor grafito redondeado y opaco;
+- controles separados sin divisores;
+- pestaña activa elevada con matiz rojo;
+- indicador corto;
+- comportamiento sticky controlado;
+- foco visible;
+- adaptación móvil sin desborde global.
+
+Resumen, Posiciones, Partidos y Cuadro son la referencia. El patrón se reutiliza después de auditar la jerarquía de cada sección, no como parche automático.
+
+## 8. Torneos
 
 ### Catálogo
 
-Las tarjetas usan un contrato geométrico uniforme:
-
+- geometría uniforme;
 - estado y fecha;
-- cantidad de categorías;
 - título de hasta dos líneas;
 - descripción opcional con espacio estable;
 - etiquetas jerarquizadas;
 - precio y disponibilidad alineados;
 - progreso cuando corresponde;
-- acción anclada al pie.
+- acción anclada.
 
-No reducir tipografía según contenido, no inventar descripciones y no usar márgenes particulares por torneo.
+No reducir tipografía arbitrariamente, inventar contenido ni crear excepciones por torneo.
 
 ### Etiquetas
 
@@ -74,67 +99,132 @@ No reducir tipografía según contenido, no inventar descripciones y no usar má
 - Formato: Eliminación directa o Grupos + eliminación.
 - Condición: 4.ª, 4.ª + 5.ª, Suma 8, Suma 10, Suma 12, etc.
 - Americano: distintivo específico.
-- Modalidad y dinámica: información secundaria del detalle.
-
-No mostrar “Convencional”. No mezclar Americano, Suma o modalidad de partido dentro del filtro Formato.
-
-### Detalle
-
-Debe explicar claramente:
-
-- tipo especial si es Americano;
-- rama;
-- condición de inscripción;
-- formato competitivo;
-- modalidad de partido;
-- duración prevista;
-- inscripción por pareja.
 
 ### Centro competitivo
 
-- selector de categoría persistente;
-- navegación estable entre Resumen, Posiciones, Partidos y Cuadro;
-- ronda visible cuando corresponde;
-- color semántico sin invadir la estructura;
-- mobile con controles persistentes y cuadro adaptado.
+- categoría persistente;
+- Resumen, Posiciones, Partidos y Cuadro;
+- ronda contextual;
+- color semántico sin invadir estructura;
+- control móvil específico.
 
-## 7. Cuenta, reserva y pagos
+## 9. Rankings y perfil público
 
-- visitante, carga, autenticado, error y sesion vencida disenados;
-- centro personal une identidad comercial y deportiva;
-- drawer de pago con render atomico y skeleton integrado;
-- estados online, transferencia, acreditado, vencido y sin metodo son excluyentes;
-- X, Escape, backdrop y restauracion de foco obligatorios;
-- sandbox identificado mediante texto explicito.
+Rankings y Torneos establecen el nivel visual mínimo.
 
-## 8. Patron segmentado y metodo de cierre
+El perfil público debe:
 
-Torneos establece el patron de referencia para navegacion secundaria W2: contenedor grafito redondeado y opaco, controles sin divisores, opcion activa elevada con matiz rojo, indicador corto de 32 px, foco visible, comportamiento sticky y variantes principal, secundaria y compacta. En movil debe existir desplazamiento controlado sin desborde global. El modo oscuro es el fallback real y el claro solo se activa mediante tema explicito.
+- priorizar identidad y categoría vigente;
+- conservar auditoría visible;
+- resolver nombres largos en un máximo razonable de líneas;
+- evitar actividad reciente extensa y repetitiva;
+- equilibrar columna principal y lateral;
+- compactar tarjetas en 320 px sin perder rival, torneo, fase, marcador y fecha;
+- usar Comunidad como estado deportivo contextual, no como adorno.
 
-El patron se reutiliza solo despues de auditar la jerarquia de cada seccion. No debe copiarse como una nueva capa de parches.
+## 10. Reserva y pagos
 
-Cada seccion se cierra con el metodo validado en Torneos:
+- ruta canónica W2 sin destellos de la experiencia histórica;
+- cuatro jugadores comunicado como formato, no como selector;
+- consentimiento válido sereno, sin parecer error;
+- errores visibles al enfocar y eliminados al editar;
+- medios de pago con jerarquía equivalente y altura móvil suficiente;
+- Mercado Pago usa identidad azul solo donde corresponde;
+- transferencia usa identidad diferenciada y lenguaje público;
+- estados online, transferencia, acreditado, vencido y sin método son excluyentes;
+- sandbox se identifica explícitamente;
+- CTA, foco, estados busy y recuperación son obligatorios.
 
-1. auditoria documental, funcional y visual;
-2. inventario de contratos y codigo vigente;
-3. bloques pequenos con pruebas proporcionales;
-4. revision visual en oscuro, claro, escritorio y movil;
-5. correccion de regresiones sin relajar contratos validos;
-6. auditoria tecnica antes de limpiar cascadas historicas;
-7. suite especifica completa;
-8. suite E2E integral y CI verde;
-9. actualizacion documental y cierre oficial.
+## 11. Comunidad
 
-## 9. Criterios de aprobación visual
+### Catálogo de jugadores
+
+Debe sentirse como una herramienta deportiva de descubrimiento, no como directorio genérico.
+
+Cada tarjeta debe jerarquizar:
+
+- identidad pública;
+- categoría vigente;
+- posición;
+- objetivo;
+- disponibilidad;
+- resumen deportivo permitido;
+- acción contextual.
+
+Reglas:
+
+- no exponer contacto en la tarjeta;
+- evitar badges excesivos;
+- filtros compactos y legibles;
+- resultados, filtros y URL consistentes;
+- skeleton con geometría real;
+- estado vacío útil y accionable;
+- ausencia de datos simulados en producción.
+
+### Convocatorias
+
+Una convocatoria debe mostrar claramente:
+
+- reserva asociada;
+- fecha, horario y cancha autorizados;
+- “3 de 4” y cupos faltantes;
+- categoría o compatibilidad buscada;
+- estado: abierta, completa, cerrada, vencida o cancelada;
+- acción para solicitar unirse;
+- acción del titular para cerrar manualmente.
+
+Cerrar convocatoria y cancelar reserva deben ser visual y semánticamente distintos.
+
+### Privacidad visual
+
+- el contacto nunca aparece como texto libre en listados;
+- los permisos se explican antes de publicar;
+- los estados privados no se disfrazan de errores;
+- bloqueo, pausa y retiro de publicación deben ser fáciles de encontrar;
+- confirmaciones sensibles deben explicar consecuencias.
+
+## 12. Estados obligatorios
+
+Toda pantalla nueva considera:
+
+- carga;
+- contenido;
+- vacío;
+- búsqueda sin resultados;
+- error recuperable;
+- error de autorización;
+- sesión vencida;
+- éxito;
+- acción en curso;
+- contenido pausado o privado;
+- movimiento reducido.
+
+## 13. Método de cierre
+
+1. auditoría documental, funcional y visual;
+2. inventario de contratos y código vigente;
+3. definición de casos extremos;
+4. bloques pequeños con pruebas proporcionales;
+5. revisión oscuro, claro, escritorio, 390 px y 320 px;
+6. accesibilidad y teclado;
+7. corrección sin relajar contratos válidos;
+8. auditoría técnica antes de limpiar cascadas;
+9. suite específica;
+10. E2E integral y CI cuando el hito lo requiere;
+11. actualización documental y cierre oficial.
+
+## 14. Criterios de aprobación visual
 
 Una pantalla se aprueba cuando:
 
 - la acción principal se entiende rápidamente;
-- la composición no parece una repetición indiscriminada de tarjetas;
+- la composición tiene identidad propia;
 - contenido corto y largo mantienen geometría coherente;
 - oscuro y claro conservan calidad;
-- escritorio y móvil están resueltos;
-- carga, vacío, error y éxito están diseñados;
+- escritorio, 390 px y 320 px están resueltos;
+- carga, vacío, error, éxito y privacidad están diseñados;
 - teclado, contraste y movimiento reducido funcionan;
-- no hay saltos, flashes ni contenido heredado visible durante cargas;
-- la página mantiene presupuesto de rendimiento.
+- no hay saltos, flashes ni contenido histórico visible;
+- no se exponen datos personales;
+- mantiene presupuesto de rendimiento;
+- alcanza o supera la calidad de Torneos y Rankings.
