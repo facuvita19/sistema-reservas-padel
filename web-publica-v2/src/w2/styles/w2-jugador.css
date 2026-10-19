@@ -164,3 +164,28 @@
   .w2jp-result strong{font-size:.94rem!important}
   .w2jp-match-index{padding-right:.35rem!important}
 }
+
+/* R3.2B4B - recorrido natural sin superposicion */
+/* La navegacion pertenece al flujo de la columna lateral. No debe cubrir historial ni Comunidad. */
+.w2jp-profile-index{
+ position:static!important;
+ inset:auto!important;
+ top:auto!important;
+ z-index:auto!important;
+ isolation:isolate;
+ overflow:hidden;
+ background:#0f1619!important;
+ backdrop-filter:none!important;
+ box-shadow:none!important;
+}
+.w2jp-profile-index::before,.w2jp-profile-index::after{pointer-events:none}
+.w2jp-profile-index>a{scroll-margin-top:6.75rem}
+.w2jp-profile-index>a:focus-visible{position:relative;z-index:1}
+:root[data-w2-theme="light"] .w2jp-profile-index{background:#fff!important}
+@media(min-width:1181px){
+ .w2jp-side{position:static!important;align-self:start}
+ .w2jp-profile-index{position:static!important;top:auto!important;max-height:none!important;transform:none!important;translate:none!important}
+}
+@media(max-width:1180px){
+ .w2jp-profile-index{position:static!important;max-height:none!important}
+}

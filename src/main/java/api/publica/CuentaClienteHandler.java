@@ -10,6 +10,9 @@ import com.sun.net.httpserver.HttpExchange;
 import api.publica.CuentaClienteDTO.ActualizarPerfil;
 import api.publica.CuentaClienteDTO.CambiarPassword;
 import api.publica.CuentaClienteDTO.ActualizarPreferenciasDeportivas;
+import api.publica.PreferenciasComunidadDTO.Actualizar;
+import servicio.PreferenciasComunidadService;
+import servicio.PreferenciasComunidadService.ConflictoPreferenciasComunidadException;
 import servicio.IdentidadDeportivaService;
 import servicio.AutenticacionClienteService;
 import servicio.AutenticacionClienteService.SesionAutenticada;
@@ -28,6 +31,7 @@ public final class CuentaClienteHandler {
     private final PagoClienteCuentaService pagoCuentaService;
     private final JugadorPublicoService jugadorPublicoService;
     private final IdentidadDeportivaService identidadDeportivaService;
+    private final PreferenciasComunidadService preferenciasComunidadService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -45,6 +49,7 @@ public final class CuentaClienteHandler {
         this.pagoCuentaService = new PagoClienteCuentaService();
         this.jugadorPublicoService = new JugadorPublicoService();
         this.identidadDeportivaService = new IdentidadDeportivaService();
+        this.preferenciasComunidadService = new PreferenciasComunidadService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -80,6 +85,22 @@ public final class CuentaClienteHandler {
             if (ruta.equals(PREFIJO + "/perfil-deportivo/preferencias")
                     && "PUT".equals(metodo)) {
                 actualizarPreferenciasDeportivas(intercambio, autenticada);
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/comunidad/preferencias")
+                    && "GET".equals(metodo)) {
+                responder(intercambio, 200, preferenciasComunidadService.obtener(
+                        autenticada.cliente().getId()));
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/comunidad/preferencias")
+                    && "PUT".equals(metodo)) {
+                Actualizar entrada = mapper.readValue(
+                        intercambio.getRequestBody(), Actualizar.class);
+                responder(intercambio, 200, preferenciasComunidadService.actualizar(
+                        autenticada.cliente().getId(), entrada));
                 return;
             }
 
@@ -167,6 +188,9 @@ public final class CuentaClienteHandler {
                     exception.getMessage(), operacionId);
         } catch (ConflictoPerfilException exception) {
             error(intercambio, 409, "CONFLICTO_PERFIL",
+                    exception.getMessage(), operacionId);
+        } catch (ConflictoPreferenciasComunidadException exception) {
+            error(intercambio, 409, "CONFLICTO_PREFERENCIAS_COMUNIDAD",
                     exception.getMessage(), operacionId);
         } catch (JacksonException exception) {
             error(intercambio, 400, "JSON_INVALIDO",

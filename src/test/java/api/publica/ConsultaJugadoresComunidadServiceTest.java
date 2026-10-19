@@ -55,4 +55,5 @@ class ConsultaJugadoresComunidadServiceTest {
             assertFalse(codigo.contains(privado));
         }
     }
+ @org.junit.jupiter.api.Test void escapaBusquedaConComodinYAdmiracion(){org.junit.jupiter.api.Assertions.assertEquals("ana!%!_!!",ConsultaJugadoresComunidadService.escaparLike("ana%_!"));}
 }
