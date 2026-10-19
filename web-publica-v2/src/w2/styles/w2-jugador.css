@@ -137,3 +137,30 @@
 .w2jp-page{--w2jp-section-gap:1rem}.w2jp-body{gap:var(--w2jp-section-gap)}.w2jp-body>main,.w2jp-side{gap:var(--w2jp-section-gap)}.w2jp-card{scroll-margin-top:6.5rem}.w2jp-hero,.w2jp-card,.w2jp-ready,.w2jp-context{min-width:0}.w2jp-card a,.w2jp-context a{text-underline-offset:.18em}.w2jp-card a:hover,.w2jp-context a:hover{text-decoration-thickness:1px}.w2jp-profile-index>a[aria-current="location"]{border-color:#d7ad4a;background:#111812;color:#f0d98a}.w2jp-hero[data-publication="LISTO"]{--w2jp-status-accent:#69d5a0}.w2jp-hero[data-publication="SIN_CATEGORIA"]{--w2jp-status-accent:#71847b}.w2jp-hero[data-publication="PUBLICADO"]{--w2jp-status-accent:var(--w2jp-category-accent)}.w2jp-hero[data-publication="SIN_CATEGORIA"] .w2jp-monogram i{background:#71847b;box-shadow:0 0 0 4px rgba(113,132,123,.1)}.w2jp-hero[data-publication="LISTO"] .w2jp-monogram i{background:#69d5a0}.w2jp-hero[data-publication="SIN_CATEGORIA"] .w2jp-identity-summary{color:#81928a}.w2jp-trajectory[data-performance="empty"] .w2jp-performance-meter{background:#263139}.w2jp-trajectory[data-performance="empty"] .w2jp-performance-meter>i,.w2jp-trajectory[data-performance="empty"] .w2jp-performance-meter>b{width:0!important}.w2jp-activity:has(#profileMatchesEmpty:not(.hidden)) .w2jp-activity-foot{display:none}.w2jp-community #communityBadge:not(.active),.w2jp-community li:not(.active){border-color:#3a464c;background:#0b1114;color:#83958c}.w2jp-category-history:has(#profileCategories:empty) ol{display:none}.w2jp-category-history:has(#profileCategories:empty) .w2jp-empty-copy{margin:0}.w2jp-loading,.w2jp-error{min-height:24rem}.w2jp-error a:focus-visible,.w2jp-matches-toggle:focus-visible,.w2jp-profile-index a:focus-visible{outline:3px solid rgba(231,25,57,.32);outline-offset:3px}.w2jp-matches-toggle,.w2jp-profile-index>a,.w2jp-context a{touch-action:manipulation}.w2jp-hero-metrics,.w2jp-performance-grid,.w2jp-matches,.w2jp-category-snapshot,.w2jp-ranking dl{contain:layout style}
 :root[data-w2-theme="light"] .w2jp-profile-index>a[aria-current="location"]{border-color:#b78d2e;background:#fffaf0;color:#755a1d}:root[data-w2-theme="light"] .w2jp-community #communityBadge:not(.active),:root[data-w2-theme="light"] .w2jp-community li:not(.active){border-color:#d3d9d6;background:#f7f8f8;color:#59665f}
 @media(max-width:900px){.w2jp-body{padding-top:1rem}.w2jp-card{scroll-margin-top:5.25rem}}@media(max-width:700px){.w2jp-context{padding-block:.62rem}.w2jp-body{padding-bottom:3rem}.w2jp-card,.w2jp-ready{border-radius:18px}.w2jp-profile-index{display:none!important}.w2jp-hero-grid,.w2jp-body{max-width:100%}.w2jp-matches-toggle{min-height:48px}.w2jp-ranking>a,.w2jp-activity-foot a,.w2jp-performance-foot a{min-height:42px}}@media(max-width:390px){.w2jp-body{padding-inline:max(.72rem,env(safe-area-inset-left));padding-right:max(.72rem,env(safe-area-inset-right))}.w2jp-card{padding:1rem}.w2jp-hero-metrics>footer,.w2jp-performance-foot,.w2jp-activity-foot{gap:.42rem}.w2jp-community li{min-height:46px}}@media(prefers-reduced-motion:reduce){.w2jp-page *{scroll-behavior:auto!important}}
+
+/* CI-PROFILE-CONVERGENCE-R32B */
+@media(min-width:701px){
+  .w2jp-identity h1[data-name-length="extra-long"]{
+    display:-webkit-box!important;
+    max-width:22ch!important;
+    overflow:hidden!important;
+    -webkit-box-orient:vertical!important;
+    -webkit-line-clamp:2!important;
+    line-clamp:2!important;
+    font-size:clamp(1.55rem,2.45vw,2.2rem)!important;
+    line-height:1.02!important;
+    text-wrap:balance
+  }
+}
+@media(max-width:350px){
+  .w2jp-matches article{gap:.24rem .52rem!important;padding:.58rem!important}
+  .w2jp-match-copy>div{gap:.08rem!important}
+  .w2jp-match-copy b{font-size:.82rem!important;line-height:1.12!important}
+  .w2jp-match-copy time{font-size:.52rem!important;line-height:1.15!important}
+  .w2jp-match-copy p{margin-top:.12rem!important;font-size:.56rem!important;line-height:1.25!important}
+  .w2jp-match-copy small{gap:.1rem!important;margin-top:.18rem!important;line-height:1.2!important}
+  .w2jp-match-copy small span{font-size:.54rem!important}
+  .w2jp-result span{min-height:20px!important;padding:.16rem .4rem!important}
+  .w2jp-result strong{font-size:.94rem!important}
+  .w2jp-match-index{padding-right:.35rem!important}
+}

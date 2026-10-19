@@ -236,3 +236,13 @@ body[data-booking-step="2"] .w2b-hero,body[data-booking-step="3"] .w2b-hero,body
  .w2-booking-summary[data-mobile-expanded="false"] .reserve-side-status{margin-top:.48rem!important}
 }
 @media(max-width:350px){.w2c-mobile-summary-toggle{min-height:64px!important}.w2c-mobile-summary-toggle span{max-width:calc(100% - 96px)}.w2c-mobile-summary-toggle strong{min-width:88px!important}.w2c-mobile-summary-toggle em{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal!important}}
+
+/* CI-CONVERGENCE-R33A */
+.reserve-consent.checked,
+.reserve-consent.checked:not(:focus-within){box-shadow:none!important}
+@media(max-width:620px){
+  .reserve-consent.checked,
+  .reserve-consent.checked:not(:focus-within){box-shadow:none!important}
+  .reserve-payment-choice button.online,
+  .reserve-payment-choice button[data-pay-manual]{min-height:140px!important}
+}

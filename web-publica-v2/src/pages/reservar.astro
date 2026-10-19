@@ -1,88 +1,17 @@
 ---
-import LayoutPrincipal from '../layouts/LayoutPrincipal.astro';
 ---
-<LayoutPrincipal titulo="Reservar cancha | Pádel Reservas" descripcion="Elegí cancha, fecha y horario para solicitar tu reserva online." actual="reservar">
-  <section class="reserve-hero reserve-v2-hero">
-    <div class="container-site reserve-hero-grid">
-      <div>
-        <p class="site-kicker">Reserva online</p>
-        <h1>Reservá tu cancha</h1>
-        <p>Elegí cancha, fecha y horario. Protegemos el turno mientras acreditás la seña.</p>
-      </div>
-      <div class="reserve-hero-trust" aria-label="Condiciones de la reserva">
-        <span><small>Disponibilidad</small><b>En tiempo real</b></span>
-        <span><small>Protección</small><b id="datoProteccionReserva">Temporal</b></span>
-        <span><small>Confirmación</small><b id="datoSeniaReserva">Por seña</b></span>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-site reserve-shell">
-    <ol class="reserve-steps" aria-label="Progreso de la reserva">
-      <li class="paso-reserva activo actual" data-paso-indicador="1"><b>1</b><span>Cancha y fecha</span></li>
-      <li class="paso-reserva" data-paso-indicador="2"><b>2</b><span>Horario</span></li>
-      <li class="paso-reserva" data-paso-indicador="3"><b>3</b><span>Tus datos</span></li>
-      <li class="paso-reserva" data-paso-indicador="4"><b>4</b><span>Pago</span></li>
-    </ol>
-    <p id="estadoPasoReservaMovil" class="reserve-step-mobile" aria-live="polite"><span>Paso 1 de 4</span><b>Cancha y fecha</b></p>
-
-    <div id="mensajeReserva" class="reserve-alert hidden" role="alert" tabindex="-1"></div>
-
-    <div class="reserve-layout">
-      <main class="reserve-main">
-        <section class="panel-reserva" data-panel="1" tabindex="-1">
-          <div class="reserve-panel-head"><div><p class="site-kicker">Paso 1</p><h2>Elegí dónde y cuándo jugar</h2><p>Seleccioná una cancha y la fecha que mejor te quede.</p></div></div>
-          <div class="reserve-date-box reserve-date-box-v74d">
-            <label for="fechaReserva"><span class="etiqueta-web">Fecha del turno</span><input id="fechaReserva" class="field-web" type="date" /></label>
-            <div class="reserve-date-facts" aria-live="polite">
-              <span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 7v5l3 2"/><circle cx="12" cy="12" r="9"/></svg></i><small>Anticipación mínima</small><strong id="datoAnticipacionFecha">Consultando…</strong></span>
-              <span><i aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 3v3M16 3v3M5 9h14M6 5h12a1 1 0 0 1 1 1v14H5V6a1 1 0 0 1 1-1Z"/></svg></i><small>Protección del turno</small><strong id="datoProteccionFecha">Consultando…</strong></span>
-            </div>
-          </div>
-          <div id="listaCanchasReserva" class="reserve-courts" aria-live="polite">
-            <div class="reserve-skeleton skeleton"></div><div class="reserve-skeleton skeleton"></div><div class="reserve-skeleton skeleton"></div>
-          </div>
-          <div class="reserve-actions"><span id="ayudaSeleccionCancha">Seleccioná una cancha para continuar.</span><button id="buscarHorarios" class="btn btn-primary reserve-primary" type="button" disabled>Ver horarios disponibles <span aria-hidden="true">→</span></button></div>
-        </section>
-
-        <section class="panel-reserva hidden" data-panel="2" tabindex="-1">
-          <div class="reserve-panel-head split"><div><p class="site-kicker">Paso 2</p><h2>Seleccioná un horario</h2><p id="tituloHorarios"></p></div><button class="boton-volver-paso" data-volver="1" type="button">← Cambiar cancha o fecha</button></div>
-          <div id="listaHorarios" class="reserve-times" aria-live="polite"></div>
-        </section>
-
-        <section class="panel-reserva hidden" data-panel="3" tabindex="-1">
-          <form id="formReserva" novalidate>
-            <div class="reserve-panel-head split"><div><p class="site-kicker">Paso 3</p><h2>Completá tus datos</h2><p>Los usaremos para identificar la reserva y contactarte si fuera necesario.</p></div><button class="boton-volver-paso" data-volver="2" type="button">← Cambiar horario</button></div>
-            <div id="resumenTurno" class="reserve-summary-inline reserve-mobile-summary"></div>
-            <div class="reserve-form-grid">
-              <label><span class="etiqueta-web">Nombre *</span><input id="clienteNombre" class="field-web" aria-describedby="error-clienteNombre" maxlength="100" autocomplete="given-name" /><small id="error-clienteNombre" class="field-error" data-error="clienteNombre"></small></label>
-              <label><span class="etiqueta-web">Apellido *</span><input id="clienteApellido" class="field-web" aria-describedby="error-clienteApellido" maxlength="100" autocomplete="family-name" /><small id="error-clienteApellido" class="field-error" data-error="clienteApellido"></small></label>
-              <label><span class="etiqueta-web">Documento *</span><input id="clienteDocumento" class="field-web" aria-describedby="error-clienteDocumento" inputmode="numeric" maxlength="10" placeholder="7 a 10 números" /><small id="error-clienteDocumento" class="field-error" data-error="clienteDocumento"></small></label>
-              <label><span class="etiqueta-web">Teléfono *</span><input id="clienteTelefono" class="field-web" aria-describedby="error-clienteTelefono" inputmode="tel" maxlength="30" autocomplete="tel" placeholder="Ej. 11 1234 5678" /><small id="error-clienteTelefono" class="field-error" data-error="clienteTelefono"></small></label>
-              <label><span class="etiqueta-web reserve-email-label"><span>Correo electrónico</span><small class="reserve-optional">Opcional</small></span><input id="clienteEmail" class="field-web" aria-describedby="error-clienteEmail" type="email" autocomplete="email" /><small id="error-clienteEmail" class="field-error" data-error="clienteEmail"></small></label>
-              <label><span class="etiqueta-web">Cantidad de jugadores *</span><input id="cantidadJugadores" class="field-web" aria-describedby="error-cantidadJugadores" type="number" min="1" max="8" value="4" /><small id="error-cantidadJugadores" class="field-error" data-error="cantidadJugadores"></small></label>
-              <label class="full"><span class="etiqueta-web">Comentarios opcionales</span><textarea id="comentariosReserva" class="field-web" maxlength="500" placeholder="Indicaciones que el complejo deba conocer"></textarea></label>
-            </div>
-            <div id="bloqueAceptarCondiciones" class="reserve-consent-wrap"><label class="reserve-consent"><input id="aceptarCondiciones" type="checkbox" aria-describedby="errorAceptarCondiciones" /><span><strong>Entiendo la reserva temporal.</strong> El turno quedará protegido durante <span id="plazoConsentimiento">el plazo indicado</span> y se confirmará cuando el pago se acredite.</span></label><small id="errorAceptarCondiciones" class="field-error reserve-consent-error" data-error="aceptarCondiciones" aria-live="polite"></small></div>
-            <div class="reserve-actions"><span>Antes de enviar, volveremos a comprobar que el horario siga disponible.</span><button id="enviarReserva" class="btn btn-primary reserve-primary" type="submit">Reservar y ver cómo pagar</button></div>
-          </form>
-        </section>
-
-        <section class="panel-reserva hidden" data-panel="4" tabindex="-1">
-          <div class="reserve-success-head"><span aria-hidden="true">✓</span><div><p class="site-kicker">Solicitud creada</p><h2>Tu turno quedó protegido temporalmente</h2><p>Guardá el código y acreditá la seña antes del vencimiento.</p></div></div>
-          <div id="confirmacionReserva"></div>
-          <div class="reserve-success-actions"><a class="btn btn-primary" href="/mis-reservas">Seguir mi reserva</a><button id="nuevaReserva" class="btn btn-secondary" type="button">Hacer otra reserva</button></div>
-        </section>
-      </main>
-
-      <aside class="reserve-side" aria-label="Resumen de la reserva">
-        <div class="reserve-side-card">
-          <p class="site-kicker">Tu selección</p><h2>Resumen</h2>
-          <div id="resumenLateral" class="reserve-side-content"><div class="reserve-side-empty"><span>⌁</span><strong>Empezá eligiendo una cancha</strong><p>Acá vas a ver los datos de tu turno a medida que avances.</p></div></div>
-          <div class="reserve-side-note"><b>Pago seguro</b><span>La reserva solo se confirma cuando la seña acreditada alcanza el importe requerido.</span></div>
-        </div>
-      </aside>
-    </div>
-  </section>
-  <script>import '../scripts/reservar';</script>
-</LayoutPrincipal>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Redirigiendo a Reservas W2</title>
+    <noscript><meta http-equiv="refresh" content="0;url=/w2/reservar" /></noscript>
+  </head>
+  <body>
+    <p>Redirigiendo a la experiencia de reservas...</p>
+    <script is:inline>
+      const destino = '/w2/reservar' + window.location.search + window.location.hash;
+      window.location.replace(destino);
+    </script>
+  </body>
+</html>
