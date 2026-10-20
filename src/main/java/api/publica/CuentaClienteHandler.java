@@ -32,6 +32,7 @@ public final class CuentaClienteHandler {
     private final JugadorPublicoService jugadorPublicoService;
     private final IdentidadDeportivaService identidadDeportivaService;
     private final PreferenciasComunidadService preferenciasComunidadService;
+    private final ConvocatoriaClienteService convocatoriaClienteService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -50,6 +51,7 @@ public final class CuentaClienteHandler {
         this.jugadorPublicoService = new JugadorPublicoService();
         this.identidadDeportivaService = new IdentidadDeportivaService();
         this.preferenciasComunidadService = new PreferenciasComunidadService();
+        this.convocatoriaClienteService = new ConvocatoriaClienteService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -101,6 +103,37 @@ public final class CuentaClienteHandler {
                         intercambio.getRequestBody(), Actualizar.class);
                 responder(intercambio, 200, preferenciasComunidadService.actualizar(
                         autenticada.cliente().getId(), entrada));
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/comunidad/convocatorias") && "GET".equals(metodo)) {
+                responder(intercambio,200,convocatoriaClienteService.listar(autenticada.cliente().getId()));
+                return;
+            }
+
+            String convocatoriaReservaBase = PREFIJO + "/reservas/";
+            if (ruta.startsWith(convocatoriaReservaBase) && ruta.endsWith("/convocatoria")) {
+                String valor=ruta.substring(convocatoriaReservaBase.length(),ruta.length()-"/convocatoria".length());
+                long reservaId=parsearId(valor);
+                if ("GET".equals(metodo)) {
+                    var convocatoria=convocatoriaClienteService.buscarPorReserva(autenticada.cliente().getId(),reservaId);
+                    responder(intercambio,200,convocatoria==null?new ConvocatoriaClienteDTO.SinConvocatoria(reservaId,"La reserva no tiene una convocatoria activa."):convocatoria);
+                    return;
+                }
+                if ("POST".equals(metodo)) {
+                    var entrada=mapper.readValue(intercambio.getRequestBody(),ConvocatoriaClienteDTO.Publicar.class);
+                    responder(intercambio,201,convocatoriaClienteService.publicar(autenticada.cliente().getId(),reservaId,entrada));
+                    return;
+                }
+            }
+
+            String cerrarBase=PREFIJO+"/comunidad/convocatorias/";
+            if (ruta.startsWith(cerrarBase) && ruta.endsWith("/cerrar") && "POST".equals(metodo)) {
+                String valor=ruta.substring(cerrarBase.length(),ruta.length()-"/cerrar".length());
+                long convocatoriaId=parsearId(valor);
+                byte[] cuerpo=intercambio.getRequestBody().readAllBytes();
+                var entrada=cuerpo.length==0?new ConvocatoriaClienteDTO.Cerrar(null):mapper.readValue(cuerpo,ConvocatoriaClienteDTO.Cerrar.class);
+                responder(intercambio,200,convocatoriaClienteService.cerrar(autenticada.cliente().getId(),convocatoriaId,entrada));
                 return;
             }
 
@@ -192,6 +225,12 @@ public final class CuentaClienteHandler {
         } catch (ConflictoPreferenciasComunidadException exception) {
             error(intercambio, 409, "CONFLICTO_PREFERENCIAS_COMUNIDAD",
                     exception.getMessage(), operacionId);
+        } catch (servicio.ConvocatoriaComunidadService.ConvocatoriaAjenaException exception) {
+            error(intercambio,403,"CONVOCATORIA_AJENA",exception.getMessage(),operacionId);
+        } catch (servicio.ConvocatoriaComunidadService.ConvocatoriaNoEncontradaException exception) {
+            error(intercambio,404,"CONVOCATORIA_NO_ENCONTRADA",exception.getMessage(),operacionId);
+        } catch (servicio.ConvocatoriaComunidadService.ConflictoConvocatoriaActivaException | servicio.ConvocatoriaComunidadService.ConvocatoriaNoAdmiteCambiosException | servicio.ConvocatoriaComunidadService.ReservaNoPublicableException exception) {
+            error(intercambio,409,"CONFLICTO_CONVOCATORIA",exception.getMessage(),operacionId);
         } catch (JacksonException exception) {
             error(intercambio, 400, "JSON_INVALIDO",
                     "El cuerpo JSON no tiene el formato esperado.",
