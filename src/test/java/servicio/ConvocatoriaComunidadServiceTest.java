@@ -1,0 +1,30 @@
+package servicio;
+
+import static org.junit.jupiter.api.Assertions.*;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.time.LocalDateTime;
+import java.util.*;
+import org.junit.jupiter.api.Test;
+import dao.*;
+import negocio.*;
+
+class ConvocatoriaComunidadServiceTest {
+ private final LocalDateTime ahora=LocalDateTime.of(2026,10,20,12,0);
+ @Test void publicaReservaPropiaFuturaYRegistraParticipantesEvento(){Fakes f=new Fakes();var s=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CONFIRMADA,ahora.plusDays(1)));var v=s.publicar(2,new ConvocatoriaComunidadService.Publicar(10,3,1,61L,PosicionJugador.REVES,"Falta una persona"));assertEquals(EstadoConvocatoriaComunidad.ABIERTA,v.getEstado());assertEquals(3,f.participantes.size());assertEquals(1,v.lugaresDisponibles());assertEquals(TipoEventoComunidad.CONVOCATORIA_PUBLICADA,f.eventos.getFirst().getTipo());assertTrue(f.commit);}
+ @Test void publicarMismosDatosEsIdempotente(){Fakes f=new Fakes();var s=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.PENDIENTE,ahora.plusHours(2)));var e=new ConvocatoriaComunidadService.Publicar(10,2,2,null,null,null);var a=s.publicar(2,e);int eventos=f.eventos.size();var b=s.publicar(2,e);assertSame(a,b);assertEquals(eventos,f.eventos.size());}
+ @Test void rechazaReservaAjenaPasadaOFinal(){Fakes f=new Fakes();var ajena=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,9,EstadoReserva.CONFIRMADA,ahora.plusDays(1)));assertThrows(ConvocatoriaComunidadService.ReservaAjenaONoEncontradaException.class,()->ajena.publicar(2,new ConvocatoriaComunidadService.Publicar(10,3,1,null,null,null)));var finalizada=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CANCELADA,ahora.plusDays(1)));assertThrows(ConvocatoriaComunidadService.ReservaNoPublicableException.class,()->finalizada.publicar(2,new ConvocatoriaComunidadService.Publicar(10,3,1,null,null,null)));}
+ @Test void cierreExternoNoModificaReservaYCierraSolicitudes(){Fakes f=new Fakes();var s=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CONFIRMADA,ahora.plusDays(1)));var v=s.publicar(2,new ConvocatoriaComunidadService.Publicar(10,3,1,null,null,null));s.cerrarExternamente(2,v.getId(),MotivoCierreConvocatoria.JUGADOR_ENCONTRADO_EXTERNAMENTE);assertEquals(EstadoConvocatoriaComunidad.CERRADA_EXTERNAMENTE,v.getEstado());assertEquals(1,f.cierres);assertEquals(TipoEventoComunidad.CONVOCATORIA_CERRADA_EXTERNAMENTE,f.eventos.getLast().getTipo());}
+ @Test void completaAlLlegarACuatroYCierraPendientes(){Fakes f=new Fakes();var s=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CONFIRMADA,ahora.plusDays(1)));var v=s.publicar(2,new ConvocatoriaComunidadService.Publicar(10,3,1,null,null,null));f.confirmados=4;s.completarSiCupo(v.getId());assertEquals(EstadoConvocatoriaComunidad.COMPLETA,v.getEstado());assertEquals(0,v.lugaresDisponibles());assertEquals(1,f.cierres);}
+ @Test void venceAlComenzarElTurno(){Fakes f=new Fakes();var s=f.service(ahora,new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CONFIRMADA,ahora.plusMinutes(1)));var v=s.publicar(2,new ConvocatoriaComunidadService.Publicar(10,1,3,null,null,null));var tarde=f.service(ahora.plusMinutes(2),new ConvocatoriaComunidadService.ReservaBloqueada(10,2,EstadoReserva.CONFIRMADA,ahora.plusMinutes(1)));tarde.vencerSiCorresponde(v.getId());assertEquals(EstadoConvocatoriaComunidad.VENCIDA,v.getEstado());}
+
+ private static final class Fakes {
+  ConvocatoriaComunidad actual;long sec=1;int confirmados,cierres;boolean commit;List<ParticipanteComunidad> participantes=new ArrayList<>();List<EventoComunidad> eventos=new ArrayList<>();
+  ConvocatoriaComunidadDAO convocatorias=new ConvocatoriaComunidadDAO(){public void guardar(Connection c,ConvocatoriaComunidad v){if(v.getId()==0)v.setId(sec++);actual=v;}public ConvocatoriaComunidad buscar(Connection c,long id,boolean b){return actual!=null&&actual.getId()==id?actual:null;}public ConvocatoriaComunidad buscarActivaPorReserva(Connection c,long id,boolean b){return actual!=null&&actual.getReservaId()==id&&actual.getEstado().esActiva()?actual:null;}public List<ConvocatoriaComunidad> listarPorCliente(Connection c,long id){return actual==null?List.of():List.of(actual);}};
+  ParticipanteComunidadDAO part=new ParticipanteComunidadDAO(){public void guardar(Connection c,ParticipanteComunidad v){participantes.add(v);confirmados++;}public List<ParticipanteComunidad> listarPorConvocatoria(Connection c,long id,boolean b){return participantes;}public int contarConfirmados(Connection c,long id){return confirmados;}};
+  SolicitudComunidadDAO sol=new SolicitudComunidadDAO(){public void guardar(Connection c,SolicitudComunidad v){}public SolicitudComunidad buscar(Connection c,long id,boolean b){return null;}public List<SolicitudComunidad> listarPorConvocatoria(Connection c,long id){return List.of();}public void cerrarPendientes(Connection c,long id){cierres++;}};
+  EventoComunidadDAO ev=(c,v)->eventos.add(v);
+  PerfilJugadorDAO per=new PerfilJugadorDAO(){public void guardar(Connection c,PerfilJugador p){}public PerfilJugador buscar(Connection c,long id){return perfil();}public PerfilJugador buscarPorCliente(Connection c,long id){return perfil();}private PerfilJugador perfil(){PerfilJugador p=new PerfilJugador();p.setId(20);p.setActivo(true);return p;}};
+  ConvocatoriaComunidadService service(LocalDateTime reloj,ConvocatoriaComunidadService.ReservaBloqueada reserva){Connection c=(Connection)Proxy.newProxyInstance(getClass().getClassLoader(),new Class[]{Connection.class},(p,m,a)->{if(m.getName().equals("commit")){commit=true;return null;}if(m.getReturnType()==boolean.class)return false;if(m.getReturnType()==int.class)return 0;if(m.getReturnType()==long.class)return 0L;return null;});return new ConvocatoriaComunidadService(convocatorias,part,sol,ev,per,()->c,()->reloj,(x,id)->reserva);}
+ }
+}
