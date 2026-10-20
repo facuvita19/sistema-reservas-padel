@@ -342,3 +342,15 @@
  .w2jp-category-history ol li>small{border-color:#2d3a3f;color:#84968e;font-weight:750}
  .w2jp-community li{min-height:46px!important}
 }
+
+
+/* R3.2B5D - cierre oscuro definitivo */
+.w2jp-ready[data-ready-state="missing-category"]{border-color:rgba(215,173,74,.42);background:linear-gradient(145deg,rgba(215,173,74,.07),rgba(11,17,20,.96))}
+.w2jp-ready[data-ready-state="missing-category"]>span{border:1px solid rgba(215,173,74,.42);background:rgba(215,173,74,.09);color:#f0c962}
+.w2jp-ready[data-ready-state="missing-category"] b{color:#f0d98a}
+:root[data-w2-theme="light"] .w2jp-ready[data-ready-state="missing-category"]{border-color:#d7bd78;background:#fffaf0}
+:root[data-w2-theme="light"] .w2jp-ready[data-ready-state="missing-category"]>span{background:#fff3cd;color:#7b5b06}
+.w2jp-identity h1[data-name-length="extra-long"]{display:block!important;max-width:24ch!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important;overflow-wrap:anywhere!important;-webkit-line-clamp:unset!important;line-clamp:unset!important}
+@media(min-width:701px){.w2jp-identity h1[data-name-length="extra-long"]{font-size:clamp(1.65rem,2.55vw,2.35rem)!important;line-height:1.02!important}}
+@media(max-width:700px){.w2jp-identity h1[data-name-length="extra-long"]{display:-webkit-box!important;overflow:hidden!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:3!important;line-clamp:3!important;overflow-wrap:anywhere!important;font-size:clamp(1.28rem,6vw,1.72rem)!important;line-height:1.05!important}}
+@media(max-width:390px){.w2jp-identity h1[data-name-length="extra-long"]{font-size:1.18rem!important;line-height:1.06!important}}
