@@ -45,6 +45,8 @@ public final class ApiPublicaServer {
     private final JugadorPublicoService jugadorPublicoService = new JugadorPublicoService();
     private final ConsultaJugadoresComunidadService consultaJugadoresComunidadService =
             new ConsultaJugadoresComunidadService();
+    private final ConsultaConvocatoriasComunidadService consultaConvocatoriasComunidadService =
+            new ConsultaConvocatoriasComunidadService();
     private final ObjectMapper mapper;
     private final AutenticacionClienteService autenticacionClienteService;
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
@@ -224,6 +226,19 @@ public final class ApiPublicaServer {
             if (!"GET".equals(metodo)) {
                 error(x, 405, "METODO_NO_PERMITIDO",
                         "El método solicitado no está permitido.", operacionId);
+                return;
+            }
+
+            if (ruta.equals(PREFIJO + "/comunidad/convocatorias")) {
+                Map<String,String> p=parametros(x.getRequestURI());
+                int pagina=enteroPositivo(p.get("pagina"),1,"La pagina");
+                int tamano=enteroPositivo(p.get("tamano"),ConsultaConvocatoriasComunidadService.TAMANO_PREDETERMINADO,"El tamano");
+                var filtros=new ConsultaConvocatoriasComunidadService.Filtros(
+                        ConsultaConvocatoriasComunidadService.fecha(p.get("fecha")),
+                        idOpcional(p.get("categoriaId")),
+                        ConsultaConvocatoriasComunidadService.posicion(p.get("posicion")),
+                        ConsultaConvocatoriasComunidadService.lugares(p.get("lugares")));
+                responder(x,200,consultaConvocatoriasComunidadService.listar(filtros,pagina,tamano));
                 return;
             }
 
