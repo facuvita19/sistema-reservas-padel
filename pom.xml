@@ -13,7 +13,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>25</maven.compiler.release>
-        <javafx.version>25.0.4</javafx.version>
+        <javafx.version>27</javafx.version>
         <junit.version>5.10.5</junit.version>
         <mockito.version>5.20.0</mockito.version>
         <jackson.version>2.22.3</jackson.version>
