@@ -2,6 +2,68 @@
 
 > Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 19 de octubre de 2026.
 
+
+<!-- W2-COMUNIDAD-ESTADO-INICIO -->
+## Arquitectura actual de Comunidad y próximo contrato
+
+### Modelo y fuente de verdad
+
+La relación conceptual vigente es:
+
+```text
+Reserva
+  └─ Convocatoria
+       ├─ Solicitudes
+       ├─ Participantes
+       └─ Eventos de auditoría
+```
+
+El backend es la fuente de verdad para estado, cupos, autorización y transiciones. La interfaz nunca debe decidir por sí sola si un lugar sigue disponible.
+
+### Contratos ya estabilizados
+
+- consulta pública segura de perfiles;
+- lectura y actualización versionada de preferencias;
+- consulta pública de convocatorias abiertas;
+- publicación vinculada a una reserva real;
+- cierre manual con motivo explícito;
+- preservación de la reserva al cerrar la búsqueda;
+- aislamiento entre fallas de Turnos abiertos y Buscar pareja.
+
+### Invariantes para solicitudes
+
+- el titular no puede solicitar unirse a su propia convocatoria;
+- un participante confirmado no puede generar otra solicitud activa;
+- un perfil no puede ocupar dos lugares;
+- no se aceptan más participantes que cupos disponibles;
+- aceptar debe recalcular cupos dentro de la transacción;
+- las operaciones repetidas deben ser idempotentes;
+- una convocatoria cerrada, completa, vencida o inválida no acepta solicitudes;
+- una reserva cancelada, vencida o iniciada invalida el flujo;
+- los conflictos por el último cupo deben devolver un resultado controlado;
+- cada transición relevante debe producir auditoría y, cuando corresponda, un evento de dominio.
+
+### Próxima inspección técnica
+
+R3.4B3A / R3.3H debe localizar en el código real:
+
+- `SolicitudComunidad` y `ParticipanteComunidad`;
+- estados, motivos y restricciones de unicidad;
+- repositorios y bloqueos;
+- servicios transaccionales;
+- DTO públicos y privados;
+- controladores existentes;
+- autorización e IDOR;
+- eventos de dominio y pruebas;
+- comportamiento ante aceptación simultánea del último cupo.
+
+Los endpoints definitivos se decidirán después de esta inspección. No se deben fijar rutas nuevas por documentación si ya existe un contrato equivalente en backend.
+
+### Evolución desacoplada
+
+WhatsApp será un canal autorizado y auditado, no una dependencia del dominio. Las notificaciones internas, Push y PWA consumirán eventos estables después de consolidar solicitudes, participantes y cierres automáticos.
+<!-- W2-COMUNIDAD-ESTADO-FIN -->
+
 ## 1. Objetivo
 
 Construir una plataforma deportiva global sobre clientes, cuentas, perfiles, torneos, inscripciones, partidos, reservas, Comunidad y pagos, conservando historia, privacidad y trazabilidad sin duplicar personas.
@@ -217,7 +279,7 @@ GET /api/publica/jugadores/{id}
 GET /api/publica/cliente/perfil-deportivo
 ```
 
-Contratos previstos para R3.3B, sujetos a cierre de diseño:
+Contratos públicos ya implementados para catálogo y preferencias; los contratos de solicitudes quedan sujetos a inspección del backend existente:
 
 ```text
 GET /api/publica/comunidad/jugadores

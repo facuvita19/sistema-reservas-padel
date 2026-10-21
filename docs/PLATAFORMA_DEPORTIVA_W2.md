@@ -2,6 +2,36 @@
 
 > Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 19 de octubre de 2026.
 
+
+<!-- W2-COMUNIDAD-ESTADO-INICIO -->
+## Estado actual de Comunidad y continuidad
+
+Comunidad ya dispone de una base pública y privada real. La plataforma cubre actualmente:
+
+- catálogo seguro de perfiles deportivos;
+- preferencias opt-in desde Mi cuenta;
+- objetivos separados para completar turnos y formar pareja para torneos;
+- navegación **Toda la Comunidad / Turnos abiertos / Buscar pareja**;
+- publicación de una reserva válida como convocatoria;
+- cierre manual de la búsqueda sin alterar la reserva;
+- tarjeta pública de turno con fecha, horario, cancha, cupo y criterios deportivos;
+- privacidad de pagos, teléfonos, documentos y datos administrativos.
+
+Los conceptos permanecen separados:
+
+- **Reserva:** cancha, fecha, horario, precio, seña y estado comercial.
+- **Convocatoria:** búsqueda para completar una reserva existente.
+- **Solicitud:** interés de un perfil en ocupar un lugar.
+- **Participante:** persona confirmada para jugar el turno.
+- **Pareja deportiva:** dos personas que deciden competir juntas.
+- **Propuesta para torneo:** coordinación previa para evaluar una pareja.
+- **Inscripción:** solicitud formal de una pareja completa a un torneo.
+
+El siguiente frente es el ciclo real de solicitudes: solicitar unirse, retirar, aceptar, rechazar, convertir en participante, consumir cupos atómicamente y cerrar la convocatoria al completar el turno.
+
+La PWA y las notificaciones push se implementarán después de estabilizar los eventos de dominio de Comunidad. El dominio no dependerá directamente de WhatsApp, correo ni Push.
+<!-- W2-COMUNIDAD-ESTADO-FIN -->
+
 ## 1. Visión
 
 W2 es la reconstrucción definitiva de la web pública. Une reservas, identidad deportiva, categorías, rankings auditables, historial, perfiles, parejas, Comunidad, torneos, notificaciones y pagos reales sin duplicar personas ni fragmentar la experiencia.
@@ -153,7 +183,7 @@ Comunidad es infraestructura deportiva para descubrir jugadores, formar parejas 
 
 ### Estado real
 
-R3.3A completó dominio, persistencia, migración y pruebas para preferencias, convocatorias, solicitudes, participantes y eventos. R3.3B construirá el catálogo real de jugadores disponibles.
+R3.3A completó la fundación persistente. El catálogo, las preferencias, la navegación de Comunidad y la publicación de reservas en Turnos abiertos ya están operativos. El próximo bloque es R3.4B3A / R3.3H: solicitudes para unirse.
 
 ## 11. Torneos W2: estado real
 
@@ -185,7 +215,7 @@ Torneos es referencia de método y calidad. No se reabre salvo error real, requi
 - W2.8: Mercado Pago producción, pendiente.
 - W2.9: engagement, PWA y notificaciones.
 
-Próximo bloque: **R3.3B1 · Contrato público y consulta segura de jugadores**.
+Próximo bloque: **R3.4B3A / R3.3H · Inspección de solicitudes, participantes y estados de convocatoria**.
 
 ## 13. Criterios de aceptación
 

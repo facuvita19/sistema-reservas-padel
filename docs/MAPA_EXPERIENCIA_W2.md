@@ -2,6 +2,82 @@
 
 > Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 19 de octubre de 2026.
 
+
+<!-- W2-COMUNIDAD-ESTADO-INICIO -->
+## Estado actual y próximo recorrido de Comunidad
+
+### Recorridos disponibles
+
+```text
+Mi cuenta
+→ Reservas
+→ Abrir reserva válida
+→ Publicar turno abierto
+→ Configurar participantes, categoría, posición y mensaje
+→ Ver convocatoria publicada
+→ Cerrar búsqueda sin modificar la reserva
+```
+
+```text
+Comunidad
+→ Toda la Comunidad / Turnos abiertos / Buscar pareja
+→ Revisar oportunidad o perfil deportivo
+→ Navegar al perfil público con contexto preservado
+```
+
+```text
+Mi cuenta
+→ Perfil deportivo
+→ Configurar presencia en Comunidad
+→ Elegir objetivos para turnos o torneos
+→ Autorizar invitaciones y contacto por WhatsApp
+→ Guardar preferencias versionadas
+```
+
+### Próximo recorrido: solicitar unirse
+
+```text
+Turnos abiertos
+→ Abrir detalle de convocatoria
+→ Revisar reserva pública, cupos y criterios deportivos
+→ Revisar perfil del convocante
+→ Iniciar sesión o continuar con perfil autenticado
+→ Solicitar unirse
+→ Ver solicitud pendiente
+→ Retirar mientras siga pendiente
+```
+
+### Recorrido del titular
+
+```text
+Mi cuenta
+→ Reservas
+→ Abrir reserva con convocatoria
+→ Revisar solicitudes
+→ Consultar identidad deportiva del solicitante
+→ Aceptar o rechazar
+→ Si acepta: crear participante y consumir un cupo
+→ Si llega a 4 de 4: completar y cerrar convocatoria
+```
+
+### Casos críticos
+
+- dos aceptaciones simultáneas para el último lugar;
+- solicitud duplicada;
+- titular intentando unirse a su propia publicación;
+- participante confirmado intentando solicitar otra vez;
+- reserva cancelada o iniciada;
+- cierre manual mientras llega una solicitud;
+- retirada antes de aceptación;
+- convocatoria completa, cerrada o vencida;
+- contacto no autorizado;
+- visitante que inicia sesión y regresa al mismo turno.
+
+### Continuidad
+
+El próximo bloque es **R3.4B3A / R3.3H**, comenzando con inspección de backend. La PWA, el centro de notificaciones y Push se abordarán después de estabilizar solicitudes, participantes, eventos y enlaces profundos.
+<!-- W2-COMUNIDAD-ESTADO-FIN -->
+
 ## 1. Navegación principal
 
 ```text
@@ -272,16 +348,16 @@ Las notificaciones respetan preferencias, privacidad y límites de frecuencia.
 
 ## 18. Punto de continuidad
 
-Torneos y Rankings están cerrados. El perfil público completó su recorrido R3.2B. R3.3A dejó la fundación persistente de Comunidad.
+Torneos y Rankings están cerrados. El perfil público completó R3.2B. La base, el catálogo, las preferencias, la navegación y la publicación de reservas en Comunidad están operativos.
 
 El siguiente orden es:
 
 1. verificar CI de `5e3b4d3`;
-2. R3.3B1: contrato público y consulta segura;
-3. R3.3B2: filtros, orden y paginación;
-4. R3.3B3: catálogo y tarjetas premium;
-5. R3.3B4: carga, vacío, error y privacidad;
-6. R3.3B5: responsive, accesibilidad y cierre;
+2. R3.3B1–B5: catálogo público, filtros, tarjetas, estados y responsive — completados;
+3. R3.3C: preferencias desde Mi cuenta — completadas en su alcance actual;
+4. R3.4B1: navegación de Comunidad — completada;
+5. R3.4B2G: publicación de reservas y Turnos abiertos — completada;
+6. R3.4B3A / R3.3H: solicitudes para unirse — próximo bloque;
 7. R3.3C: preferencias desde Mi cuenta;
 8. R3.3D: pareja para torneos;
 9. R3.3E: convocatorias de reservas;

@@ -2,6 +2,41 @@
 
 > Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente. Actualizado el 19 de octubre de 2026.
 
+
+<!-- W2-COMUNIDAD-ESTADO-INICIO -->
+## Patrones visuales estabilizados en Comunidad
+
+R3.4B2G consolidó los patrones que deben reutilizarse en las próximas pantallas de solicitudes:
+
+- modo oscuro como experiencia principal y modo claro plenamente funcional;
+- navegación secundaria grafito, sticky, opaca y adaptable a móvil;
+- drawer con cabecera compacta, fondo opaco y cierre SVG;
+- superficies grafito sin paneles blancos accidentales;
+- rojo W2 para identidad y acciones propias;
+- azul reconocible para Mercado Pago;
+- verde para acreditación, disponibilidad y estados positivos;
+- ámbar para coordinación pendiente cuando corresponda;
+- selectores personalizados con teclado, foco visible y menús compactos;
+- tarjeta pública de Turnos abiertos con fecha, horario, cancha, cupo, criterios y convocante;
+- CTA con una sola flecha decorativa y texto accesible estable;
+- geometría validada en 1440 px, 390 px y 320 px;
+- contenido privado y público claramente diferenciado.
+
+Las pantallas de detalle de convocatoria, solicitud y gestión del titular deberán mantener esta dirección. No se deben crear modales genéricos desconectados del lenguaje W2.
+
+### Criterio para el próximo bloque
+
+Antes de cerrar una superficie se deben revisar:
+
+- carga, vacío, error y éxito;
+- solicitud propia, duplicada, retirada, aceptada y rechazada;
+- convocatoria abierta, completa, cerrada y vencida;
+- foco, teclado, lector de pantalla y movimiento reducido;
+- nombres largos, mensajes extensos y último cupo;
+- escritorio, 390 px y 320 px;
+- modo oscuro y modo claro.
+<!-- W2-COMUNIDAD-ESTADO-FIN -->
+
 ## 1. Principio creativo
 
 Cada pantalla debe cerrarse con calidad visual definitiva antes de avanzar. Se acepta rehacer cualquier componente o pantalla cuando mejora claridad, jerarquía, confianza, diferenciación, accesibilidad o rendimiento.

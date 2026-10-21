@@ -1,6 +1,67 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
-> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 19 de octubre de 2026 después de publicar `5e3b4d3` y antes de iniciar R3.3B.
+> Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 21 de octubre de 2026 después de cerrar y publicar R3.4B2G.
+
+
+<!-- W2-COMUNIDAD-ESTADO-INICIO -->
+## Actualización canónica de continuidad · 21 de octubre de 2026
+
+### Estado cerrado
+
+- **R3.3A · Fundación persistente de Comunidad:** completada.
+- **R3.3B · Catálogo real de jugadores:** completado en su alcance actual.
+- **R3.3C · Preferencias privadas desde Mi cuenta:** completadas en su alcance actual.
+- **R3.3D · Búsqueda de pareja para torneos:** primera experiencia pública completada; el contacto seguro por WhatsApp sigue pendiente.
+- **R3.4B1 · Navegación de Comunidad:** completada con **Toda la Comunidad**, **Turnos abiertos** y **Buscar pareja**.
+- **R3.4B2G · Publicación de reservas en Turnos abiertos:** completada, revisada visualmente, commiteada y publicada.
+
+R3.4B2G dejó estabilizados:
+
+- publicación de una reserva válida desde Mi cuenta;
+- participantes confirmados, cupos, categoría, posición y comentario público;
+- cierre manual sin cancelar ni modificar la reserva;
+- transferencia manual y Mercado Pago dentro del drawer;
+- convocatoria publicada en Turnos abiertos;
+- navegación al perfil deportivo del convocante;
+- privacidad de pagos, teléfono y datos administrativos;
+- responsive en escritorio, 390 px y 320 px;
+- **30 pruebas E2E focalizadas aprobadas**;
+- **24 pruebas del laboratorio visual aprobadas**;
+- laboratorio visual temporal eliminado antes del commit.
+
+### Próximo bloque exacto
+
+> **R3.4B3A · Inspección de solicitudes, participantes y estados de convocatoria**  
+> Correspondencia con el plan maestro: **R3.3H · Solicitudes para unirse**.
+
+Antes de modificar interfaz o inventar contratos se debe inspeccionar la implementación persistente creada en R3.3A:
+
+- entidades, estados y motivos;
+- migraciones e índices;
+- repositorios y consultas;
+- servicios y transacciones;
+- controladores y DTO;
+- autorización por propietario;
+- idempotencia y control de versión;
+- concurrencia para el último cupo;
+- auditoría y eventos;
+- pruebas existentes.
+
+El recorrido siguiente debe cubrir, en este orden:
+
+1. detalle público de convocatoria;
+2. crear y retirar una solicitud;
+3. gestión del titular: aceptar o rechazar;
+4. conversión atómica de solicitud aceptada en participante;
+5. actualización de cupos y cierre automático al completar;
+6. vencimiento, cancelación y sincronización con la reserva;
+7. contacto seguro y contextual por WhatsApp;
+8. notificaciones internas y luego PWA.
+
+### Regla de numeración
+
+La hoja de ruta histórica R3.3 sigue siendo la referencia funcional. La numeración R3.4B indica la secuencia práctica actual de implementación. Cuando corresponda se deben conservar ambas referencias para evitar perder trazabilidad.
+<!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Lema rector
 
@@ -26,7 +87,7 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 - Reserva W2: ruta canónica `/w2/reservar`; `/reservar` queda como puente de redirección preservando query string y hash.
 - Formato de reserva: cuatro jugadores, dos contra dos, sin selector editable.
 - Comunidad R3.3A: fundación persistente completada en `46d01a5`.
-- Próximo bloque real: **R3.3B · Catálogo real de jugadores disponibles**.
+- Próximo bloque real: **R3.4B3A / R3.3H · Inspección de solicitudes para unirse, participantes y estados**.
 
 ### Validaciones recientes
 
@@ -171,7 +232,7 @@ Incluye:
 - pruebas de dominio y contrato de migración;
 - auditoría como principio estructural.
 
-### R3.3B · Catálogo real de jugadores disponibles — próximo bloque
+### R3.3B · Catálogo real de jugadores disponibles — completado en su alcance actual
 
 1. **R3.3B1 · Contrato público y consulta segura**
    - DTO público específico;
@@ -295,4 +356,4 @@ Un bloque se considera terminado cuando:
 
 ## 12. Instrucción para un chat nuevo
 
-Indicar que Torneos y Rankings están cerrados, que el perfil público completó R3.2B, que R3.3A dejó la fundación persistente de Comunidad y que el próximo bloque es R3.3B1. Antes de modificar código se debe verificar el resultado del workflow de `5e3b4d3`, leer estas cinco guías y respetar la forma de trabajo, el lema rector, la privacidad y la inscripción exclusivamente por pareja.
+Indicar que Torneos y Rankings están cerrados, que el perfil público completó R3.2B, que R3.3A dejó la fundación persistente de Comunidad y que R3.4B2G quedó cerrado y que el próximo bloque es R3.4B3A / R3.3H. Antes de modificar código se debe verificar el resultado del workflow de `5e3b4d3`, leer estas cinco guías y respetar la forma de trabajo, el lema rector, la privacidad y la inscripción exclusivamente por pareja.
