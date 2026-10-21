@@ -708,3 +708,73 @@
 /* R3.4B1B FIX - separacion fisica bajo sticky */
 .w2cm-turns,.w2cm-catalog{margin-top:.65rem}
 @media(max-width:700px){.w2cm-turns,.w2cm-catalog{margin-top:.55rem}}
+
+
+/* R3.4B2D - tarjeta publica definitiva */
+.w2cm-turn-card,.w2cm-call-card{min-height:0!important;background:linear-gradient(145deg,#15151b,#10161a)!important}.w2cm-turn-card header,.w2cm-call-card header{align-items:flex-start!important}.w2cm-turn-card time,.w2cm-call-card time{text-transform:uppercase;letter-spacing:.055em}.w2cm-turn-card h3,.w2cm-call-card h3{font-size:1.2rem!important}.w2cm-turn-card [class*="quota"],.w2cm-call-card [class*="quota"],.w2cm-turn-card [class*="cupo"],.w2cm-call-card [class*="cupo"]{border-color:#3b3038!important;background:rgba(240,43,69,.035)!important}.w2cm-turn-card footer,.w2cm-call-card footer{margin-top:1rem!important;border-top-color:#303a3f!important;padding-top:.8rem!important}.w2cm-turn-card footer a,.w2cm-call-card footer a{display:inline-flex;align-items:center;gap:.45rem;color:#eef2ef!important}.w2cm-turn-card footer a::after,.w2cm-call-card footer a::after{content:'→';color:#f02b45;transition:transform .16s}.w2cm-turn-card footer a:hover::after,.w2cm-call-card footer a:hover::after{transform:translateX(3px)}.w2cm-turn-card footer a{font-size:0!important}.w2cm-turn-card footer a::before{content:'Ver perfil';font-size:.62rem;font-weight:900}.w2cm-turns-head,.w2cm-section-head{align-items:end!important}.w2cm-turns-head>a,.w2cm-section-head>a{align-self:end}.w2cm-turns-grid:has(> :only-child),.w2cm-calls:has(> :only-child){grid-template-columns:minmax(0,34rem)!important}.w2cm-turn-card blockquote,.w2cm-call-card blockquote{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;margin:.7rem 0 0;border-left:2px solid #f02b45;padding-left:.65rem;color:#9cafA6;font-size:.64rem;line-height:1.45}
+@media(min-width:901px){[data-community-view="TODO"] .w2cm-view-content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start;gap:1.5rem}[data-community-view="TODO"] .w2cm-view-content>section{min-width:0}[data-community-view="TODO"] .w2cm-view-content .w2cm-turns-grid,[data-community-view="TODO"] .w2cm-view-content .w2cm-catalog-grid{grid-template-columns:1fr!important}}
+@media(max-width:520px){.w2cm-turn-card footer,.w2cm-call-card footer{align-items:flex-start!important}.w2cm-turns-head,.w2cm-section-head{align-items:flex-start!important;flex-direction:column}.w2cm-turns-head>a,.w2cm-section-head>a{align-self:stretch}}
+
+
+/* R3.4B2E - convergencia visual final */
+/* Tarjeta publica con proporcion deportiva y sin vacios arbitrarios */
+.w2cm-turn-card{width:100%;max-width:520px!important;min-height:0!important;padding:1rem!important;border-radius:18px!important}
+.w2cm-turn-card header{padding-bottom:.7rem!important}.w2cm-turn-card h3{font-size:1.15rem!important}.w2cm-turn-capacity{margin:.72rem 0!important;padding:.72rem!important;border-radius:12px!important}
+.w2cm-turn-card>p{margin:.65rem 0!important}.w2cm-turn-card footer{margin-top:.72rem!important;padding-top:.72rem!important}
+.w2cm-turn-card footer button{min-height:38px!important}.w2cm-turn-card footer button b{font-size:0!important}.w2cm-turn-card footer button b::after{content:'→';font-size:.78rem}
+#w2cmSeeAllTurns{white-space:nowrap}.w2cm-turns-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:end!important;gap:1rem!important}
+.w2cm-turns-grid:has(> :only-child){grid-template-columns:minmax(0,520px)!important}
+/* Toda la Comunidad: bloques juntos en escritorio, una columna limpia en movil */
+@media(min-width:901px){
+ html[data-community-view-state="TODO"] #w2cmTurns{display:grid;grid-template-columns:minmax(0,520px) minmax(0,1fr);column-gap:2.25rem;align-items:start}
+ html[data-community-view-state="TODO"] #w2cmTurns>.w2cm-turns-head{grid-column:1/-1}
+ html[data-community-view-state="TODO"] #w2cmTurnsGrid{grid-column:1}
+ html[data-community-view-state="TODO"] #w2cmSeeAllTurns{grid-column:2;grid-row:2;align-self:start;justify-self:end;margin-top:0}
+ .w2cm-view-content{max-width:1320px;margin-inline:auto}
+}
+@media(max-width:700px){
+ .w2cm-turns-head{grid-template-columns:1fr!important;align-items:start!important}.w2cm-turns-head>a,#w2cmSeeAllTurns{justify-self:start!important}
+ .w2cm-turn-card{max-width:none!important;padding:.85rem!important;border-radius:16px!important}.w2cm-turn-card h3{font-size:1.08rem!important}
+ .w2cm-turn-capacity{padding:.65rem!important}.w2cm-turn-card footer{align-items:center!important}
+}
+
+
+/* R3.4B2F - cierre visual definitivo */
+.w2cm-turn-card,.w2cm-turn-card *{text-shadow:none!important;font-synthesis:none;-webkit-font-smoothing:antialiased}
+.w2cm-turn-card{max-width:540px!important;padding:.9rem!important;border-radius:16px!important}.w2cm-turn-card header{padding-bottom:.6rem!important}.w2cm-turn-capacity{margin:.6rem 0!important;padding:.62rem!important}.w2cm-turn-card>p{margin:.55rem 0!important}.w2cm-turn-card footer{margin-top:.6rem!important;padding-top:.62rem!important}
+#w2cmSeeAllTurns{font-size:.72rem!important;white-space:nowrap}.w2cm-turns-grid:has(> :only-child){grid-template-columns:minmax(0,540px)!important}
+@media(min-width:901px){
+ html[data-community-view-state="TODO"] #w2cmTurns{display:grid!important;grid-template-columns:minmax(0,540px) minmax(0,1fr)!important;column-gap:2rem!important;align-items:start!important}
+ html[data-community-view-state="TODO"] #w2cmTurns>.w2cm-turns-head{grid-column:1/-1!important}
+ html[data-community-view-state="TODO"] #w2cmTurnsGrid{grid-column:1!important}
+ html[data-community-view-state="TODO"] #w2cmSeeAllTurns{grid-column:2!important;grid-row:2!important;justify-self:end!important;align-self:start!important}
+}
+@media(max-width:700px){
+ .w2cm-hero-grid{padding-block:1rem!important}.w2cm-turns-head{gap:.65rem!important}.w2cm-turn-card{max-width:none!important;padding:.78rem!important}.w2cm-turn-card header{padding-bottom:.52rem!important}.w2cm-turn-capacity{padding:.56rem!important}.w2cm-turn-card footer{padding-top:.56rem!important}
+ .w2cm-error{padding:1rem!important}.w2cm-join{padding:1rem!important}.w2cm-join h2{font-size:1.18rem!important}.w2cm-join p{font-size:.68rem!important}.w2cm-join a{min-height:42px!important}
+}
+
+
+/* R3.4B2G - cierre de auditoria visual */
+/* Una sola fuente para las flechas: el HTML accesible */
+.w2cm-turn-card footer a::after,.w2cm-call-card footer a::after,.w2cm-turn-card footer button::after,.w2cm-call-card footer button::after{content:none!important}
+.w2cm-turn-card footer button b,.w2cm-call-card footer button b{font-size:inherit!important}
+.w2cm-turn-card footer button b::after,.w2cm-call-card footer button b::after{content:none!important}
+/* Vista especifica: tarjeta deportiva con ancho util y sin vacio artificial */
+html[data-community-view-state="TURNOS"] #w2cmTurns{display:block!important}
+html[data-community-view-state="TURNOS"] #w2cmTurnsGrid{display:grid!important;grid-template-columns:minmax(0,540px)!important;width:min(540px,100%)!important}
+/* Vista Toda la Comunidad: flujo editorial estable, sin comprimir la tarjeta */
+html[data-community-view-state="TODO"] #w2cmTurns{display:block!important}
+html[data-community-view-state="TODO"] #w2cmTurns>.w2cm-turns-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:1rem!important}
+html[data-community-view-state="TODO"] #w2cmTurnsGrid{display:grid!important;grid-template-columns:minmax(0,540px)!important;width:min(540px,100%)!important}
+html[data-community-view-state="TODO"] #w2cmSeeAllTurns{position:static!important;justify-self:end!important;align-self:end!important}
+/* Estados auxiliares no deben dominar una pantalla ancha */
+#w2cmError{max-width:860px;margin-inline:auto!important}
+#w2cmJoin{max-width:1120px;margin-inline:auto!important}
+.w2cm-turn-card{width:100%!important;max-width:540px!important}
+@media(max-width:700px){
+ html[data-community-view-state="TODO"] #w2cmTurns>.w2cm-turns-head{grid-template-columns:1fr!important}
+ html[data-community-view-state="TODO"] #w2cmSeeAllTurns{justify-self:start!important}
+ html[data-community-view-state="TODO"] #w2cmTurnsGrid,html[data-community-view-state="TURNOS"] #w2cmTurnsGrid{width:100%!important;grid-template-columns:1fr!important}
+ #w2cmError,#w2cmJoin{max-width:none}
+}
