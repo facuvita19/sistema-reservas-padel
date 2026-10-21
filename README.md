@@ -1,43 +1,71 @@
-# Sistema de reservas de pádel
+# Plataforma Deportiva W2
 
-Sistema comercial para administrar canchas, clientes, reservas, pagos, caja y solicitudes web de un complejo de pádel.
+Sistema integral para la gestión comercial y deportiva de complejos de pádel. El proyecto combina una aplicación administrativa, una web pública premium, una API Java y una base MySQL reproducible con Docker.
 
-## Componentes
+> Proyecto de portfolio en evolución activa. No contiene credenciales, datos personales ni configuración productiva real.
 
-- **Aplicación administrativa:** escritorio JavaFX.
-- **Web pública:** reserva y seguimiento desde computadora o celular.
-- **API pública:** servicio Java independiente en el puerto `8080`.
-- **Base de datos:** MySQL.
-- **Entorno reproducible:** Docker Compose con MySQL, API y Nginx.
+## Capacidades principales
+
+- Reservas públicas con protección temporal del turno y seguimiento.
+- Administración de canchas, clientes, caja, pagos y solicitudes web.
+- Torneos por parejas, fase de grupos, eliminatorias y resultados.
+- Identidad deportiva, perfiles públicos, historial y rankings auditables.
+- Comunidad para completar partidos y encontrar pareja para torneos.
+- Invitaciones privadas, contacto protegido y centro interno de notificaciones.
+- Transferencia manual y arquitectura preparada para Mercado Pago.
+- Seguridad por sesión, autorización backend, idempotencia y auditoría.
+- Experiencia responsive, accesible y optimizada para modo oscuro.
 
 ## Arquitectura
 
 ```text
-Cliente web
-    ↓
-Nginx, puerto 4321
-    ↓
-API Java, puerto 8080
-    ↓
-MySQL Docker, puerto interno 3306
-    ↑
-Aplicación administrativa, conexión local al puerto 3307
+Web publica Astro + TypeScript
+              |
+              v
+API publica Java 25
+              |
+              v
+           MySQL
+              ^
+              |
+Aplicacion administrativa JavaFX
 ```
 
-## Requisitos
+El entorno Docker incluye MySQL, API y Nginx. La aplicación administrativa puede utilizar la misma base local expuesta por Docker.
 
-- Windows 10 u 11 de 64 bits.
-- Java compatible con el proyecto.
-- Eclipse con soporte Maven y JavaFX.
-- Docker Desktop con WSL 2.
-- Git.
-- MySQL Workbench, opcional.
+## Tecnologías
 
-## Inicio rápido con Docker
+- Java 25, Maven y JavaFX.
+- Astro, TypeScript y Playwright.
+- MySQL 8 y migraciones SQL idempotentes.
+- Docker Compose y Nginx.
+- GitHub Actions.
+- Integración de pagos diseñada para Mercado Pago.
 
-1. Abrir Docker Desktop.
-2. Abrir PowerShell en la raíz del proyecto.
-3. Ejecutar:
+## Calidad
+
+El repositorio contiene pruebas de dominio, servicios, contratos, migraciones, seguridad, frontend y recorridos E2E. El CI aplica validaciones proporcionales al alcance del cambio y conserva una ejecución integral manual para hitos.
+
+## Inicio rápido
+
+### Requisitos
+
+- Java 25.
+- Maven.
+- Node.js 22.
+- Docker Desktop.
+- PowerShell 7 para los scripts operativos.
+
+### Entorno Docker
+
+1. Copiar la configuración de ejemplo:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+2. Reemplazar únicamente los placeholders locales del archivo privado `.env`.
+3. Iniciar el entorno:
 
 ```powershell
 Set-ExecutionPolicy -Scope Process Bypass
@@ -51,98 +79,53 @@ Web: http://localhost:4321
 API: http://localhost:8080/api/publica/estado
 ```
 
-5. Comprobar servicios:
+5. Verificar:
 
 ```powershell
 docker compose ps
 ```
 
-## Administración sobre la misma base Docker
-
-La configuración de ejecución de Eclipse debe usar:
-
-```text
-DB_URL=jdbc:mysql://127.0.0.1:3307/padel_reservas?serverTimezone=America/Argentina/Buenos_Aires&useSSL=false&allowPublicKeyRetrieval=true
-DB_USER=padel_app
-DB_PASSWORD=valor MYSQL_PASSWORD del archivo .env
-```
-
-La aplicación administrativa, la API y la web compartirán así una única base de datos.
-
-## Detener el entorno
+### Desarrollo frontend
 
 ```powershell
-.\detener-simulacion.ps1
+Set-Location .\web-publica-v2
+npm ci
+npm run check
+npm run dev
 ```
 
-No ejecutar `docker compose down -v` salvo que se quiera borrar el volumen y todos los datos Docker.
+### Pruebas backend
 
-## Configuración privada
-
-Crear `.env` a partir de `.env.example`:
-
-```env
-MYSQL_DATABASE=padel_reservas
-MYSQL_USER=padel_app
-MYSQL_PASSWORD=CAMBIAR_PASSWORD_APP
-MYSQL_ROOT_PASSWORD=CAMBIAR_PASSWORD_ROOT
-WEB_ORIGIN=local
+```powershell
+mvn clean test
 ```
 
-Los siguientes archivos no deben subirse a Git:
+## Configuración y privacidad
 
-```text
-.env
-database.properties
-database.local.properties
-backups/
-target/
-database/docker-init/
-```
+- `.env` y las configuraciones locales están ignoradas.
+- `.env.example` contiene únicamente nombres, valores locales y placeholders.
+- Mercado Pago permanece deshabilitado hasta proporcionar credenciales privadas.
+- La URL de retorno nunca acredita pagos por sí sola.
+- No deben publicarse dumps, respaldos, capturas con PII, claves o certificados.
+
+Consultar [SECURITY.md](SECURITY.md) antes de reportar una vulnerabilidad.
 
 ## Documentación
 
-- [Operación diaria](docs/OPERACION_DIARIA.md)
-- [Manual administrativo](docs/MANUAL_ADMINISTRATIVO.md)
-- [Arquitectura](docs/ARQUITECTURA.md)
-- [Despliegue local y Docker](docs/DESPLIEGUE.md)
-- [Backup y restauración](docs/BACKUP_Y_RESTAURACION.md)
-- [Solución de problemas](docs/SOLUCION_DE_PROBLEMAS.md)
-- [Despliegue y rollback](docs/DESPLIEGUE_Y_ROLLBACK.md)
-- [Continuidad del proyecto](docs/CONTINUIDAD_DEL_PROYECTO.md)
 - [Plan de desarrollo](PLAN_DESARROLLO.md)
 - [Plataforma Deportiva W2](docs/PLATAFORMA_DEPORTIVA_W2.md)
 - [Arquitectura funcional W2](docs/ARQUITECTURA_FUNCIONAL_W2.md)
 - [Dirección visual W2](docs/DIRECCION_VISUAL_W2.md)
 - [Mapa de experiencia W2](docs/MAPA_EXPERIENCIA_W2.md)
+- [Arquitectura general](docs/ARQUITECTURA.md)
+- [Despliegue](docs/DESPLIEGUE.md)
+- [Backup y restauración](docs/BACKUP_Y_RESTAURACION.md)
 - [Seguridad operativa](docs/SEGURIDAD_OPERATIVA.md)
 
-## Estado actual
+## Estrategia móvil
 
-El sistema incluye:
+La dirección inicial es completar una PWA y luego incorporar Capacitor para Android e iOS. La capa móvil podrá evolucionar con componentes adicionales si las pruebas en dispositivos reales no alcanzan el estándar visual y funcional del producto.
 
-- Disponibilidad pública en tiempo real y protección temporal del turno.
-- Reservas desde Plataforma Deportiva W2 con cuenta de cliente, historial y seguimiento.
-- Seña por transferencia manual, alias, importe exacto, comprobante por WhatsApp y verificación administrativa.
-- Núcleo transaccional de órdenes, intentos y eventos de pago.
-- Integración preparada con Mercado Pago para checkout online, retorno, webhook e idempotencia.
-- Acreditación transaccional sin confiar en parámetros del navegador.
-- Prevención de doble envío, concurrencia y procesamiento repetido de eventos.
-- Persistencia, migraciones, backup y restauración.
-- Compatibilidad con computadora y celular.
+## Licencia
 
-### Estado de pagos
-
-La transferencia manual fue validada visual y funcionalmente el 14 de octubre de 2026. El pago online queda condicionado a configurar credenciales privadas de Mercado Pago y completar una prueba integral con una cuenta de prueba.
-
-Las credenciales se suministran mediante variables de entorno y nunca deben escribirse en el repositorio, documentación, logs ni capturas. Antes de ejecutar diagnósticos de configuración, usar salidas redactadas que informen únicamente si cada variable está presente.
-
-### Configuración segura de Mercado Pago
-
-Mercado Pago permanece deshabilitado por defecto. Para un entorno de prueba se configuran exclusivamente en el archivo privado `.env` las variables `MP_ENABLED`, `MP_ACCESS_TOKEN`, `MP_WEBHOOK_SECRET`, `MP_API_BASE_URL`, `MP_PUBLIC_BASE_URL` y `MP_ENVIRONMENT`.
-
-- Usar `MP_ENVIRONMENT=sandbox` durante las pruebas.
-- `MP_PUBLIC_BASE_URL` debe ser una URL HTTPS pública alcanzable por el webhook.
-- No compartir ni versionar el token o el secreto.
-- Si la configuración está ausente o incompleta, la transferencia manual continúa disponible.
-- La URL de retorno no acredita pagos: la confirmación se realiza desde el backend mediante consulta y webhook firmado.
+El código se publica para evaluación de portfolio. No se concede permiso para copiar, redistribuir, sublicenciar, vender ni explotar comercialmente el proyecto. Consultar [LICENSE](LICENSE).

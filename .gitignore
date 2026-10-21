@@ -78,3 +78,13 @@ diagnostico-*.txt
 aplicar-p4-*.mjs
 cerrar-w2-*.mjs
 perfeccionar-w2-*.mjs
+
+# Artefactos visuales y material criptografico local
+web-publica-v2/dist/
+capturas*/
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
