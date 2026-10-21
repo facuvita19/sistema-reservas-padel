@@ -9,73 +9,18 @@
 ### Recorridos disponibles
 
 ```text
-Mi cuenta
-→ Reservas
-→ Abrir reserva válida
-→ Publicar turno abierto
-→ Configurar participantes, categoría, posición y mensaje
-→ Ver convocatoria publicada
-→ Cerrar búsqueda sin modificar la reserva
+Comunidad → descubrir jugador o turno → perfil/detalle → solicitar o invitar
+Mi cuenta → gestionar reservas, convocatorias, solicitudes e invitaciones
+Cabecera autenticada → campana → centro de actividad → recurso contextual
 ```
 
-```text
-Comunidad
-→ Toda la Comunidad / Turnos abiertos / Buscar pareja
-→ Revisar oportunidad o perfil deportivo
-→ Navegar al perfil público con contexto preservado
-```
+El centro de actividad distingue Nuevas y Anteriores, permite leer una al navegar o leer todas y mantiene enlaces internos seguros. En móvil se abre desde el menú como hoja inferior con fondo bloqueado.
 
-```text
-Mi cuenta
-→ Perfil deportivo
-→ Configurar presencia en Comunidad
-→ Elegir objetivos para turnos o torneos
-→ Autorizar invitaciones y contacto por WhatsApp
-→ Guardar preferencias versionadas
-```
+### Próximo recorrido
 
-### Próximo recorrido: solicitar unirse
+R3.4B5D completará avisos para convocatoria completa, cierre manual, cancelación, vencimiento y solicitudes cerradas por cupo o convocante. Cada aviso debe llevar al recurso útil o explicar que el recurso terminó.
 
-```text
-Turnos abiertos
-→ Abrir detalle de convocatoria
-→ Revisar reserva pública, cupos y criterios deportivos
-→ Revisar perfil del convocante
-→ Iniciar sesión o continuar con perfil autenticado
-→ Solicitar unirse
-→ Ver solicitud pendiente
-→ Retirar mientras siga pendiente
-```
-
-### Recorrido del titular
-
-```text
-Mi cuenta
-→ Reservas
-→ Abrir reserva con convocatoria
-→ Revisar solicitudes
-→ Consultar identidad deportiva del solicitante
-→ Aceptar o rechazar
-→ Si acepta: crear participante y consumir un cupo
-→ Si llega a 4 de 4: completar y cerrar convocatoria
-```
-
-### Casos críticos
-
-- dos aceptaciones simultáneas para el último lugar;
-- solicitud duplicada;
-- titular intentando unirse a su propia publicación;
-- participante confirmado intentando solicitar otra vez;
-- reserva cancelada o iniciada;
-- cierre manual mientras llega una solicitud;
-- retirada antes de aceptación;
-- convocatoria completa, cerrada o vencida;
-- contacto no autorizado;
-- visitante que inicia sesión y regresa al mismo turno.
-
-### Continuidad
-
-El próximo bloque es **R3.4B3A / R3.3H**, comenzando con inspección de backend. La PWA, el centro de notificaciones y Push se abordarán después de estabilizar solicitudes, participantes, eventos y enlaces profundos.
+PWA y Push quedan después del cierre de la matriz interna. El centro web seguirá siendo la fuente visible y no dependerá de permisos del sistema operativo.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Navegación principal
@@ -138,12 +83,12 @@ Operativo:
 
 Pendiente:
 
-- catálogo y preferencias reales de Comunidad;
-- convocatorias y solicitudes públicas;
+- cobertura completa de eventos internos de Comunidad;
+- convergencia final de Comunidad;
 - motor avanzado de ranking como evolución posterior;
 - reserva inteligente ampliada;
 - Mercado Pago producción;
-- PWA y notificaciones;
+- PWA y Push sobre el centro interno ya operativo;
 - retiro final de duplicaciones históricas.
 
 ## 4. Recorrido Reservar
@@ -335,20 +280,18 @@ Nunca deben presentarse como la misma acción.
 
 La URL de retorno nunca acredita por sí sola.
 
-## 17. Notificaciones futuras
+## 17. Centro de notificaciones y evolución futura
 
-- nueva solicitud;
-- solicitud aceptada o rechazada;
-- convocatoria completa;
-- convocatoria cerrada;
-- recordatorio contextual;
-- PWA y push en su fase.
+- nueva solicitud, aceptación y rechazo: operativos;
+- invitación enviada, aceptada y rechazada: operativos;
+- convocatoria completa, cierre, cancelación y vencimiento: próximo bloque R3.4B5D;
+- recordatorios, PWA y Push: evolución posterior.
 
 Las notificaciones respetan preferencias, privacidad y límites de frecuencia.
 
 ## 18. Punto de continuidad
 
-Torneos y Rankings están cerrados. El perfil público completó R3.2B. La base, el catálogo, las preferencias, la navegación y la publicación de reservas en Comunidad están operativos.
+Torneos y Rankings están cerrados. El perfil público completó R3.2B. Comunidad avanzó hasta R3.4B5C con solicitudes, participantes, invitaciones, contacto protegido y centro interno de notificaciones.
 
 El siguiente orden es:
 
@@ -357,11 +300,11 @@ El siguiente orden es:
 3. R3.3C: preferencias desde Mi cuenta — completadas en su alcance actual;
 4. R3.4B1: navegación de Comunidad — completada;
 5. R3.4B2G: publicación de reservas y Turnos abiertos — completada;
-6. R3.4B3A / R3.3H: solicitudes para unirse — próximo bloque;
+6. R3.4B3–R3.4B5C: solicitudes, participantes, invitaciones y centro de notificaciones — completados en su alcance actual;
 7. R3.3C: preferencias desde Mi cuenta;
 8. R3.3D: pareja para torneos;
 9. R3.3E: convocatorias de reservas;
 10. R3.3F: solicitudes y cierre manual;
 11. R3.3G: participantes, concurrencia y auditoría;
-12. R3.3H: notificaciones;
+12. R3.4B5D / R3.3H: completar la matriz de notificaciones — próximo bloque;
 13. R3.3I: convergencia final.

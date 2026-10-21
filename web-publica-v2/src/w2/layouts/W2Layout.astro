@@ -11,6 +11,7 @@ const {titulo,actual='inicio'}=Astro.props;
 import { estadoSesion } from '../../scripts/sesion-global';
 import '../../scripts/autenticacion';
 import '../../scripts/menu-cuenta-global';
+import '../scripts/notificaciones';
 import { cargarComplejo } from '../../scripts/configuracion-publica';
 cargarComplejo().catch(()=>{});
 const menuButton=document.querySelector<HTMLButtonElement>('[data-w2-menu]');const menuPanel=document.querySelector<HTMLElement>('#w2Menu');const backdrop=document.querySelector<HTMLElement>('#w2MenuBackdrop');const closeButton=document.querySelector<HTMLButtonElement>('[data-w2-menu-close]');let focusBefore:HTMLElement|null=null;

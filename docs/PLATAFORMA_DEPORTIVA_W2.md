@@ -6,30 +6,19 @@
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
 ## Estado actual de Comunidad y continuidad
 
-Comunidad ya dispone de una base pública y privada real. La plataforma cubre actualmente:
+Comunidad ya cubre el recorrido deportivo principal de extremo a extremo:
 
-- catálogo seguro de perfiles deportivos;
-- preferencias opt-in desde Mi cuenta;
-- objetivos separados para completar turnos y formar pareja para torneos;
-- navegación **Toda la Comunidad / Turnos abiertos / Buscar pareja**;
-- publicación de una reserva válida como convocatoria;
-- cierre manual de la búsqueda sin alterar la reserva;
-- tarjeta pública de turno con fecha, horario, cancha, cupo y criterios deportivos;
-- privacidad de pagos, teléfonos, documentos y datos administrativos.
+- catálogo seguro y preferencias opt-in;
+- navegación Toda la Comunidad / Turnos abiertos / Buscar pareja;
+- publicación y cierre manual de convocatorias vinculadas a reservas reales;
+- solicitudes, retiro, aceptación, rechazo, participantes, cupos y concurrencia;
+- invitaciones privadas para partidos y parejas de torneo;
+- contacto protegido por WhatsApp después de aceptación y consentimiento vigente;
+- centro global de notificaciones internas con contador, lectura, enlaces contextuales y experiencia premium responsive.
 
-Los conceptos permanecen separados:
+R3.4B5A–C separó auditoría y bandeja: los eventos siguen siendo la historia inmutable y `comunidad_notificaciones` es una proyección privada por destinatario. La web no expone teléfono, pagos, documento ni datos administrativos.
 
-- **Reserva:** cancha, fecha, horario, precio, seña y estado comercial.
-- **Convocatoria:** búsqueda para completar una reserva existente.
-- **Solicitud:** interés de un perfil en ocupar un lugar.
-- **Participante:** persona confirmada para jugar el turno.
-- **Pareja deportiva:** dos personas que deciden competir juntas.
-- **Propuesta para torneo:** coordinación previa para evaluar una pareja.
-- **Inscripción:** solicitud formal de una pareja completa a un torneo.
-
-El siguiente frente es el ciclo real de solicitudes: solicitar unirse, retirar, aceptar, rechazar, convertir en participante, consumir cupos atómicamente y cerrar la convocatoria al completar el turno.
-
-La PWA y las notificaciones push se implementarán después de estabilizar los eventos de dominio de Comunidad. El dominio no dependerá directamente de WhatsApp, correo ni Push.
+El próximo bloque es **R3.4B5D / R3.3H**, para cubrir convocatoria completa, cierres, cancelaciones, vencimientos y solicitudes cerradas por cupo o convocante. PWA y Push se implementarán después, consumiendo contratos internos estables y sin acoplar el dominio a canales externos.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Visión
@@ -183,7 +172,7 @@ Comunidad es infraestructura deportiva para descubrir jugadores, formar parejas 
 
 ### Estado real
 
-R3.3A completó la fundación persistente. El catálogo, las preferencias, la navegación de Comunidad y la publicación de reservas en Turnos abiertos ya están operativos. El próximo bloque es R3.4B3A / R3.3H: solicitudes para unirse.
+Comunidad avanzó hasta R3.4B5C: catálogo, preferencias, convocatorias, solicitudes, participantes, invitaciones, contacto protegido y notificaciones internas están operativos en su alcance actual. El próximo bloque es R3.4B5D / R3.3H para completar la matriz de eventos.
 
 ## 11. Torneos W2: estado real
 
@@ -210,12 +199,12 @@ Torneos es referencia de método y calidad. No se reabre salvo error real, requi
 - W2.3: Rankings y perfiles estabilizados en el recorrido actual; motor avanzado pendiente como evolución posterior.
 - W2.4: experiencia deportiva pública en curso; Torneos cerrado.
 - W2.5: reserva W2 operativa, con evoluciones inteligentes futuras.
-- W2.6 / R3.3: Comunidad en construcción.
+- W2.6 / R3.3: Comunidad avanzada hasta R3.4B5C; quedan matriz completa de notificaciones y convergencia final.
 - W2.7: Mercado Pago sandbox, completado.
 - W2.8: Mercado Pago producción, pendiente.
 - W2.9: engagement, PWA y notificaciones.
 
-Próximo bloque: **R3.4B3A / R3.3H · Inspección de solicitudes, participantes y estados de convocatoria**.
+Próximo bloque: **R3.4B5D / R3.3H · Cobertura completa de eventos de notificación**.
 
 ## 13. Criterios de aceptación
 

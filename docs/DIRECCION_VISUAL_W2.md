@@ -6,35 +6,21 @@
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
 ## Patrones visuales estabilizados en Comunidad
 
-R3.4B2G consolidó los patrones que deben reutilizarse en las próximas pantallas de solicitudes:
+R3.4B5C consolidó el centro de actividad como patrón global de notificaciones W2:
 
-- modo oscuro como experiencia principal y modo claro plenamente funcional;
-- navegación secundaria grafito, sticky, opaca y adaptable a móvil;
-- drawer con cabecera compacta, fondo opaco y cierre SVG;
-- superficies grafito sin paneles blancos accidentales;
-- rojo W2 para identidad y acciones propias;
-- azul reconocible para Mercado Pago;
-- verde para acreditación, disponibilidad y estados positivos;
-- ámbar para coordinación pendiente cuando corresponda;
-- selectores personalizados con teclado, foco visible y menús compactos;
-- tarjeta pública de Turnos abiertos con fecha, horario, cancha, cupo, criterios y convocante;
-- CTA con una sola flecha decorativa y texto accesible estable;
-- geometría validada en 1440 px, 390 px y 320 px;
-- contenido privado y público claramente diferenciado.
+- campana con contador y estado abierto en escritorio;
+- acceso autenticado desde el menú móvil;
+- panel flotante compacto en escritorio y hoja inferior real en móvil;
+- backdrop, bloqueo de scroll, safe area y lista con desplazamiento interno;
+- agrupación Nuevas / Anteriores;
+- tarjetas contextuales con iconografía y navegación integrada;
+- rojo para actividad pendiente, verde para confirmación, grafito para historial y dorado para acciones secundarias;
+- notificaciones leídas plenamente legibles, nunca con opacidad de elemento deshabilitado;
+- estados carga, vacío, error, reintento, actividad nueva y sin pendientes;
+- foco contenido, Escape, restauración de foco y movimiento reducido;
+- validación en oscuro, escritorio, 390 px y 320 px.
 
-Las pantallas de detalle de convocatoria, solicitud y gestión del titular deberán mantener esta dirección. No se deben crear modales genéricos desconectados del lenguaje W2.
-
-### Criterio para el próximo bloque
-
-Antes de cerrar una superficie se deben revisar:
-
-- carga, vacío, error y éxito;
-- solicitud propia, duplicada, retirada, aceptada y rechazada;
-- convocatoria abierta, completa, cerrada y vencida;
-- foco, teclado, lector de pantalla y movimiento reducido;
-- nombres largos, mensajes extensos y último cupo;
-- escritorio, 390 px y 320 px;
-- modo oscuro y modo claro.
+El centro debe sentirse como actividad deportiva de una app premium, no como menú administrativo ni tabla. Las evoluciones de R3.4B5D deben reutilizar estas tarjetas y no introducir colores o modales desconectados.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Principio creativo

@@ -9,6 +9,15 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
   <div class="w2-links">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']} aria-current={actual===id?'page':undefined}>{label}</a>)}</div>
   <W2ThemeToggle/>
   <a class="w2-cta" href="/w2/reservar">Reservar <span>→</span></a>
+  <div id="w2Notifications" class="w2-notifications hidden">
+   <button id="w2NotificationsTrigger" class="w2-notifications-trigger" type="button" aria-expanded="false" aria-controls="w2NotificationsPanel" aria-label="Notificaciones"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0v4l2 3H4l2-3V9M10 20h4"/></svg><b id="w2NotificationsCount" class="hidden">0</b></button>
+   <div id="w2NotificationsBackdrop" class="w2-notifications-backdrop hidden" aria-hidden="true"></div>
+   <section id="w2NotificationsPanel" class="w2-notifications-panel hidden" aria-hidden="true" aria-labelledby="w2NotificationsTitle" inert>
+    <span class="w2-notifications-handle" aria-hidden="true"></span><header><div><small>CENTRO DE ACTIVIDAD</small><h2 id="w2NotificationsTitle">Notificaciones</h2><p id="w2NotificationsSummary">Tu actividad deportiva reciente</p></div><button id="w2NotificationsClose" type="button" aria-label="Cerrar notificaciones">×</button></header>
+    <div class="w2-notifications-tools"><span id="w2NotificationsStatus" role="status">Actualizando…</span><button id="w2NotificationsReadAll" type="button" class="hidden" aria-label="Marcar todas las notificaciones como leídas">Leer todas</button></div>
+    <div id="w2NotificationsList" class="w2-notifications-list"></div>
+   </section>
+  </div>
   <div class="w2-auth-slot" aria-live="polite">
    <span class="w2-session-check" id="w2SessionCheck"><i></i><span>Verificando</span></span>
    <button id="abrirAutenticacion" class="w2-login hidden" type="button"><span aria-hidden="true">◎</span><b>Ingresar</b></button>
@@ -34,6 +43,7 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
   <a class="w2-mobile-reserve" href="/w2/reservar">Reservar una cancha <span>→</span></a>
   <button id="abrirAutenticacionMovil" class="w2-mobile-login hidden" type="button">Ingresar o crear cuenta</button>
   <div id="cuentaUsuarioMovil" class="w2-mobile-account hidden">
+   <button id="w2NotificationsMobile" class="w2-mobile-notifications" type="button"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0v4l2 3H4l2-3V9M10 20h4"/></svg></i><span>Notificaciones</span><b id="w2NotificationsMobileCount" class="hidden">0</b></button>
    <div><span id="avatarUsuarioMovil">PR</span><p><small>Tu cuenta</small><strong id="nombreUsuarioMovil">Cuenta</strong><em id="correoUsuarioMovil">Sesión activa</em></p></div>
    <a href="/w2/cuenta?seccion=reservas"><i><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3M4 8h16M5 5h14v16H5z"/></svg></i><span>Mis reservas</span><b>→</b></a><a href="/w2/cuenta?seccion=datos"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3"/><path d="M5.5 19c.7-3.4 2.9-5.3 6.5-5.3s5.8 1.9 6.5 5.3"/></svg></i><span>Mis datos y seguridad</span><b>→</b></a><a href="/w2/cuenta?seccion=deporte"><i><svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-2 12H7L5 8zM8 8h8M12 8v8"/></svg></i><span>Mi perfil deportivo</span><b>→</b></a>
    <button id="cerrarSesionMovil" type="button">Cerrar sesión</button>

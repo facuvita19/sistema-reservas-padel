@@ -6,62 +6,29 @@
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
 ## Arquitectura actual de Comunidad y próximo contrato
 
-### Modelo y fuente de verdad
+### Fuentes de verdad separadas
 
-La relación conceptual vigente es:
+- `comunidad_eventos` conserva auditoría inmutable y referencias a convocatoria, solicitud o invitación.
+- `comunidad_notificaciones` materializa una bandeja privada por `cliente_destinatario_id`, con lectura, URL contextual y unicidad por evento y destinatario.
+- La API autenticada permite listar, leer una y leer todas sin aceptar identificadores de cliente enviados por el navegador.
+- La proyección actual cubre solicitudes recibidas, aceptadas y rechazadas, e invitaciones enviadas, aceptadas y rechazadas.
+- Las URLs se restringen a rutas internas `/w2/` y el frontend vuelve a validarlas antes de navegar.
+
+### Contratos implementados
 
 ```text
-Reserva
-  └─ Convocatoria
-       ├─ Solicitudes
-       ├─ Participantes
-       └─ Eventos de auditoría
+GET  /api/publica/cliente/comunidad/notificaciones
+POST /api/publica/cliente/comunidad/notificaciones/{id}/leer
+POST /api/publica/cliente/comunidad/notificaciones/leer-todas
 ```
 
-El backend es la fuente de verdad para estado, cupos, autorización y transiciones. La interfaz nunca debe decidir por sí sola si un lugar sigue disponible.
+La lectura es idempotente. Una notificación ajena o inexistente devuelve un recurso no encontrado para impedir enumeración e IDOR.
 
-### Contratos ya estabilizados
+### Próximo contrato
 
-- consulta pública segura de perfiles;
-- lectura y actualización versionada de preferencias;
-- consulta pública de convocatorias abiertas;
-- publicación vinculada a una reserva real;
-- cierre manual con motivo explícito;
-- preservación de la reserva al cerrar la búsqueda;
-- aislamiento entre fallas de Turnos abiertos y Buscar pareja.
+R3.4B5D debe completar convocatoria completa, cierre manual, cancelación, vencimiento y cierres derivados de solicitudes. La proyección debe seguir siendo idempotente, privada, reconstruible y desacoplada de Push.
 
-### Invariantes para solicitudes
-
-- el titular no puede solicitar unirse a su propia convocatoria;
-- un participante confirmado no puede generar otra solicitud activa;
-- un perfil no puede ocupar dos lugares;
-- no se aceptan más participantes que cupos disponibles;
-- aceptar debe recalcular cupos dentro de la transacción;
-- las operaciones repetidas deben ser idempotentes;
-- una convocatoria cerrada, completa, vencida o inválida no acepta solicitudes;
-- una reserva cancelada, vencida o iniciada invalida el flujo;
-- los conflictos por el último cupo deben devolver un resultado controlado;
-- cada transición relevante debe producir auditoría y, cuando corresponda, un evento de dominio.
-
-### Próxima inspección técnica
-
-R3.4B3A / R3.3H debe localizar en el código real:
-
-- `SolicitudComunidad` y `ParticipanteComunidad`;
-- estados, motivos y restricciones de unicidad;
-- repositorios y bloqueos;
-- servicios transaccionales;
-- DTO públicos y privados;
-- controladores existentes;
-- autorización e IDOR;
-- eventos de dominio y pruebas;
-- comportamiento ante aceptación simultánea del último cupo.
-
-Los endpoints definitivos se decidirán después de esta inspección. No se deben fijar rutas nuevas por documentación si ya existe un contrato equivalente en backend.
-
-### Evolución desacoplada
-
-WhatsApp será un canal autorizado y auditado, no una dependencia del dominio. Las notificaciones internas, Push y PWA consumirán eventos estables después de consolidar solicitudes, participantes y cierres automáticos.
+PWA y notificaciones del sistema consumirán esta base solo después del cierre funcional interno.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Objetivo
@@ -181,6 +148,8 @@ R3.3A incorporó:
 
 ### 8.2 Relaciones conceptuales
 
+La arquitectura vigente también incorpora `comunidad_invitaciones` y `comunidad_notificaciones`, relacionadas con perfiles, clientes y `comunidad_eventos`.
+
 ```text
 perfil_jugador 1 ----- 0..1 preferencias_comunidad
 perfil_jugador 1 ----- N convocatorias_comunidad
@@ -279,7 +248,7 @@ GET /api/publica/jugadores/{id}
 GET /api/publica/cliente/perfil-deportivo
 ```
 
-Contratos públicos ya implementados para catálogo y preferencias; los contratos de solicitudes quedan sujetos a inspección del backend existente:
+Contratos públicos y privados implementados para catálogo, preferencias, solicitudes, invitaciones y notificaciones:
 
 ```text
 GET /api/publica/comunidad/jugadores

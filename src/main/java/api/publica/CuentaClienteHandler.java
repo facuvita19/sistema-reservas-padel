@@ -28,6 +28,7 @@ public final class CuentaClienteHandler {
     private final AutenticacionClienteService autenticacionService;
     private final CuentaClienteService cuentaService;
     private final ObjectMapper mapper;
+    private final servicio.NotificacionComunidadService notificacionComunidadService = new servicio.NotificacionComunidadService();
     private final PagoClienteCuentaService pagoCuentaService;
     private final JugadorPublicoService jugadorPublicoService;
     private final IdentidadDeportivaService identidadDeportivaService;
@@ -78,6 +79,11 @@ public final class CuentaClienteHandler {
             String operacionId) throws IOException {
         try {
             SesionAutenticada autenticada = autenticar(intercambio);
+
+            if (ruta.equals(PREFIJO + "/comunidad/notificaciones") && "GET".equals(metodo)) { responder(intercambio,200,notificacionComunidadService.listar(autenticada.cliente().getId())); return; }
+            if (ruta.equals(PREFIJO + "/comunidad/notificaciones/leer-todas") && "POST".equals(metodo)) { responder(intercambio,200,notificacionComunidadService.leerTodas(autenticada.cliente().getId())); return; }
+            String notificacionBase=PREFIJO+"/comunidad/notificaciones/";
+            if (ruta.startsWith(notificacionBase) && ruta.endsWith("/leer") && "POST".equals(metodo)) { String valor=ruta.substring(notificacionBase.length(),ruta.length()-"/leer".length()); responder(intercambio,200,notificacionComunidadService.leer(autenticada.cliente().getId(),parsearId(valor))); return; }
 
             if (ruta.equals(PREFIJO + "/comunidad/invitaciones/recibidas") && "GET".equals(metodo)) { responder(intercambio,200,invitacionComunidadService.recibidas(autenticada.cliente().getId())); return; }
             if (ruta.equals(PREFIJO + "/comunidad/invitaciones/enviadas") && "GET".equals(metodo)) { responder(intercambio,200,invitacionComunidadService.enviadas(autenticada.cliente().getId())); return; }
@@ -373,6 +379,8 @@ public final class CuentaClienteHandler {
                 | servicio.SolicitudComunidadService.SolicitudNoReabribleException exception) {
             error(intercambio, 409, "CONFLICTO_SOLICITUD_COMUNIDAD",
                     exception.getMessage(), operacionId);
+        } catch (servicio.NotificacionComunidadService.NotificacionNoEncontradaException exception) {
+            error(intercambio,404,"NOTIFICACION_COMUNIDAD_NO_ENCONTRADA",exception.getMessage(),operacionId);
         } catch (servicio.InvitacionComunidadService.AutoInvitacionException | servicio.InvitacionComunidadService.PerfilNoHabilitadoException | servicio.InvitacionComunidadService.InvitacionAjenaException exception) {
             error(intercambio,403,"INVITACION_COMUNIDAD_NO_AUTORIZADA",exception.getMessage(),operacionId);
         } catch (servicio.InvitacionComunidadService.InvitacionNoEncontradaException exception) {

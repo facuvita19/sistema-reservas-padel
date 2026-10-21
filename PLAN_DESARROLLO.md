@@ -8,59 +8,43 @@
 
 ### Estado cerrado
 
-- **R3.3A · Fundación persistente de Comunidad:** completada.
-- **R3.3B · Catálogo real de jugadores:** completado en su alcance actual.
-- **R3.3C · Preferencias privadas desde Mi cuenta:** completadas en su alcance actual.
-- **R3.3D · Búsqueda de pareja para torneos:** primera experiencia pública completada; el contacto seguro por WhatsApp sigue pendiente.
-- **R3.4B1 · Navegación de Comunidad:** completada con **Toda la Comunidad**, **Turnos abiertos** y **Buscar pareja**.
-- **R3.4B2G · Publicación de reservas en Turnos abiertos:** completada, revisada visualmente, commiteada y publicada.
+- **R3.3A–R3.3G / R3.4B1–R3.4B4:** base persistente, catálogo, preferencias, navegación, Turnos abiertos, solicitudes, participantes, concurrencia, auditoría, invitaciones privadas y contacto protegido completados en su alcance actual.
+- **R3.4B5A · Fundación de notificaciones internas:** completada con persistencia privada, destinatario explícito, lectura individual y masiva, navegación contextual y proyección idempotente desde eventos auditables.
+- **R3.4B5B · Centro global de notificaciones:** completado con campana, contador, acceso móvil, estados completos, foco contenido y rutas internas seguras.
+- **R3.4B5C · Convergencia visual premium:** completada y revisada en escritorio, 390 px y 320 px, con centro de actividad, agrupación Nuevas/Anteriores, tarjetas semánticas, backdrop, hoja móvil, safe area y movimiento reducido.
+- El contacto contextual por WhatsApp para invitaciones aceptadas está protegido por consentimiento vigente.
 
-R3.4B2G dejó estabilizados:
+R3.4B5 dejó estabilizados:
 
-- publicación de una reserva válida desde Mi cuenta;
-- participantes confirmados, cupos, categoría, posición y comentario público;
-- cierre manual sin cancelar ni modificar la reserva;
-- transferencia manual y Mercado Pago dentro del drawer;
-- convocatoria publicada en Turnos abiertos;
-- navegación al perfil deportivo del convocante;
-- privacidad de pagos, teléfono y datos administrativos;
-- responsive en escritorio, 390 px y 320 px;
-- **30 pruebas E2E focalizadas aprobadas**;
-- **24 pruebas del laboratorio visual aprobadas**;
-- laboratorio visual temporal eliminado antes del commit.
+- tabla comunidad_notificaciones separada de la auditoría histórica;
+- API autenticada para listar y marcar notificaciones;
+- aislamiento por cliente, idempotencia y enlaces internos validados;
+- notificaciones actuales para solicitudes recibidas, aceptadas y rechazadas, e invitaciones enviadas, aceptadas y rechazadas;
+- centro global visible solo con sesión autenticada;
+- 374 pruebas Maven, Astro Check, build y 18 pruebas Playwright aprobadas;
+- revisión visual oscura aprobada en los tres viewports objetivo.
 
 ### Próximo bloque exacto
 
-> **R3.4B3A · Inspección de solicitudes, participantes y estados de convocatoria**  
-> Correspondencia con el plan maestro: **R3.3H · Solicitudes para unirse**.
+> **R3.4B5D · Cobertura completa de eventos y cierre funcional de notificaciones**
+> Correspondencia con el plan maestro: **R3.3H · Notificaciones y contacto**.
 
-Antes de modificar interfaz o inventar contratos se debe inspeccionar la implementación persistente creada en R3.3A:
+El siguiente bloque debe completar, antes de PWA y Push:
 
-- entidades, estados y motivos;
-- migraciones e índices;
-- repositorios y consultas;
-- servicios y transacciones;
-- controladores y DTO;
-- autorización por propietario;
-- idempotencia y control de versión;
-- concurrencia para el último cupo;
-- auditoría y eventos;
-- pruebas existentes.
+1. convocatoria completa;
+2. convocatoria cerrada manualmente;
+3. convocatoria cancelada o vencida cuando requiera aviso útil;
+4. solicitudes cerradas por cupo o por el convocante;
+5. títulos, mensajes y enlaces contextuales por evento;
+6. preferencias y límites de frecuencia donde aporten valor;
+7. pruebas de proyección, idempotencia, privacidad y destinatarios;
+8. convergencia funcional final del centro de actividad.
 
-El recorrido siguiente debe cubrir, en este orden:
-
-1. detalle público de convocatoria;
-2. crear y retirar una solicitud;
-3. gestión del titular: aceptar o rechazar;
-4. conversión atómica de solicitud aceptada en participante;
-5. actualización de cupos y cierre automático al completar;
-6. vencimiento, cancelación y sincronización con la reserva;
-7. contacto seguro y contextual por WhatsApp;
-8. notificaciones internas y luego PWA.
+PWA, Push y permisos del sistema quedan expresamente después de cerrar esta matriz interna; no deben acoplarse al dominio ni reemplazar el centro web.
 
 ### Regla de numeración
 
-La hoja de ruta histórica R3.3 sigue siendo la referencia funcional. La numeración R3.4B indica la secuencia práctica actual de implementación. Cuando corresponda se deben conservar ambas referencias para evitar perder trazabilidad.
+La hoja histórica R3.3 conserva la referencia funcional. R3.4B expresa el orden práctico actual y ambas referencias deben mantenerse para trazabilidad.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Lema rector
@@ -74,9 +58,9 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 ### Estado ejecutivo
 
 - Rama estable: `master`.
-- Último commit publicado: `5e3b4d3` (`Corregir regresiones de reserva y perfil público W2`).
-- GitHub Actions del commit `5e3b4d3`: pendiente de resultado al actualizar esta guía.
-- Repositorio local: limpio después del push.
+- Último commit publicado: `6e40745` (`Cerrar el sistema de invitaciones de Comunidad`).
+- GitHub Actions de `6e40745`: verde antes de iniciar R3.4B5.
+- Repositorio local: con R3.4B5A–C validado y pendiente de commit conjunto.
 - Web activa: `web-publica-v2`.
 - Aplicación administrativa: independiente de la web pública.
 - Modo oscuro: experiencia principal.
@@ -86,15 +70,15 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 - Perfil público: recorrido R3.2B completado y convergido; el nombre excepcionalmente largo y la actividad móvil quedaron protegidos por contratos E2E.
 - Reserva W2: ruta canónica `/w2/reservar`; `/reservar` queda como puente de redirección preservando query string y hash.
 - Formato de reserva: cuatro jugadores, dos contra dos, sin selector editable.
-- Comunidad R3.3A: fundación persistente completada en `46d01a5`.
-- Próximo bloque real: **R3.4B3A / R3.3H · Inspección de solicitudes para unirse, participantes y estados**.
+- Comunidad: R3.4B1–R3.4B5C completados en su alcance actual.
+- Próximo bloque real: **R3.4B5D / R3.3H · Cobertura completa de eventos de notificación**.
 
 ### Validaciones recientes
 
 - Fundación R3.3A: 318 pruebas Maven aprobadas, migración aplicada y aplicación JavaFX iniciada correctamente.
 - Reserva W2: 10 pruebas focalizadas aprobadas antes del cierre de CI.
 - Cierre local de regresiones: 439 pruebas aprobadas, 1 omitida y 1 contrato residual corregido después; la prueba residual focalizada quedó aprobada.
-- La validación definitiva del bloque corresponde al workflow de GitHub Actions de `5e3b4d3`.
+- R3.4B5: 374 pruebas Maven, migración aplicada, API Docker saludable, Astro Check y build aprobados, más 18 pruebas Playwright funcionales y visuales.
 
 ## 3. Forma de trabajo acordada
 
@@ -215,7 +199,7 @@ Nunca usar “suma máxima”.
 - W2.3: rankings y perfiles públicos estabilizados en su recorrido visual actual; motor avanzado, temporadas, publicaciones históricas, variaciones y Masters siguen como evolución posterior.
 - W2.4: cuenta, reservas y pagos operativos; Torneos cerrado integralmente.
 - W2.5: reserva inteligente operativa en su flujo actual; quedan evoluciones funcionales futuras.
-- W2.6 / R3.3: Comunidad en construcción.
+- W2.6 / R3.3: Comunidad avanzada hasta R3.4B5C; falta completar la matriz de notificaciones y la convergencia final.
 - Mercado Pago sandbox: completado.
 - Mercado Pago producción: pendiente de dominio, HTTPS, credenciales productivas, observabilidad y operación controlada.
 
@@ -290,11 +274,12 @@ La convocatoria se vincula con una reserva real e informa cancha, fecha, horario
 - origen del participante;
 - historial inmutable de acciones relevantes.
 
-### R3.3H · Notificaciones y contacto
+### R3.3H · Notificaciones y contacto — en curso avanzado
 
-- nueva solicitud, aceptación, rechazo, cierre y convocatoria completa;
-- WhatsApp contextual según permiso;
-- base para PWA y notificaciones futuras.
+- solicitudes e invitaciones internas: completadas en el centro global;
+- WhatsApp contextual según consentimiento: completado para invitaciones aceptadas;
+- cierre, convocatoria completa, cancelación y vencimiento: próximo alcance R3.4B5D;
+- PWA y Push: posteriores a la matriz interna completa.
 
 ### R3.3I · Convergencia final
 
@@ -356,4 +341,4 @@ Un bloque se considera terminado cuando:
 
 ## 12. Instrucción para un chat nuevo
 
-Indicar que Torneos y Rankings están cerrados, que el perfil público completó R3.2B, que R3.3A dejó la fundación persistente de Comunidad y que R3.4B2G quedó cerrado y que el próximo bloque es R3.4B3A / R3.3H. Antes de modificar código se debe verificar el resultado del workflow de `5e3b4d3`, leer estas cinco guías y respetar la forma de trabajo, el lema rector, la privacidad y la inscripción exclusivamente por pareja.
+Indicar que Torneos y Rankings están cerrados, que el perfil público completó R3.2B y que Comunidad avanzó hasta R3.4B5C con solicitudes, invitaciones, contacto protegido y centro interno de notificaciones. El próximo bloque es R3.4B5D / R3.3H para completar la matriz de eventos antes de PWA y Push. Leer estas cinco guías y respetar privacidad, trazabilidad e inscripción exclusivamente por pareja.
