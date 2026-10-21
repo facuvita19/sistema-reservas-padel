@@ -47,6 +47,8 @@ public final class ApiPublicaServer {
             new ConsultaJugadoresComunidadService();
     private final ConsultaConvocatoriasComunidadService consultaConvocatoriasComunidadService =
             new ConsultaConvocatoriasComunidadService();
+    private final DetalleConvocatoriaComunidadService detalleConvocatoriaComunidadService =
+            new DetalleConvocatoriaComunidadService();
     private final ObjectMapper mapper;
     private final AutenticacionClienteService autenticacionClienteService;
     private final RecuperacionPasswordClienteHandler recuperacionPasswordHandler;
@@ -229,6 +231,17 @@ public final class ApiPublicaServer {
                 return;
             }
 
+            String detalleConvocatoriaBase = PREFIJO + "/comunidad/convocatorias/";
+            if (ruta.startsWith(detalleConvocatoriaBase)
+                    && "GET".equals(metodo)) {
+                long convocatoriaId = id(ruta.substring(
+                        detalleConvocatoriaBase.length()));
+                responder(x, 200,
+                        detalleConvocatoriaComunidadService.buscar(
+                                convocatoriaId));
+                return;
+            }
+
             if (ruta.equals(PREFIJO + "/comunidad/convocatorias")) {
                 Map<String,String> p=parametros(x.getRequestURI());
                 int pagina=enteroPositivo(p.get("pagina"),1,"La pagina");
@@ -313,6 +326,9 @@ public final class ApiPublicaServer {
             x.getResponseHeaders().set(
                     "Retry-After", String.valueOf(e.getSegundosEspera()));
             error(x, 429, "DEMASIADOS_INTENTOS",
+                    e.getMessage(), operacionId);
+        } catch (DetalleConvocatoriaComunidadService.ConvocatoriaPublicaNoEncontradaException e) {
+            error(x, 404, "CONVOCATORIA_NO_ENCONTRADA",
                     e.getMessage(), operacionId);
         } catch (RecursoNoEncontradoException e) {
             error(x, 404, "RECURSO_NO_ENCONTRADO",

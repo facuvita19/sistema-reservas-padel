@@ -1,0 +1,28 @@
+package api.publica;
+
+import java.sql.*;
+import java.time.LocalDateTime;
+import config.ConexionBD;
+import api.publica.ConvocatoriaPublicaDTO.*;
+import negocio.SolicitudComunidad;
+import servicio.SolicitudComunidadService;
+
+public final class DetalleConvocatoriaComunidadService {
+    private final SolicitudComunidadService solicitudes;
+    public DetalleConvocatoriaComunidadService(){this(new SolicitudComunidadService());}
+    DetalleConvocatoriaComunidadService(SolicitudComunidadService solicitudes){this.solicitudes=solicitudes;}
+
+    public Detalle buscar(long id){
+        if(id<=0)throw new IllegalArgumentException("La convocatoria debe ser positiva.");
+        String q="SELECT cv.id,cv.estado,cv.fecha_expiracion,cv.participantes_confirmados,cv.lugares_buscados,cv.posicion_buscada,cv.comentario,r.fecha,r.hora_inicio,r.hora_fin,ca.nombre cancha,p.id perfil_id,p.nombre_publico,p.posicion_preferida,cd.id categoria_id,cd.nombre categoria,cd.color_hex,jcd.id convocante_categoria_id,jcd.nombre convocante_categoria,jcd.color_hex convocante_color FROM comunidad_convocatorias cv JOIN reservas r ON r.id=cv.reserva_id JOIN canchas ca ON ca.id=r.cancha_id JOIN perfiles_jugador p ON p.id=cv.perfil_creador_id LEFT JOIN categorias_deportivas cd ON cd.id=cv.categoria_deportiva_id LEFT JOIN jugador_categorias jc ON jc.perfil_jugador_id=p.id AND jc.estado='VIGENTE' LEFT JOIN categorias_deportivas jcd ON jcd.id=jc.categoria_deportiva_id WHERE cv.id=?";
+        try(Connection c=ConexionBD.obtenerConexion();PreparedStatement s=c.prepareStatement(q)){s.setLong(1,id);try(ResultSet r=s.executeQuery()){if(!r.next())throw new ConvocatoriaPublicaNoEncontradaException();String estado=r.getString("estado");LocalDateTime exp=r.getTimestamp("fecha_expiracion").toLocalDateTime();boolean activa=("ABIERTA".equals(estado)||"EN_COORDINACION".equals(estado))&&LocalDateTime.now().isBefore(exp);int confirmados=r.getInt("participantes_confirmados"),buscados=r.getInt("lugares_buscados"),disponibles=Math.max(0,Math.min(buscados,4-confirmados));Categoria buscada=categoria(r,"categoria_id","categoria","color_hex");Categoria convocanteCat=categoria(r,"convocante_categoria_id","convocante_categoria","convocante_color");String nombre=r.getString("nombre_publico");return new Detalle(id,estado,activa,activa&&disponibles>0,mensaje(estado,activa,disponibles),r.getDate("fecha").toLocalDate(),r.getTime("hora_inicio").toLocalTime(),r.getTime("hora_fin").toLocalTime(),r.getString("cancha"),confirmados,buscados,disponibles,confirmados+" de 4, falta "+disponibles+" "+(disponibles==1?"jugador":"jugadores"),buscada,r.getString("posicion_buscada"),r.getString("comentario"),new Convocante(r.getLong("perfil_id"),nombre,iniciales(nombre),r.getString("posicion_preferida"),convocanteCat));}}catch(SQLException e){throw new RuntimeException("No se pudo consultar la convocatoria.",e);}
+    }
+    public MiEstado contexto(long clienteId,long convocatoriaId){Detalle d=buscar(convocatoriaId);SolicitudComunidad propia=solicitudes.obtenerPropia(clienteId,convocatoriaId);if(propia!=null)return new MiEstado(true,false,"ACEPTADA".equals(propia.getEstado().name()),false,null,solicitud(propia));try(Connection c=ConexionBD.obtenerConexion();PreparedStatement s=c.prepareStatement("SELECT p.id,cv.perfil_creador_id,EXISTS(SELECT 1 FROM comunidad_participantes cp WHERE cp.convocatoria_id=cv.id AND cp.perfil_jugador_id=p.id AND cp.estado='CONFIRMADO') participa FROM perfiles_jugador p JOIN comunidad_convocatorias cv ON cv.id=? WHERE p.cliente_id=? AND p.activo=TRUE")){s.setLong(1,convocatoriaId);s.setLong(2,clienteId);try(ResultSet r=s.executeQuery()){if(!r.next())return new MiEstado(true,false,false,false,"Tu cuenta necesita un perfil deportivo activo.",null);boolean titular=r.getLong(1)==r.getLong(2),participa=r.getBoolean(3),puede=d.aceptaSolicitudes()&&!titular&&!participa;return new MiEstado(true,titular,participa,puede,puede?null:titular?"Esta convocatoria pertenece a tu reserva.":participa?"Ya participás en este turno.":d.mensajeEstado(),null);}}catch(SQLException e){throw new RuntimeException("No se pudo consultar tu estado en la convocatoria.",e);}}
+    public Solicitud solicitar(long clienteId,long convocatoriaId,String mensaje){return solicitud(solicitudes.solicitar(clienteId,convocatoriaId,mensaje));}
+    public Solicitud retirar(long clienteId,long solicitudId){return solicitud(solicitudes.retirar(clienteId,solicitudId));}
+    private Solicitud solicitud(SolicitudComunidad s){return new Solicitud(s.getId(),s.getConvocatoriaId(),s.getEstado().name(),s.getMensaje(),s.getEstado().esPendiente(),s.getVersion());}
+    private Categoria categoria(ResultSet r,String id,String nombre,String color)throws SQLException{long valor=r.getLong(id);return r.wasNull()?null:new Categoria(valor,r.getString(nombre),r.getString(color));}
+    private String mensaje(String estado,boolean activa,int lugares){if(activa&&lugares>0)return "La convocatoria acepta solicitudes.";return switch(estado){case "COMPLETA"->"El turno ya completó sus participantes.";case "CERRADA_EXTERNAMENTE"->"La búsqueda fue cerrada por el titular.";case "CANCELADA"->"La convocatoria fue cancelada.";default->"La convocatoria ya no acepta solicitudes.";};}
+    private String iniciales(String n){if(n==null||n.isBlank())return "PJ";String[]x=n.trim().split("\\s+");return (x[0].substring(0,1)+(x.length>1?x[x.length-1].substring(0,1):"")).toUpperCase();}
+    public static final class ConvocatoriaPublicaNoEncontradaException extends RuntimeException{public ConvocatoriaPublicaNoEncontradaException(){super("La convocatoria no existe.");}}
+}

@@ -113,7 +113,7 @@ public class ConvocatoriaComunidadService {
                 if(!v.getEstado().esActiva())throw new ConvocatoriaNoAdmiteCambiosException();
                 LocalDateTime ahora=reloj.ahora();v.setEstado(EstadoConvocatoriaComunidad.CERRADA_EXTERNAMENTE);
                 v.setMotivoCierre(efectivo);v.setFechaCierre(ahora);convocatorias.guardar(c,v);
-                solicitudes.cerrarPendientes(c,v.getId());
+                solicitudes.resolverPendientes(c,v.getId(),negocio.EstadoSolicitudComunidad.CERRADA_POR_CONVOCANTE);
                 registrar(c,TipoEventoComunidad.CONVOCATORIA_CERRADA_EXTERNAMENTE,v,clienteId,v.getPerfilCreadorId(),
                     "{\"motivo\":\""+efectivo.name()+"\"}",ahora);
                 c.commit();return v;
@@ -133,7 +133,7 @@ public class ConvocatoriaComunidadService {
                 if(confirmados<4){v.setParticipantesConfirmados(confirmados);convocatorias.guardar(c,v);c.commit();return v;}
                 LocalDateTime ahora=reloj.ahora();v.setEstado(EstadoConvocatoriaComunidad.COMPLETA);
                 v.setMotivoCierre(MotivoCierreConvocatoria.SOLICITUD_ACEPTADA);v.setFechaCierre(ahora);convocatorias.guardar(c,v);
-                solicitudes.cerrarPendientes(c,v.getId());
+                solicitudes.resolverPendientes(c,v.getId(),negocio.EstadoSolicitudComunidad.CERRADA_POR_CUPO);
                 registrar(c,TipoEventoComunidad.CONVOCATORIA_COMPLETA,v,v.getClienteCreadorId(),v.getPerfilCreadorId(),
                     "{\"participantesConfirmados\":"+confirmados+"}",ahora);
                 c.commit();return v;
@@ -149,7 +149,7 @@ public class ConvocatoriaComunidadService {
                 ConvocatoriaComunidad v=requerirConvocatoria(c,convocatoriaId);
                 if(!v.getEstado().esActiva()||reloj.ahora().isBefore(v.getFechaExpiracion())){c.commit();return v;}
                 LocalDateTime ahora=reloj.ahora();v.setEstado(EstadoConvocatoriaComunidad.VENCIDA);v.setFechaCierre(ahora);
-                convocatorias.guardar(c,v);solicitudes.cerrarPendientes(c,v.getId());
+                convocatorias.guardar(c,v);solicitudes.resolverPendientes(c,v.getId(),negocio.EstadoSolicitudComunidad.VENCIDA);
                 registrar(c,TipoEventoComunidad.CONVOCATORIA_VENCIDA,v,v.getClienteCreadorId(),v.getPerfilCreadorId(),null,ahora);
                 c.commit();return v;
             }catch(RuntimeException|SQLException e){rollback(c,e);throw e;}finally{auto(c);}

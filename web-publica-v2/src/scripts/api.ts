@@ -1,4 +1,5 @@
 const API_BASE = '/api/publica';
+export class ApiError extends Error { constructor(message:string,public readonly status:number,public readonly codigo:string|null=null,public readonly operacionId:string|null=null){super(message);this.name='ApiError'} }
 
 export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<T> {
   const controlador = new AbortController();
@@ -22,7 +23,7 @@ export async function api<T>(ruta: string, opciones: RequestInit = {}): Promise<
       const mensaje = typeof datos === 'object' && datos && 'mensaje' in datos
         ? String((datos as { mensaje: unknown }).mensaje)
         : 'No se pudo completar la operación.';
-      throw new Error(mensaje);
+      throw new ApiError(mensaje,respuesta.status,typeof datos === 'object' && datos && 'codigo' in datos ? String((datos as {codigo:unknown}).codigo) : null,respuesta.headers.get('X-Operacion-Id'));
     }
     return datos as T;
   } catch (error) {

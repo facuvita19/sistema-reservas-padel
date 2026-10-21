@@ -33,6 +33,9 @@ public final class CuentaClienteHandler {
     private final IdentidadDeportivaService identidadDeportivaService;
     private final PreferenciasComunidadService preferenciasComunidadService;
     private final ConvocatoriaClienteService convocatoriaClienteService;
+    private final servicio.GestionSolicitudesComunidadService gestionSolicitudesComunidadService;
+    private final DetalleConvocatoriaComunidadService detalleConvocatoriaComunidadService;
+    private final servicio.SolicitudComunidadService solicitudComunidadService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -52,6 +55,12 @@ public final class CuentaClienteHandler {
         this.identidadDeportivaService = new IdentidadDeportivaService();
         this.preferenciasComunidadService = new PreferenciasComunidadService();
         this.convocatoriaClienteService = new ConvocatoriaClienteService();
+        this.gestionSolicitudesComunidadService =
+                new servicio.GestionSolicitudesComunidadService();
+        this.detalleConvocatoriaComunidadService =
+                new DetalleConvocatoriaComunidadService();
+        this.solicitudComunidadService =
+                new servicio.SolicitudComunidadService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -103,6 +112,95 @@ public final class CuentaClienteHandler {
                         intercambio.getRequestBody(), Actualizar.class);
                 responder(intercambio, 200, preferenciasComunidadService.actualizar(
                         autenticada.cliente().getId(), entrada));
+                return;
+            }
+
+            String gestionConvocatoriaBase =
+                    PREFIJO + "/comunidad/convocatorias/";
+            if (ruta.startsWith(gestionConvocatoriaBase)
+                    && ruta.endsWith("/solicitudes")
+                    && "GET".equals(metodo)) {
+                String valor = ruta.substring(
+                        gestionConvocatoriaBase.length(),
+                        ruta.length() - "/solicitudes".length());
+                responder(intercambio, 200,
+                        gestionSolicitudesComunidadService.listar(
+                                autenticada.cliente().getId(),
+                                parsearId(valor)));
+                return;
+            }
+
+            String gestionSolicitudBase =
+                    PREFIJO + "/comunidad/solicitudes/";
+            if (ruta.startsWith(gestionSolicitudBase)
+                    && ruta.endsWith("/aceptar")
+                    && "POST".equals(metodo)) {
+                String valor = ruta.substring(
+                        gestionSolicitudBase.length(),
+                        ruta.length() - "/aceptar".length());
+                responder(intercambio, 200,
+                        gestionSolicitudesComunidadService.aceptar(
+                                autenticada.cliente().getId(),
+                                parsearId(valor)));
+                return;
+            }
+
+            if (ruta.startsWith(gestionSolicitudBase)
+                    && ruta.endsWith("/rechazar")
+                    && "POST".equals(metodo)) {
+                String valor = ruta.substring(
+                        gestionSolicitudBase.length(),
+                        ruta.length() - "/rechazar".length());
+                responder(intercambio, 200,
+                        gestionSolicitudesComunidadService.rechazar(
+                                autenticada.cliente().getId(),
+                                parsearId(valor)));
+                return;
+            }
+
+            String solicitudConvocatoriaBase =
+                    PREFIJO + "/comunidad/convocatorias/";
+            if (ruta.startsWith(solicitudConvocatoriaBase)
+                    && ruta.endsWith("/mi-estado")
+                    && "GET".equals(metodo)) {
+                String valor = ruta.substring(
+                        solicitudConvocatoriaBase.length(),
+                        ruta.length() - "/mi-estado".length());
+                responder(intercambio, 200,
+                        detalleConvocatoriaComunidadService.contexto(
+                                autenticada.cliente().getId(),
+                                parsearId(valor)));
+                return;
+            }
+
+            if (ruta.startsWith(solicitudConvocatoriaBase)
+                    && ruta.endsWith("/solicitudes")
+                    && "POST".equals(metodo)) {
+                String valor = ruta.substring(
+                        solicitudConvocatoriaBase.length(),
+                        ruta.length() - "/solicitudes".length());
+                ConvocatoriaPublicaDTO.CrearSolicitud entrada =
+                        mapper.readValue(intercambio.getRequestBody(),
+                                ConvocatoriaPublicaDTO.CrearSolicitud.class);
+                responder(intercambio, 201,
+                        detalleConvocatoriaComunidadService.solicitar(
+                                autenticada.cliente().getId(),
+                                parsearId(valor), entrada.mensaje()));
+                return;
+            }
+
+            String retiroSolicitudBase =
+                    PREFIJO + "/comunidad/solicitudes/";
+            if (ruta.startsWith(retiroSolicitudBase)
+                    && ruta.endsWith("/retirar")
+                    && "POST".equals(metodo)) {
+                String valor = ruta.substring(
+                        retiroSolicitudBase.length(),
+                        ruta.length() - "/retirar".length());
+                responder(intercambio, 200,
+                        detalleConvocatoriaComunidadService.retirar(
+                                autenticada.cliente().getId(),
+                                parsearId(valor)));
                 return;
             }
 
@@ -231,6 +329,41 @@ public final class CuentaClienteHandler {
             error(intercambio,404,"CONVOCATORIA_NO_ENCONTRADA",exception.getMessage(),operacionId);
         } catch (servicio.ConvocatoriaComunidadService.ConflictoConvocatoriaActivaException | servicio.ConvocatoriaComunidadService.ConvocatoriaNoAdmiteCambiosException | servicio.ConvocatoriaComunidadService.ReservaNoPublicableException exception) {
             error(intercambio,409,"CONFLICTO_CONVOCATORIA",exception.getMessage(),operacionId);
+        } catch (servicio.GestionSolicitudesComunidadService.ConvocatoriaAjenaException exception) {
+            error(intercambio, 403, "CONVOCATORIA_AJENA",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.GestionSolicitudesComunidadService.ConvocatoriaNoEncontradaException
+                | servicio.GestionSolicitudesComunidadService.SolicitudNoEncontradaException exception) {
+            error(intercambio, 404, "SOLICITUD_COMUNIDAD_NO_ENCONTRADA",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.GestionSolicitudesComunidadService.ConvocatoriaNoAdmiteGestionException
+                | servicio.GestionSolicitudesComunidadService.SolicitudYaResueltaException
+                | servicio.GestionSolicitudesComunidadService.SinCupoParaAceptarException
+                | servicio.GestionSolicitudesComunidadService.PerfilYaParticipaException exception) {
+            error(intercambio, 409, "CONFLICTO_GESTION_SOLICITUD",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.SolicitudComunidadService.ConvocatoriaNoEncontradaException exception) {
+            error(intercambio, 404, "CONVOCATORIA_NO_ENCONTRADA",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.SolicitudComunidadService.SolicitudPropiaNoEncontradaException exception) {
+            error(intercambio, 404, "SOLICITUD_COMUNIDAD_NO_ENCONTRADA",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.SolicitudComunidadService.AutoSolicitudException
+                | servicio.SolicitudComunidadService.PerfilNoHabilitadoException exception) {
+            error(intercambio, 403, "SOLICITUD_COMUNIDAD_NO_AUTORIZADA",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.SolicitudComunidadService.SolicitudNoRetirableException exception) {
+            error(intercambio, 409, "SOLICITUD_COMUNIDAD_NO_RETIRABLE",
+                    exception.getMessage(), operacionId);
+        } catch (servicio.SolicitudComunidadService.PerfilNoDisponibleParaTurnosException
+                | servicio.SolicitudComunidadService.PerfilYaParticipaException
+                | servicio.SolicitudComunidadService.ConvocatoriaNoDisponibleException
+                | servicio.SolicitudComunidadService.ConvocatoriaVencidaException
+                | servicio.SolicitudComunidadService.ReservaNoDisponibleException
+                | servicio.SolicitudComunidadService.ConvocatoriaSinCupoException
+                | servicio.SolicitudComunidadService.SolicitudNoReabribleException exception) {
+            error(intercambio, 409, "CONFLICTO_SOLICITUD_COMUNIDAD",
+                    exception.getMessage(), operacionId);
         } catch (JacksonException exception) {
             error(intercambio, 400, "JSON_INVALIDO",
                     "El cuerpo JSON no tiene el formato esperado.",
