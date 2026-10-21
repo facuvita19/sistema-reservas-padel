@@ -36,6 +36,7 @@ public final class CuentaClienteHandler {
     private final servicio.GestionSolicitudesComunidadService gestionSolicitudesComunidadService;
     private final DetalleConvocatoriaComunidadService detalleConvocatoriaComunidadService;
     private final servicio.SolicitudComunidadService solicitudComunidadService;
+    private final servicio.InvitacionComunidadService invitacionComunidadService;
 
     public CuentaClienteHandler(
             AutenticacionClienteService autenticacionService,
@@ -61,6 +62,7 @@ public final class CuentaClienteHandler {
                 new DetalleConvocatoriaComunidadService();
         this.solicitudComunidadService =
                 new servicio.SolicitudComunidadService();
+        this.invitacionComunidadService = new servicio.InvitacionComunidadService();
     }
 
     public boolean puedeProcesar(String ruta) {
@@ -76,6 +78,12 @@ public final class CuentaClienteHandler {
             String operacionId) throws IOException {
         try {
             SesionAutenticada autenticada = autenticar(intercambio);
+
+            if (ruta.equals(PREFIJO + "/comunidad/invitaciones/recibidas") && "GET".equals(metodo)) { responder(intercambio,200,invitacionComunidadService.recibidas(autenticada.cliente().getId())); return; }
+            if (ruta.equals(PREFIJO + "/comunidad/invitaciones/enviadas") && "GET".equals(metodo)) { responder(intercambio,200,invitacionComunidadService.enviadas(autenticada.cliente().getId())); return; }
+            if (ruta.equals(PREFIJO + "/comunidad/invitaciones") && "POST".equals(metodo)) { var e=mapper.readValue(intercambio.getRequestBody(),api.publica.InvitacionComunidadDTO.Enviar.class); responder(intercambio,201,invitacionComunidadService.enviar(autenticada.cliente().getId(),e.perfilDestinatarioId(),e.objetivo(),e.mensaje())); return; }
+            String invitacionBase=PREFIJO+"/comunidad/invitaciones/";
+            if (ruta.startsWith(invitacionBase) && "POST".equals(metodo)) { String resto=ruta.substring(invitacionBase.length()); int barra=resto.indexOf('/'); if(barra>0){long id=parsearId(resto.substring(0,barra));String accion=resto.substring(barra+1);Object resultado=switch(accion){case "aceptar"->invitacionComunidadService.aceptar(autenticada.cliente().getId(),id);case "rechazar"->invitacionComunidadService.rechazar(autenticada.cliente().getId(),id);case "cancelar"->invitacionComunidadService.cancelar(autenticada.cliente().getId(),id);default->null;};if(resultado!=null){responder(intercambio,200,resultado);return;}} }
 
             if (ruta.equals(PREFIJO + "/perfil")
                     && "GET".equals(metodo)) {
@@ -364,6 +372,12 @@ public final class CuentaClienteHandler {
                 | servicio.SolicitudComunidadService.SolicitudNoReabribleException exception) {
             error(intercambio, 409, "CONFLICTO_SOLICITUD_COMUNIDAD",
                     exception.getMessage(), operacionId);
+        } catch (servicio.InvitacionComunidadService.AutoInvitacionException | servicio.InvitacionComunidadService.PerfilNoHabilitadoException | servicio.InvitacionComunidadService.InvitacionAjenaException exception) {
+            error(intercambio,403,"INVITACION_COMUNIDAD_NO_AUTORIZADA",exception.getMessage(),operacionId);
+        } catch (servicio.InvitacionComunidadService.InvitacionNoEncontradaException exception) {
+            error(intercambio,404,"INVITACION_COMUNIDAD_NO_ENCONTRADA",exception.getMessage(),operacionId);
+        } catch (servicio.InvitacionComunidadService.DestinatarioNoDisponibleException | servicio.InvitacionComunidadService.ObjetivoNoHabilitadoException | servicio.InvitacionComunidadService.InvitacionDuplicadaException | servicio.InvitacionComunidadService.InvitacionNoPendienteException | servicio.InvitacionComunidadService.InvitacionVencidaException exception) {
+            error(intercambio,409,"CONFLICTO_INVITACION_COMUNIDAD",exception.getMessage(),operacionId);
         } catch (JacksonException exception) {
             error(intercambio, 400, "JSON_INVALIDO",
                     "El cuerpo JSON no tiene el formato esperado.",

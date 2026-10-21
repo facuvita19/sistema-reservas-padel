@@ -41,11 +41,30 @@ import '../../w2/styles/w2-jugador.css';
    <aside class="w2jp-side" aria-label="Información deportiva complementaria">
     <section id="w2jpCategoryCard" class="w2jp-card w2jp-ranking"><header><div><p class="w2-kicker">Categoría actual</p><h3 id="rankingCategory">Sin categoría vigente</h3></div><span id="rankingStatus">SIN PUBLICAR</span></header><div class="w2jp-category-snapshot"><span><small>PUESTO</small><strong id="sideRank">—</strong></span><span><small>PUNTOS</small><strong id="sidePoints">0</strong></span></div><dl><div><dt>Vigente desde</dt><dd id="rankingSince">Sin fecha</dd></div><div><dt>Estado competitivo</dt><dd id="rankingState">Sin resultados publicados</dd></div></dl><p id="rankingDetail">El perfil se incorporará al ranking cuando tenga categoría y resultados oficiales.</p><a id="rankingLink" href="/w2/rankings">Ver ranking completo →</a></section><nav class="w2jp-card w2jp-profile-index" aria-label="Navegación dentro del perfil"><header><div><p class="w2-kicker">Recorrido del perfil</p><h3>Explorar información</h3></div><span>3 SECCIONES</span></header><a href="#w2jpPerformance"><span><b>01</b><em>Balance competitivo</em></span><i aria-hidden="true">→</i></a><a href="#w2jpActivity"><span><b>02</b><em>Actividad reciente</em></span><i aria-hidden="true">→</i></a><a href="#w2jpCategoryCard"><span><b>03</b><em>Categoría y recorrido</em></span><i aria-hidden="true">→</i></a><footer><span><i></i>Perfil público verificable</span><a id="w2jpSideAudit" href="/w2/rankings">Auditar puntos →</a></footer></nav>
     <section class="w2jp-card w2jp-category-history"><header><div><p class="w2-kicker">Recorrido deportivo</p><h3>Historial de categorías</h3></div><span id="categoryHistoryCount">0 etapas</span></header><ol id="profileCategories"></ol><p id="profileCategoriesEmpty" class="w2jp-empty-copy">Sin movimientos de categoría.</p></section>
-    <section class="w2jp-card w2jp-community"><header><div><p class="w2-kicker">Comunidad deportiva</p><h3>Disponibilidad pública</h3></div><span id="communityBadge">NO DISPONIBLE</span></header><p id="communityText">Este perfil no está disponible para convocatorias.</p><ul class="w2p-community-flags"><li id="w2pTurnsFlag">No busca completar partidos</li><li id="w2pTournamentsFlag">No busca pareja para torneos</li><li id="w2pInvitesFlag">No acepta invitaciones</li></ul><small id="communityHelp">En Comunidad se puede completar partidos o encontrar pareja antes de inscribirse juntos a torneos.</small></section>
+    <section class="w2jp-card w2jp-community"><header><div><p class="w2-kicker">Comunidad deportiva</p><h3>Disponibilidad pública</h3></div><span id="communityBadge">NO DISPONIBLE</span></header><p id="communityText">Este perfil no está disponible para convocatorias.</p><ul class="w2p-community-flags"><li id="w2pTurnsFlag">No busca completar partidos</li><li id="w2pTournamentsFlag">No busca pareja para torneos</li><li id="w2pInvitesFlag">No acepta invitaciones</li></ul><small id="communityHelp">En Comunidad se puede completar partidos o encontrar pareja antes de inscribirse juntos a torneos.</small><button id="w2jpInviteOpen" class="w2jp-invite-open hidden" type="button">Invitar a jugar <span aria-hidden="true">→</span></button><p id="w2jpInviteAvailability" class="w2jp-invite-availability" role="status"></p></section>
    </aside>
   </section>
  </div>
 </main>
+<div id="w2jpInviteBackdrop" class="w2jp-invite-backdrop hidden"></div>
+<section id="w2jpInviteDialog" class="w2jp-invite-dialog hidden" role="dialog" aria-modal="true" aria-labelledby="w2jpInviteTitle" aria-describedby="w2jpInviteIntro">
+ <button id="w2jpInviteClose" class="w2jp-invite-close" type="button" aria-label="Cerrar invitación">×</button>
+ <div id="w2jpInviteFormState">
+  <p class="w2-kicker">COMUNIDAD DEPORTIVA</p>
+  <h2 id="w2jpInviteTitle">Invitar a jugar</h2>
+  <p id="w2jpInviteIntro">Elegí una propuesta compatible con la disponibilidad publicada.</p>
+  <form id="w2jpInviteForm">
+   <fieldset id="w2jpInviteObjectives"><legend>¿Qué querés proponer?</legend>
+    <label id="w2jpInviteTurnOption"><input type="radio" name="objetivo" value="COMPLETAR_PARTIDO"><span><b>Completar u organizar un partido</b><small>Coordinar un turno o sumar personas para jugar.</small></span></label>
+    <label id="w2jpInviteTournamentOption"><input type="radio" name="objetivo" value="FORMAR_PAREJA_TORNEO"><span><b>Formar pareja para un torneo</b><small>Conversar antes de inscribirse juntos.</small></span></label>
+   </fieldset>
+   <label class="w2jp-invite-message"><span>Mensaje privado <small>opcional</small></span><textarea id="w2jpInviteMessage" maxlength="300" rows="4" placeholder="Ej.: ¿Te interesa coordinar un partido esta semana?"></textarea><small><span>No incluyas datos personales.</span><b id="w2jpInviteCount">0 / 300</b></small></label>
+   <p id="w2jpInviteStatus" class="w2jp-invite-status" role="status" aria-live="polite"></p>
+   <div class="w2jp-invite-actions"><button id="w2jpInviteCancel" type="button">Volver</button><button id="w2jpInviteSubmit" class="primary" type="submit">Enviar invitación</button></div>
+  </form>
+ </div>
+ <div id="w2jpInviteSuccess" class="w2jp-invite-success hidden" role="status"><span aria-hidden="true">✓</span><p class="w2-kicker">INVITACIÓN ENVIADA</p><h2>La propuesta quedó pendiente</h2><p>La otra persona podrá aceptarla o rechazarla desde su cuenta. Los datos de contacto siguen protegidos.</p><div><a href="/w2/cuenta?seccion=deporte">Ir a Mi cuenta</a><button id="w2jpInviteDone" type="button">Seguir viendo el perfil</button></div></div>
+</section>
 <AuditoriaDeportiva/>
 <script>import '../../w2/scripts/jugador';</script>
 </W2Layout>
