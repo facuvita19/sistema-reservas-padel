@@ -31,7 +31,7 @@ import '../../../w2/styles/w2-convocatoria.css';
 
       <div class="w2cv-grid" aria-label="Datos principales del turno">
         <section><small>FECHA Y HORARIO</small><b id="w2cvDate"></b><span id="w2cvTime"></span></section>
-        <section><small>CANCHA</small><b id="w2cvCourt"></b><span>Reserva confirmada por el titular</span></section>
+        <section><small>CANCHA</small><b id="w2cvCourt"></b><span>Turno publicado por el titular</span></section>
         <section class="w2cv-quota"><small>CUPO</small><b id="w2cvQuota"></b><span id="w2cvLevel"></span></section>
       </div>
 
@@ -69,7 +69,7 @@ import '../../../w2/styles/w2-convocatoria.css';
         </div>
         <p id="w2cvManagementStatus" class="w2cv-management-status" aria-live="polite"></p>
         <div id="w2cvRequests" class="w2cv-requests"></div>
-        <div id="w2cvRequestsEmpty" class="w2cv-empty hidden"><b>Todavía no recibiste solicitudes</b><span>Cuando una persona quiera sumarse, aparecerá acá.</span></div>
+        <div id="w2cvRequestsEmpty" class="w2cv-empty hidden"><b>Todavía no recibiste solicitudes</b><span>Cuando una persona quiera sumarse, aparecerá acá.</span><button id="w2cvCopyLink" type="button">Copiar enlace de la convocatoria</button><small id="w2cvCopyStatus" role="status" aria-live="polite"></small></div>
       </section>
     </article>
   </main>

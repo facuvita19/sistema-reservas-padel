@@ -73,3 +73,26 @@ html.w2-menu-open,body.w2-menu-open{overflow:hidden!important;overscroll-behavio
 @media(max-width:900px){.w2-mobile-account>a{display:grid!important;grid-template-columns:28px 1fr auto!important;gap:.5rem!important}.w2-mobile-account>a i{display:grid;width:26px;height:26px;place-items:center;border:1px solid var(--line);border-radius:8px;color:#b95d66}.w2-mobile-account>a i svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.w2-mobile-account>a span{min-width:0}.w2-mobile-account>a span em{display:inline-flex;margin-left:.3rem;border:1px solid rgba(215,25,45,.25);border-radius:99px;background:rgba(215,25,45,.06);padding:.1rem .25rem;color:#d77780;font-size:.38rem;font-style:normal;letter-spacing:.04em}.w2-menu>footer{border-top:1px solid var(--line)!important;border-bottom:0!important}.w2-menu:after{margin-top:.35rem!important;border-top:0!important;padding-top:.35rem!important;color:#809088!important;font-size:.5rem!important}.w2-menu>nav a i{color:#87968f!important}.w2-menu>nav a.active i{color:var(--lf-red)!important}.w2-menu>nav a span{font-size:.85rem!important}}
 @media(max-width:620px){.auth-x-overlay:has(#registroPaso1:not(.hidden)){align-items:end!important;background:rgba(2,5,6,.82)!important;backdrop-filter:blur(10px)!important}.auth-x-shell:has(#registroPaso1:not(.hidden)){width:100%!important;margin:0!important;border-bottom:0!important;box-shadow:0 -24px 80px rgba(0,0,0,.48)!important}.auth-x-shell:has(#registroPaso1:not(.hidden)) .auth-x-header{padding-top:.7rem!important}.auth-x-shell:has(#registroPaso1:not(.hidden)) .auth-x-step-scroll{padding-bottom:.62rem!important}.auth-x-shell:has(#registroPaso1:not(.hidden)) .auth-x-register-actions{padding-top:.55rem!important;padding-bottom:max(.65rem,env(safe-area-inset-bottom))!important}.auth-x-progress p small,.auth-x-header p:last-child,.auth-x-position>p,.auth-x-grid .wide>small{color:#9aa9a2!important}.auth-x-step-scroll{scrollbar-color:rgba(125,143,135,.22) transparent!important}.auth-x-step-scroll::-webkit-scrollbar-thumb{background:rgba(125,143,135,.22)!important}}
 @media(min-height:780px) and (max-width:620px){.auth-x-shell:has(#registroPaso1:not(.hidden)){max-height:calc(100dvh - 5rem)!important}}
+
+
+/* correccion-geometria-menu-cuenta-20261021 */
+.w2-account{isolation:isolate}
+.w2-account-menu{z-index:1600!important;overflow-y:auto!important;overflow-x:hidden!important;max-height:calc(100dvh - var(--w2-header-height,76px) - 1.5rem);contain:none!important;clip-path:none!important;filter:none!important;box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.025) inset!important}
+.w2-account-menu::after{content:none!important;display:none!important}
+body.account-menu-open{overflow-y:auto!important;overflow-x:hidden!important}
+body.account-menu-open::before,body.account-menu-open::after{content:none!important;display:none!important}
+@media(max-width:900px){body.account-menu-open{overflow:auto!important}.w2-account-menu{display:none!important}}
+
+
+/* correccion-menu-cuenta-v2-sombra-limitada-20261021 */
+.w2-account-menu{contain:none!important;clip-path:none!important;filter:none!important;isolation:auto!important;box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.025) inset!important}
+.w2-account-menu::after{content:none!important;display:none!important}
+.w2-account-menu::before{z-index:0!important;box-shadow:none!important}
+.w2-account-menu>*{position:relative;z-index:1}
+
+
+/* menu-cuenta-portal-body-v3-20261021 */
+body>.w2-account-menu{position:fixed!important;left:var(--account-menu-left)!important;right:auto!important;top:var(--account-menu-top)!important;width:var(--account-menu-width,350px)!important;z-index:4000!important;contain:none!important;clip-path:none!important;filter:none!important;isolation:auto!important;box-shadow:0 12px 28px rgba(0,0,0,.28)!important}
+body>.w2-account-menu::before,body>.w2-account-menu::after{content:none!important;display:none!important}
+body.account-menu-open::before,body.account-menu-open::after{content:none!important;display:none!important}
+@media(max-width:900px){body>.w2-account-menu{display:none!important}}

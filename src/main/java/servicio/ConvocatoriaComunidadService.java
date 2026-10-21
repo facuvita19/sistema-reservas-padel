@@ -158,7 +158,7 @@ public class ConvocatoriaComunidadService {
 
     private ReservaBloqueada requerirReservaPublicable(Connection c,long clienteId,long reservaId)throws SQLException{
         ReservaBloqueada r=reservas.buscar(c,reservaId);if(r==null||r.clienteId()!=clienteId)throw new ReservaAjenaONoEncontradaException();
-        if(r.estado()!=EstadoReserva.PENDIENTE&&r.estado()!=EstadoReserva.CONFIRMADA)throw new ReservaNoPublicableException();
+        if(r.estado()!=EstadoReserva.CONFIRMADA)throw new ReservaNoPublicableException();
         if(!r.inicio().isAfter(reloj.ahora()))throw new ReservaNoPublicableException();return r;
     }
     private PerfilJugador requerirPerfil(Connection c,long clienteId){PerfilJugador p=perfiles.buscarPorCliente(c,clienteId);if(p==null||!p.isActivo())throw new PerfilComunidadNoVinculadoException();return p;}
@@ -182,7 +182,7 @@ public class ConvocatoriaComunidadService {
     public static final class ConflictoConvocatoriaActivaException extends IllegalStateException{public ConflictoConvocatoriaActivaException(){super("La reserva ya tiene una convocatoria activa con otros datos.");}}
     public static final class ConvocatoriaNoAdmiteCambiosException extends IllegalStateException{public ConvocatoriaNoAdmiteCambiosException(){super("La convocatoria ya no admite cambios.");}}
     public static final class ReservaAjenaONoEncontradaException extends IllegalArgumentException{public ReservaAjenaONoEncontradaException(){super("La reserva no existe o no pertenece a la cuenta.");}}
-    public static final class ReservaNoPublicableException extends IllegalStateException{public ReservaNoPublicableException(){super("Solo se pueden publicar reservas futuras pendientes o confirmadas.");}}
+    public static final class ReservaNoPublicableException extends IllegalStateException{public ReservaNoPublicableException(){super("Confirmá la seña para publicar este turno en Comunidad.");}}
     public static final class PerfilComunidadNoVinculadoException extends IllegalArgumentException{public PerfilComunidadNoVinculadoException(){super("Tu cuenta todavia no tiene un perfil deportivo activo vinculado.");}}
     public static final class ConvocatoriaNoEncontradaException extends IllegalArgumentException{public ConvocatoriaNoEncontradaException(){super("La convocatoria no existe.");}}
     public static final class ConvocatoriaAjenaException extends SecurityException{public ConvocatoriaAjenaException(){super("No podes administrar una convocatoria de otra cuenta.");}}
