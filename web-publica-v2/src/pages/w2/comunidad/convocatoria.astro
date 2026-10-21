@@ -3,5 +3,75 @@ import W2Layout from '../../../w2/layouts/W2Layout.astro';
 import '../../../w2/styles/w2-convocatoria.css';
 ---
 <W2Layout titulo="Convocatoria | Pádel Las Flores" actual="comunidad">
-<div class="w2cv-page"><section id="w2cvLoading" class="w2cv-state"><b>Consultando convocatoria…</b></section><section id="w2cvError" class="w2cv-state hidden" role="alert"><h1>No pudimos abrir esta convocatoria</h1><p id="w2cvErrorText"></p><a href="/w2/comunidad?vista=TURNOS">Volver a Turnos abiertos</a></section><article id="w2cvContent" class="w2cv-card hidden"><a class="w2cv-back" href="/w2/comunidad?vista=TURNOS">← Turnos abiertos</a><header><p>CONVOCATORIA DE COMUNIDAD</p><h1 id="w2cvTitle">Turno abierto</h1><span id="w2cvStatus"></span></header><div class="w2cv-grid"><section><small>FECHA Y HORARIO</small><b id="w2cvDate"></b><span id="w2cvTime"></span></section><section><small>CANCHA</small><b id="w2cvCourt"></b></section><section><small>CUPO</small><b id="w2cvQuota"></b><span id="w2cvLevel"></span></section></div><blockquote id="w2cvComment" class="hidden"></blockquote><footer><div><span id="w2cvAvatar"></span><p><small>CONVOCA</small><b id="w2cvOwner"></b><em id="w2cvOwnerCategory"></em></p></div><a id="w2cvProfile">Ver perfil deportivo →</a></footer><section id="w2cvAction" class="w2cv-action"><p id="w2cvActionText" aria-live="polite"></p><textarea id="w2cvMessage" maxlength="300" rows="3" placeholder="Podés agregar un mensaje breve."></textarea><button id="w2cvSubmit" type="button">Solicitar unirme</button><button id="w2cvLogin" class="hidden" type="button">Ingresar para solicitar</button><button id="w2cvWithdraw" class="hidden" type="button">Retirar solicitud</button></section></article></div><script>import '../../../w2/scripts/convocatoria-comunidad';</script>
+  <main class="w2cv-page" data-w2cv-page>
+    <section id="w2cvLoading" class="w2cv-state" aria-live="polite">
+      <span class="w2cv-loader" aria-hidden="true"></span>
+      <b>Consultando convocatoria…</b>
+      <p>Estamos verificando el turno y sus lugares disponibles.</p>
+    </section>
+
+    <section id="w2cvError" class="w2cv-state hidden" role="alert">
+      <span class="w2cv-state-icon error" aria-hidden="true">!</span>
+      <h1>No pudimos abrir esta convocatoria</h1>
+      <p id="w2cvErrorText"></p>
+      <a class="w2cv-button secondary" href="/w2/comunidad?vista=TURNOS">Volver a Turnos abiertos</a>
+    </section>
+
+    <article id="w2cvContent" class="w2cv-card hidden">
+      <a class="w2cv-back" href="/w2/comunidad?vista=TURNOS"><span aria-hidden="true">←</span> Turnos abiertos</a>
+
+      <header class="w2cv-hero">
+        <div class="w2cv-hero-copy">
+          <p class="w2cv-kicker">CONVOCATORIA DE COMUNIDAD</p>
+          <h1 id="w2cvTitle">Turno abierto</h1>
+          <span id="w2cvStatus" class="w2cv-status"></span>
+        </div>
+        <div class="w2cv-live" aria-label="Estado de la convocatoria"><i aria-hidden="true"></i><span>ACEPTA SOLICITUDES</span></div>
+      </header>
+
+      <div class="w2cv-grid" aria-label="Datos principales del turno">
+        <section><small>FECHA Y HORARIO</small><b id="w2cvDate"></b><span id="w2cvTime"></span></section>
+        <section><small>CANCHA</small><b id="w2cvCourt"></b><span>Reserva confirmada por el titular</span></section>
+        <section class="w2cv-quota"><small>CUPO</small><b id="w2cvQuota"></b><span id="w2cvLevel"></span></section>
+      </div>
+
+      <blockquote id="w2cvComment" class="hidden"></blockquote>
+
+      <footer class="w2cv-owner">
+        <div class="w2cv-owner-copy">
+          <span id="w2cvAvatar" class="w2cv-avatar"></span>
+          <p><small>CONVOCA</small><b id="w2cvOwner"></b><em id="w2cvOwnerCategory"></em></p>
+        </div>
+        <a id="w2cvProfile" class="w2cv-profile-link">Ver perfil deportivo <span aria-hidden="true">→</span></a>
+      </footer>
+
+      <section id="w2cvAction" class="w2cv-action" aria-labelledby="w2cvActionTitle">
+        <div class="w2cv-action-head">
+          <div><small>TU PARTICIPACIÓN</small><h2 id="w2cvActionTitle">Sumate al turno</h2></div>
+          <span class="w2cv-private">DATOS PROTEGIDOS</span>
+        </div>
+        <p id="w2cvActionText" aria-live="polite"></p>
+        <label id="w2cvMessageLabel" class="w2cv-message-label" for="w2cvMessage">
+          <span>Mensaje para el titular <small id="w2cvMessageCount">0 / 300</small></span>
+          <textarea id="w2cvMessage" maxlength="300" rows="3" placeholder="Por ejemplo: juego de revés y puedo llegar 15 minutos antes."></textarea>
+        </label>
+        <div class="w2cv-actions">
+          <button id="w2cvSubmit" class="w2cv-button primary" type="button">Solicitar unirme</button>
+          <button id="w2cvLogin" class="w2cv-button primary hidden" type="button">Ingresar para solicitar</button>
+          <button id="w2cvWithdraw" class="w2cv-button secondary hidden" type="button">Retirar solicitud</button>
+        </div>
+      </section>
+
+      <section id="w2cvManagement" class="w2cv-management hidden" aria-labelledby="w2cvManagementTitle">
+        <div class="w2cv-management-head">
+          <div><small>GESTIÓN DEL TITULAR</small><h2 id="w2cvManagementTitle">Solicitudes recibidas</h2></div>
+          <b id="w2cvManagementCount">0</b>
+        </div>
+        <p id="w2cvManagementStatus" class="w2cv-management-status" aria-live="polite"></p>
+        <div id="w2cvRequests" class="w2cv-requests"></div>
+        <div id="w2cvRequestsEmpty" class="w2cv-empty hidden"><b>Todavía no recibiste solicitudes</b><span>Cuando una persona quiera sumarse, aparecerá acá.</span></div>
+      </section>
+    </article>
+  </main>
+  <script>import '../../../w2/scripts/convocatoria-comunidad';</script>
 </W2Layout>

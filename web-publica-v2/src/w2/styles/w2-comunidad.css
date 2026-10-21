@@ -778,3 +778,6 @@ html[data-community-view-state="TODO"] #w2cmSeeAllTurns{position:static!importan
  html[data-community-view-state="TODO"] #w2cmTurnsGrid,html[data-community-view-state="TURNOS"] #w2cmTurnsGrid{width:100%!important;grid-template-columns:1fr!important}
  #w2cmError,#w2cmJoin{max-width:none}
 }
+
+/* R3.4B3A6 - CTA canonico de convocatoria */
+.w2cm-turn-card footer a{font-size:.62rem!important;font-weight:900!important}.w2cm-turn-card footer a::before{content:none!important}
