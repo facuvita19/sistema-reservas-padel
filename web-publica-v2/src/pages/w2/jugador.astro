@@ -6,7 +6,7 @@ import '../../w2/styles/w2-jugador.css';
 <W2Layout titulo="Perfil deportivo | Pádel Las Flores" actual="jugador">
 <main class="w2jp-page">
  <section id="profileLoading" class="w2-container w2jp-loading" aria-live="polite"><span></span><b>Preparando perfil deportivo</b><small>Conectando ranking, trayectoria y actividad oficial.</small></section>
- <section id="profileError" class="w2-container w2jp-error hidden"><span aria-hidden="true">◇</span><p class="w2-kicker">Perfil deportivo</p><h1>No pudimos abrir este perfil</h1><p id="profileErrorText"></p><div><a class="w2-button primary" href="/w2/rankings">Explorar rankings</a><a href="/w2">Volver al inicio →</a></div></section>
+ <section id="profileError" class="w2-container w2jp-error hidden" role="alert" aria-live="assertive" tabindex="-1"><span aria-hidden="true">◇</span><p class="w2-kicker">Perfil deportivo</p><h1>No pudimos abrir este perfil</h1><p id="profileErrorText"></p><div><a class="w2-button primary" href="/w2/rankings">Explorar rankings</a><a href="/w2">Volver al inicio →</a></div></section>
  <div id="profileContent" class="hidden">
   <nav class="w2-container w2jp-context" aria-label="Contexto del perfil"><a id="w2pBackToRanking" href="/w2/rankings"><span aria-hidden="true">←</span> Volver al ranking</a><span id="w2pContextLabel">Perfil público</span></nav>
   <section id="w2jpHero" class="w2jp-hero" aria-labelledby="profileName" data-publication="SIN_CATEGORIA">
