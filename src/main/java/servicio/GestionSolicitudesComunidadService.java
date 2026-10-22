@@ -42,6 +42,7 @@ public class GestionSolicitudesComunidadService {
     private final ProveedorConexion conexiones;
     private final ProveedorFecha reloj;
     private final LectorPerfilPublico perfiles;
+    private final SincronizacionConvocatoriasComunidadService sincronizacion;
 
     public GestionSolicitudesComunidadService() {
         this(new ConvocatoriaComunidadDAOMySQL(),
@@ -49,7 +50,8 @@ public class GestionSolicitudesComunidadService {
                 new ParticipanteComunidadDAOMySQL(),
                 new EventoComunidadDAOMySQL(),
                 ConexionBD::obtenerConexion, LocalDateTime::now,
-                GestionSolicitudesComunidadService::leerPerfil);
+                GestionSolicitudesComunidadService::leerPerfil,
+                new SincronizacionConvocatoriasComunidadService());
     }
 
     public GestionSolicitudesComunidadService(
@@ -60,6 +62,18 @@ public class GestionSolicitudesComunidadService {
             ProveedorConexion conexiones,
             ProveedorFecha reloj,
             LectorPerfilPublico perfiles) {
+        this(convocatorias,solicitudes,participantes,eventos,conexiones,reloj,perfiles,null);
+    }
+
+    GestionSolicitudesComunidadService(
+            ConvocatoriaComunidadDAO convocatorias,
+            SolicitudComunidadDAO solicitudes,
+            ParticipanteComunidadDAO participantes,
+            EventoComunidadDAO eventos,
+            ProveedorConexion conexiones,
+            ProveedorFecha reloj,
+            LectorPerfilPublico perfiles,
+            SincronizacionConvocatoriasComunidadService sincronizacion) {
         this.convocatorias = Objects.requireNonNull(convocatorias);
         this.solicitudes = Objects.requireNonNull(solicitudes);
         this.participantes = Objects.requireNonNull(participantes);
@@ -67,10 +81,12 @@ public class GestionSolicitudesComunidadService {
         this.conexiones = Objects.requireNonNull(conexiones);
         this.reloj = Objects.requireNonNull(reloj);
         this.perfiles = Objects.requireNonNull(perfiles);
+        this.sincronizacion = sincronizacion;
     }
 
     public Listado listar(long clienteId, long convocatoriaId) {
         validarIds(clienteId, convocatoriaId);
+        if(sincronizacion!=null)sincronizacion.reconciliar(convocatoriaId);
         try (Connection c = conexiones.obtener()) {
             ConvocatoriaComunidad convocatoria = requerirConvocatoria(
                     c, convocatoriaId, false);

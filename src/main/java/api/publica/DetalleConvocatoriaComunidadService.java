@@ -6,14 +6,18 @@ import config.ConexionBD;
 import api.publica.ConvocatoriaPublicaDTO.*;
 import negocio.SolicitudComunidad;
 import servicio.SolicitudComunidadService;
+import servicio.SincronizacionConvocatoriasComunidadService;
 
 public final class DetalleConvocatoriaComunidadService {
     private final SolicitudComunidadService solicitudes;
-    public DetalleConvocatoriaComunidadService(){this(new SolicitudComunidadService());}
-    DetalleConvocatoriaComunidadService(SolicitudComunidadService solicitudes){this.solicitudes=solicitudes;}
+    private final SincronizacionConvocatoriasComunidadService sincronizacion;
+    public DetalleConvocatoriaComunidadService(){this(new SolicitudComunidadService(),new SincronizacionConvocatoriasComunidadService());}
+    DetalleConvocatoriaComunidadService(SolicitudComunidadService solicitudes){this(solicitudes,new SincronizacionConvocatoriasComunidadService());}
+    DetalleConvocatoriaComunidadService(SolicitudComunidadService solicitudes,SincronizacionConvocatoriasComunidadService sincronizacion){this.solicitudes=java.util.Objects.requireNonNull(solicitudes);this.sincronizacion=java.util.Objects.requireNonNull(sincronizacion);}
 
     public Detalle buscar(long id){
         if(id<=0)throw new IllegalArgumentException("La convocatoria debe ser positiva.");
+        sincronizacion.reconciliar(id);
         String q="SELECT cv.id,cv.estado,cv.fecha_expiracion,cv.participantes_confirmados,cv.lugares_buscados,cv.posicion_buscada,cv.comentario,r.fecha,r.hora_inicio,r.hora_fin,ca.nombre cancha,p.id perfil_id,p.nombre_publico,p.posicion_preferida,cd.id categoria_id,cd.nombre categoria,cd.color_hex,jcd.id convocante_categoria_id,jcd.nombre convocante_categoria,jcd.color_hex convocante_color FROM comunidad_convocatorias cv JOIN reservas r ON r.id=cv.reserva_id JOIN canchas ca ON ca.id=r.cancha_id JOIN perfiles_jugador p ON p.id=cv.perfil_creador_id LEFT JOIN categorias_deportivas cd ON cd.id=cv.categoria_deportiva_id LEFT JOIN jugador_categorias jc ON jc.perfil_jugador_id=p.id AND jc.estado='VIGENTE' LEFT JOIN categorias_deportivas jcd ON jcd.id=jc.categoria_deportiva_id WHERE cv.id=?";
         try(Connection c=ConexionBD.obtenerConexion();PreparedStatement s=c.prepareStatement(q)){s.setLong(1,id);try(ResultSet r=s.executeQuery()){if(!r.next())throw new ConvocatoriaPublicaNoEncontradaException();String estado=r.getString("estado");LocalDateTime exp=r.getTimestamp("fecha_expiracion").toLocalDateTime();boolean activa=("ABIERTA".equals(estado)||"EN_COORDINACION".equals(estado))&&LocalDateTime.now().isBefore(exp);int confirmados=r.getInt("participantes_confirmados"),buscados=r.getInt("lugares_buscados"),disponibles=Math.max(0,Math.min(buscados,4-confirmados));Categoria buscada=categoria(r,"categoria_id","categoria","color_hex");Categoria convocanteCat=categoria(r,"convocante_categoria_id","convocante_categoria","convocante_color");String nombre=r.getString("nombre_publico");return new Detalle(id,estado,activa,activa&&disponibles>0,mensaje(estado,activa,disponibles),r.getDate("fecha").toLocalDate(),r.getTime("hora_inicio").toLocalTime(),r.getTime("hora_fin").toLocalTime(),r.getString("cancha"),confirmados,buscados,disponibles,confirmados+" de 4, falta "+disponibles+" "+(disponibles==1?"jugador":"jugadores"),buscada,r.getString("posicion_buscada"),r.getString("comentario"),new Convocante(r.getLong("perfil_id"),nombre,iniciales(nombre),r.getString("posicion_preferida"),convocanteCat));}}catch(SQLException e){throw new RuntimeException("No se pudo consultar la convocatoria.",e);}
     }
@@ -22,7 +26,7 @@ public final class DetalleConvocatoriaComunidadService {
     public Solicitud retirar(long clienteId,long solicitudId){return solicitud(solicitudes.retirar(clienteId,solicitudId));}
     private Solicitud solicitud(SolicitudComunidad s){return new Solicitud(s.getId(),s.getConvocatoriaId(),s.getEstado().name(),s.getMensaje(),s.getEstado().esPendiente(),s.getVersion());}
     private Categoria categoria(ResultSet r,String id,String nombre,String color)throws SQLException{long valor=r.getLong(id);return r.wasNull()?null:new Categoria(valor,r.getString(nombre),r.getString(color));}
-    private String mensaje(String estado,boolean activa,int lugares){if(activa&&lugares>0)return "La convocatoria acepta solicitudes.";return switch(estado){case "COMPLETA"->"El turno ya completó sus participantes.";case "CERRADA_EXTERNAMENTE"->"La búsqueda fue cerrada por el titular.";case "CANCELADA"->"La convocatoria fue cancelada.";default->"La convocatoria ya no acepta solicitudes.";};}
+    private String mensaje(String estado,boolean activa,int lugares){if(activa&&lugares>0)return "La convocatoria acepta solicitudes.";return switch(estado){case "COMPLETA"->"El turno ya completó sus participantes.";case "CERRADA_EXTERNAMENTE"->"La búsqueda fue cerrada por el titular.";case "CANCELADA"->"La convocatoria fue cancelada porque la reserva ya no continúa.";case "VENCIDA"->"El turno comenzó o la convocatoria llegó a su vencimiento.";default->"La convocatoria ya no acepta solicitudes.";};}
     private String iniciales(String n){if(n==null||n.isBlank())return "PJ";String[]x=n.trim().split("\\s+");return (x[0].substring(0,1)+(x.length>1?x[x.length-1].substring(0,1):"")).toUpperCase();}
     public static final class ConvocatoriaPublicaNoEncontradaException extends RuntimeException{public ConvocatoriaPublicaNoEncontradaException(){super("La convocatoria no existe.");}}
 }

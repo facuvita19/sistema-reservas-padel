@@ -31,5 +31,9 @@ class ConcurrenciaComunidadR34B3A5ContratoTest {
         assertTrue(dao.contains("estado IN ('PENDIENTE','CONTACTADA')"));
         assertTrue(sync.contains("c.commit()"));
         assertTrue(sync.contains("c.rollback()"));
+        String detalle = Files.readString(Path.of(
+                "src/main/java/api/publica/DetalleConvocatoriaComunidadService.java"));
+        assertTrue(detalle.contains("sincronizacion.reconciliar(id)"));
+        assertTrue(gestion.contains("sincronizacion.reconciliar(convocatoriaId)"));
     }
 }
