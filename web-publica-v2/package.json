@@ -20,6 +20,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
+    "dompurify": "3.4.17",
     "tailwindcss": "^4.3.3"
   },
   "allowScripts": {
@@ -27,8 +28,8 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
-    "typescript": "^6.0.3",
     "@playwright/test": "^1.55.0",
-    "@types/node": "^24.0.0"
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3"
   }
 }
