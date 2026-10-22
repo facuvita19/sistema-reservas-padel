@@ -1,26 +1,26 @@
 # Dirección visual W2
 
-> Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente. Actualizado el 19 de octubre de 2026.
+> Sistema creativo vigente para una plataforma deportiva premium, profesional, moderna e imponente. Actualizado el 21 de octubre de 2026.
 
 
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
 ## Patrones visuales estabilizados en Comunidad
 
-R3.4B5C consolidó el centro de actividad como patrón global de notificaciones W2:
+R3.4B5C–D consolidó el centro de actividad como patrón global de notificaciones W2:
 
 - campana con contador y estado abierto en escritorio;
-- acceso autenticado desde el menú móvil;
-- panel flotante compacto en escritorio y hoja inferior real en móvil;
-- backdrop, bloqueo de scroll, safe area y lista con desplazamiento interno;
+- entrada autenticada desde el menú móvil;
+- panel flotante en escritorio y hoja inferior real en móvil;
+- backdrop, bloqueo de scroll, safe area y desplazamiento interno;
 - agrupación Nuevas / Anteriores;
-- tarjetas contextuales con iconografía y navegación integrada;
+- tarjetas semánticas con navegación contextual;
 - rojo para actividad pendiente, verde para confirmación, grafito para historial y dorado para acciones secundarias;
-- notificaciones leídas plenamente legibles, nunca con opacidad de elemento deshabilitado;
-- estados carga, vacío, error, reintento, actividad nueva y sin pendientes;
+- notificaciones leídas plenamente legibles;
+- carga, vacío, error, reintento, actividad nueva y sin pendientes;
 - foco contenido, Escape, restauración de foco y movimiento reducido;
-- validación en oscuro, escritorio, 390 px y 320 px.
+- cobertura en oscuro, claro, escritorio, 390 px y 320 px.
 
-El centro debe sentirse como actividad deportiva de una app premium, no como menú administrativo ni tabla. Las evoluciones de R3.4B5D deben reutilizar estas tarjetas y no introducir colores o modales desconectados.
+R3.3I reutilizará estos patrones para la convergencia final. PWA y Capacitor deben preservar la misma jerarquía, no simular una interfaz nativa genérica.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Principio creativo

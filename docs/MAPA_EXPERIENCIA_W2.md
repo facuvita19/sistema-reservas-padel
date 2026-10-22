@@ -1,10 +1,10 @@
 # Mapa de experiencia W2
 
-> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 19 de octubre de 2026.
+> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 21 de octubre de 2026.
 
 
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
-## Estado actual y próximo recorrido de Comunidad
+## Estado actual y continuidad de Comunidad
 
 ### Recorridos disponibles
 
@@ -14,13 +14,9 @@ Mi cuenta → gestionar reservas, convocatorias, solicitudes e invitaciones
 Cabecera autenticada → campana → centro de actividad → recurso contextual
 ```
 
-El centro de actividad distingue Nuevas y Anteriores, permite leer una al navegar o leer todas y mantiene enlaces internos seguros. En móvil se abre desde el menú como hoja inferior con fondo bloqueado.
+El centro distingue Nuevas y Anteriores, permite leer una al navegar o leer todas y mantiene enlaces internos seguros. En móvil se abre desde el menú como hoja inferior con fondo bloqueado.
 
-### Próximo recorrido
-
-R3.4B5D completará avisos para convocatoria completa, cierre manual, cancelación, vencimiento y solicitudes cerradas por cupo o convocante. Cada aviso debe llevar al recurso útil o explicar que el recurso terminó.
-
-PWA y Push quedan después del cierre de la matriz interna. El centro web seguirá siendo la fuente visible y no dependerá de permisos del sistema operativo.
+La matriz interna ya cubre solicitud, aceptación, rechazo, cupo, cierre manual, cancelación, vencimiento e invitaciones. El siguiente recorrido es R3.3I para converger estados extremos, privacidad, accesibilidad y rendimiento. Después se incorporan PWA, Push y Capacitor sin reemplazar el centro web.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Navegación principal
@@ -83,8 +79,7 @@ Operativo:
 
 Pendiente:
 
-- cobertura completa de eventos internos de Comunidad;
-- convergencia final de Comunidad;
+- convergencia final R3.3I de Comunidad;
 - motor avanzado de ranking como evolución posterior;
 - reserva inteligente ampliada;
 - Mercado Pago producción;
@@ -282,29 +277,17 @@ La URL de retorno nunca acredita por sí sola.
 
 ## 17. Centro de notificaciones y evolución futura
 
-- nueva solicitud, aceptación y rechazo: operativos;
-- invitación enviada, aceptada y rechazada: operativos;
-- convocatoria completa, cierre, cancelación y vencimiento: próximo bloque R3.4B5D;
-- recordatorios, PWA y Push: evolución posterior.
-
-Las notificaciones respetan preferencias, privacidad y límites de frecuencia.
+- solicitudes, invitaciones y resoluciones: operativas;
+- convocatoria completa, cierre, cancelación y vencimiento: operativos;
+- centro web: fuente visible y permanente;
+- PWA, Push y Capacitor: evolución posterior a R3.3I.
 
 ## 18. Punto de continuidad
 
-Torneos y Rankings están cerrados. El perfil público completó R3.2B. Comunidad avanzó hasta R3.4B5C con solicitudes, participantes, invitaciones, contacto protegido y centro interno de notificaciones.
+Torneos y Rankings están cerrados. El perfil público completó R3.2B. Comunidad cerró R3.4B1–R3.4B5D / R3.3A–R3.3H. El siguiente orden es:
 
-El siguiente orden es:
-
-1. verificar CI de `5e3b4d3`;
-2. R3.3B1–B5: catálogo público, filtros, tarjetas, estados y responsive — completados;
-3. R3.3C: preferencias desde Mi cuenta — completadas en su alcance actual;
-4. R3.4B1: navegación de Comunidad — completada;
-5. R3.4B2G: publicación de reservas y Turnos abiertos — completada;
-6. R3.4B3–R3.4B5C: solicitudes, participantes, invitaciones y centro de notificaciones — completados en su alcance actual;
-7. R3.3C: preferencias desde Mi cuenta;
-8. R3.3D: pareja para torneos;
-9. R3.3E: convocatorias de reservas;
-10. R3.3F: solicitudes y cierre manual;
-11. R3.3G: participantes, concurrencia y auditoría;
-12. R3.4B5D / R3.3H: completar la matriz de notificaciones — próximo bloque;
-13. R3.3I: convergencia final.
+1. R3.3I: convergencia final de Comunidad;
+2. fundación PWA;
+3. prototipo Capacitor Android y pruebas en dispositivos reales;
+4. Push, deep links y distribución interna;
+5. iOS y evaluación de herramientas visuales adicionales si fueran necesarias.

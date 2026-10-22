@@ -17,7 +17,7 @@ No subir `.env` al repositorio.
 ## Validar Docker Compose
 
 ```powershell
-docker compose config
+docker compose config --quiet
 ```
 
 ## Iniciar
@@ -29,7 +29,7 @@ docker compose config
 Alternativa:
 
 ```powershell
-docker compose up --build -d
+docker compose up -d --build
 ```
 
 ## Reconstrucción selectiva

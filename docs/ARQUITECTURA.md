@@ -20,23 +20,26 @@ Aplicación administrativa JavaFX
 
 ## Web pública
 
-Archivos principales:
+La única web activa es `web-publica-v2`, construida con Astro y TypeScript y servida por Nginx. `web-publica` queda únicamente como referencia histórica.
+
+Rutas canónicas principales:
 
 ```text
-web-publica/index.html
-web-publica/styles.css
-web-publica/app.js
-web-publica/nginx.conf
+/w2
+/w2/reservar
+/w2/torneos
+/w2/rankings
+/w2/comunidad
+/w2/cuenta
 ```
 
 Responsabilidades:
 
-- Mostrar configuración del complejo.
-- Consultar canchas y disponibilidad.
-- Crear solicitudes.
-- Mostrar pago y vencimiento.
-- Consultar seguimiento.
-- Abrir WhatsApp.
+- disponibilidad y reservas;
+- cuenta, seguimiento y pagos;
+- torneos, rankings y perfiles;
+- Comunidad, invitaciones y centro de notificaciones;
+- experiencia responsive, accesible y preparada para PWA.
 
 ## API pública
 

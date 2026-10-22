@@ -41,6 +41,10 @@ WEB_ORIGIN=local
 
 Para producción se debe usar el origen exacto HTTPS del sitio.
 
+## Repositorio público
+
+El repositorio se publica como portfolio bajo una licencia restrictiva. Permanecen habilitados CodeQL, Secret Scanning, Push Protection, Dependabot y reporte privado de vulnerabilidades. Antes de volverlo comercial y privado, se debe conservar la misma disciplina de secretos y revisar forks, artefactos y logs públicos existentes.
+
 ## Git
 
 Antes de cada commit:

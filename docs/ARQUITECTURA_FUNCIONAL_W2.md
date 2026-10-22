@@ -1,18 +1,18 @@
 # Arquitectura funcional W2
 
-> Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 19 de octubre de 2026.
+> Especificación funcional y técnica vigente de Plataforma Deportiva W2. Actualizada el 21 de octubre de 2026.
 
 
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
-## Arquitectura actual de Comunidad y próximo contrato
+## Arquitectura actual de Comunidad y notificaciones
 
 ### Fuentes de verdad separadas
 
 - `comunidad_eventos` conserva auditoría inmutable y referencias a convocatoria, solicitud o invitación.
-- `comunidad_notificaciones` materializa una bandeja privada por `cliente_destinatario_id`, con lectura, URL contextual y unicidad por evento y destinatario.
-- La API autenticada permite listar, leer una y leer todas sin aceptar identificadores de cliente enviados por el navegador.
-- La proyección actual cubre solicitudes recibidas, aceptadas y rechazadas, e invitaciones enviadas, aceptadas y rechazadas.
-- Las URLs se restringen a rutas internas `/w2/` y el frontend vuelve a validarlas antes de navegar.
+- `comunidad_notificaciones` materializa una bandeja privada por `cliente_destinatario_id`.
+- La unicidad por evento y destinatario permite múltiples destinatarios sin duplicar proyecciones.
+- La API autenticada lista, lee una y lee todas sin aceptar identificadores de cliente enviados por el navegador.
+- Las URLs contextuales se restringen a rutas internas W2 y el frontend vuelve a validarlas.
 
 ### Contratos implementados
 
@@ -22,13 +22,11 @@ POST /api/publica/cliente/comunidad/notificaciones/{id}/leer
 POST /api/publica/cliente/comunidad/notificaciones/leer-todas
 ```
 
-La lectura es idempotente. Una notificación ajena o inexistente devuelve un recurso no encontrado para impedir enumeración e IDOR.
+La lectura es idempotente. Una notificación ajena o inexistente se presenta como recurso no encontrado para impedir enumeración e IDOR. La proyección cubre solicitudes, resoluciones, convocatoria completa, cierre externo, cancelación, vencimiento e invitaciones enviadas, aceptadas, rechazadas, canceladas y vencidas.
 
-### Próximo contrato
+### Continuidad arquitectónica
 
-R3.4B5D debe completar convocatoria completa, cierre manual, cancelación, vencimiento y cierres derivados de solicitudes. La proyección debe seguir siendo idempotente, privada, reconstruible y desacoplada de Push.
-
-PWA y notificaciones del sistema consumirán esta base solo después del cierre funcional interno.
+R3.3I debe revisar transversalmente privacidad, accesibilidad, rendimiento, reconstrucción de proyecciones y contratos E2E. PWA, Push y Capacitor se incorporan después sobre esta base estable.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Objetivo

@@ -4,7 +4,7 @@
 
 No publiques vulnerabilidades, credenciales, datos personales ni instrucciones de explotación en Issues, Discussions o Pull Requests públicos.
 
-Para reportar un problema de seguridad, utilizá un canal privado del propietario del repositorio o la función **Report a vulnerability** de GitHub cuando esté habilitada.
+Para reportar un problema de seguridad, utilizá un canal privado del propietario del repositorio o la función **Report a vulnerability** de GitHub que está habilitada.
 
 ## Alcance
 
@@ -20,7 +20,7 @@ Son especialmente relevantes:
 
 ## Datos de prueba
 
-El repositorio no debe contener credenciales productivas ni datos personales reales. Los valores de ejemplos y pruebas deben ser sintéticos.
+El repositorio fue auditado antes de hacerse público y no debe contener credenciales productivas ni datos personales reales. Secret Scanning y Push Protection permanecen habilitados. Los valores de ejemplos y pruebas deben ser sintéticos.
 
 ## Respuesta
 

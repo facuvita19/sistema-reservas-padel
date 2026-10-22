@@ -1,5 +1,22 @@
 # Continuidad del proyecto y método de trabajo
 
+<!-- W2-ESTADO-CANONICO-INICIO -->
+## Estado canónico · 21 de octubre de 2026
+
+- Rama estable y publicada: `master`.
+- Commit de cierre vigente: `2735dfb` (`Completar eventos del centro de notificaciones`).
+- Árbol local al cerrar: limpio.
+- Repositorio público orientado a portfolio técnico, con licencia de evaluación y todos los derechos reservados.
+- Historial y árbol actual auditados sin secretos fuertes; Secret Scanning informa cero secretos abiertos.
+- CodeQL cerró las cinco alertas detectadas y mantiene cero alertas abiertas.
+- `npm audit` informa cero vulnerabilidades conocidas.
+- CI proporcional operativo: detecta alcance, ejecuta higiene siempre y activa Java, Astro, Playwright o Docker solo cuando corresponden; `workflow_dispatch` y pull requests conservan la validación integral.
+- Validación integral más reciente: Java/Maven, Astro/TypeScript, Playwright completo e instalación Docker limpia en verde.
+- R3.4B5A–D / R3.3H está cerrado: persistencia, centro global, convergencia visual y matriz completa de eventos internos.
+- Estrategia móvil oficial inicial: Astro → PWA completa → Capacitor → Android → iOS. Ionic visual, React/Preact, React Native, Flutter u otras herramientas siguen disponibles si el prototipo no alcanza el estándar premium.
+- Próximo bloque funcional: **R3.3I · Convergencia final de Comunidad**, seguido por la fundación PWA y el prototipo Capacitor Android.
+<!-- W2-ESTADO-CANONICO-FIN -->
+
 > Guía operativa para retomar `sistema-reservas-padel` en otra conversación, fecha o equipo sin perder contexto ni repetir errores.
 
 ## 1. Cómo comenzar una conversación nueva
@@ -61,7 +78,7 @@ El orden debe conservarse. Si una parte devuelve salida vacía, el informe termi
 4. El usuario copia la salida completa o por partes.
 5. Copilot analiza antes de modificar.
 6. Copilot entrega un ZIP para extraer en la raíz.
-7. El ZIP incluye un aplicador `.mjs` autocontenido.
+7. El ZIP incluye un aplicador `.js` o `.mjs` autocontenido, normalmente Node.js.
 8. El aplicador crea backup local antes de escribir.
 9. El usuario ejecuta el aplicador.
 10. Se realizan validaciones mínimas y concretas.
@@ -69,7 +86,7 @@ El orden debe conservarse. Si una parte devuelve salida vacía, el informe termi
 12. Se agregan solo los archivos previstos al commit.
 13. Se usa un mensaje simple y descriptivo, sin prefijos tipo `feat:`.
 14. Se hace push a `master`.
-15. Se comprueban los cuatro trabajos de CI.
+15. Se comprueban solo los jobs activados por el CI proporcional; en hitos se usa `workflow_dispatch` integral.
 16. Se eliminan reparadores temporales.
 17. `git status --short` debe quedar vacío.
 18. Se actualiza la continuidad si el cambio fue significativo.
@@ -215,15 +232,17 @@ No reemplazar métodos completos con regex amplia. Usar anclas estructurales, co
 
 ```powershell
 mvn clean test
-mvn javafx:run
 ```
+
+`mvn javafx:run` solo se indica cuando una validación específica requiere abrir la aplicación administrativa; no forma parte de la rutina habitual.
 
 Resultado esperado: todas las pruebas vigentes y `BUILD SUCCESS`. No fijar una cantidad en este documento porque la suite aumenta con cada bloque.
 
 ### Web
 
 ```powershell
-cd .\web-publica-v2
+Set-Location .\web-publica-v2
+npm run check
 npm run build
 ```
 
@@ -274,7 +293,7 @@ $backup = Get-ChildItem .\backups\padel_reservas_*.sql | Sort-Object LastWriteTi
 - Commits simples y descriptivos.
 - Push a `master` solo después de validar localmente.
 - Comprobar `git log -1 --oneline`.
-- Esperar CI verde.
+- Esperar CI verde según el nivel de riesgo y el cierre del bloque.
 - No versionar aplicadores, backups ni informes locales.
 
 ## 10. Política de cadencia y espera de CI
@@ -386,7 +405,17 @@ Antes de cada push, clasificar el cambio:
 - El estándar premium grafito y verde se mantiene.
 - La calidad prima sobre el costo de implementación.
 
-## 12. Mantenimiento de la continuidad
+## 12. CI proporcional vigente
+
+- Higiene se ejecuta siempre.
+- Java/Maven se activa para backend, recursos y base de datos.
+- Astro/TypeScript se activa para frontend.
+- Playwright se activa para frontend y API pública relevante; en push normal utiliza escritorio Chromium y en pull request o ejecución manual usa la matriz completa.
+- Docker limpio se reserva para migraciones, Compose, Dockerfiles y scripts operativos.
+- `concurrency` cancela ejecuciones obsoletas.
+- El repositorio público tiene CodeQL, Secret Scanning, Push Protection, Dependabot y reporte privado de vulnerabilidades.
+
+## 13. Mantenimiento de la continuidad
 
 Actualizar este documento cuando cambie:
 
@@ -399,7 +428,7 @@ Actualizar este documento cuando cambie:
 
 El estado funcional y la hoja de ruta pertenecen a `PLAN_DESARROLLO.md`. Este documento conserva el método para llegar al siguiente estado de forma segura.
 
-## 13. Estado vigente del bloque de pagos
+## 14. Estado vigente del bloque de pagos
 
 Cierre funcional alcanzado el 14 de octubre de 2026:
 
@@ -428,7 +457,7 @@ La transferencia manual fue probada correctamente desde el Paso 4: selección de
 
 No considerar una reserva pagada por la URL de retorno. La fuente de verdad es la consulta del proveedor procesada por el backend y registrada transaccionalmente.
 
-## 14. Cierre Git del bloque P4
+## 15. Cierre Git del bloque P4
 
 Los cambios P4.1 a P4.6 forman un núcleo interdependiente. Si permanecen acumulados en el mismo árbol de trabajo, se prefieren dos commits íntegros y compilables:
 

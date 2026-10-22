@@ -1,24 +1,24 @@
 # Plataforma Deportiva W2
 
-> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 19 de octubre de 2026.
+> Evolución integral de `web-publica-v2` hacia una plataforma deportiva, competitiva y comercial premium. Actualizado el 21 de octubre de 2026.
 
 
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
 ## Estado actual de Comunidad y continuidad
 
-Comunidad ya cubre el recorrido deportivo principal de extremo a extremo:
+Comunidad cubre el recorrido deportivo principal de extremo a extremo:
 
 - catálogo seguro y preferencias opt-in;
 - navegación Toda la Comunidad / Turnos abiertos / Buscar pareja;
-- publicación y cierre manual de convocatorias vinculadas a reservas reales;
-- solicitudes, retiro, aceptación, rechazo, participantes, cupos y concurrencia;
-- invitaciones privadas para partidos y parejas de torneo;
-- contacto protegido por WhatsApp después de aceptación y consentimiento vigente;
-- centro global de notificaciones internas con contador, lectura, enlaces contextuales y experiencia premium responsive.
+- convocatorias vinculadas a reservas reales, cierre manual y sincronización con el turno;
+- solicitudes, participantes, cupos, concurrencia y auditoría;
+- invitaciones privadas y contacto protegido por consentimiento vigente;
+- centro global de notificaciones internas, privado e idempotente;
+- matriz completa para aceptación, rechazo, cupo, cierre externo, cancelación, vencimiento e invitaciones.
 
-R3.4B5A–C separó auditoría y bandeja: los eventos siguen siendo la historia inmutable y `comunidad_notificaciones` es una proyección privada por destinatario. La web no expone teléfono, pagos, documento ni datos administrativos.
+R3.4B5A–D / R3.3H quedó cerrado en `2735dfb`. `comunidad_eventos` conserva la historia inmutable y `comunidad_notificaciones` materializa la bandeja por destinatario. PWA, Push y Capacitor consumirán estos contratos sin acoplar el dominio a canales externos.
 
-El próximo bloque es **R3.4B5D / R3.3H**, para cubrir convocatoria completa, cierres, cancelaciones, vencimientos y solicitudes cerradas por cupo o convocante. PWA y Push se implementarán después, consumiendo contratos internos estables y sin acoplar el dominio a canales externos.
+El próximo bloque es **R3.3I · Convergencia final de Comunidad**. Después comienza la fundación PWA y el prototipo Capacitor Android.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Visión
@@ -172,7 +172,7 @@ Comunidad es infraestructura deportiva para descubrir jugadores, formar parejas 
 
 ### Estado real
 
-Comunidad avanzó hasta R3.4B5C: catálogo, preferencias, convocatorias, solicitudes, participantes, invitaciones, contacto protegido y notificaciones internas están operativos en su alcance actual. El próximo bloque es R3.4B5D / R3.3H para completar la matriz de eventos.
+Comunidad completó R3.4B1–R3.4B5D / R3.3A–R3.3H en su alcance actual; queda R3.3I como convergencia final.
 
 ## 11. Torneos W2: estado real
 
@@ -199,12 +199,12 @@ Torneos es referencia de método y calidad. No se reabre salvo error real, requi
 - W2.3: Rankings y perfiles estabilizados en el recorrido actual; motor avanzado pendiente como evolución posterior.
 - W2.4: experiencia deportiva pública en curso; Torneos cerrado.
 - W2.5: reserva W2 operativa, con evoluciones inteligentes futuras.
-- W2.6 / R3.3: Comunidad avanzada hasta R3.4B5C; quedan matriz completa de notificaciones y convergencia final.
+- W2.6 / R3.3: Comunidad completó R3.3A–R3.3H; queda R3.3I como convergencia final.
 - W2.7: Mercado Pago sandbox, completado.
 - W2.8: Mercado Pago producción, pendiente.
-- W2.9: engagement, PWA y notificaciones.
+- W2.9: fundación PWA, Push y aplicación móvil con Capacitor después de R3.3I.
 
-Próximo bloque: **R3.4B5D / R3.3H · Cobertura completa de eventos de notificación**.
+Próximo bloque: **R3.3I · Convergencia final de Comunidad**, seguido por PWA y Capacitor.
 
 ## 13. Criterios de aceptación
 
