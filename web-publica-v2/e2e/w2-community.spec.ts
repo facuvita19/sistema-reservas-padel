@@ -133,3 +133,6 @@ test('R3.3I-B2 normaliza identificadores y colores de Comunidad',async({page})=>
  await expect(page.locator('.w2cm-card-hit')).toHaveAttribute('href','/w2/comunidad');await expect(page.locator('.w2cm-turn-card a')).toHaveAttribute('href','/w2/comunidad');
  await expect(page.locator('.w2cm-card')).toHaveCSS('--w2cm-accent','#71847b');await expect(page.locator('.w2cm-turn-card')).toHaveCSS('--w2cm-accent','#71847b');
 });
+
+
+test('R3.3I-C1A centraliza foco y semantica del drawer movil',async({page,isMobile})=>{test.skip(!isMobile);await page.goto('/w2/comunidad');const open=page.locator('#w2cmOpenFilters'),drawer=page.locator('#w2cmFilters');await expect(drawer).toHaveAttribute('aria-hidden','true');await expect(drawer).toHaveAttribute('inert','');await open.click();await expect(drawer).toHaveAttribute('aria-hidden','false');await expect(drawer).not.toHaveAttribute('inert','');await expect(page.locator('#w2cmSearch')).toBeFocused();const close=page.locator('#w2cmCloseFilters'),apply=page.locator('#w2cmApplyFilters');await close.focus();await page.keyboard.press('Shift+Tab');await expect(apply).toBeFocused();await page.keyboard.press('Tab');await expect(close).toBeFocused();await page.keyboard.press('Escape');await expect(drawer).toHaveAttribute('aria-hidden','true');await expect(drawer).toHaveAttribute('inert','');await expect(open).toBeFocused()});
