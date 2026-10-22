@@ -68,8 +68,17 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 2
       - name: Verificar espacios y conflictos
-        run: git diff --check HEAD^
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+            git diff --check HEAD^ HEAD
+          else
+            git diff --check --root HEAD
+          fi
       - name: Auditar secretos versionados
         shell: pwsh
         run: ./auditar-secretos.ps1
