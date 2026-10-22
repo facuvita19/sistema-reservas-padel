@@ -14,3 +14,8 @@ test('R3.2B5A posiciona el skip link sin cubrir la cabecera',async({page})=>{awa
 
 
 test('R3.2B5A mantiene compacto el skip link en movil',async({page,isMobile})=>{test.skip(!isMobile);await page.keyboard.press('Tab');const skip=page.locator('.w2-skip');await expect(skip).toBeFocused();const box=await skip.boundingBox();expect(box).not.toBeNull();expect(box!.width).toBeLessThan((await page.evaluate(()=>innerWidth))*.72);expect(box!.height).toBeLessThanOrEqual(48)});
+
+
+test('R3.3I-B2 limita retornos de Comunidad y conserva Mi cuenta',async({page})=>{for(const [volver,esperado] of [['https://evil.example/ataque','/w2/comunidad'],['/w2/comunidad-falsa','/w2/comunidad'],['/w2/cuenta?seccion=deporte','/w2/cuenta?seccion=deporte']]){await page.goto('/w2/jugador?perfilId=7001&origen=comunidad&volver='+encodeURIComponent(volver));await expect(page.locator('#w2pBackToRanking')).toHaveAttribute('href',esperado)}});
+
+test('R3.3I-B2 usa color seguro ante categoria malformada',async({page})=>{await page.route('**/api/publica/jugadores/7001',r=>r.fulfill({json:{perfilId:7001,nombre:'Perfil color seguro',iniciales:'PS',posicion:'DRIVE',disponibleParaJugar:true,aceptaInvitaciones:false,buscaTurnos:false,buscaTorneos:false,categoria:{id:61,nombre:'5ta',color:'red;--ataque:url(javascript:alert(1))',desde:'2026-01-01'},ranking:null,partidos:0,victorias:0,derrotas:0,efectividad:0,historial:[],categorias:[]}}));await page.goto('/w2/jugador?perfilId=7001');await expect(page.locator('#w2jpHero')).toHaveCSS('--w2jp-category-accent','#d7ad4a')});

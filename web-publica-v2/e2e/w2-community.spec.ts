@@ -124,3 +124,12 @@ test('R3.3I-B1 neutraliza contenido hostil en catalogo y turnos',async({page})=>
  await expect(page.locator('.w2cm-card')).toContainText('Nombre seguro');await expect(page.locator('.w2cm-turn-card')).toContainText('Cancha segura');
  await expect(page.locator('#w2cmCategory option[value="91"]')).toContainText('Categoria segura');
 });
+
+
+test('R3.3I-B2 normaliza identificadores y colores de Comunidad',async({page})=>{
+ await page.route('**/api/publica/comunidad/jugadores**',r=>r.fulfill({json:{jugadores:[{perfilId:'javascript:alert(1)',nombre:'Perfil seguro',iniciales:'PS',posicion:'DRIVE',categoria:{id:91,nombre:'5ta',color:'red;--ataque:url(javascript:alert(1))'},disponibleParaJugar:true,aceptaInvitaciones:true,buscaTurnos:true,buscaTorneos:true,contactoWhatsappDisponible:false}],pagina:1,tamano:12,total:1,totalPaginas:1}}));
+ await page.route('**/api/publica/comunidad/convocatorias**',r=>r.fulfill({json:{convocatorias:[{convocatoriaId:-4,reservaId:1,fecha:'2026-10-25',horaInicio:'20:00:00',horaFin:'21:30:00',cancha:'Cancha segura',participantesConfirmados:3,lugaresBuscados:1,lugaresDisponibles:1,resumenCupo:'3 de 4, falta 1 jugador',categoriaBuscada:{id:91,nombre:'5ta',color:'expression(alert(1))'},posicionBuscada:'REVES',comentario:null,convocante:{perfilId:1,nombre:'Convocante',iniciales:'CS',posicion:'DRIVE',categoria:null}}],pagina:1,tamano:12,total:1,totalPaginas:1}}));
+ await page.goto('/w2/comunidad');
+ await expect(page.locator('.w2cm-card-hit')).toHaveAttribute('href','/w2/comunidad');await expect(page.locator('.w2cm-turn-card a')).toHaveAttribute('href','/w2/comunidad');
+ await expect(page.locator('.w2cm-card')).toHaveCSS('--w2cm-accent','#71847b');await expect(page.locator('.w2cm-turn-card')).toHaveCSS('--w2cm-accent','#71847b');
+});

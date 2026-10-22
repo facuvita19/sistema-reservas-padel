@@ -13,3 +13,6 @@ test('R3.3I-B1 neutraliza contenido hostil y URLs externas',async({page})=>{
  await expect(panel.locator('img,script')).toHaveCount(0);await expect(panel).toContainText('Titulo seguro');await expect(panel).toContainText('Mensaje seguro');
  await expect(panel.locator('.w2-notification')).toHaveAttribute('href','/w2/cuenta?seccion=deporte');
 });
+
+
+test('R3.3I-B2 ignora identificadores de notificacion invalidos',async({page})=>{let lecturas=0;await page.route('**/api/publica/cliente/comunidad/notificaciones',r=>r.fulfill({json:{notificaciones:[{notificacionId:-9,tipo:'SOLICITUD_RECIBIDA',titulo:'Aviso seguro',mensaje:'Sin identificador operativo',recursoTipo:'CONVOCATORIA',recursoId:null,urlContextual:'/w2/comunidad',fechaCreacion:'2026-10-21T20:00:00',leida:false}],noLeidas:1,total:1}}));await page.route('**/api/publica/cliente/comunidad/notificaciones/*/leer',r=>{lecturas++;return r.fulfill({json:{}})});await page.reload();const panel=await abrir(page);await panel.locator('.w2-notification').click();expect(lecturas).toBe(0)});
