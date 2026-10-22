@@ -48,10 +48,8 @@ jobs:
           else
             files="$(git diff --name-only HEAD^ HEAD 2>/dev/null || git ls-files)"
           fi
-          printf '%s
-' "$files"
-          match() { printf '%s
-' "$files" | grep -Eq "$1"; }
+          printf '%s\n' "$files"
+          match() { printf '%s\n' "$files" | grep -Eq "$1"; }
           full=false; [ "$files" = "__FULL__" ] && full=true
           java=false; web=false; e2e=false; docker=false
           if $full || match '^(pom.xml|src/(main|test)/java/|src/main/resources/|database/)'; then java=true; fi
