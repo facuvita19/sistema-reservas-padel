@@ -18,7 +18,7 @@ Comunidad cubre el recorrido deportivo principal de extremo a extremo:
 
 R3.4B5A–D / R3.3H quedó cerrado en `2735dfb`. `comunidad_eventos` conserva la historia inmutable y `comunidad_notificaciones` materializa la bandeja por destinatario. PWA, Push y Capacitor consumirán estos contratos sin acoplar el dominio a canales externos.
 
-El próximo bloque es **R3.3I · Convergencia final de Comunidad**. Después comienza la fundación PWA y el prototipo Capacitor Android.
+R3.3I · Convergencia final de Comunidad quedó cerrado en `3b1688f`. Comienza la fundación PWA y después el prototipo Capacitor Android.
 <!-- W2-COMUNIDAD-ESTADO-FIN -->
 
 ## 1. Visión

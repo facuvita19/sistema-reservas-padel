@@ -1,0 +1,1 @@
+(()=>{if(!('serviceWorker'in navigator)||!window.isSecureContext)return;window.addEventListener('load',()=>{navigator.serviceWorker.register('/w2/sw.js',{scope:'/w2/'}).catch(()=>{})},{once:true})})();

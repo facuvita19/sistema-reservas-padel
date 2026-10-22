@@ -1,0 +1,55 @@
+{
+  "id": "/w2/",
+  "name": "Plataforma Deportiva W2",
+  "short_name": "W2",
+  "description": "Reservas, torneos, rankings, perfiles y Comunidad de Pádel Las Flores.",
+  "lang": "es-AR",
+  "dir": "ltr",
+  "start_url": "/w2/?source=pwa",
+  "scope": "/w2/",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "background_color": "#070809",
+  "theme_color": "#07100d",
+  "categories": [
+    "sports",
+    "lifestyle"
+  ],
+  "icons": [
+    {
+      "src": "/w2/padel-las-flores.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/w2/padel-las-flores-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Reservar cancha",
+      "short_name": "Reservar",
+      "url": "/w2/reservar?source=pwa-shortcut"
+    },
+    {
+      "name": "Comunidad",
+      "short_name": "Comunidad",
+      "url": "/w2/comunidad?source=pwa-shortcut"
+    },
+    {
+      "name": "Torneos",
+      "short_name": "Torneos",
+      "url": "/w2/torneos?source=pwa-shortcut"
+    }
+  ],
+  "prefer_related_applications": false
+}

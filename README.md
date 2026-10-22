@@ -44,12 +44,12 @@ El entorno Docker incluye MySQL, API y Nginx. La aplicación administrativa pued
 
 ## Estado verificado
 
-- Comunidad R3.3A–R3.3H cerrada en `2735dfb`.
+- Comunidad R3.3A–R3.3I cerrada en `3b1688f`, con sincronización autoritativa, accesibilidad, seguridad y concurrencia validadas.
 - CI proporcional e integral manual en verde.
 - CodeQL: 0 alertas abiertas de 5 detectadas.
 - Secret Scanning: 0 secretos abiertos.
 - npm audit: 0 vulnerabilidades conocidas al cierre.
-- Próximo bloque: R3.3I, luego PWA y Capacitor.
+- Bloque actual: fundación PWA; después, prototipo Capacitor Android.
 
 ## Calidad
 

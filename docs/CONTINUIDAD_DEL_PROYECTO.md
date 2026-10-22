@@ -14,7 +14,7 @@
 - Validación integral más reciente: Java/Maven, Astro/TypeScript, Playwright completo e instalación Docker limpia en verde.
 - R3.4B5A–D / R3.3H está cerrado: persistencia, centro global, convergencia visual y matriz completa de eventos internos.
 - Estrategia móvil oficial inicial: Astro → PWA completa → Capacitor → Android → iOS. Ionic visual, React/Preact, React Native, Flutter u otras herramientas siguen disponibles si el prototipo no alcanza el estándar premium.
-- Próximo bloque funcional: **R3.3I · Convergencia final de Comunidad**, seguido por la fundación PWA y el prototipo Capacitor Android.
+- R3.3I · Convergencia final de Comunidad quedó cerrado en `3b1688f`. El bloque actual es la fundación PWA, seguido por el prototipo Capacitor Android.
 <!-- W2-ESTADO-CANONICO-FIN -->
 
 > Guía operativa para retomar `sistema-reservas-padel` en otra conversación, fecha o equipo sin perder contexto ni repetir errores.
