@@ -28,7 +28,7 @@ jobs:
       - name: Descargar repositorio
         uses: actions/checkout@v6
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Clasificar cambios
         id: filtros
         shell: bash
@@ -38,13 +38,29 @@ jobs:
           BASE_SHA: ${{ github.event.pull_request.base.sha }}
         run: |
           set -euo pipefail
+          commit_available() { git cat-file -e "$1^{commit}" 2>/dev/null; }
+          ensure_commit() {
+            local sha="$1"
+            commit_available "$sha" && return 0
+            git fetch --no-tags origin "$sha" 2>/dev/null || true
+            commit_available "$sha"
+          }
           if [ "$EVENT_NAME" = "workflow_dispatch" ]; then
             files="__FULL__"
           elif [ "$EVENT_NAME" = "pull_request" ]; then
-            git fetch --no-tags --depth=1 origin "$BASE_SHA"
-            files="$(git diff --name-only "$BASE_SHA" HEAD)"
+            if [ -n "${BASE_SHA:-}" ] && ensure_commit "$BASE_SHA"; then
+              files="$(git diff --name-only "$BASE_SHA" HEAD)"
+            else
+              echo "No se pudo resolver el commit base del pull request; se ejecutara validacion completa."
+              files="__FULL__"
+            fi
           elif [ -n "${BEFORE_SHA:-}" ] && [ "$BEFORE_SHA" != "0000000000000000000000000000000000000000" ]; then
-            files="$(git diff --name-only "$BEFORE_SHA" HEAD)"
+            if ensure_commit "$BEFORE_SHA"; then
+              files="$(git diff --name-only "$BEFORE_SHA" HEAD)"
+            else
+              echo "No se pudo resolver github.event.before; se ejecutara validacion completa."
+              files="__FULL__"
+            fi
           else
             files="$(git diff --name-only HEAD^ HEAD 2>/dev/null || git ls-files)"
           fi
