@@ -99,3 +99,15 @@ body.account-menu-open::before,body.account-menu-open::after{content:none!import
 
 /* CAP3C2: mantener sesion iniciada */
 .auth-x-stay{display:flex!important;min-height:44px!important;align-items:center!important;gap:.7rem!important;cursor:pointer!important;color:#c4d0cb!important;font-size:.68rem!important;font-weight:800!important}.auth-x-stay input{position:absolute!important;opacity:0!important;pointer-events:none!important}.auth-x-stay>span{position:relative!important;display:grid!important;width:22px!important;height:22px!important;flex:0 0 22px!important;place-items:center!important;border:1px solid #52635c!important;border-radius:7px!important;background:#111a1e!important}.auth-x-stay input:checked+span{border-color:#d7192d!important;background:#d7192d!important}.auth-x-stay input:checked+span:after{content:'✓';color:#fff;font-size:.75rem;font-weight:950}.auth-x-stay input:focus-visible+span{outline:3px solid rgba(215,25,45,.28);outline-offset:3px}.auth-x-stay b{font:inherit!important;color:inherit!important}
+
+/* RENDIMIENTO R3.2 - sesion recordada y shell autoritativo */
+@media(min-width:901px){
+ html[data-session="authenticated"] #w2SessionCheck{display:none!important}
+ html[data-session="authenticated"] #abrirAutenticacion{display:none!important}
+ html[data-session="authenticated"] #menuUsuario.hidden{display:block!important}
+ html[data-session="authenticated"] #w2Notifications.hidden{display:block!important}
+ html[data-session="authenticated"] .w2-auth-slot{order:4;min-width:132px}
+ html[data-session="authenticated"] .w2-account-trigger{min-width:132px}
+ .w2-nav{column-gap:1.15rem}
+ .w2-cta{margin-left:.15rem}
+}
