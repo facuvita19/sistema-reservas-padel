@@ -22,7 +22,8 @@ public final class AutenticacionClienteDTO {
 
     public record Login(
             String email,
-            String password) {
+            String password,
+            boolean mantenerSesion) {
     }
 
     public record Perfil(

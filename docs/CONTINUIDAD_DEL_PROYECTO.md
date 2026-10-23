@@ -569,3 +569,20 @@ La aplicacion Android evita la doble compensacion del teclado causada por la com
 ### CAP3B · experiencia nativa Android cerrada
 
 CAP3B quedó validado en dispositivo físico: safe areas correctas, botón Atrás jerárquico, teclado sin doble aplicación de insets, SystemBars con insetsHandling deshabilitado, filtros globales integrados en Comunidad, Torneos e historial, y APK local instalable sobre la misma Wi-Fi. Se conservaron únicamente las pruebas finales de experiencia nativa y filtros. El próximo bloque oficial es CAP3C: bienvenida, acceso o invitado, icono definitivo y splash premium.
+
+
+### CAP3C1 · bienvenida e identidad nativa
+
+Se incorpora una bienvenida exclusiva de la app instalada, restauracion previa de sesion, continuidad persistente como invitado, acceso mediante la autenticacion existente y una nueva base visual W2 para icono y splash de Android. La web conserva su entrada directa.
+
+### CAP3C2 · Entrada estable y sesión opcionalmente persistente
+
+La bienvenida nativa se muestra en cada apertura sin sesión persistente, no guarda la elección de invitado, evita el destello inicial y suspende su capa durante autenticación. Login incorpora “Mantener la sesión iniciada”: desmarcado emite cookie temporal; marcado conserva la cookie persistente HttpOnly.
+
+
+### CAP3C3_ENTRADA_ESTABLE
+- Bienvenida nativa sin destello: la sesion se resuelve sobre una superficie oscura neutra.
+- Invitado recordado solo durante la ejecucion actual mediante sessionStorage.
+- Sesion persistente entra directo sin mostrar la bienvenida.
+- Acciones moviles apiladas, a ancho completo y resistentes al escalado de fuente.
+- Autenticacion suspende la bienvenida hasta cerrar o completar el acceso.

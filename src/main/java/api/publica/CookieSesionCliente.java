@@ -62,6 +62,31 @@ public final class CookieSesionCliente {
         agregar(intercambio.getResponseHeaders(), cookie);
     }
 
+    public static void escribirTemporal(
+            HttpExchange intercambio,
+            String token,
+            boolean segura) {
+        validar(intercambio, token);
+        String cookie = NOMBRE + "=" + token
+                + "; Path=" + PATH
+                + "; HttpOnly; SameSite=Lax"
+                + (segura ? "; Secure" : "");
+        agregar(intercambio.getResponseHeaders(), cookie);
+    }
+
+    private static void validar(
+            HttpExchange intercambio,
+            String token) {
+        if (intercambio == null) {
+            throw new IllegalArgumentException(
+                    "El intercambio HTTP no puede ser nulo.");
+        }
+        if (token == null || token.isBlank()) {
+            throw new IllegalArgumentException(
+                    "El token de sesion es obligatorio.");
+        }
+    }
+
     public static void eliminar(
             HttpExchange intercambio,
             boolean segura) {

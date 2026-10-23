@@ -135,7 +135,7 @@ public final class AutenticacionClienteHandler {
                                 entrada.password(),
                                 entrada.posicionPreferida()));
 
-        escribirCookie(intercambio, resultado.token());
+        escribirCookie(intercambio, resultado.token(), false);
         responder(intercambio, 201, Sesion.desde(resultado));
     }
 
@@ -149,7 +149,7 @@ public final class AutenticacionClienteHandler {
                 autenticacionService.iniciarSesion(
                         entrada.email(), entrada.password());
 
-        escribirCookie(intercambio, resultado.token());
+        escribirCookie(intercambio, resultado.token(), entrada.mantenerSesion());
         responder(intercambio, 200, Sesion.desde(resultado));
     }
 
@@ -183,12 +183,17 @@ public final class AutenticacionClienteHandler {
 
     private void escribirCookie(
             HttpExchange intercambio,
-            String token) {
-        Duration duracion = sesionService.getDuracionSesion();
-        CookieSesionCliente.escribir(
-                intercambio,
-                token,
-                duracion,
+            String token,
+            boolean persistente) {
+        if (persistente) {
+            Duration duracion = sesionService.getDuracionSesion();
+            CookieSesionCliente.escribir(
+                    intercambio, token, duracion,
+                    CookieSesionCliente.debeSerSegura());
+            return;
+        }
+        CookieSesionCliente.escribirTemporal(
+                intercambio, token,
                 CookieSesionCliente.debeSerSegura());
     }
 

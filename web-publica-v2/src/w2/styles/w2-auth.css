@@ -96,3 +96,6 @@ body>.w2-account-menu{position:fixed!important;left:var(--account-menu-left)!imp
 body>.w2-account-menu::before,body>.w2-account-menu::after{content:none!important;display:none!important}
 body.account-menu-open::before,body.account-menu-open::after{content:none!important;display:none!important}
 @media(max-width:900px){body>.w2-account-menu{display:none!important}}
+
+/* CAP3C2: mantener sesion iniciada */
+.auth-x-stay{display:flex!important;min-height:44px!important;align-items:center!important;gap:.7rem!important;cursor:pointer!important;color:#c4d0cb!important;font-size:.68rem!important;font-weight:800!important}.auth-x-stay input{position:absolute!important;opacity:0!important;pointer-events:none!important}.auth-x-stay>span{position:relative!important;display:grid!important;width:22px!important;height:22px!important;flex:0 0 22px!important;place-items:center!important;border:1px solid #52635c!important;border-radius:7px!important;background:#111a1e!important}.auth-x-stay input:checked+span{border-color:#d7192d!important;background:#d7192d!important}.auth-x-stay input:checked+span:after{content:'✓';color:#fff;font-size:.75rem;font-weight:950}.auth-x-stay input:focus-visible+span{outline:3px solid rgba(215,25,45,.28);outline-offset:3px}.auth-x-stay b{font:inherit!important;color:inherit!important}

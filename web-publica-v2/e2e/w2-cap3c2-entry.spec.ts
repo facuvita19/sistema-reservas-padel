@@ -1,0 +1,3 @@
+import {test,expect} from '@playwright/test';
+test('la web ordinaria no bloquea la pintura con bienvenida nativa',async({page})=>{await page.goto('/w2/');await expect(page.locator('#w2NativeWelcome')).toHaveCount(0)});
+test('el login ofrece mantener la sesion iniciada',async({page})=>{await page.goto('/w2/');await page.evaluate(()=>document.getElementById('abrirAutenticacion')?.click());await expect(page.locator('#modalAutenticacion')).not.toHaveClass(/hidden/);await expect(page.locator('#mantenerSesion')).toHaveCount(1);await expect(page.locator('#mantenerSesion')).not.toBeChecked();await expect(page.locator('#loginEmail')).not.toBeFocused()});

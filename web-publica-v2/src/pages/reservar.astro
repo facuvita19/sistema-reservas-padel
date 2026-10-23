@@ -4,14 +4,24 @@
   <head>
     <meta charset="utf-8" />
     <meta name="robots" content="noindex" />
+    <meta name="description" content="Redirección a Reservas W2" />
     <title>Redirigiendo a Reservas W2</title>
-    <noscript><meta http-equiv="refresh" content="0;url=/w2/reservar" /></noscript>
+    <noscript>
+      <meta http-equiv="refresh" content="0;url=/w2/reservar" />
+    </noscript>
+    <script is:inline src="/w2/legacy-reservar-redirect.js"></script>
   </head>
   <body>
-    <p>Redirigiendo a la experiencia de reservas...</p>
-    <script is:inline>
-      const destino = '/w2/reservar' + window.location.search + window.location.hash;
-      window.location.replace(destino);
-    </script>
+    <main>
+      <h1>Reservar cancha</h1>
+      <p>
+        Redirigiendo a la experiencia de reservas…
+      </p>
+      <p>
+        <a href="/w2/reservar">
+          Continuar a Reservas W2
+        </a>
+      </p>
+    </main>
   </body>
 </html>

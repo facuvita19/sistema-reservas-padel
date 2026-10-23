@@ -1,0 +1,2 @@
+/* CAP3C3: bloqueo previo sin mostrar la bienvenida hasta resolver sesion. */
+(()=>{try{const native=location.protocol==='capacitor:'||location.hostname==='10.0.2.2'||/; wv\)/i.test(navigator.userAgent);if(!native)return;const guest=sessionStorage.getItem('w2.native.guest.runtime')==='1';if(!guest)document.documentElement.classList.add('w2-native-welcome-pending')}catch{document.documentElement.classList.add('w2-native-welcome-pending')}})();
