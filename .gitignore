@@ -88,3 +88,10 @@ capturas*/
 *.pfx
 *.jks
 *.keystore
+# Android / Capacitor local
+web-publica-v2/android/.gradle/
+web-publica-v2/android/local.properties
+web-publica-v2/android/**/build/
+web-publica-v2/android/captures/
+*.apk
+*.aab

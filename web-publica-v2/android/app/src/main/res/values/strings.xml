@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Plataforma Deportiva W2</string>
+    <string name="title_activity_main">Plataforma Deportiva W2</string>
+    <string name="package_name">ar.com.padelasflores.w2</string>
+    <string name="custom_url_scheme">ar.com.padelasflores.w2</string>
+</resources>

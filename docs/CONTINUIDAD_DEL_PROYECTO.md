@@ -471,3 +471,36 @@ Los diagnósticos, aplicadores, ZIP y carpetas `.backup-*` no se versionan.
 La configuración de Mercado Pago se transporta al contenedor API mediante variables `MP_*`, documentadas sin secretos en `.env.example`. El valor predeterminado de `MP_ENABLED` es `false`; por lo tanto, una instalación nueva conserva transferencia manual y no intenta conectarse al proveedor.
 
 Para pruebas integrales, `MP_PUBLIC_BASE_URL` debe ser HTTPS y públicamente accesible. Nunca imprimir `MP_ACCESS_TOKEN` ni `MP_WEBHOOK_SECRET`; los inspectores solo deben informar `CONFIGURADA` o `AUSENTE`.
+
+
+## CAP1 · Fundación Android
+
+Capacitor Android se integra sobre el build estático de Astro. El proyecto nativo vive en `web-publica-v2/android`, usa `ar.com.padelasflores.w2` y se valida primero con `W2_Pixel_7_API_36`. La conexión nativa con la API y los contratos de sesión se cierran en el siguiente bloque antes de considerar distribución.
+
+
+## CAP2 · Conectividad Android local
+
+El prototipo Android tiene dos modos explícitos. `npm run cap:sync:dev` conecta el emulador con `http://10.0.2.2:4321/w2/` para consumir la web, la API y la sesión reales del entorno Docker bajo un mismo origen. `npm run cap:sync:prod` elimina la URL remota y vuelve a empaquetar los activos locales. El tráfico HTTP queda limitado por Network Security Config al host especial del emulador y no se habilita globalmente para producción.
+
+
+### CAP2 · CSP compatible con Android local
+
+La CSP del servidor web autoriza mediante hashes SHA-256 los dos scripts inline legítimos generados por Astro para W2. `upgrade-insecure-requests` no se envía desde el servidor HTTP local, evitando que el WebView convierta los recursos del emulador a HTTPS. La política conserva `script-src self`, no incorpora `unsafe-inline` y mantiene bloqueada cualquier inyección distinta de los hashes publicados.
+
+
+### CAP2 · tema inicial Android
+
+El host de desarrollo del emulador Android (10.0.2.2) inicia W2 en modo oscuro cuando todavía no existe una preferencia guardada. Una elección explícita del usuario continúa prevaleciendo. La web convencional conserva la preferencia del sistema como valor inicial.
+
+
+### CAP2P · perfil de fluidez Android
+
+Línea base en emulador Pixel 7 API 36: 417 cuadros, 13,67 % de jank, P50 30 ms, P90 48 ms, P95 65 ms y P99 150 ms. El perfil móvil elimina desenfoques de superficies fixed/sticky, evita promoción GPU permanente del encabezado, reduce sombras de composición, limita transiciones costosas y aplica content-visibility a secciones largas. No altera la estructura funcional ni el perfil visual de escritorio.
+
+## CAP2P · evaluación de fluidez Android
+
+La evaluación en el emulador Pixel 7 API 36 confirmó que el entorno virtual condiciona de forma importante la percepción de fluidez. La configuración local recomendada para continuar pruebas es 4 GB de RAM, 4 núcleos, GPU host y VM heap de 512 MB; estos ajustes pertenecen al AVD local y no se versionan.
+
+El perfil experimental de reducción visual CAP2P no demostró una mejora concluyente y se retiró del producto para preservar la experiencia premium. Quedan registradas como referencias: línea base de 417 cuadros con 13,67 % de jank; ensayo CAP2P de 590 cuadros con 23,39 %; y ensayo con AVD ajustado de 1012 cuadros con 18,68 %. Las muestras no son estrictamente equivalentes por diferencias de recorrido y duración.
+
+La evaluación definitiva de fluidez queda pendiente en un dispositivo Android físico con activos empaquetados mediante `npm run cap:sync:prod`. Antes de distribución deberán validarse arranque, scroll, menú, modales, navegación Atrás, áreas seguras, actualización e instalación. CAP2 queda funcionalmente cerrado en emulador con conectividad Docker, API, sesión, navegación, CSP y modo oscuro operativos.
