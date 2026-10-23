@@ -95,3 +95,6 @@ web-publica-v2/android/**/build/
 web-publica-v2/android/captures/
 *.apk
 *.aab
+web-publica-v2/android/key.properties
+web-publica-v2/android/keystore.properties
+web-publica-v2/android/app/*.jks

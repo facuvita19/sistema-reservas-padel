@@ -10,7 +10,8 @@
     "playwright-report",
     "test-results",
     "blob-report",
-    ".playwright-artifacts"
+    ".playwright-artifacts",
+    "android"
   ],
   "compilerOptions": {
     "types": [

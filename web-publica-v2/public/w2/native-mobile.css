@@ -1,0 +1,13 @@
+/* CAP3B: utilidades nativas; la geometria de filtros vive en filter-system.css. */
+/* CAP3B: geometria unica de overlays y teclado nativo Android. */
+:root{--w2-native-keyboard-height:0px}
+.w2-native-exit-hint{position:fixed;z-index:2147483647;left:50%;bottom:calc(1rem + env(safe-area-inset-bottom));translate:-50% 16px;max-width:calc(100vw - 2rem);border:1px solid #3b474d;border-radius:999px;background:#10161a;padding:.7rem 1rem;color:#f3f5f3;font:800 .72rem/1.2 Inter,"Segoe UI",sans-serif;opacity:0;visibility:hidden;pointer-events:none;transition:.16s}
+.w2-native-exit-hint.show{translate:-50% 0;opacity:1;visibility:visible}
+
+/* CAP3B: teclado superpuesto sin redimensionar WebView */
+@media (max-width:900px),(hover:none) and (pointer:coarse){
+  html.w2-keyboard-open{scroll-padding-bottom:calc(var(--w2-native-keyboard-height) + 24px)}
+  html.w2-keyboard-open body{padding-bottom:calc(var(--w2-native-keyboard-height) + 24px)!important}
+  html.w2-keyboard-open input,html.w2-keyboard-open textarea,html.w2-keyboard-open select,[contenteditable="true"]{scroll-margin-block:96px calc(var(--w2-native-keyboard-height) + 32px)}
+  html.w2-keyboard-open .w2-filter-panel.open{margin-bottom:1rem!important}
+}

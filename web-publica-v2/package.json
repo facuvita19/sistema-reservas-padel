@@ -22,15 +22,19 @@
     "cap:run": "npm run cap:sync && cap run android",
     "cap:doctor": "cap doctor android",
     "cap:sync:dev": "npm run build && node scripts/capacitor-sync.mjs dev",
-    "cap:sync:prod": "npm run cap:prepare && node scripts/capacitor-sync.mjs prod"
+    "cap:sync:prod": "npm run cap:prepare && node scripts/capacitor-sync.mjs prod",
+    "cap:sync:device": "npm run build && node scripts/capacitor-sync.mjs device 192.168.0.3",
+    "cap:apk:device": "npm run cap:sync:device"
   },
   "dependencies": {
     "@capacitor/android": "8.5.3",
+    "@capacitor/app": "8.0.0",
     "@capacitor/core": "8.5.3",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.5",
     "dompurify": "3.4.17",
-    "tailwindcss": "^4.3.3"
+    "tailwindcss": "^4.3.3",
+    "@capacitor/keyboard": "8.0.5"
   },
   "allowScripts": {
     "esbuild": true

@@ -504,3 +504,68 @@ La evaluación en el emulador Pixel 7 API 36 confirmó que el entorno virtual co
 El perfil experimental de reducción visual CAP2P no demostró una mejora concluyente y se retiró del producto para preservar la experiencia premium. Quedan registradas como referencias: línea base de 417 cuadros con 13,67 % de jank; ensayo CAP2P de 590 cuadros con 23,39 %; y ensayo con AVD ajustado de 1012 cuadros con 18,68 %. Las muestras no son estrictamente equivalentes por diferencias de recorrido y duración.
 
 La evaluación definitiva de fluidez queda pendiente en un dispositivo Android físico con activos empaquetados mediante `npm run cap:sync:prod`. Antes de distribución deberán validarse arranque, scroll, menú, modales, navegación Atrás, áreas seguras, actualización e instalación. CAP2 queda funcionalmente cerrado en emulador con conectividad Docker, API, sesión, navegación, CSP y modo oscuro operativos.
+
+## CAP3A · APK Android para dispositivo fisico local
+
+El modo local fisico usa `npm run cap:sync:device` y conecta el WebView con `http://192.168.0.3:4321/w2/` dentro de la misma red privada. La politica Android permite HTTP exclusivamente para ese host, mientras el resto permanece bloqueado. Este APK es solo de prueba local: depende de Docker activo en la PC, del firewall privado para el puerto 4321 y de que el celular comparta la misma red Wi-Fi. La distribucion productiva queda pendiente hasta disponer de una API HTTPS publica y firma release fuera del repositorio.
+
+
+## CAP3B · Experiencia nativa Android
+
+La aplicación física integra áreas seguras, teclado ajustable, barras oscuras y botón Atrás jerárquico. Atrás cierra primero modales, menús, notificaciones, filtros y detalles; luego navega por el historial y exige una segunda pulsación para salir desde la raíz. El icono adaptativo y el splash usan la identidad W2 existente. La pantalla de bienvenida con acceso o modo invitado queda reservada para CAP3C.
+
+
+## CAP3B2 · Convergencia de interacción móvil
+
+La validación física detectó cierres táctiles inconsistentes y desajustes de overlays al abrir el teclado. CAP3B2 unifica el cierre jerárquico del botón Atrás, adapta drawers al visual viewport, garantiza objetivos táctiles mínimos y preserva la identidad visual. El rediseño definitivo del icono y la bienvenida Ingresar/Invitado quedan para CAP3C.
+
+### CAP3B3 · teclado, viewport y drawers móviles
+
+La experiencia Android ajusta los drawers al visualViewport real cuando aparece el teclado, mantiene visibles la cabecera y el cierre, desplaza el campo enfocado dentro del panel y oculta temporalmente el pie cuando el espacio vertical es insuficiente. El botón Atrás oculta primero el teclado antes de cerrar la capa activa. La respuesta táctil de los cierres se refuerza sin alterar la identidad visual.
+
+### CAP3B4 · drawer de Comunidad y teclado
+
+El drawer móvil de Comunidad adopta una geometría estructural de cuatro filas: cabecera, búsqueda, filtros desplazables y acción. La altura se deriva del visualViewport real, el teclado se abre solo cuando la persona toca el campo, el botón Atrás oculta primero el teclado y el cierre ofrece respuesta táctil visible.
+
+### CAP3B5 · anclaje del drawer al teclado
+
+El drawer móvil de Comunidad conserva altura compacta sin teclado y, al abrirlo, se ajusta al visualViewport real sin superponer campos ni dejar espacio artificial dentro del panel. Cabecera, contenido desplazable y acción mantienen su orden, mientras el campo enfocado se centra dentro del scroll interno.
+
+### CAP3B6 · geometria unica del drawer Android
+
+Se reemplazaron las reglas experimentales acumuladas de CAP3B2 a CAP3B5 por una unica geometria. Android adjustResize reduce el WebView al abrir el teclado; el drawer queda anclado al borde inferior de ese viewport, usa altura automatica, contenido central desplazable y pie dentro del flujo, evitando la doble compensacion y la franja vacia.
+
+
+### CAP3B7 · teclado nativo Android
+
+La aplicación usa @capacitor/keyboard como fuente única para detectar apertura, cierre y altura del teclado. La geometría móvil distingue si Android ya redimensionó el WebView y evita compensar dos veces el espacio disponible. El drawer de Comunidad conserva el estado compacto sin teclado y una zona interna desplazable cuando el teclado reduce el área útil.
+
+
+### CAP3B8 · sistema global de filtros W2
+
+Comunidad, Torneos e historial de reservas convergen en una mecanica adaptable: en movil los filtros se despliegan dentro del flujo de la pagina, sin portales, fondos fijos ni calculos del teclado; en escritorio conservan su distribucion amplia. Rankings y Reservar mantienen navegacion y pasos especializados, compartiendo el lenguaje visual sin tratarse como filtros temporales.
+
+
+### CAP3B8C · limpieza definitiva de filtros
+
+Comunidad, Torneos e Historial usan un único controlador de filtros integrado en el flujo. Se retiraron portales, backdrops, bloqueos de documento y reposicionamientos nativos del teclado para estos paneles. Rankings conserva sus categorías como navegación y Reservar mantiene su flujo transaccional especializado.
+
+
+### CAP3B8D - retiro definitivo de capas heredadas
+
+El sistema global de filtros elimina fisicamente los backdrops heredados de Comunidad y Torneos, retira la referencia residual al controlador anterior y excluye los filtros integrados del reposicionamiento nativo del teclado. Los filtros quedan en el flujo normal de la pagina y ninguna capa fija puede cubrir el contenido situado sobre el teclado.
+
+
+### CAP3B8F · teclado superpuesto sin redimensionar WebView
+
+Android usa adjustNothing como unica politica de ventana frente al teclado. El WebView conserva su altura, el complemento Keyboard informa la altura real del IME y la capa web agrega solo espacio de desplazamiento temporal para mantener visible el campo enfocado. Se retiran los calculos de redimensionamiento duplicado.
+
+
+### CAP3B8G · compatibilidad IME y SystemBars
+
+La aplicacion Android evita la doble compensacion del teclado causada por la combinacion de viewport-fit=cover y el manejo automatico de insets de SystemBars. W2 conserva decorFitsSystemWindows, usa adjustResize como unica estrategia IME y desactiva la mutacion adicional de insets de SystemBars.
+
+
+### CAP3B · experiencia nativa Android cerrada
+
+CAP3B quedó validado en dispositivo físico: safe areas correctas, botón Atrás jerárquico, teclado sin doble aplicación de insets, SystemBars con insetsHandling deshabilitado, filtros globales integrados en Comunidad, Torneos e historial, y APK local instalable sobre la misma Wi-Fi. Se conservaron únicamente las pruebas finales de experiencia nativa y filtros. El próximo bloque oficial es CAP3C: bienvenida, acceso o invitado, icono definitivo y splash premium.

@@ -1,0 +1,9 @@
+/* CAP3B: integracion Android, areas seguras y superficies nativas. */
+:root{--w2-safe-top:env(safe-area-inset-top,0px);--w2-safe-right:env(safe-area-inset-right,0px);--w2-safe-bottom:env(safe-area-inset-bottom,0px);--w2-safe-left:env(safe-area-inset-left,0px)}
+@media (max-width:900px){
+  .w2-menu{padding-top:max(1rem,var(--w2-safe-top))!important;padding-right:max(1rem,var(--w2-safe-right))!important;padding-bottom:max(1rem,var(--w2-safe-bottom))!important}
+  .w2-notifications-panel{padding-bottom:max(.75rem,var(--w2-safe-bottom))!important}
+  .w2cm-filters,.ps-panel,.pc-panel{padding-bottom:max(1rem,var(--w2-safe-bottom))!important}
+  .auth-x-overlay{padding-top:max(1rem,var(--w2-safe-top))!important;padding-right:max(1rem,var(--w2-safe-right))!important;padding-bottom:max(1rem,var(--w2-safe-bottom))!important;padding-left:max(1rem,var(--w2-safe-left))!important}
+}
+.w2-native-exit-hint{position:fixed;z-index:2147483647;left:50%;bottom:max(1rem,calc(var(--w2-safe-bottom) + .5rem));translate:-50% 0;border:1px solid #39434a;border-radius:999px;background:#11171c;color:#f4f7f5;padding:.7rem 1rem;font:700 .78rem/1.2 Inter,"Segoe UI",sans-serif;box-shadow:0 14px 36px rgba(0,0,0,.36)}

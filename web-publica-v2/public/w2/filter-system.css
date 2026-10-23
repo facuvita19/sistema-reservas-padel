@@ -1,0 +1,308 @@
+/* CAP3B: sistema global de filtros en flujo. Sin portales, backdrops ni geometria de teclado. */
+.w2-filter-trigger,#w2cmOpenFilters,#abrirFiltrosTorneos{min-height:46px;border:1px solid #3a464c;border-radius:12px;background:#11191d;color:#eef3f1;padding:.65rem .9rem;font-weight:900;cursor:pointer;touch-action:manipulation}
+.w2-filter-panel{box-sizing:border-box;border:1px solid #344149;border-radius:20px;background:linear-gradient(145deg,#11191d,#0b1114);color:#eef3f1;box-shadow:0 18px 46px rgba(0,0,0,.28)}
+.w2-filter-panel .w2-filter-header,.w2-filter-panel>header{display:flex;align-items:center;justify-content:space-between;gap:1rem;border-bottom:1px solid #2b373c;padding:.85rem 1rem}
+.w2-filter-context{margin:0 0 .2rem;color:#f04b5b;font-size:.55rem;font-weight:950;letter-spacing:.07em}
+.w2-filter-panel>header button,[data-w2-filter-close]{display:grid;flex:0 0 46px;width:46px;height:46px;place-items:center;border:1px solid #3b494f;border-radius:13px;background:#141d21;color:#fff;font-size:1.35rem;cursor:pointer;touch-action:manipulation;transition:scale .12s ease,background .12s ease}
+.w2-filter-panel>header button:active,[data-w2-filter-close]:active,.w2-filter-pressed{scale:.94;background:#202c31!important}
+#w2cmFilterBackdrop,#fondoFiltrosTorneos{display:none!important}
+@media(max-width:899px){
+ html.w2cm-filter-lock,body.w2cm-filter-lock,body.tournament-filters-open{overflow:auto!important}
+ #w2cmFilters,#panelFiltrosTorneos,.w2-filter-history{position:relative!important;inset:auto!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;display:none!important;width:100%!important;height:auto!important;min-height:0!important;max-height:none!important;margin:.75rem 0 1rem!important;overflow:visible!important;translate:none!important;transform:none!important;visibility:hidden!important;opacity:0!important;pointer-events:auto!important;z-index:1!important}
+ #w2cmFilters.open,#panelFiltrosTorneos.open,.w2-filter-history.open{display:block!important;visibility:visible!important;opacity:1!important;animation:w2FilterIn .16s ease-out}
+ #w2cmFilters .w2cm-filter-drawer-head,#w2cmFilters .w2cm-filter-drawer-foot,#panelFiltrosTorneos>header,#panelFiltrosTorneos>footer,.w2-filter-history>header{position:relative!important;inset:auto!important;top:auto!important;bottom:auto!important;z-index:1!important}
+ #w2cmFilters .w2cm-filter-primary,#w2cmFilters .w2cm-filter-secondary{display:grid!important;height:auto!important;max-height:none!important;overflow:visible!important}
+ #w2cmFilters .w2cm-filter-drawer-foot,#panelFiltrosTorneos>footer{display:flex!important;gap:.6rem!important;padding:.75rem 1rem!important;border-top:1px solid #2b373c!important;background:transparent!important}
+ #w2cmFilters input,#w2cmFilters select,#w2cmFilters button,#panelFiltrosTorneos input,#panelFiltrosTorneos select,#panelFiltrosTorneos button,.w2-filter-history input,.w2-filter-history select{scroll-margin-block:6rem 2rem}
+ .w2-filter-history>label{display:grid;gap:.35rem;padding:.65rem 1rem}
+ .w2-filter-history:not(.open){display:none!important}
+}
+@media(min-width:900px){.w2-filter-history .w2-filter-header,.w2-filter-history [data-w2-filter-close],.w2-filter-trigger{display:none!important}.w2-filter-history{display:flex!important}}
+@keyframes w2FilterIn{from{opacity:.25;translate:0 -5px}to{opacity:1;translate:0 0}}
+@media(prefers-reduced-motion:reduce){.w2-filter-panel.open{animation:none}}
+
+/* CAP3B: backdrops heredados retirados definitivamente */
+#w2cmFilterBackdrop,#fondoFiltrosTorneos,.w2cm-filter-backdrop,.w2t-filter-backdrop{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;position:static!important;inset:auto!important;width:0!important;height:0!important}
+
+
+/* CAP3B: convergencia interactiva de filtros */
+
+/* Respuesta táctil compartida */
+.w2-filter-trigger,
+#w2cmOpenFilters,
+#abrirFiltrosTorneos{
+  position:relative;
+  overflow:hidden;
+  transition:
+    transform .13s ease,
+    border-color .13s ease,
+    background-color .13s ease,
+    box-shadow .13s ease,
+    color .13s ease;
+}
+
+.w2-filter-trigger::after,
+#w2cmOpenFilters::after,
+#abrirFiltrosTorneos::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(255,255,255,.18),
+      transparent 64%
+    );
+  opacity:0;
+  scale:.45;
+  pointer-events:none;
+  transition:
+    opacity .15s ease,
+    scale .18s ease;
+}
+
+.w2-filter-trigger:active,
+#w2cmOpenFilters:active,
+#abrirFiltrosTorneos:active{
+  transform:scale(.96);
+  border-color:#e54858;
+  background:#1d2529;
+}
+
+.w2-filter-trigger:active::after,
+#w2cmOpenFilters:active::after,
+#abrirFiltrosTorneos:active::after{
+  opacity:1;
+  scale:1;
+}
+
+.w2-filter-trigger[aria-expanded="true"],
+#w2cmOpenFilters[aria-expanded="true"],
+#abrirFiltrosTorneos[aria-expanded="true"]{
+  border-color:#e54858;
+  background:#27171b;
+  color:#fff;
+  box-shadow:
+    0 0 0 3px rgba(229,72,88,.13),
+    inset 0 1px rgba(255,255,255,.05);
+}
+
+.w2-filter-trigger:focus-visible,
+#w2cmOpenFilters:focus-visible,
+#abrirFiltrosTorneos:focus-visible{
+  outline:3px solid rgba(239,64,81,.42);
+  outline-offset:3px;
+}
+
+/* Cierre compartido con respuesta claramente visible */
+.w2-filter-panel>header button,
+[data-w2-filter-close]{
+  transition:
+    transform .12s ease,
+    border-color .12s ease,
+    background-color .12s ease,
+    box-shadow .12s ease,
+    color .12s ease!important;
+}
+
+.w2-filter-panel>header button:active,
+[data-w2-filter-close]:active,
+.w2-filter-panel>header button.w2-filter-pressed,
+[data-w2-filter-close].w2-filter-pressed{
+  transform:scale(.89)!important;
+  border-color:#ef4051!important;
+  background:#3a141a!important;
+  color:#fff!important;
+  box-shadow:0 0 0 4px rgba(239,64,81,.16)!important;
+}
+
+.w2-filter-panel>header button:focus-visible,
+[data-w2-filter-close]:focus-visible{
+  outline:3px solid rgba(239,64,81,.42);
+  outline-offset:3px;
+}
+
+/*
+ * Los selectores de Torneos dejan de ser popovers fijos.
+ * Adoptan el despliegue vertical integrado de Comunidad.
+ */
+@media(max-width:899px){
+  #panelFiltrosTorneos .w2t-select{
+    position:relative!important;
+    width:100%!important;
+    min-width:0!important;
+    overflow:visible!important;
+    z-index:auto!important;
+  }
+
+  #panelFiltrosTorneos .w2t-select-trigger{
+    position:relative!important;
+    z-index:1!important;
+    width:100%!important;
+    min-height:48px!important;
+  }
+
+  #panelFiltrosTorneos .w2t-select-menu{
+    position:static!important;
+    inset:auto!important;
+    display:none!important;
+    width:100%!important;
+    max-width:none!important;
+    max-height:18rem!important;
+    margin:.4rem 0 0!important;
+    overflow-y:auto!important;
+    transform:none!important;
+    translate:none!important;
+    visibility:visible!important;
+    opacity:1!important;
+    border:1px solid #3a464c!important;
+    border-radius:13px!important;
+    background:#10171b!important;
+    color:#eef3f1!important;
+    padding:.35rem!important;
+    box-shadow:none!important;
+    pointer-events:auto!important;
+    z-index:auto!important;
+    overscroll-behavior:contain;
+  }
+
+  #panelFiltrosTorneos .w2t-select.open{
+    z-index:auto!important;
+  }
+
+  #panelFiltrosTorneos
+  .w2t-select.open
+  .w2t-select-menu{
+    display:grid!important;
+    gap:.2rem!important;
+  }
+
+  #panelFiltrosTorneos .w2t-select-menu button{
+    position:relative!important;
+    width:100%!important;
+    min-height:44px!important;
+    justify-content:space-between!important;
+    border:0!important;
+    border-radius:10px!important;
+    background:transparent!important;
+    padding:.65rem .75rem!important;
+    color:#dfe7e3!important;
+    text-align:left!important;
+    transform:none!important;
+  }
+
+  #panelFiltrosTorneos
+  .w2t-select-menu
+  button:hover,
+  #panelFiltrosTorneos
+  .w2t-select-menu
+  button:focus-visible{
+    background:#1a2429!important;
+    color:#fff!important;
+    outline:none!important;
+  }
+
+  #panelFiltrosTorneos
+  .w2t-select-menu
+  button[aria-selected="true"]{
+    background:#28171b!important;
+    color:#fff!important;
+  }
+
+  #panelFiltrosTorneos
+  .w2t-select-menu::before,
+  #panelFiltrosTorneos
+  .w2t-select-menu::after{
+    display:none!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .w2-filter-trigger,
+  #w2cmOpenFilters,
+  #abrirFiltrosTorneos,
+  .w2-filter-panel>header button,
+  [data-w2-filter-close]{
+    transition:none!important;
+  }
+}
+
+
+/* CAP3B: geometria integrada definitiva de filtros de Torneos */
+@media (max-width: 899px) {
+  html body #panelFiltrosTorneos.w2t-filters.w2-filter-panel,
+  html body #panelFiltrosTorneos.w2t-filters.w2-filter-panel.open {
+    position: relative !important;
+    inset: auto !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    display: none !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: .75rem 0 1rem !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    transform: none !important;
+    translate: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    z-index: 1 !important;
+    box-sizing: border-box !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  html body #panelFiltrosTorneos.w2t-filters.w2-filter-panel.open {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    grid-template-columns: 1fr !important;
+    gap: .75rem !important;
+    padding: 0 !important;
+    animation: w2FilterIn .16s ease-out !important;
+  }
+
+  html body #panelFiltrosTorneos::before,
+  html body #panelFiltrosTorneos::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  html body #panelFiltrosTorneos > header,
+  html body #panelFiltrosTorneos > footer {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    z-index: 1 !important;
+  }
+
+  html body #panelFiltrosTorneos > footer {
+    display: flex !important;
+    flex-wrap: wrap !important;
+  }
+
+  html body #panelFiltrosTorneos .w2t-field,
+  html body #panelFiltrosTorneos .w2t-open-only {
+    width: auto !important;
+    min-width: 0 !important;
+    margin-inline: 1rem !important;
+    box-sizing: border-box !important;
+  }
+
+  html body #panelFiltrosTorneos .w2t-select,
+  html body #panelFiltrosTorneos .w2t-select-trigger,
+  html body #panelFiltrosTorneos .w2t-select-menu {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}

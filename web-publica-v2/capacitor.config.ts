@@ -1,6 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const desarrollo = process.env.CAPACITOR_W2_DEV === '1';
+const dispositivo = process.env.CAPACITOR_W2_DEVICE_HOST?.trim();
+const servidorLocal = dispositivo ? `http://${dispositivo}:4321/w2/` : 'http://10.0.2.2:4321/w2/';
 const config: CapacitorConfig = {
   appId: 'ar.com.padelasflores.w2',
   appName: 'Plataforma Deportiva W2',
@@ -11,10 +13,13 @@ const config: CapacitorConfig = {
     backgroundColor: '#070809',
     allowMixedContent: false,
   },
+  plugins: {
+    SystemBars: { insetsHandling: 'disable' },
+  },
   server: desarrollo ? {
-    url: 'http://10.0.2.2:4321/w2/',
+    url: servidorLocal,
     cleartext: true,
-    allowNavigation: ['10.0.2.2'],
+    allowNavigation: [dispositivo || '10.0.2.2'],
   } : {
     hostname: 'localhost',
     androidScheme: 'https',
