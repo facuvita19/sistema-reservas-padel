@@ -1,4 +1,4 @@
-const VERSION='w2-pwa-v3';
+const VERSION='w2-pwa-v4';
 const SHELL=VERSION+'-shell';
 const RUNTIME=VERSION+'-runtime';
 const OFFLINE='/w2/offline.html';
