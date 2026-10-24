@@ -3,7 +3,7 @@ export class ApiError extends Error { constructor(message:string,public readonly
 
 type ApiOptions=RequestInit&{cacheMs?:number;forceRefresh?:boolean};
 type CacheEntry={expires:number,data:unknown};
-const CACHE_KEY='w2.api.cache.v2',RATE_KEY='w2.api.rate-limit.v1';
+const CACHE_KEY='w2.api.cache.v2',RATE_KEY='w2.api.rate-limit.v2';
 type ApiRuntime={inflight:Map<string,Promise<unknown>>;memory:Map<string,CacheEntry>};
 const runtimeKey='__w2ApiRuntimeV2';
 const scope=globalThis as typeof globalThis&{[runtimeKey]?:ApiRuntime};
@@ -16,8 +16,10 @@ function loadSession(key:string){try{const all=JSON.parse(sessionStorage.getItem
 function saveSession(key:string,item:CacheEntry){try{const all=JSON.parse(sessionStorage.getItem(CACHE_KEY)||'{}') as Record<string,CacheEntry>;all[key]=item;const now=Date.now();for(const k of Object.keys(all))if(!all[k]||all[k].expires<=now)delete all[k];sessionStorage.setItem(CACHE_KEY,JSON.stringify(all))}catch{}}
 function clearSession(){try{sessionStorage.removeItem(CACHE_KEY)}catch{}}
 function retryAfter(response:Response){const raw=response.headers.get('Retry-After');if(!raw)return 5_000;const seconds=Number(raw);if(Number.isFinite(seconds))return Math.max(1_000,Math.min(120_000,seconds*1_000));const date=Date.parse(raw);return Number.isFinite(date)?Math.max(1_000,Math.min(120_000,date-Date.now())):5_000}
-function blockedUntil(){try{return Number(sessionStorage.getItem(RATE_KEY)||0)||0}catch{return 0}}
-function setBlockedUntil(value:number){try{sessionStorage.setItem(RATE_KEY,String(value))}catch{}}
+function rateLimits(){try{return JSON.parse(sessionStorage.getItem(RATE_KEY)||'{}') as Record<string,number>}catch{return{}}}
+function rateKey(route:string){try{const url=new URL(route,location.origin);return url.pathname}catch{return route.split('?')[0]}}
+function blockedUntil(route:string){const limits=rateLimits(),key=rateKey(route),until=Number(limits[key]||0)||0;if(until<=Date.now()){if(key in limits){delete limits[key];try{sessionStorage.setItem(RATE_KEY,JSON.stringify(limits))}catch{}}return 0}return until}
+function setBlockedUntil(route:string,value:number){const limits=rateLimits();limits[rateKey(route)]=value;try{sessionStorage.setItem(RATE_KEY,JSON.stringify(limits))}catch{}}
 export function invalidarCacheApi(){memory.clear();inflight.clear();clearSession()}
 
 async function request<T>(ruta:string,opciones:ApiOptions):Promise<T>{
@@ -27,13 +29,13 @@ async function request<T>(ruta:string,opciones:ApiOptions):Promise<T>{
   if(externa?.aborted)cancelar();else externa?.addEventListener('abort',cancelar,{once:true});
   const temporizador=window.setTimeout(()=>{vencio=true;controlador.abort()},15_000);
   try{
-    const espera=blockedUntil()-Date.now();
+    const espera=blockedUntil(ruta)-Date.now();
     if(espera>0)throw new ApiError('Estamos regulando temporalmente las consultas. Intentá nuevamente en unos segundos.',429,'CLIENT_RATE_LIMIT',null,espera);
     const respuesta=await fetch(`${API_BASE}${ruta}`,{...fetchOptions,credentials:'include',headers:{'Content-Type':'application/json',...(fetchOptions.headers||{})},signal:controlador.signal});
     let datos:unknown;try{datos=await respuesta.json()}catch{datos={mensaje:'La respuesta del servidor no es válida.'}}
     if(!respuesta.ok){
       const mensaje=typeof datos==='object'&&datos&&'mensaje' in datos?String((datos as {mensaje:unknown}).mensaje):'No se pudo completar la operación.';
-      const pausa=respuesta.status===429?retryAfter(respuesta):null;if(pausa)setBlockedUntil(Date.now()+pausa);
+      const pausa=respuesta.status===429?retryAfter(respuesta):null;if(pausa)setBlockedUntil(ruta,Date.now()+pausa);
       throw new ApiError(mensaje,respuesta.status,typeof datos==='object'&&datos&&'codigo' in datos?String((datos as {codigo:unknown}).codigo):null,respuesta.headers.get('X-Operacion-Id'),pausa);
     }
     return datos as T;

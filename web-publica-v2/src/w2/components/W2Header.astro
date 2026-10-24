@@ -5,7 +5,7 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
 ---
 <header class="w2-header" data-w2-header>
  <nav class="w2-container w2-nav" aria-label="Navegación principal">
-  <a class="w2-brand" href="/w2" aria-label="Pádel Las Flores, inicio"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a>
+  <a class="w2-brand" href="/w2" aria-label="Pádel Las Flores, inicio"><img src="/w2/w2-logo-transparente.png" width="760" height="260" alt="Pádel Las Flores"/></a>
   <div class="w2-links">{links.map(([id,href,label])=><a href={href} class:list={[actual===id&&'active']} aria-current={actual===id?'page':undefined}>{label}</a>)}</div>
   <W2ThemeToggle/>
   <a class="w2-cta" href="/w2/reservar">Reservar <span>→</span></a>
@@ -38,7 +38,7 @@ const links=[['inicio','/w2','Inicio'],['reservar','/w2/reservar','Reservar'],['
  </nav>
  <div id="w2MenuBackdrop" class="w2-menu-backdrop" aria-hidden="true"></div>
  <aside id="w2Menu" class="w2-menu" aria-hidden="true" inert>
-  <header><a href="/w2"><img src="/w2/padel-las-flores.svg" width="760" height="260" alt="Pádel Las Flores"/></a><button data-w2-menu-close type="button" aria-label="Cerrar menú">×</button></header>
+  <header><a href="/w2"><img src="/w2/w2-logo-transparente.png" width="760" height="260" alt="Pádel Las Flores"/></a><button data-w2-menu-close type="button" aria-label="Cerrar menú">×</button></header>
   <nav aria-label="Navegación móvil">{links.map(([id,href,label],index)=><a href={href} class:list={[actual===id&&'active']}><i>{String(index+1).padStart(2,'0')}</i><b>{label}</b><span>→</span></a>)}</nav>
   <a class="w2-mobile-reserve" href="/w2/reservar">Reservar una cancha <span>→</span></a>
   <button id="abrirAutenticacionMovil" class="w2-mobile-login hidden" type="button">Ingresar o crear cuenta</button>

@@ -30,5 +30,5 @@ test('R3.2 mantiene separadas reserva notificaciones y cuenta',async({page})=>{
  await page.route('**/api/publica/cliente/comunidad/notificaciones',r=>r.fulfill({json:{notificaciones:[],noLeidas:0,total:0}}));
  await page.goto('/w2',{waitUntil:'networkidle'});
  const reserva=await page.locator('.w2-cta').boundingBox(),notificaciones=await page.locator('#w2Notifications').boundingBox(),cuenta=await page.locator('.w2-auth-slot').boundingBox();
- expect(reserva&&notificaciones&&cuenta).toBeTruthy();expect(notificaciones!.x-(reserva!.x+reserva!.width)).toBeGreaterThanOrEqual(8);expect(cuenta!.x-(notificaciones!.x+notificaciones!.width)).toBeGreaterThanOrEqual(8);
+ expect(reserva&&notificaciones&&cuenta).toBeTruthy();expect(reserva!.x-(notificaciones!.x+notificaciones!.width)).toBeGreaterThanOrEqual(8);expect(cuenta!.x-(reserva!.x+reserva!.width)).toBeGreaterThanOrEqual(8);
 });

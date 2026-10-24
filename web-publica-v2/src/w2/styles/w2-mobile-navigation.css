@@ -1,0 +1,94 @@
+/* Navegacion lateral y cuenta movil W2. */
+.w2-menu-button,.w2-menu{display:none}
+@media (max-width:900px){.w2-menu-button{display:block;margin-left:auto;border:1px solid var(--w2-border);border-radius:11px;background:#11211b;padding:.7rem;color:white}}
+@media (max-width:900px){.w2-menu{position:fixed;right:0;top:78px;z-index:49;display:grid;width:min(360px,calc(100% - 20px));padding:1rem;border:1px solid var(--w2-border);background:#091511;transform:translateX(105%);transition:.2s}}
+@media (max-width:900px){.w2-menu.open{transform:none}}
+@media (max-width:900px){.w2-menu a{display:flex;justify-content:space-between;padding:1rem;border-bottom:1px solid var(--w2-border)}}
+.w2-menu-button{border-color:var(--line);background:var(--panel-bg);color:var(--text-primary)}
+.w2-menu{border-color:var(--line);background:var(--panel-bg)}
+.w2-menu a{border-color:var(--line);color:var(--text-primary)}
+@media (max-width:650px){.w2-menu{top:72px}}
+.w2-mobile-account>div>span{display:grid;width:34px;height:34px;flex:none;place-items:center;border-radius:10px;background:var(--lf-black);color:#fff;font-size:.58rem;font-weight:950}
+.w2-menu-backdrop{position:fixed;inset:0;z-index:1400;background:rgba(0,0,0,.68);opacity:0;visibility:hidden;backdrop-filter:blur(8px);transition:.2s}
+.w2-menu-backdrop.open{opacity:1;visibility:visible}
+.w2-menu>header,.w2-menu>footer,.w2-menu>nav,.w2-mobile-account{display:grid}
+.w2-menu>header{grid-template-columns:1fr auto;align-items:center;border-bottom:1px solid var(--line);padding-bottom:1rem}
+.w2-menu>header img{width:140px;height:48px;object-fit:contain}
+.w2-menu>header button{width:42px;height:42px;border:1px solid var(--line);border-radius:13px;background:var(--panel-raised);color:var(--text-primary);font-size:1.2rem}
+.w2-menu>nav{margin-top:.8rem}
+.w2-mobile-reserve,.w2-mobile-login{display:flex;min-height:50px;align-items:center;justify-content:space-between;margin-top:.8rem;border:1px solid var(--lf-red);border-radius:13px;background:var(--lf-red);padding:0 1rem;color:#fff;font-weight:900}
+.w2-mobile-login{width:100%;justify-content:center;background:transparent;color:var(--text-primary)}
+.w2-mobile-account{gap:.2rem;margin-top:.8rem;border:1px solid var(--line);border-radius:16px;background:var(--panel-bg);padding:.55rem}
+.w2-mobile-account>div{display:flex;align-items:center;gap:.65rem;padding:.4rem}
+.w2-mobile-account p{display:grid;margin:0}
+.w2-mobile-account small{color:var(--lf-red);font-size:.52rem;font-weight:900;text-transform:uppercase}
+.w2-mobile-account>a,.w2-mobile-account>button{display:flex;min-height:48px;align-items:center;justify-content:space-between;border:0;border-radius:10px;background:transparent;padding:.55rem .65rem;color:var(--text-primary);font-weight:800}
+.w2-mobile-account>a:hover{background:var(--panel-raised)}
+.w2-mobile-account>button{border-top:1px solid var(--line);border-radius:0;color:#e46e7a;text-align:left}
+.w2-menu>footer{grid-template-columns:1fr 1fr;margin-top:auto;border-top:1px solid var(--line);padding-top:1rem;color:var(--text-secondary);font-size:.52rem;text-transform:uppercase}
+.w2-menu>footer span:last-child{text-align:right}
+.w2-menu-open{overflow:hidden}
+@media (max-width:900px){.w2-menu{z-index:1401;top:0;bottom:0;overflow:auto;width:min(390px,calc(100% - 18px));padding:1rem;transform:translateX(105%)}}
+@media (max-width:900px){.w2-menu.open{transform:none}}
+@media (prefers-reduced-motion:reduce){.w2-menu,.w2-menu-backdrop{transition:none!important}}
+.w2-menu-button,.w2-menu>header button,.w2-mobile-reserve,.w2-mobile-login,.w2-mobile-account>a,.w2-mobile-account>button{cursor:pointer!important}
+html.w2-menu-open,body.w2-menu-open{overflow:hidden!important;overscroll-behavior:none}
+.w2-menu-backdrop{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;z-index:2140!important}
+.w2-menu{box-sizing:border-box!important}
+@media (max-width:900px){body>.w2-menu{position:fixed!important;z-index:2141!important;top:0!important;right:0!important;bottom:0!important;left:auto!important;width:min(390px,100vw)!important;max-width:100vw!important;height:100dvh!important;min-height:100dvh!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;border-left:1px solid var(--line)!important;border-radius:0!important;background:var(--panel-bg)!important;padding:1rem max(1rem,env(safe-area-inset-right)) max(1rem,env(safe-area-inset-bottom)) 1rem!important;box-shadow:-28px 0 90px rgba(0,0,0,.55)!important;transform:translate3d(105%,0,0)!important;transition:transform .24s ease!important}}
+@media (max-width:900px){.w2-menu.open{transform:translate3d(0,0,0)!important}}
+@media (max-width:900px){.w2-menu>header{position:sticky;z-index:2;top:-1rem;margin:-1rem -1rem .5rem;padding:1rem;border-bottom:1px solid var(--line);background:var(--panel-bg)}}
+@media (max-width:900px){.w2-menu>header>a{display:flex;align-items:center;min-width:0}}
+@media (max-width:900px){.w2-menu>header img{display:block;width:140px;max-width:58vw;height:48px;object-fit:contain;object-position:left center}}
+@media (max-width:900px){.w2-menu>nav{display:grid!important;width:100%;margin-top:.35rem}}
+@media (max-width:900px){.w2-menu>nav a{display:flex!important;width:100%;min-height:52px;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:.75rem .3rem;color:var(--text-primary)}}
+@media (max-width:900px){.w2-mobile-reserve,.w2-mobile-login,.w2-mobile-account{width:100%!important}}
+@media (max-width:900px){.w2-menu>footer{padding-bottom:env(safe-area-inset-bottom)}}
+@media (max-width:420px){body>.w2-menu{width:100vw!important;border-left:0!important}}
+@media (max-width:420px){.w2-menu>header img{width:128px}}
+@media (max-width:420px){.w2-menu>header button{width:44px;height:44px}}
+@media (prefers-reduced-motion:reduce){body>.w2-menu{transition:none!important}}
+@media (max-width:900px){body>.w2-menu{display:flex!important;flex-direction:column!important}}
+@media (max-width:900px){.w2-menu>header{flex:none;margin-bottom:.15rem;padding-block:.85rem}}
+@media (max-width:900px){.w2-menu>nav{gap:0!important}}
+@media (max-width:900px){.w2-menu>nav a{display:grid!important;grid-template-columns:30px 1fr auto;gap:.55rem;min-height:50px;padding:.62rem .25rem!important}}
+@media (max-width:900px){.w2-menu>nav a i{color:#6f7e78;font-size:.5rem;font-style:normal;font-weight:900}}
+@media (max-width:900px){.w2-menu>nav a b{font-size:.72rem;font-weight:800}}
+@media (max-width:900px){.w2-menu>nav a span{font-size:.75rem}}
+@media (max-width:900px){.w2-menu>nav a.active{box-shadow:inset 3px 0 var(--lf-red);background:rgba(215,25,45,.045);color:var(--text-primary)}}
+@media (max-width:900px){.w2-menu>nav a.active i{color:var(--lf-red)}}
+@media (max-width:900px){.w2-mobile-reserve{min-height:54px;margin-top:.7rem;padding-inline:.85rem;border-radius:13px;font-size:.72rem}}
+@media (max-width:900px){.w2-mobile-login{min-height:50px;margin-top:.65rem;border-radius:13px;font-size:.7rem}}
+@media (max-width:900px){.w2-mobile-account{gap:0;margin-top:.65rem;padding:.45rem;border-radius:15px}}
+@media (max-width:900px){.w2-mobile-account>div{min-height:58px;padding:.45rem .5rem}}
+@media (max-width:900px){.w2-mobile-account>div>span{width:38px;height:38px}}
+@media (max-width:900px){.w2-mobile-account p{min-width:0}}
+@media (max-width:900px){.w2-mobile-account p small{font-size:.48rem}}
+@media (max-width:900px){.w2-mobile-account p strong,.w2-mobile-account p em{overflow:hidden;max-width:230px;text-overflow:ellipsis;white-space:nowrap}}
+@media (max-width:900px){.w2-mobile-account p strong{font-size:.72rem}}
+@media (max-width:900px){.w2-mobile-account p em{margin-top:.08rem;color:var(--text-secondary);font-size:.52rem;font-style:normal}}
+@media (max-width:900px){.w2-mobile-account>a,.w2-mobile-account>button{min-height:44px!important;padding:.5rem .55rem!important;font-size:.67rem}}
+@media (max-width:900px){.w2-mobile-account>a{border-top:1px solid color-mix(in srgb,var(--line) 70%,transparent)}}
+@media (max-width:900px){.w2-mobile-account>a:first-of-type{border-top:0}}
+@media (max-width:900px){.w2-mobile-account>button{margin-top:.15rem}}
+@media (max-width:900px){.w2-menu>footer{margin-top:auto;min-height:38px;align-items:end;padding-top:.7rem!important;padding-bottom:max(.35rem,env(safe-area-inset-bottom))!important;font-size:.43rem}}
+@media (max-width:390px){body>.w2-menu{padding:.75rem!important}}
+@media (max-width:390px){.w2-menu>header{top:-.75rem;margin:-.75rem -.75rem .25rem;padding:.75rem}}
+@media (max-width:390px){.w2-menu>nav a{min-height:47px}}
+@media (max-width:390px){.w2-mobile-reserve{min-height:50px}}
+@media (max-width:390px){.w2-mobile-login{min-height:48px}}
+@media (max-width:340px){.w2-menu>nav a{min-height:44px}}
+@media (max-width:340px){.w2-menu>header img{width:116px}}
+@media (max-width:900px){.w2-menu:after{content:"Reservas, competencia y comunidad en una sola plataforma.";display:block;margin:.8rem 0 0;border-top:1px solid var(--line);padding:.75rem .2rem 0;color:var(--text-secondary);font-size:.52rem;line-height:1.5}}
+@media (max-width:900px){.w2-menu:has(.w2-mobile-account:not(.hidden)):after{content:"Tu actividad deportiva y comercial, siempre conectada."}}
+@media (max-width:900px){.w2-menu>footer{margin-top:auto!important}}
+@media (max-width:900px){.w2-mobile-account>a{display:grid!important;grid-template-columns:28px 1fr auto!important;gap:.5rem!important}}
+@media (max-width:900px){.w2-mobile-account>a i{display:grid;width:26px;height:26px;place-items:center;border:1px solid var(--line);border-radius:8px;color:#b95d66}}
+@media (max-width:900px){.w2-mobile-account>a i svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}}
+@media (max-width:900px){.w2-mobile-account>a span{min-width:0}}
+@media (max-width:900px){.w2-mobile-account>a span em{display:inline-flex;margin-left:.3rem;border:1px solid rgba(215,25,45,.25);border-radius:99px;background:rgba(215,25,45,.06);padding:.1rem .25rem;color:#d77780;font-size:.38rem;font-style:normal;letter-spacing:.04em}}
+@media (max-width:900px){.w2-menu>footer{border-top:1px solid var(--line)!important;border-bottom:0!important}}
+@media (max-width:900px){.w2-menu:after{margin-top:.35rem!important;border-top:0!important;padding-top:.35rem!important;color:#809088!important;font-size:.5rem!important}}
+@media (max-width:900px){.w2-menu>nav a i{color:#87968f!important}}
+@media (max-width:900px){.w2-menu>nav a.active i{color:var(--lf-red)!important}}
+@media (max-width:900px){.w2-menu>nav a span{font-size:.85rem!important}}

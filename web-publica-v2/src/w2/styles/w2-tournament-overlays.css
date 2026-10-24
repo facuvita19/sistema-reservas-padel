@@ -166,13 +166,13 @@
 .bracket-controls-toggle,.bracket-controls-popover button{cursor:pointer!important}
 
 /* Scrollbars globales coherentes con la paleta grafito y verde. */
-*{scrollbar-width:thin;scrollbar-color:#151d1f #050809}
-*::-webkit-scrollbar{width:11px;height:11px}
-*::-webkit-scrollbar-track{background:#050809;border-radius:999px}
-*::-webkit-scrollbar-corner{background:#050809}
-*::-webkit-scrollbar-thumb{background:#151d1f;border:2px solid #050809;border-radius:999px}
-*::-webkit-scrollbar-thumb:hover{background:#3f9d70}
-*::-webkit-scrollbar-thumb:active{background:#58bd89}
+
+
+
+
+
+
+
 #modalCuadroTorneo .modal-body::-webkit-scrollbar-thumb{background:#11191b}
 #modalCuadroTorneo .modal-body::-webkit-scrollbar-thumb:hover{background:#3f9d70}
 .bracket-viewport::-webkit-scrollbar-thumb{background:#101719}
@@ -180,13 +180,13 @@
 
 /* fechas-scrollbars-v21 */
 /* Scrollbars grafito casi negro; verde real al pasar sobre el pulgar. */
-html,body,*{scrollbar-color:#11191b #030506!important;scrollbar-width:thin}
-::-webkit-scrollbar,*::-webkit-scrollbar{width:11px!important;height:11px!important;background:#030506!important}
-::-webkit-scrollbar-track,*::-webkit-scrollbar-track{background:#030506!important;border-radius:999px!important}
-::-webkit-scrollbar-corner,*::-webkit-scrollbar-corner{background:#030506!important}
-::-webkit-scrollbar-thumb,*::-webkit-scrollbar-thumb{min-height:34px;background-color:#11191b!important;border:2px solid #030506!important;border-radius:999px!important;background-clip:padding-box!important}
-::-webkit-scrollbar-thumb:hover,*::-webkit-scrollbar-thumb:hover{background-color:#37a26e!important;border-color:#030506!important}
-::-webkit-scrollbar-thumb:active,*::-webkit-scrollbar-thumb:active{background-color:#58c58d!important}
+
+
+
+
+
+
+
 #modalCuadroTorneo .modal-body{scrollbar-color:#11191b #030506!important}
 #modalCuadroTorneo .modal-body:hover{scrollbar-color:#37a26e #030506!important}
 .bracket-viewport{scrollbar-color:#11191b #030506!important}
@@ -594,3 +594,58 @@ body.bracket-modal-open{overflow:hidden!important}
  #modalCuadroTorneo[data-bracket-version="46"] .bracket-round.final .bracket-card>header span:before{content:'◆ '!important;color:#e1bd4e!important}
 }
 
+
+
+
+/* SCROLLBARS INTERNAS DE TORNEOS W2 */
+:where(
+ #modalCuadroTorneo .modal-body,
+ #modalCuadroTorneo .bracket-v41-body,
+ #modalCuadroTorneo .bracket-viewport,
+ #modalInscripcion .modal-body,
+ #contenidoFormularioInscripcion,
+ #exitoInscripcion,
+ .w2t-select-menu,
+ .w2t-filters
+){scrollbar-width:thin;scrollbar-color:#11191b #030506}
+:where(
+ #modalCuadroTorneo .modal-body,
+ #modalCuadroTorneo .bracket-v41-body,
+ #modalCuadroTorneo .bracket-viewport,
+ #modalInscripcion .modal-body,
+ #contenidoFormularioInscripcion,
+ #exitoInscripcion,
+ .w2t-select-menu,
+ .w2t-filters
+)::-webkit-scrollbar{width:11px;height:11px;background:#030506}
+:where(
+ #modalCuadroTorneo .modal-body,
+ #modalCuadroTorneo .bracket-v41-body,
+ #modalCuadroTorneo .bracket-viewport,
+ #modalInscripcion .modal-body,
+ #contenidoFormularioInscripcion,
+ #exitoInscripcion,
+ .w2t-select-menu,
+ .w2t-filters
+)::-webkit-scrollbar-track{background:#030506;border-radius:999px}
+:where(
+ #modalCuadroTorneo .modal-body,
+ #modalCuadroTorneo .bracket-v41-body,
+ #modalCuadroTorneo .bracket-viewport,
+ #modalInscripcion .modal-body,
+ #contenidoFormularioInscripcion,
+ #exitoInscripcion,
+ .w2t-select-menu,
+ .w2t-filters
+)::-webkit-scrollbar-thumb{min-height:34px;border:2px solid #030506;border-radius:999px;background:#11191b;background-clip:padding-box}
+:where(
+ #modalCuadroTorneo .modal-body,
+ #modalCuadroTorneo .bracket-v41-body,
+ #modalCuadroTorneo .bracket-viewport,
+ #modalInscripcion .modal-body,
+ #contenidoFormularioInscripcion,
+ #exitoInscripcion,
+ .w2t-select-menu,
+ .w2t-filters
+)::-webkit-scrollbar-thumb:hover{background:#37a26e}
+/* FIN SCROLLBARS INTERNAS DE TORNEOS W2 */

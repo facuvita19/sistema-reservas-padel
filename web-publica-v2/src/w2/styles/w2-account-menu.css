@@ -1,0 +1,57 @@
+/* Cuenta, disparador y menu de cuenta W2. */
+.w2-account{position:relative}
+.w2-account-trigger{display:flex;min-height:46px;align-items:center;gap:.5rem;border:1px solid var(--line);border-radius:14px;background:var(--panel-bg);padding:.3rem .45rem;color:var(--text-primary);cursor:pointer}
+.w2-account-trigger:hover,.w2-account-trigger[aria-expanded=true]{border-color:var(--lf-red);box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.w2-account-avatar,.w2-account-menu header>span{display:grid;width:34px;height:34px;flex:none;place-items:center;border-radius:10px;background:var(--lf-black);color:#fff;font-size:.58rem;font-weight:950}
+.w2-account-trigger>span:nth-child(2){display:grid;min-width:55px;text-align:left}
+.w2-account-trigger small{color:var(--text-secondary);font-size:.48rem;text-transform:uppercase}
+.w2-account-trigger strong{max-width:78px;overflow:hidden;font-size:.65rem;text-overflow:ellipsis;white-space:nowrap}
+.w2-account-trigger svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.w2-account-trigger[aria-expanded=true] svg{transform:rotate(180deg)}
+.w2-account-menu{position:absolute;z-index:1600;right:0;top:calc(100% + .7rem);width:310px;overflow:hidden;border:1px solid var(--line);border-radius:22px;background:var(--panel-bg);padding:.55rem;color:var(--text-primary);box-shadow:0 35px 100px rgba(0,0,0,.42)}
+.w2-account-menu header{display:flex;align-items:center;gap:.7rem;border-bottom:1px solid var(--line);padding:.65rem}
+.w2-account-menu header>span{width:44px;height:44px}
+.w2-account-menu header div{display:grid;min-width:0}
+.w2-account-menu header small{color:var(--lf-red);font-size:.52rem;font-weight:900;text-transform:uppercase}
+.w2-account-menu header strong{font-size:.78rem}
+.w2-account-menu header em{overflow:hidden;color:var(--text-secondary);font-size:.58rem;font-style:normal;text-overflow:ellipsis;white-space:nowrap}
+.w2-account-menu>a,.w2-account-menu>button{display:flex;width:100%;min-height:58px;align-items:center;gap:.65rem;border:0;border-radius:13px;background:transparent;padding:.6rem;color:var(--text-primary);text-align:left;cursor:pointer}
+.w2-account-menu>a:hover,.w2-account-menu>a:focus-visible{background:var(--panel-raised)}
+.w2-account-menu>a>span,.w2-account-menu>button>span{display:grid;width:31px;height:31px;flex:none;place-items:center;border-radius:9px;background:var(--panel-raised);color:var(--lf-red);font-size:.58rem;font-weight:900}
+.w2-account-menu>a div,.w2-account-menu>button div{display:grid;flex:1}
+.w2-account-menu b{font-size:.68rem}
+.w2-account-menu small{color:var(--text-secondary);font-size:.54rem}
+.w2-account-menu i{font-style:normal}
+.w2-account-menu>button{margin-top:.2rem;border-top:1px solid var(--line);border-radius:0;color:#e46e7a}
+.w2-account-menu>button:hover,.w2-account-menu>button:focus-visible{background:rgba(215,25,45,.08)}
+@media (max-width:1100px){.w2-account-trigger>span:nth-child(2){display:none}}
+@media (max-width:1100px){.w2-account-trigger{border-radius:999px}}
+@media (max-width:1100px){.w2-account-trigger svg{display:none}}
+.w2-account-menu{background:color-mix(in srgb,var(--panel-bg) 97%,#000);box-shadow:0 38px 110px rgba(0,0,0,.58),0 0 0 1px rgba(255,255,255,.025) inset}
+.w2-account-menu>a>span svg,.w2-account-menu>button>span svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.w2-account-menu>a>span,.w2-account-menu>button>span{border:1px solid var(--line)}
+.w2-account-menu>a:hover>span,.w2-account-menu>a:focus-visible>span{border-color:rgba(215,25,45,.38);background:rgba(215,25,45,.08)}
+.w2-account-menu>a:focus-visible,.w2-account-menu>button:focus-visible{outline:2px solid rgba(215,25,45,.38);outline-offset:-2px}
+.w2-account-trigger{border-color:var(--line)!important;box-shadow:none!important}
+.w2-account-trigger:hover,.w2-account-trigger:focus-visible,.w2-account-trigger[aria-expanded=true]{border-color:var(--lf-red)!important;box-shadow:0 8px 24px rgba(0,0,0,.16)!important}
+.w2-account-menu{top:calc(100% + .9rem)}
+.w2-account-menu:before{content:"";position:absolute;right:24px;top:-6px;width:11px;height:11px;border-left:1px solid var(--line);border-top:1px solid var(--line);background:color-mix(in srgb,var(--panel-bg) 97%,#000);transform:rotate(45deg)}
+.w2-account-menu>a>span,.w2-account-menu>button>span{color:#b75a63}
+.w2-account-menu>a:hover>span,.w2-account-menu>a:focus-visible>span{color:var(--lf-red)}
+.w2-account-menu b em{display:inline-flex;margin-left:.35rem;border:1px solid rgba(215,25,45,.28);border-radius:999px;background:rgba(215,25,45,.07);padding:.12rem .32rem;color:#dc6d78;font-size:.42rem;font-style:normal;letter-spacing:.05em;vertical-align:middle}
+@media (max-width:620px){.w2-account-menu:before{display:none}}
+.w2-account-trigger,.w2-account-menu>a,.w2-account-menu>button{cursor:pointer!important}
+.w2-account-menu>a,.w2-account-menu>button{cursor:pointer!important}
+.w2-account-menu [aria-disabled=true]{cursor:not-allowed!important}
+.w2-account{isolation:isolate}
+.w2-account-menu{z-index:1600!important;overflow-y:auto!important;overflow-x:hidden!important;max-height:calc(100dvh - var(--w2-header-height,76px) - 1.5rem);contain:none!important;clip-path:none!important;filter:none!important;box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.025) inset!important}
+.w2-account-menu::after{content:none!important;display:none!important}
+@media (max-width:900px){.w2-account-menu{display:none!important}}
+.w2-account-menu{contain:none!important;clip-path:none!important;filter:none!important;isolation:auto!important;box-shadow:0 14px 34px rgba(0,0,0,.34),0 0 0 1px rgba(255,255,255,.025) inset!important}
+.w2-account-menu::after{content:none!important;display:none!important}
+.w2-account-menu::before{z-index:0!important;box-shadow:none!important}
+.w2-account-menu>*{position:relative;z-index:1}
+body>.w2-account-menu{position:fixed!important;left:var(--account-menu-left)!important;right:auto!important;top:var(--account-menu-top)!important;width:var(--account-menu-width,350px)!important;z-index:4000!important;contain:none!important;clip-path:none!important;filter:none!important;isolation:auto!important;box-shadow:0 12px 28px rgba(0,0,0,.28)!important}
+body>.w2-account-menu::before,body>.w2-account-menu::after{content:none!important;display:none!important}
+@media (max-width:900px){body>.w2-account-menu{display:none!important}}
+@media (min-width:901px){html[data-session="authenticated"] .w2-account-trigger{min-width:132px}}
