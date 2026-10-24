@@ -22,3 +22,6 @@ test('R3.3I-C1C notificaciones anuncian error y recuperacion',async({page,isMobi
 
 // R3.3I-C2B - recuperacion de lectura individual
 test('R3.3I-C2B restaura contador si falla la lectura individual',async({page})=>{await page.route('**/api/publica/cliente/comunidad/notificaciones/501/leer',r=>r.fulfill({status:503,json:{mensaje:'No pudimos confirmar la lectura.'}}));await page.reload();const panel=await abrir(page),item=panel.locator('.w2-notification').filter({hasText:'Nueva solicitud para tu turno'});await item.click();await expect(page).toHaveURL('/w2');await expect(item).toHaveClass(/unread/);const count=(page.viewportSize()?.width||1000)<=900?page.locator('#w2NotificationsMobileCount'):page.locator('#w2NotificationsCount');await expect(count).toHaveText('1');await expect(page.locator('#w2NotificationsStatus')).toHaveAttribute('role','alert');await expect(page.locator('#w2NotificationsStatus')).toContainText('No pudimos confirmar la lectura')});
+
+
+test('invitado no descarga el sanitizador de notificaciones',async({page})=>{const scripts:string[]=[];page.on('request',request=>{const url=new URL(request.url());if(request.resourceType()==='script')scripts.push(url.pathname)});await page.goto('/w2/');await page.waitForLoadState('networkidle');expect(scripts.some(path=>path.includes('purify'))).toBeFalsy()});
