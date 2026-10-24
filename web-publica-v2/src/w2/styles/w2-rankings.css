@@ -476,3 +476,8 @@ html[data-theme="light"] .w2r-row:hover,html[data-theme="light"] .w2r-row:focus-
 #w2rAuditDrawer #w2rAuditTitle{max-width:16ch;margin:.38rem 0 .5rem;line-height:.92;text-wrap:balance}
 #w2rAuditDrawer #w2rAuditTitle+*{margin-top:0}
 @media(max-width:520px){#w2rAuditDrawer #w2rAuditTitle{max-width:15ch;line-height:.95}}
+
+/* W2 CI OVERLAY ISOLATION */
+.w2r-audit-backdrop{z-index:1600!important}
+.w2r-audit-drawer{z-index:1601!important}
+/* FIN W2 CI OVERLAY ISOLATION */

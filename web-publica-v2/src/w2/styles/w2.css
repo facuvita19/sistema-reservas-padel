@@ -107,3 +107,7 @@ html,.w2-body{background:var(--page-bg);color:var(--text-primary)}.w2-body{trans
 @media(max-width:700px){
   .w2c2-rank-hero>picture>img{object-position:35% center}
 }
+
+/* W2 CI SKIP ISOLATION */
+@media(min-width:901px){.w2-skip{top:102px!important}}
+/* FIN W2 CI SKIP ISOLATION */

@@ -11,6 +11,7 @@ const runtime=scope[runtimeKey]??=( {inflight:new Map<string,Promise<unknown>>()
 const inflight=runtime.inflight;
 const memory=runtime.memory;
 const defaultTtl=(route:string)=>route==='/complejo'?300_000:route==='/rankings/categorias'?120_000:route==='/canchas'?45_000:route==='/torneos'?60_000:route==='/auth/sesion'?0:route==='/cliente/comunidad/notificaciones'?30_000:route.startsWith('/comunidad/jugadores?')||route.startsWith('/comunidad/convocatorias?')?15_000:0;
+const persistentCache=(route:string)=>route==='/complejo'||route==='/rankings/categorias'||route==='/canchas';
 function cacheKey(route:string){return 'GET '+route}
 function loadSession(key:string){try{const all=JSON.parse(sessionStorage.getItem(CACHE_KEY)||'{}') as Record<string,CacheEntry>;const item=all[key];if(item&&item.expires>Date.now())return item;if(item){delete all[key];sessionStorage.setItem(CACHE_KEY,JSON.stringify(all))}}catch{}return null}
 function saveSession(key:string,item:CacheEntry){try{const all=JSON.parse(sessionStorage.getItem(CACHE_KEY)||'{}') as Record<string,CacheEntry>;all[key]=item;const now=Date.now();for(const k of Object.keys(all))if(!all[k]||all[k].expires<=now)delete all[k];sessionStorage.setItem(CACHE_KEY,JSON.stringify(all))}catch{}}
@@ -47,10 +48,10 @@ export async function api<T>(ruta:string,opciones:ApiOptions={}):Promise<T>{
   const method=(opciones.method||'GET').toUpperCase();
   if(method!=='GET'){const result=await request<T>(ruta,opciones);invalidarCacheApi();return result}
   const ttl=opciones.cacheMs??defaultTtl(ruta),key=cacheKey(ruta),now=Date.now();
-  if(!opciones.forceRefresh&&ttl>0){const local=memory.get(key)||loadSession(key);if(local&&local.expires>now){memory.set(key,local);return local.data as T}}
+  if(!opciones.forceRefresh&&ttl>0){const local=memory.get(key)||(persistentCache(ruta)?loadSession(key):null);if(local&&local.expires>now){memory.set(key,local);return local.data as T}}
   const shareable=!opciones.signal;
   if(shareable&&inflight.has(key))return inflight.get(key) as Promise<T>;
-  const pending=request<T>(ruta,opciones).then(data=>{if(ttl>0){const item={expires:Date.now()+ttl,data};memory.set(key,item);saveSession(key,item)}return data}).finally(()=>{if(shareable)inflight.delete(key)});
+  const pending=request<T>(ruta,opciones).then(data=>{if(ttl>0){const item={expires:Date.now()+ttl,data};memory.set(key,item);if(persistentCache(ruta))saveSession(key,item)}return data}).finally(()=>{if(shareable)inflight.delete(key)});
   if(shareable)inflight.set(key,pending);
   return pending;
 }
