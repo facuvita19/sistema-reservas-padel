@@ -209,3 +209,7 @@ Próximo bloque: **R3.3I · Convergencia final de Comunidad**, seguido por PWA y
 ## 13. Criterios de aceptación
 
 Cada fase debe evitar duplicación de personas, preservar privacidad, admitir instalación limpia, incluir pruebas proporcionales, mantener responsive y teclado, no exponer secretos, cerrar visualmente oscuro y claro, actualizar las guías y dejar una continuidad inequívoca.
+
+## Aplicacion movil independiente
+
+La evolucion movil premium se realizara despues del cierre de la web de escritorio como producto independiente, compartiendo backend y reglas de negocio, con React Native y Flutter como candidatas principales. La decision final se tomara con un prototipo medido, no por reutilizacion de codigo.

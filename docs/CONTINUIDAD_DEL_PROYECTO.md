@@ -586,3 +586,13 @@ La bienvenida nativa se muestra en cada apertura sin sesión persistente, no gua
 - Sesion persistente entra directo sin mostrar la bienvenida.
 - Acciones moviles apiladas, a ancho completo y resistentes al escalado de fuente.
 - Autenticacion suspende la bienvenida hasta cerrar o completar el acceso.
+
+## Punto de continuidad posterior al cierre del prototipo movil (25 de octubre de 2026)
+
+- La prioridad inmediata vuelve a ser la auditoria, limpieza y optimizacion integral de la web publica W2 de escritorio.
+- La web usa Astro y debe quedar premium, profesional, moderna e imponente en escritorio, notebook, tablet y responsive web.
+- El prototipo Android basado en envolver toda la web con Capacitor queda cerrado y documentado; no debe retomarse como arquitectura movil definitiva.
+- La futura app sera un producto independiente. Antes de implementarla se compararan React Native y Flutter con el mismo vertical slice y mediciones en dispositivo real.
+- Se conservaron fuera del experimento: Dependabot sin saltos mayores automaticos de TypeScript y Rankings editorial sin fotografia conceptual.
+- Proximo bloque recomendado: inventario de deuda visual y CSS, rendimiento real por ruta, presupuesto de imagenes/fuentes/scripts, tema claro/oscuro autoritativo y validacion visual de escritorio.
+- No reintroducir CAP5, CAP5B ni w2-mobile-definitive.css. Cualquier futura geometria de teclado debe medirse y documentarse antes de incorporarse.
