@@ -596,3 +596,27 @@ La bienvenida nativa se muestra en cada apertura sin sesión persistente, no gua
 - Se conservaron fuera del experimento: Dependabot sin saltos mayores automaticos de TypeScript y Rankings editorial sin fotografia conceptual.
 - Proximo bloque recomendado: inventario de deuda visual y CSS, rendimiento real por ruta, presupuesto de imagenes/fuentes/scripts, tema claro/oscuro autoritativo y validacion visual de escritorio.
 - No reintroducir CAP5, CAP5B ni w2-mobile-definitive.css. Cualquier futura geometria de teclado debe medirse y documentarse antes de incorporarse.
+
+## Plan maestro de finalización W2 (25 de octubre de 2026)
+
+La revisión integral posterior al commit `6a0be52` confirmó 17 rutas públicas y 152 pruebas detectadas. La web está avanzada, pero no terminada.
+
+Documentos autoritativos nuevos:
+
+- `docs/ESTADO_FUNCIONAL_W2.md`
+- `docs/AUDITORIA_VISUAL_W2.md`
+- `docs/PLAN_FINALIZACION_W2.md`
+- `docs/DEFINICION_DE_TERMINADO_W2.md`
+
+Hallazgos principales:
+
+1. `/w2/` es un prototipo visual con datos demostrativos y debe converger con la lógica real de `src/scripts/portada.ts`.
+2. Cuenta tiene Reservas, Pagos sandbox, Perfil deportivo y Comunidad avanzados, pero Datos personales y Seguridad todavía redirigen a `/mis-datos`.
+3. Reservas, Torneos, Rankings y Comunidad están funcionalmente avanzados y cuentan con pruebas amplias; requieren cierre de estados extremos, convergencia y mejora visual de escritorio.
+4. Mercado Pago productivo continúa pendiente.
+5. Deben converger las rutas heredadas con `/w2/*`.
+6. Existe deuda CSS y documental acumulada; la limpieza debe hacerse después de fijar las estructuras finales, por módulos y con pruebas.
+7. El prototipo Android quedó cerrado; sus activos generados no deben contaminar auditorías, Docker ni la arquitectura web.
+8. Toda mejora visual o reconstrucción que eleve la experiencia puede incorporarse sin limitarse por costo.
+
+Próximo bloque oficial: `F0. Consolidar estado y herramientas`, seguido por `F1. Inicio real y reconstrucción visual premium`.
