@@ -18,6 +18,15 @@ public interface BloqueoCanchaDAO {
 
     List<BloqueoCancha> listarPorCancha(long canchaId);
 
+    default List<BloqueoCancha> listarPorFecha(LocalDate fecha) {
+        if (fecha == null) {
+            throw new IllegalArgumentException("La fecha es obligatoria.");
+        }
+        return listar().stream()
+                .filter(bloqueo -> fecha.equals(bloqueo.getFecha()))
+                .toList();
+    }
+
     boolean horarioBloqueado(
             long canchaId,
             LocalDate fecha,

@@ -31,6 +31,9 @@ public final class ApiPublicaDTO {
             LocalDate fecha, CanchaPublica cancha,
             boolean disponibleEseDia, List<HorarioDisponible> horarios) { }
 
+    public record PanoramaDisponibilidad(
+            LocalDate fecha, List<Disponibilidad> canchas) { }
+
     public record ErrorApi(
             int estado, String codigo, String mensaje,
             String ruta, String fechaHora) { }

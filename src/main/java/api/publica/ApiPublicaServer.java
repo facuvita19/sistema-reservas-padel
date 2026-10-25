@@ -40,6 +40,7 @@ public final class ApiPublicaServer {
     private final DisponibilidadPublicaService disponibilidadService;
     private final SolicitudWebPublicaService solicitudWebService;
     private final EstadoSolicitudWebPublicaService estadoService;
+    private final PagoSolicitudWebPublicaService pagoSolicitudWebService;
     private final SeguridadApiPublica seguridad = new SeguridadApiPublica();
     private final RankingPublicoService rankingPublicoService = new RankingPublicoService();
     private final JugadorPublicoService jugadorPublicoService = new JugadorPublicoService();
@@ -78,6 +79,7 @@ public final class ApiPublicaServer {
         this.disponibilidadService = disponibilidadService;
         this.solicitudWebService = solicitudWebService;
         this.estadoService = estadoService;
+        this.pagoSolicitudWebService = new PagoSolicitudWebPublicaService(estadoService);
         mapper = new ObjectMapper().registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         SesionClienteService sesionClienteService =
@@ -208,13 +210,38 @@ public final class ApiPublicaServer {
                 responder(x, 201,
                         new EstadoSolicitudWebDTO.SolicitudCreadaPublica(
                                 creada.solicitudId(), codigo, creada.estado(),
-                                creada.clienteId(), creada.canchaId(),
+                                creada.canchaId(),
                                 creada.cancha(), creada.fecha(),
                                 creada.horaInicio(), creada.horaFin(),
                                 creada.precioTotal(), creada.importeSenia(),
                                 creada.vencimiento(), creada.minutosParaPagar(),
                                 creada.moneda(), creada.mensaje()));
                 return;
+            }
+
+            if (ruta.equals(PREFIJO + "/pagos/capacidades")
+                    && "GET".equals(metodo)) {
+                responder(x, 200, pagoSolicitudWebService.capacidades());
+                return;
+            }
+
+            String pagoSolicitudBase = PREFIJO + "/solicitudes/";
+            if (ruta.startsWith(pagoSolicitudBase) && ruta.endsWith("/pago")) {
+                String codigo = ruta.substring(pagoSolicitudBase.length(),
+                        ruta.length() - "/pago".length());
+                if ("GET".equals(metodo)) {
+                    responder(x, 200, pagoSolicitudWebService.actual(codigo));
+                    return;
+                }
+                if ("POST".equals(metodo)) {
+                    seguridad.validarCreacion(ip);
+                    byte[] cuerpo = seguridad.leerCuerpoLimitado(x.getRequestBody());
+                    PagoClienteDTO.CrearOrdenPago entrada = cuerpo.length == 0
+                            ? new PagoClienteDTO.CrearOrdenPago("TRANSFERENCIA_MANUAL")
+                            : mapper.readValue(cuerpo, PagoClienteDTO.CrearOrdenPago.class);
+                    responder(x, 201, pagoSolicitudWebService.crear(codigo, entrada.metodo()));
+                    return;
+                }
             }
 
             if (ruta.startsWith(PREFIJO + "/solicitudes/")
@@ -309,6 +336,10 @@ public final class ApiPublicaServer {
                 responder(x, 200, disponibilidadService.buscarCancha(
                         id(ruta.substring(
                                 (PREFIJO + "/canchas/").length()))));
+            } else if (ruta.equals(PREFIJO + "/disponibilidad/panorama")) {
+                Map<String, String> p = parametros(x.getRequestURI());
+                responder(x, 200, disponibilidadService.obtenerPanorama(
+                        fecha(p.get("fecha"))));
             } else if (ruta.equals(PREFIJO + "/disponibilidad")) {
                 Map<String, String> p = parametros(x.getRequestURI());
                 responder(x, 200,

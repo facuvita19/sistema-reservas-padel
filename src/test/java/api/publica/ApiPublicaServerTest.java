@@ -16,6 +16,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.AfterAll;
@@ -206,6 +208,19 @@ class ApiPublicaServerTest {
         assertEquals(429, ultima.statusCode());
         assertTrue(ultima.body().contains("DEMASIADOS_INTENTOS"));
         assertFalse(encabezado(ultima, "Retry-After").isBlank());
+    }
+
+    @Test
+    @Order(11)
+    void panoramaDisponibilidadDevuelve200() throws Exception {
+        LocalDate fecha = LocalDate.now().plusDays(2);
+        when(disponibilidad.obtenerPanorama(fecha)).thenReturn(
+                new ApiPublicaDTO.PanoramaDisponibilidad(fecha, List.of()));
+        HttpResponse<String> respuesta = enviar(HttpRequest.newBuilder(
+                URI.create(baseUrl + "/disponibilidad/panorama?fecha=" + fecha))
+                .GET().build());
+        assertEquals(200, respuesta.statusCode());
+        assertTrue(respuesta.body().contains("canchas"));
     }
 
     private static HttpResponse<String> post(String body)

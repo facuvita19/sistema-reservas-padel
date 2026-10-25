@@ -258,6 +258,14 @@ class AgendaServiceTest {
 			return bloqueos.stream().filter(b -> b.getCanchaId() == canchaId).toList();
 		}
 
+
+                @Override
+                public List<BloqueoCancha> listarPorFecha(LocalDate fecha) {
+                        return bloqueos.stream()
+                                        .filter(b -> fecha.equals(b.getFecha()))
+                                        .toList();
+                }
+
 		@Override
 		public boolean horarioBloqueado(long canchaId, LocalDate fecha, LocalTime inicio, LocalTime fin,
 				long bloqueoExcluidoId) {

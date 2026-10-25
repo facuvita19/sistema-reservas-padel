@@ -114,7 +114,12 @@
       'online'
     );
 
-    setTimeout(syncConnection, 2600);
+    /* RENDIMIENTO R2.4 - sincronizacion de conectividad en tiempo ocioso 7P */
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(syncConnection, { timeout: 2600 });
+    } else {
+      setTimeout(syncConnection, 2600);
+    }
   });
 
   addEventListener('offline', () => {
@@ -303,10 +308,33 @@
           }
         );
 
-        setInterval(
-          () => void registration.update(),
-          60 * 60 * 1000
-        );
+        /* RENDIMIENTO R2.3 - actualizaciones PWA condicionadas por visibilidad 7M */
+  const UPDATE_INTERVAL_MS = 60 * 60 * 1000;
+  let updateTimer = 0;
+
+  const checkForUpdate = () => {
+    if (document.visibilityState === 'visible') void registration.update();
+  };
+  const stopUpdateChecks = () => {
+    if (!updateTimer) return;
+    clearInterval(updateTimer);
+    updateTimer = 0;
+  };
+  const startUpdateChecks = () => {
+    if (updateTimer || document.visibilityState !== 'visible') return;
+    updateTimer = window.setInterval(checkForUpdate, UPDATE_INTERVAL_MS);
+  };
+
+  startUpdateChecks();
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkForUpdate();
+      startUpdateChecks();
+    } else {
+      stopUpdateChecks();
+    }
+  });
+  addEventListener('pagehide', stopUpdateChecks, { once: true });
       } catch {}
     },
     {

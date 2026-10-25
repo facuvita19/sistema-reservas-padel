@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test(
   'la promocion de instalacion PWA no aparece en escritorio',
-  async ({ page }) => {
+  async ({ page, isMobile }) => {
+  test.skip(isMobile,'Contrato exclusivo de escritorio: en viewports moviles la promocion PWA puede ser valida.');
     await page.addInitScript(() => {
       window.addEventListener(
         'beforeinstallprompt',

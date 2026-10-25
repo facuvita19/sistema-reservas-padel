@@ -18,6 +18,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import negocio.Cancha;
+import dao.BloqueoCanchaDAO;
+import dao.ReservaDAO;
+import dao.TorneoPartidoDAO;
 import negocio.ConfiguracionComplejo;
 import servicio.CanchaService;
 import servicio.ConfiguracionComplejoService;
@@ -32,6 +35,12 @@ class DisponibilidadPublicaServiceTest {
     private ReservaService reservaService;
     @Mock
     private ConfiguracionComplejoService configuracionService;
+    @Mock
+    private ReservaDAO reservaDAO;
+    @Mock
+    private BloqueoCanchaDAO bloqueoDAO;
+    @Mock
+    private TorneoPartidoDAO partidoDAO;
 
     private DisponibilidadPublicaService service;
     private Cancha cancha;
@@ -39,9 +48,8 @@ class DisponibilidadPublicaServiceTest {
     @BeforeEach
     void preparar() {
         service = new DisponibilidadPublicaService(
-                canchaService,
-                reservaService,
-                configuracionService);
+                canchaService, reservaService, configuracionService,
+                reservaDAO, bloqueoDAO, partidoDAO);
 
         cancha = new Cancha();
         cancha.setId(1L);
@@ -106,6 +114,27 @@ class DisponibilidadPublicaServiceTest {
                 resultado.horarios().get(0).horaFin());
         assertEquals(new BigDecimal("2500.00"),
                 resultado.horarios().get(0).importeSenia());
+    }
+
+    @Test
+    void calculaPanoramaConUnaLecturaPorFuente() {
+        LocalDate fecha = LocalDate.now().plusDays(2);
+        ConfiguracionComplejo configuracion = new ConfiguracionComplejo();
+        configuracion.setAnticipacionMinimaHoras(0);
+        when(canchaService.listar()).thenReturn(List.of(cancha));
+        when(configuracionService.obtener()).thenReturn(configuracion);
+        when(configuracionService.calcularSenia(cancha.getPrecio()))
+                .thenReturn(new BigDecimal("2500.00"));
+        when(reservaDAO.listarPorFecha(fecha)).thenReturn(List.of());
+        when(bloqueoDAO.listarPorFecha(fecha)).thenReturn(List.of());
+        when(partidoDAO.listarPorFecha(fecha)).thenReturn(List.of());
+
+        var resultado = service.obtenerPanorama(fecha);
+
+        assertEquals(fecha, resultado.fecha());
+        assertEquals(1, resultado.canchas().size());
+        assertEquals("Cancha Test", resultado.canchas().get(0).cancha().nombre());
+        assertEquals(10, resultado.canchas().get(0).horarios().size());
     }
 
     @Test

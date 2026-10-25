@@ -33,7 +33,6 @@ public final class EstadoSolicitudWebDTO {
             long solicitudId,
             String codigoSeguimiento,
             String estado,
-            long clienteId,
             long canchaId,
             String cancha,
             LocalDate fecha,

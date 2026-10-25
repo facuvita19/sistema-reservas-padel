@@ -59,7 +59,7 @@ html,.w2-body{background:var(--page-bg);color:var(--text-primary)}.w2-body{trans
 }
 .w2-skip:focus-visible{outline:2px solid #c8ff71;outline-offset:3px}
 @media(max-width:900px){
- .w2-skip{left:12px;top:calc(78px + 10px);max-width:calc(100vw - 24px);min-height:42px;padding:.58rem .8rem;font-size:.68rem}
+ .w2-skip{left:12px;top:calc(78px + 11px);max-width:calc(100vw - 24px);min-height:42px;padding:.58rem .8rem;font-size:.68rem}
 }
 @media(max-width:390px){.w2-skip{right:12px;width:auto;justify-content:center}}
 

@@ -1,3 +1,4 @@
+// CIERRE_6R_PRESUPUESTO_CSS_TORNEOS_350_KIB
 import { test, expect } from '@playwright/test';
 
 test('Rendimiento R1 mantiene Torneos fuera del bundle global y con estilos dedicados', async ({ request }) => {
@@ -30,7 +31,7 @@ test('Rendimiento R1 limita el presupuesto CSS de Torneos', async ({ page, reque
     expect(response.ok()).toBeTruthy();
     total += (await response.body()).byteLength;
   }
-  expect(total).toBeLessThan(380 * 1024);
+  expect(total).toBeLessThan(350 * 1024);
 });
 
 test('Rendimiento R1 conserva modales de Torneos sin utilidades Tailwind heredadas', async ({ page }) => {

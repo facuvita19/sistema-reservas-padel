@@ -97,7 +97,7 @@ public class AgendaService {
         }
 
         List<Reserva> reservas = reservaDAO.listarPorFecha(fecha);
-        List<BloqueoCancha> bloqueos = obtenerBloqueos(canchas, fecha);
+        List<BloqueoCancha> bloqueos = bloqueoDAO.listarPorFecha(fecha);
         List<TorneoPartido> partidos = partidoDAO.listarPorFecha(fecha);
 
         LocalTime aperturaGeneral = canchas.stream()
@@ -130,19 +130,6 @@ public class AgendaService {
         }
 
         return agenda;
-    }
-
-    private List<BloqueoCancha> obtenerBloqueos(
-            List<Cancha> canchas,
-            LocalDate fecha) {
-
-        List<BloqueoCancha> resultado = new ArrayList<>();
-        for (Cancha cancha : canchas) {
-            bloqueoDAO.listarPorCancha(cancha.getId()).stream()
-                    .filter(bloqueo -> fecha.equals(bloqueo.getFecha()))
-                    .forEach(resultado::add);
-        }
-        return resultado;
     }
 
     private CeldaAgenda crearCelda(

@@ -171,6 +171,28 @@ public class BloqueoCanchaDAOMySQL implements BloqueoCanchaDAO {
         return listarConConsulta(sql, canchaId);
     }
 
+    @Override
+    public List<BloqueoCancha> listarPorFecha(LocalDate fecha) {
+        if (fecha == null) {
+            throw new IllegalArgumentException("La fecha es obligatoria.");
+        }
+        String sql = consultaBase()
+                + " WHERE b.fecha = ? "
+                + "ORDER BY b.hora_inicio ASC, b.cancha_id ASC, b.id ASC";
+        List<BloqueoCancha> bloqueos = new ArrayList<>();
+        try (Connection conexion = ConexionBD.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setDate(1, Date.valueOf(fecha));
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                while (resultado.next()) bloqueos.add(convertirResultado(resultado));
+            }
+            return bloqueos;
+        } catch (SQLException exception) {
+            throw new RuntimeException(
+                    "No se pudieron recuperar los bloqueos de la fecha.", exception);
+        }
+    }
+
     private List<BloqueoCancha> listarConConsulta(
             String sql,
             Long canchaId) {
