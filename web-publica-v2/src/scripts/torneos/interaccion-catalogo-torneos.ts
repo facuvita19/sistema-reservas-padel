@@ -16,7 +16,6 @@ const escapeHtml=(valor:unknown)=>String(valor??'').replace(/[&<>"']/g,caracter=
 
 export function crearInteraccionCatalogoTorneos<T>(d:Dependencias<T>){
  const panel=()=>document.getElementById('panelFiltrosTorneos');
- const movil=()=>matchMedia('(max-width:899px)').matches;
  const panelFiltros=(abierto:boolean)=>{const p=panel(),disparador=document.getElementById('abrirFiltrosTorneos') as HTMLButtonElement|null;if(!p)return;p.classList.toggle('open',abierto);p.setAttribute('aria-hidden',String(!abierto));p.removeAttribute('inert');disparador?.setAttribute('aria-expanded',String(abierto));if(!abierto)disparador?.focus({preventScroll:true})};
  const sincronizarInscripcion=(valor:boolean)=>{d.catalogo.soloInscripcion=valor;const input=document.getElementById('filtroInscripcion') as HTMLInputElement|null;if(input)input.checked=valor};
  const renderYUrl=(modo:ModoUrl='replace')=>{d.catalogo.visibles=9;d.renderCatalogo();d.escribirEstadoCatalogo(modo)};
