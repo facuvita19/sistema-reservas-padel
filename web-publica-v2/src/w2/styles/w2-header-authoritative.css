@@ -138,3 +138,9 @@ html[data-w2-theme="light"] .w2-header .w2-theme-toggle:active>svg.w2-theme-moon
 }
 
 /* RENDIMIENTO R2.2 - limpieza de declaraciones parciales de cabecera global 7F */
+
+/* F1B9 SUPERFICIE GLOBAL SIN BORDES LATERALES */
+/* La capa exterior nunca pinta bandas negras laterales. La superficie visual pertenece al nav. */
+.w2-header{background:transparent!important;box-shadow:none!important}
+.w2-header:before,.w2-header:after{background:transparent!important;box-shadow:none!important}
+:root[data-w2-theme="light"] .w2-header{background:transparent!important}
