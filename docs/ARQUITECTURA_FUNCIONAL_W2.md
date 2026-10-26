@@ -305,3 +305,7 @@ Adoptar herramientas modernas con beneficio explícito:
 - ranking doble: claves únicas por origen y regla;
 - pagos duplicados: idempotencia y conciliación;
 - documentación obsoleta: actualización al cerrar bloques.
+
+## Estado autoritativo posterior al prototipo móvil
+
+> Nota vigente desde el 25 de octubre de 2026: las secciones anteriores sobre Capacitor y CAP3 se conservan únicamente como historial técnico. El proyecto Android, las dependencias Capacitor, las capas nativas y sus pruebas fueron retirados del producto web activo en F0. La dirección vigente es finalizar primero la web de escritorio y desarrollar después una aplicación móvil independiente.

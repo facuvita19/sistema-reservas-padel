@@ -98,3 +98,5 @@ web-publica-v2/android/captures/
 web-publica-v2/android/key.properties
 web-publica-v2/android/keystore.properties
 web-publica-v2/android/app/*.jks
+/inspeccionar-*.cjs
+/LEEME-inspeccionar-*.txt

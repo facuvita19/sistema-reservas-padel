@@ -1,3 +1,3 @@
 <script is:inline>
-(()=>{try{const saved=localStorage.getItem('w2-theme');const nativeHost=location.hostname==='10.0.2.2'||location.protocol==='capacitor:';const preferred=nativeHost?'dark':matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.w2Theme=saved||preferred}catch{document.documentElement.dataset.w2Theme='dark'}})();
+(()=>{try{const saved=localStorage.getItem('w2-theme');const preferred=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.dataset.w2Theme=saved||preferred}catch{document.documentElement.dataset.w2Theme='dark'}})();
 </script>

@@ -213,3 +213,7 @@ Cada fase debe evitar duplicación de personas, preservar privacidad, admitir in
 ## Aplicacion movil independiente
 
 La evolucion movil premium se realizara despues del cierre de la web de escritorio como producto independiente, compartiendo backend y reglas de negocio, con React Native y Flutter como candidatas principales. La decision final se tomara con un prototipo medido, no por reutilizacion de codigo.
+
+## Estado autoritativo posterior al prototipo móvil
+
+> Nota vigente desde el 25 de octubre de 2026: las secciones anteriores sobre Capacitor y CAP3 se conservan únicamente como historial técnico. El proyecto Android, las dependencias Capacitor, las capas nativas y sus pruebas fueron retirados del producto web activo en F0. La dirección vigente es finalizar primero la web de escritorio y desarrollar después una aplicación móvil independiente.

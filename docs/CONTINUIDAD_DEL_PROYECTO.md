@@ -620,3 +620,7 @@ Hallazgos principales:
 8. Toda mejora visual o reconstrucción que eleve la experiencia puede incorporarse sin limitarse por costo.
 
 Próximo bloque oficial: `F0. Consolidar estado y herramientas`, seguido por `F1. Inicio real y reconstrucción visual premium`.
+
+## F0 completado: consolidación web y retiro del prototipo Android
+
+F0 retiró del producto web activo el proyecto Android de Capacitor, sus dependencias, scripts, capas públicas nativas, runtime condicional y nueve pruebas históricas. La experiencia PWA permanece como estrategia web. Se creó `docs/MATRIZ_RUTAS_W2.md` y se clasificaron las rutas heredadas como transición sin nuevas capacidades. El próximo bloque oficial es F1: convertir `/w2/` en un Inicio real y reconstruir su experiencia premium de escritorio.

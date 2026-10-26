@@ -16,14 +16,7 @@
   const standalone =
     matchMedia('(display-mode: standalone)').matches ||
     navigator.standalone === true;
-
-  const nativeHost =
-    location.protocol === 'capacitor:' ||
-    location.hostname === '10.0.2.2' ||
-    /; wv\)/i.test(navigator.userAgent);
-
-  const mobileBrowser =
-    !nativeHost &&
+const mobileBrowser =
     (
       matchMedia('(max-width: 767px)').matches ||
       /android|iphone|ipad|ipod/i.test(navigator.userAgent)

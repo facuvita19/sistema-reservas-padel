@@ -291,3 +291,7 @@ Torneos y Rankings están cerrados. El perfil público completó R3.2B. Comunida
 3. prototipo Capacitor Android y pruebas en dispositivos reales;
 4. Push, deep links y distribución interna;
 5. iOS y evaluación de herramientas visuales adicionales si fueran necesarias.
+
+## Estado autoritativo posterior al prototipo móvil
+
+> Nota vigente desde el 25 de octubre de 2026: las secciones anteriores sobre Capacitor y CAP3 se conservan únicamente como historial técnico. El proyecto Android, las dependencias Capacitor, las capas nativas y sus pruebas fueron retirados del producto web activo en F0. La dirección vigente es finalizar primero la web de escritorio y desarrollar después una aplicación móvil independiente.

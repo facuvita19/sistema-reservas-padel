@@ -11,6 +11,8 @@ Declarar la web W2 funcionalmente completa, conectada a datos reales, visualment
 
 ### F0. Consolidar estado y herramientas
 
+Estado: COMPLETADO el 25 de octubre de 2026.
+
 Objetivo: preparar una base inequívoca.
 
 - excluir activos Android generados de auditorías y contexto Docker;

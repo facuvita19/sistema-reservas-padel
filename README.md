@@ -49,7 +49,7 @@ El entorno Docker incluye MySQL, API y Nginx. La aplicación administrativa pued
 - CodeQL: 0 alertas abiertas de 5 detectadas.
 - Secret Scanning: 0 secretos abiertos.
 - npm audit: 0 vulnerabilidades conocidas al cierre.
-- Bloque actual: fundación PWA; después, prototipo Capacitor Android.
+- Bloque actual: F0 de consolidación completado; comienza F1, Inicio real y reconstrucción visual premium.
 
 ## Calidad
 
@@ -133,8 +133,12 @@ Consultar [SECURITY.md](SECURITY.md) antes de reportar una vulnerabilidad.
 
 ## Estrategia móvil
 
-La dirección inicial es completar una PWA y luego incorporar Capacitor para Android e iOS. La capa móvil podrá evolucionar con componentes adicionales si las pruebas en dispositivos reales no alcanzan el estándar visual y funcional del producto.
+La dirección vigente es terminar y estabilizar primero la web W2 de escritorio. Después se desarrollará una aplicación móvil independiente, evaluando React Native, Flutter u otras alternativas mediante un vertical slice medido en dispositivos reales.
 
 ## Licencia
 
 El código se publica para evaluación de portfolio. No se concede permiso para copiar, redistribuir, sublicenciar, vender ni explotar comercialmente el proyecto. Consultar [LICENSE](LICENSE).
+
+## Estado autoritativo posterior al prototipo móvil
+
+> Nota vigente desde el 25 de octubre de 2026: las secciones anteriores sobre Capacitor y CAP3 se conservan únicamente como historial técnico. El proyecto Android, las dependencias Capacitor, las capas nativas y sus pruebas fueron retirados del producto web activo en F0. La dirección vigente es finalizar primero la web de escritorio y desarrollar después una aplicación móvil independiente.

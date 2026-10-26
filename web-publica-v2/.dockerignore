@@ -3,3 +3,9 @@ dist
 .astro
 .git
 *.log
+android
+captures
+test-results
+playwright-report
+blob-report
+.playwright-artifacts
