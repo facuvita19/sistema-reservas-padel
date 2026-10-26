@@ -27,7 +27,7 @@
     "esbuild": true
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.10",
+    "@astrojs/check": "^0.9.12",
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.0.0",
     "typescript": "^6.0.3"
