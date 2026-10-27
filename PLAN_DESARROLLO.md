@@ -1,20 +1,18 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
 <!-- W2-ESTADO-CANONICO-INICIO -->
-## Estado canónico · 21 de octubre de 2026
+## Estado canónico · 27 de octubre de 2026
 
 - Rama estable y publicada: `master`.
-- Commit de cierre vigente: `2735dfb` (`Completar eventos del centro de notificaciones`).
-- Árbol local al cerrar: limpio.
-- Repositorio público orientado a portfolio técnico, con licencia de evaluación y todos los derechos reservados.
-- Historial y árbol actual auditados sin secretos fuertes; Secret Scanning informa cero secretos abiertos.
-- CodeQL cerró las cinco alertas detectadas y mantiene cero alertas abiertas.
-- `npm audit` informa cero vulnerabilidades conocidas.
-- CI proporcional operativo: detecta alcance, ejecuta higiene siempre y activa Java, Astro, Playwright o Docker solo cuando corresponden; `workflow_dispatch` y pull requests conservan la validación integral.
-- Validación integral más reciente: Java/Maven, Astro/TypeScript, Playwright completo e instalación Docker limpia en verde.
-- R3.4B5A–D / R3.3H está cerrado: persistencia, centro global, convergencia visual y matriz completa de eventos internos.
-- Estrategia móvil oficial inicial: Astro → PWA completa → Capacitor → Android → iOS. Ionic visual, React/Preact, React Native, Flutter u otras herramientas siguen disponibles si el prototipo no alcanza el estándar premium.
-- Próximo bloque funcional: **R3.3I · Convergencia final de Comunidad**, seguido por la fundación PWA y el prototipo Capacitor Android.
+- Plataforma Deportiva W2 quedó publicada como repositorio público de portfolio y la convergencia documental integral anterior cerró en `73b7598`.
+- El bloque funcional R3.4B5D / R3.3H cerró en `2735dfb`; R3.3I fue implementado y superado por bloques posteriores de Comunidad.
+- Inicio W2 es la referencia visual autoritativa de toda la web pública.
+- Reservar quedó cerrado en su recorrido actual: selección, horarios, datos, confirmación, Mercado Pago, transferencia, estados, accesibilidad y contratos E2E.
+- Torneos conserva su arquitectura funcional y comenzó una convergencia visual transversal U1, sin reescribir catálogo, detalle, inscripción ni centro competitivo.
+- La prioridad vigente es unificar progresivamente tipografía, superficies, botones, filtros, desplegables, navegación secundaria, estados y densidad de todas las rutas W2.
+- El modo oscuro es la experiencia principal; el modo claro sigue siendo una alternativa real.
+- La experiencia de escritorio se termina y estabiliza primero. La aplicación móvil futura será independiente de la web y se decidirá mediante prototipos medidos.
+- CI proporcional, CodeQL, Secret Scanning y npm audit permanecen como controles de calidad y seguridad; las cifras puntuales deben verificarse en el último workflow antes de publicarlas como actuales.
 <!-- W2-ESTADO-CANONICO-FIN -->
 
 > Fuente de verdad estratégica y punto de continuidad del proyecto. Actualizado el 21 de octubre de 2026 después de cerrar y publicar R3.4B5D.
@@ -51,6 +49,53 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 
 ## 2. Punto actual de continuidad
 
+
+<!-- W2-UNIFICACION-VISUAL-INICIO -->
+## Punto vigente de continuidad visual
+
+1. Inicio es la referencia autoritativa y no debe degradarse para igualarlo a páginas más antiguas.
+2. Reservar está funcional y visualmente cerrado en su alcance actual.
+3. Torneos mantiene su arquitectura completa; U1 unifica escalas, superficies, foco, filtros, desplegables y tarjetas sin modificar dominio ni navegación.
+4. El siguiente trabajo debe continuar por secciones, comparando cada ruta con Inicio y Reservar, con cambios pequeños y validaciones proporcionales.
+5. Después de Torneos, el orden recomendado es Rankings, Comunidad, Mi cuenta y perfiles, salvo que una auditoría detecte un defecto funcional prioritario.
+6. La limpieza de CSS histórico se realiza después de fijar la estructura final de cada módulo, nunca antes ni mediante una reescritura ciega.
+
+### Referencia visual autoritativa: Inicio W2
+
+La ruta `/w2/` define la gramática visual de Plataforma Deportiva W2. Las demás secciones no deben copiar literalmente el HTML ni las clases `w2x-*`; deben trasladar sus principios a la función propia de cada recorrido.
+
+### Composición autoritativa
+
+1. **Cabecera flotante contenida**: navegación centrada en el viewport, superficie grafito propia, sin bandas laterales y geometría estable entre rutas y estados de sesión.
+2. **Hero deportivo de primer frame**: fotografía real o recurso visual contextual, oscurecimiento por capas, contenido asimétrico, propuesta principal y módulo vivo visible sin desplazar la acción esencial fuera del primer viewport.
+3. **Titular editorial**: escala display, interlineado compacto, espaciado negativo controlado y combinación de texto sólido con una línea o palabra contorneada. El contorno es un recurso de énfasis, no una obligación en todos los títulos.
+4. **Kicker de identidad**: mayúsculas, tracking amplio, peso alto y línea roja corta. Debe introducir contexto, no repetir el título.
+5. **Acciones jerarquizadas**: CTA rojo para la acción principal; acción secundaria grafito o transparente; icono o flecha integrada en un módulo compacto; foco visible y área táctil mínima.
+6. **Panel contextual vivo**: superficie grafito profunda, borde discreto, radio asimétrico, iluminación radial roja moderada y datos reales con carga, contenido, vacío y error.
+7. **Franja de propuesta de valor**: tres señales compactas conectan Reservas, Competencia y Comunidad. En otras rutas puede convertirse en métricas o accesos rápidos, pero debe conservar ritmo, alineación y utilidad.
+8. **Secciones editoriales numeradas**: índice corto, título fuerte, explicación limitada y módulos alineados al contenido real. La numeración ordena la historia de la página.
+9. **Bento y superficies**: paneles grafito con bordes finos, sombras moderadas y radios diagonales. La grilla responde al contenido; no se fuerzan alturas que generen vacío artificial.
+10. **Profundidad y color**: negro y grafito estructuran; blanco establece jerarquía; rojo identifica y acciona. Verde queda reservado para éxito, clasificación o acreditación; ámbar para advertencia o espera; azul para Mercado Pago o identidad externa equivalente.
+11. **Movimiento útil**: revelado breve, hover contenido y transformaciones pequeñas. `prefers-reduced-motion` elimina animaciones sin ocultar contenido.
+12. **Cierre editorial**: la página concluye conectando Jugar, Competir y Perfil antes del footer global.
+
+### Qué se replica y qué no
+
+Se replican escala, ritmo, jerarquía, contraste, profundidad, comportamiento, focos, estados y lenguaje de controles. No se replica automáticamente la fotografía, el bento, la agenda, la cantidad de módulos ni las clases de Inicio. Reservar sigue siendo operativo; Torneos, competitivo; Rankings, analítico; Comunidad, de descubrimiento; Mi cuenta, de gestión personal.
+
+### Archivos de referencia
+
+- `src/pages/w2/index.astro`: composición y orden narrativo.
+- `src/w2/styles/w2-home-v2.css`: resultado visual autoritativo de Inicio.
+- `src/w2/scripts/inicio-v2.ts`: datos reales, estados y comportamiento de Inicio.
+- `src/w2/styles/w2-ui-unification.css`: tokens transversales nuevos.
+- `src/w2/styles/w2-tournaments-unification.css`: primera aplicación conservadora en Torneos.
+- `src/w2/styles/w2-booking-v2.css`: referencia para recorridos operativos complejos.
+
+### Regla de continuidad
+
+Antes de modificar una sección se inspeccionan su Astro, CSS, scripts y E2E. La unificación debe preservar identificadores, URL, estado, accesibilidad y reglas de negocio. Se prefieren capas compartidas pequeñas y archivos por ruta antes que copiar clases de Inicio o acumular overrides indefinidos.
+<!-- W2-UNIFICACION-VISUAL-FIN -->
 ### Estado ejecutivo
 
 - Rama estable: `master`.
@@ -67,7 +112,7 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 - Reserva W2: ruta canónica `/w2/reservar`; `/reservar` queda como puente de redirección preservando query string y hash.
 - Formato de reserva: cuatro jugadores, dos contra dos, sin selector editable.
 - Comunidad: R3.4B1–R3.4B5D / R3.3A–R3.3H completados en su alcance actual.
-- Próximo bloque real: **R3.3I · Convergencia final de Comunidad**.
+- Próximo bloque real: **convergencia visual transversal de Plataforma Deportiva W2**, usando Inicio como referencia autoritativa.
 
 ### Validaciones recientes
 
@@ -337,4 +382,4 @@ Un bloque se considera terminado cuando:
 
 ## 12. Instrucción para un chat nuevo
 
-Leer primero este archivo y `docs/CONTINUIDAD_DEL_PROYECTO.md`. Torneos y Rankings están cerrados; el perfil público completó R3.2B; Comunidad cerró R3.3A–R3.3H y el commit vigente es `2735dfb`. El próximo bloque es R3.3I, seguido por PWA y Capacitor. Respetar la entrega por ZIP, las validaciones proporcionales, la privacidad, la trazabilidad y las inscripciones exclusivamente por pareja.
+Leer primero este archivo y `docs/CONTINUIDAD_DEL_PROYECTO.md`. Inicio es la referencia visual autoritativa; Reservar está cerrado en su alcance actual y Torneos inició la convergencia U1. Continuar la unificación por rutas, preservar contratos funcionales y mantener la futura aplicación móvil como producto independiente. Respetar la entrega por ZIP, las validaciones proporcionales, la privacidad, la trazabilidad y las inscripciones exclusivamente por pareja.

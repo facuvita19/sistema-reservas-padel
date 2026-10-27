@@ -1,6 +1,6 @@
 # Mapa de experiencia W2
 
-> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 21 de octubre de 2026.
+> Navegación y recorridos vigentes de Plataforma Deportiva W2. Actualizado el 27 de octubre de 2026.
 
 
 <!-- W2-COMUNIDAD-ESTADO-INICIO -->
@@ -34,6 +34,20 @@ Torneos es la sección principal. No existe una sección llamada Competir.
 
 ## 2. Páginas
 
+
+<!-- W2-MAPA-IDENTIDAD-INICIO -->
+## Función visual de cada sección
+
+- **Inicio**: puerta editorial y deportiva. Presenta la propuesta completa, actividad real y accesos principales. Es la referencia visual autoritativa.
+- **Reservar**: recorrido operativo de cuatro pasos. Prioriza claridad, estado, protección temporal, pago y recuperación.
+- **Torneos**: exploración competitiva. Prioriza calendario, inscripción por pareja, seguimiento, resultados e historial.
+- **Rankings**: lectura analítica y auditable. Prioriza categoría, posición, puntos, movimiento y explicación.
+- **Comunidad**: descubrimiento y conexión protegida. Prioriza objetivos, compatibilidad, privacidad y acciones contextualizadas.
+- **Mi cuenta**: gestión personal. Prioriza reservas, pagos, identidad deportiva, preferencias, solicitudes e invitaciones.
+- **Perfiles**: identidad deportiva pública y privada, con límites estrictos de datos.
+
+Las rutas comparten shell, tipografía, controles, superficies, navegación, estados y accesibilidad, pero no deben tener la misma composición.
+<!-- W2-MAPA-IDENTIDAD-FIN -->
 ### Públicas
 
 - Inicio.
@@ -286,11 +300,12 @@ La URL de retorno nunca acredita por sí sola.
 
 Torneos y Rankings están cerrados. El perfil público completó R3.2B. Comunidad cerró R3.4B1–R3.4B5D / R3.3A–R3.3H. El siguiente orden es:
 
-1. R3.3I: convergencia final de Comunidad;
-2. fundación PWA;
-3. prototipo Capacitor Android y pruebas en dispositivos reales;
-4. Push, deep links y distribución interna;
-5. iOS y evaluación de herramientas visuales adicionales si fueran necesarias.
+1. convergencia visual de Torneos iniciada en U1;
+2. Rankings;
+3. Comunidad;
+4. Mi cuenta y perfiles;
+5. limpieza transversal de CSS y validación integral;
+6. aplicación móvil independiente después del cierre de la web de escritorio.
 
 ## Estado autoritativo posterior al prototipo móvil
 

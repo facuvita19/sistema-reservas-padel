@@ -33,6 +33,44 @@ La versión anterior es referencia funcional y nada más. La nueva web debe supe
 
 ## 3. Principios obligatorios
 
+
+<!-- W2-VISION-VISUAL-INICIO -->
+## Referencia visual autoritativa: Inicio W2
+
+La ruta `/w2/` define la gramática visual de Plataforma Deportiva W2. Las demás secciones no deben copiar literalmente el HTML ni las clases `w2x-*`; deben trasladar sus principios a la función propia de cada recorrido.
+
+### Composición autoritativa
+
+1. **Cabecera flotante contenida**: navegación centrada en el viewport, superficie grafito propia, sin bandas laterales y geometría estable entre rutas y estados de sesión.
+2. **Hero deportivo de primer frame**: fotografía real o recurso visual contextual, oscurecimiento por capas, contenido asimétrico, propuesta principal y módulo vivo visible sin desplazar la acción esencial fuera del primer viewport.
+3. **Titular editorial**: escala display, interlineado compacto, espaciado negativo controlado y combinación de texto sólido con una línea o palabra contorneada. El contorno es un recurso de énfasis, no una obligación en todos los títulos.
+4. **Kicker de identidad**: mayúsculas, tracking amplio, peso alto y línea roja corta. Debe introducir contexto, no repetir el título.
+5. **Acciones jerarquizadas**: CTA rojo para la acción principal; acción secundaria grafito o transparente; icono o flecha integrada en un módulo compacto; foco visible y área táctil mínima.
+6. **Panel contextual vivo**: superficie grafito profunda, borde discreto, radio asimétrico, iluminación radial roja moderada y datos reales con carga, contenido, vacío y error.
+7. **Franja de propuesta de valor**: tres señales compactas conectan Reservas, Competencia y Comunidad. En otras rutas puede convertirse en métricas o accesos rápidos, pero debe conservar ritmo, alineación y utilidad.
+8. **Secciones editoriales numeradas**: índice corto, título fuerte, explicación limitada y módulos alineados al contenido real. La numeración ordena la historia de la página.
+9. **Bento y superficies**: paneles grafito con bordes finos, sombras moderadas y radios diagonales. La grilla responde al contenido; no se fuerzan alturas que generen vacío artificial.
+10. **Profundidad y color**: negro y grafito estructuran; blanco establece jerarquía; rojo identifica y acciona. Verde queda reservado para éxito, clasificación o acreditación; ámbar para advertencia o espera; azul para Mercado Pago o identidad externa equivalente.
+11. **Movimiento útil**: revelado breve, hover contenido y transformaciones pequeñas. `prefers-reduced-motion` elimina animaciones sin ocultar contenido.
+12. **Cierre editorial**: la página concluye conectando Jugar, Competir y Perfil antes del footer global.
+
+### Qué se replica y qué no
+
+Se replican escala, ritmo, jerarquía, contraste, profundidad, comportamiento, focos, estados y lenguaje de controles. No se replica automáticamente la fotografía, el bento, la agenda, la cantidad de módulos ni las clases de Inicio. Reservar sigue siendo operativo; Torneos, competitivo; Rankings, analítico; Comunidad, de descubrimiento; Mi cuenta, de gestión personal.
+
+### Archivos de referencia
+
+- `src/pages/w2/index.astro`: composición y orden narrativo.
+- `src/w2/styles/w2-home-v2.css`: resultado visual autoritativo de Inicio.
+- `src/w2/scripts/inicio-v2.ts`: datos reales, estados y comportamiento de Inicio.
+- `src/w2/styles/w2-ui-unification.css`: tokens transversales nuevos.
+- `src/w2/styles/w2-tournaments-unification.css`: primera aplicación conservadora en Torneos.
+- `src/w2/styles/w2-booking-v2.css`: referencia para recorridos operativos complejos.
+
+### Regla de continuidad
+
+Antes de modificar una sección se inspeccionan su Astro, CSS, scripts y E2E. La unificación debe preservar identificadores, URL, estado, accesibilidad y reglas de negocio. Se prefieren capas compartidas pequeñas y archivos por ruta antes que copiar clases de Inicio o acumular overrides indefinidos.
+<!-- W2-VISION-VISUAL-FIN -->
 - W2 reemplaza integralmente la experiencia anterior.
 - Ninguna función se retira antes de una alternativa igual o superior.
 - Modo oscuro es la experiencia principal; modo claro es una alternativa real.
@@ -189,7 +227,7 @@ Estado cerrado:
 - oscuro, claro y responsive;
 - arquitectura modular.
 
-Torneos es referencia de método y calidad. No se reabre salvo error real, requisito nuevo o evolución transversal.
+Torneos conserva su arquitectura funcional completa. Puede recibir evolución transversal de tipografía, superficies, controles, filtros y navegación para converger con Inicio, sin reescribir dominio ni recorridos.
 
 ## 12. Fases y continuidad
 
@@ -204,7 +242,7 @@ Torneos es referencia de método y calidad. No se reabre salvo error real, requi
 - W2.8: Mercado Pago producción, pendiente.
 - W2.9: fundación PWA, Push y aplicación móvil con Capacitor después de R3.3I.
 
-Próximo bloque: **R3.3I · Convergencia final de Comunidad**, seguido por PWA y Capacitor.
+Próximo bloque: convergencia visual gradual de las rutas W2, terminando primero la experiencia web de escritorio.
 
 ## 13. Criterios de aceptación
 

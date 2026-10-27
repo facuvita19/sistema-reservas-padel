@@ -1,26 +1,48 @@
 # Continuidad del proyecto y método de trabajo
 
 <!-- W2-ESTADO-CANONICO-INICIO -->
-## Estado canónico · 21 de octubre de 2026
+## Estado canónico · 27 de octubre de 2026
 
 - Rama estable y publicada: `master`.
-- Commit de cierre vigente: `2735dfb` (`Completar eventos del centro de notificaciones`).
-- Árbol local al cerrar: limpio.
-- Repositorio público orientado a portfolio técnico, con licencia de evaluación y todos los derechos reservados.
-- Historial y árbol actual auditados sin secretos fuertes; Secret Scanning informa cero secretos abiertos.
-- CodeQL cerró las cinco alertas detectadas y mantiene cero alertas abiertas.
-- `npm audit` informa cero vulnerabilidades conocidas.
-- CI proporcional operativo: detecta alcance, ejecuta higiene siempre y activa Java, Astro, Playwright o Docker solo cuando corresponden; `workflow_dispatch` y pull requests conservan la validación integral.
-- Validación integral más reciente: Java/Maven, Astro/TypeScript, Playwright completo e instalación Docker limpia en verde.
-- R3.4B5A–D / R3.3H está cerrado: persistencia, centro global, convergencia visual y matriz completa de eventos internos.
-- Estrategia móvil oficial inicial: Astro → PWA completa → Capacitor → Android → iOS. Ionic visual, React/Preact, React Native, Flutter u otras herramientas siguen disponibles si el prototipo no alcanza el estándar premium.
-- R3.3I · Convergencia final de Comunidad quedó cerrado en `3b1688f`. PWA1 y PWA2 establecieron instalación, actualización y modo offline; PWA3 prepara la operación productiva y el siguiente bloque será el prototipo Capacitor Android.
+- Plataforma Deportiva W2 quedó publicada como repositorio público de portfolio y la convergencia documental integral anterior cerró en `73b7598`.
+- El bloque funcional R3.4B5D / R3.3H cerró en `2735dfb`; R3.3I fue implementado y superado por bloques posteriores de Comunidad.
+- Inicio W2 es la referencia visual autoritativa de toda la web pública.
+- Reservar quedó cerrado en su recorrido actual: selección, horarios, datos, confirmación, Mercado Pago, transferencia, estados, accesibilidad y contratos E2E.
+- Torneos conserva su arquitectura funcional y comenzó una convergencia visual transversal U1, sin reescribir catálogo, detalle, inscripción ni centro competitivo.
+- La prioridad vigente es unificar progresivamente tipografía, superficies, botones, filtros, desplegables, navegación secundaria, estados y densidad de todas las rutas W2.
+- El modo oscuro es la experiencia principal; el modo claro sigue siendo una alternativa real.
+- La experiencia de escritorio se termina y estabiliza primero. La aplicación móvil futura será independiente de la web y se decidirá mediante prototipos medidos.
+- CI proporcional, CodeQL, Secret Scanning y npm audit permanecen como controles de calidad y seguridad; las cifras puntuales deben verificarse en el último workflow antes de publicarlas como actuales.
 <!-- W2-ESTADO-CANONICO-FIN -->
 
 > Guía operativa para retomar `sistema-reservas-padel` en otra conversación, fecha o equipo sin perder contexto ni repetir errores.
 
 ## 1. Cómo comenzar una conversación nueva
 
+
+<!-- W2-CONTINUIDAD-VISUAL-INICIO -->
+## Punto vigente de continuidad visual
+
+1. Inicio es la referencia autoritativa y no debe degradarse para igualarlo a páginas más antiguas.
+2. Reservar está funcional y visualmente cerrado en su alcance actual.
+3. Torneos mantiene su arquitectura completa; U1 unifica escalas, superficies, foco, filtros, desplegables y tarjetas sin modificar dominio ni navegación.
+4. El siguiente trabajo debe continuar por secciones, comparando cada ruta con Inicio y Reservar, con cambios pequeños y validaciones proporcionales.
+5. Después de Torneos, el orden recomendado es Rankings, Comunidad, Mi cuenta y perfiles, salvo que una auditoría detecte un defecto funcional prioritario.
+6. La limpieza de CSS histórico se realiza después de fijar la estructura final de cada módulo, nunca antes ni mediante una reescritura ciega.
+
+### Lectura obligatoria en otro chat
+
+Además de este archivo, leer `docs/DIRECCION_VISUAL_W2.md`, en especial la anatomía completa de Inicio. No pedir nuevamente capturas o código ya documentados salvo que el árbol haya cambiado o exista una discrepancia visual concreta. Para una nueva sección, inspeccionar primero sus archivos reales y sus pruebas.
+
+### Método de convergencia
+
+- comparar contra Inicio sin clonar Inicio;
+- conservar la composición adecuada a cada función;
+- unificar tipografía, controles, superficies, estados y navegación;
+- evitar nuevas capas extensas de `!important`;
+- validar primero la ruta afectada;
+- reservar la suite integral y CI para cierres amplios.
+<!-- W2-CONTINUIDAD-VISUAL-FIN -->
 Leer primero:
 
 1. `PLAN_DESARROLLO.md`.
@@ -44,7 +66,7 @@ Antes de cualquier comando cuya salida pueda mostrar contraseñas, tokens u otro
 
 Después de aplicar cambios, indicá solo las validaciones necesarias, el resultado esperado, los archivos del commit y un mensaje de commit simple.
 
-El punto actual está documentado en PLAN_DESARROLLO.md.
+El punto actual está documentado en PLAN_DESARROLLO.md. Inicio es la referencia visual autoritativa; la continuidad visual está detallada en docs/DIRECCION_VISUAL_W2.md.
 ```
 
 ## 2. Limitaciones del canal
@@ -623,4 +645,4 @@ Próximo bloque oficial: `F0. Consolidar estado y herramientas`, seguido por `F1
 
 ## F0 completado: consolidación web y retiro del prototipo Android
 
-F0 retiró del producto web activo el proyecto Android de Capacitor, sus dependencias, scripts, capas públicas nativas, runtime condicional y nueve pruebas históricas. La experiencia PWA permanece como estrategia web. Se creó `docs/MATRIZ_RUTAS_W2.md` y se clasificaron las rutas heredadas como transición sin nuevas capacidades. El próximo bloque oficial es F1: convertir `/w2/` en un Inicio real y reconstruir su experiencia premium de escritorio.
+F0 retiró del producto web activo el proyecto Android de Capacitor, sus dependencias, scripts, capas públicas nativas, runtime condicional y nueve pruebas históricas. La experiencia PWA permanece como estrategia web. Se creó `docs/MATRIZ_RUTAS_W2.md` y se clasificaron las rutas heredadas como transición sin nuevas capacidades. F1 quedó realizado: `/w2/` es el Inicio real y la referencia visual autoritativa. El bloque vigente es la convergencia gradual de las demás rutas W2.

@@ -45,6 +45,25 @@ Construir una plataforma deportiva global sobre clientes, cuentas, perfiles, tor
 
 ## 3. Identidad
 
+
+<!-- W2-ARQUITECTURA-VISUAL-INICIO -->
+## Arquitectura de presentación compartida
+
+La unificación visual se organiza en tres niveles:
+
+1. **Shell global**: `W2Layout.astro`, `W2Header.astro`, tema, sesión, notificaciones, navegación y `w2.css`.
+2. **Gramática compartida**: `w2-ui-unification.css` contiene tokens neutrales de escala, controles, radios, foco y superficies. No debe absorber composiciones específicas de una ruta.
+3. **Presentación por ruta**: Inicio, Reservar, Torneos, Rankings, Comunidad, Cuenta y perfiles mantienen CSS y scripts propios. Las capas de convergencia por ruta se cargan después de la hoja principal y deben ser pequeñas, explícitas y finalmente consolidadas.
+
+### Reglas estructurales
+
+- Inicio define la referencia visual, no una biblioteca de clases para copiar.
+- Los identificadores consumidos por scripts y E2E se preservan.
+- Los filtros compartidos unifican lenguaje y comportamiento, pero cada ruta conserva la propiedad de su estado y URL.
+- La navegación segmentada es patrón global; los datos y acciones siguen perteneciendo al módulo.
+- La presentación dinámica debe escapar contenido, no producir HTML desde datos sin sanitización y nunca simular información productiva.
+- La limpieza de cascadas históricas se realiza con pruebas después de fijar el resultado final.
+<!-- W2-ARQUITECTURA-VISUAL-FIN -->
 ```text
 clientes 1 ----- 0..1 usuarios
 clientes 1 ----- 0..1 perfiles_jugador
@@ -102,7 +121,7 @@ Niveles:
 4. Resumen, Posiciones, Partidos o Cuadro;
 5. ronda cuando corresponde.
 
-`src/scripts/torneos.ts` actúa como composition root. `src/scripts/torneos/` separa dominio, estado, API, caché, presentación, interacción, inscripción, navegación y arranque. `w2-tournaments.css` es la capa visual autoritativa.
+`src/scripts/torneos.ts` actúa como composition root. `src/scripts/torneos/` separa dominio, estado, API, caché, presentación, interacción, inscripción, navegación y arranque. `w2-tournaments.css` conserva la base histórica; `w2-tournaments-unification.css` aplica la convergencia transversal actual y debe consolidarse gradualmente cuando el resultado quede cerrado.
 
 Reglas asíncronas:
 

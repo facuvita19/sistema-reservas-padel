@@ -49,10 +49,19 @@ El entorno Docker incluye MySQL, API y Nginx. La aplicación administrativa pued
 - CodeQL: 0 alertas abiertas de 5 detectadas.
 - Secret Scanning: 0 secretos abiertos.
 - npm audit: 0 vulnerabilidades conocidas al cierre.
-- Bloque actual: F0 de consolidación completado; comienza F1, Inicio real y reconstrucción visual premium.
+- Inicio real completado y establecido como referencia visual autoritativa.
+- Reservar cerrado en su alcance actual y Torneos en convergencia visual transversal U1.
 
 ## Calidad
 
+
+<!-- W2-IDENTIDAD-VISUAL-INICIO -->
+## Identidad visual compartida
+
+Inicio W2 es la referencia visual autoritativa. El resto de las rutas conserva su composición funcional, pero comparte tipografía, jerarquía, paleta grafito/rojo, superficies, controles, navegación secundaria, estados, foco y responsive. Reservar aporta el patrón operativo; Torneos aporta el patrón competitivo; Resumen, Posiciones, Partidos y Cuadro definen la navegación secundaria global.
+
+La especificación completa está en [Dirección visual W2](docs/DIRECCION_VISUAL_W2.md).
+<!-- W2-IDENTIDAD-VISUAL-FIN -->
 El repositorio contiene pruebas de dominio, servicios, contratos, migraciones, seguridad, frontend y recorridos E2E. El CI aplica validaciones proporcionales al alcance del cambio y conserva una ejecución integral manual para hitos.
 
 ## Inicio rápido
