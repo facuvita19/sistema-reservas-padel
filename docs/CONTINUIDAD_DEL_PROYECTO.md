@@ -646,3 +646,19 @@ Próximo bloque oficial: `F0. Consolidar estado y herramientas`, seguido por `F1
 ## F0 completado: consolidación web y retiro del prototipo Android
 
 F0 retiró del producto web activo el proyecto Android de Capacitor, sus dependencias, scripts, capas públicas nativas, runtime condicional y nueve pruebas históricas. La experiencia PWA permanece como estrategia web. Se creó `docs/MATRIZ_RUTAS_W2.md` y se clasificaron las rutas heredadas como transición sin nuevas capacidades. F1 quedó realizado: `/w2/` es el Inicio real y la referencia visual autoritativa. El bloque vigente es la convergencia gradual de las demás rutas W2.
+
+<!-- W2-TORNEOS-U2-CIERRE -->
+## Cierre visual U2 de Torneos
+
+El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente en escritorio y móvil. El bloque U2A-U2E consolidó el hero editorial, el torneo destacado, el calendario, la búsqueda contextual, las pestañas por estado, los filtros persistentes de escritorio, el panel móvil y los estados vacíos.
+
+- El hero conserva la identidad competitiva y permite ver el inicio del calendario en el primer viewport de escritorio.
+- El destacado finalizado representa progreso competitivo mediante partidos, no ocupación por parejas.
+- Los estados vacíos navegan hacia competencias disponibles y los estados filtrados limpian únicamente los criterios.
+- Rama, Formato y Disponibilidad comparten escala, alineación, foco y microinteracciones.
+- La cabecera móvil mantiene logo, tema y Menú dentro del viewport.
+- El panel móvil fue validado en 390 x 844, 320 x 760 y 320 x 640, con footer sticky, scroll interno y objetivos táctiles preservados.
+- El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
+- La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
+
+La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.

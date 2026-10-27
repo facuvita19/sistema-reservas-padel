@@ -144,3 +144,24 @@ html[data-w2-theme="light"] .w2-header .w2-theme-toggle:active>svg.w2-theme-moon
 .w2-header{background:transparent!important;box-shadow:none!important}
 .w2-header:before,.w2-header:after{background:transparent!important;box-shadow:none!important}
 :root[data-w2-theme="light"] .w2-header{background:transparent!important}
+
+/* U2 - geometria movil autoritativa de cabecera */
+@media(max-width:900px){
+ .w2-header .w2-nav{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;gap:8px!important;overflow:visible!important;padding-inline:12px!important}
+ .w2-header .w2-brand{min-width:0!important;width:min(128px,100%)!important;overflow:hidden!important}
+ .w2-header .w2-brand-picture{display:block!important;width:100%!important;min-width:0!important;height:49px!important}
+ .w2-header .w2-brand-picture>img{display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:left center!important}
+ .w2-command-actions{display:grid!important;grid-column:auto!important;width:auto!important;min-width:0!important;grid-template-columns:42px!important;column-gap:0!important}
+ .w2-command-slot-notifications{display:none!important}
+ .w2-command-header .w2-theme-toggle{display:grid!important}
+ .w2-header .w2-menu-button{display:grid!important;width:auto!important;min-width:64px!important;height:44px!important;place-items:center!important;padding:0 12px!important;white-space:nowrap!important;font-size:.68rem!important;font-weight:850!important}
+}
+@media(max-width:390px){
+ .w2-header .w2-nav{gap:6px!important;padding-inline:9px!important}
+ .w2-header .w2-brand{width:min(112px,100%)!important}
+ .w2-header .w2-brand-picture{height:46px!important}
+ .w2-command-actions{grid-template-columns:40px!important}
+ .w2-command-header .w2-theme-toggle{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important}
+ .w2-header .w2-menu-button{min-width:58px!important;height:42px!important;padding-inline:9px!important}
+}
+@media(max-width:340px){.w2-header .w2-brand{width:min(96px,100%)!important}.w2-header .w2-menu-button{min-width:54px!important;padding-inline:7px!important}}

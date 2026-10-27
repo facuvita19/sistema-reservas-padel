@@ -383,3 +383,19 @@ Un bloque se considera terminado cuando:
 ## 12. Instrucción para un chat nuevo
 
 Leer primero este archivo y `docs/CONTINUIDAD_DEL_PROYECTO.md`. Inicio es la referencia visual autoritativa; Reservar está cerrado en su alcance actual y Torneos inició la convergencia U1. Continuar la unificación por rutas, preservar contratos funcionales y mantener la futura aplicación móvil como producto independiente. Respetar la entrega por ZIP, las validaciones proporcionales, la privacidad, la trazabilidad y las inscripciones exclusivamente por pareja.
+
+<!-- W2-TORNEOS-U2-CIERRE -->
+## Cierre visual U2 de Torneos
+
+El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente en escritorio y móvil. El bloque U2A-U2E consolidó el hero editorial, el torneo destacado, el calendario, la búsqueda contextual, las pestañas por estado, los filtros persistentes de escritorio, el panel móvil y los estados vacíos.
+
+- El hero conserva la identidad competitiva y permite ver el inicio del calendario en el primer viewport de escritorio.
+- El destacado finalizado representa progreso competitivo mediante partidos, no ocupación por parejas.
+- Los estados vacíos navegan hacia competencias disponibles y los estados filtrados limpian únicamente los criterios.
+- Rama, Formato y Disponibilidad comparten escala, alineación, foco y microinteracciones.
+- La cabecera móvil mantiene logo, tema y Menú dentro del viewport.
+- El panel móvil fue validado en 390 x 844, 320 x 760 y 320 x 640, con footer sticky, scroll interno y objetivos táctiles preservados.
+- El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
+- La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
+
+La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.

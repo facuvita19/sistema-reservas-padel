@@ -255,3 +255,19 @@ La evolucion movil premium se realizara despues del cierre de la web de escritor
 ## Estado autoritativo posterior al prototipo móvil
 
 > Nota vigente desde el 25 de octubre de 2026: las secciones anteriores sobre Capacitor y CAP3 se conservan únicamente como historial técnico. El proyecto Android, las dependencias Capacitor, las capas nativas y sus pruebas fueron retirados del producto web activo en F0. La dirección vigente es finalizar primero la web de escritorio y desarrollar después una aplicación móvil independiente.
+
+<!-- W2-TORNEOS-U2-CIERRE -->
+## Cierre visual U2 de Torneos
+
+El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente en escritorio y móvil. El bloque U2A-U2E consolidó el hero editorial, el torneo destacado, el calendario, la búsqueda contextual, las pestañas por estado, los filtros persistentes de escritorio, el panel móvil y los estados vacíos.
+
+- El hero conserva la identidad competitiva y permite ver el inicio del calendario en el primer viewport de escritorio.
+- El destacado finalizado representa progreso competitivo mediante partidos, no ocupación por parejas.
+- Los estados vacíos navegan hacia competencias disponibles y los estados filtrados limpian únicamente los criterios.
+- Rama, Formato y Disponibilidad comparten escala, alineación, foco y microinteracciones.
+- La cabecera móvil mantiene logo, tema y Menú dentro del viewport.
+- El panel móvil fue validado en 390 x 844, 320 x 760 y 320 x 640, con footer sticky, scroll interno y objetivos táctiles preservados.
+- El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
+- La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
+
+La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.
