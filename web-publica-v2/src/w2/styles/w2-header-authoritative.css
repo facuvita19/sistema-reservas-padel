@@ -165,3 +165,116 @@ html[data-w2-theme="light"] .w2-header .w2-theme-toggle:active>svg.w2-theme-moon
  .w2-header .w2-menu-button{min-width:58px!important;height:42px!important;padding-inline:9px!important}
 }
 @media(max-width:340px){.w2-header .w2-brand{width:min(96px,100%)!important}.w2-header .w2-menu-button{min-width:54px!important;padding-inline:7px!important}}
+
+/* H1 · CABECERA GLOBAL W2 REPLICADA DESDE INICIO */
+/* Fuente de verdad visual: valores calculados de /w2/ en 1440 x 900, tema oscuro. */
+.w2-header{
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+}
+.w2-header::before,.w2-header::after{
+ content:none!important;
+ display:none!important;
+}
+body .w2-header .w2-nav,
+body .w2-header.w2-command-header .w2-nav{
+ position:relative!important;
+ overflow:visible!important;
+ isolation:auto!important;
+ border:1px solid rgba(151,168,181,.52)!important;
+ border-radius:25px!important;
+ background:linear-gradient(90deg,rgba(8,10,13,.96),rgba(8,10,13,.9) 72%,rgba(20,25,30,.94))!important;
+ box-shadow:0 18px 48px rgba(0,0,0,.3)!important;
+ backdrop-filter:blur(22px) saturate(125%)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(125%)!important;
+}
+body .w2-header .w2-nav::before,
+body .w2-header.w2-command-header .w2-nav::before{
+ content:""!important;
+ display:block!important;
+ position:absolute!important;
+ z-index:-1!important;
+ inset:-1px!important;
+ width:auto!important;
+ height:auto!important;
+ border:0!important;
+ border-radius:25px!important;
+ background:linear-gradient(110deg,#ef334c 0,#ef334c 2.5%,rgba(239,51,76,.08) 7%,transparent 16%,transparent 92%,rgba(203,217,226,.46) 100%)!important;
+ opacity:.9!important;
+ pointer-events:none!important;
+}
+body .w2-header .w2-nav::after,
+body .w2-header.w2-command-header .w2-nav::after{
+ content:none!important;
+ display:none!important;
+}
+body .w2-header .w2-nav>*,
+body .w2-header.w2-command-header .w2-nav>*{
+ position:relative!important;
+ z-index:auto!important;
+}
+:root[data-w2-theme="light"] body .w2-header .w2-nav,
+html[data-theme="light"] body .w2-header .w2-nav,
+body[data-theme="light"] .w2-header .w2-nav,
+.w2-body.theme-light .w2-header .w2-nav{
+ background:linear-gradient(110deg,rgba(250,251,251,.98),rgba(235,239,240,.96))!important;
+ box-shadow:0 14px 34px rgba(29,36,40,.13),inset 0 1px #fff!important;
+}
+@media(max-width:1100px) and (min-width:901px){
+ body .w2-header .w2-nav,body .w2-header.w2-command-header .w2-nav{border-radius:23px!important}
+ body .w2-header .w2-nav::before,body .w2-header.w2-command-header .w2-nav::before{border-radius:23px!important}
+}
+@media(max-width:900px){
+ body .w2-header .w2-nav,body .w2-header.w2-command-header .w2-nav{border-radius:21px!important}
+ body .w2-header .w2-nav::before,body .w2-header.w2-command-header .w2-nav::before{border-radius:21px!important}
+}
+
+/* H1B · cabecera global sin contorno exterior */
+/* El header no filtra el fondo: toda la superficie visual pertenece exclusivamente al nav. */
+html body>.w2-header,
+html body .w2-header{
+ background:transparent!important;
+ background-image:none!important;
+ border:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+}
+html body>.w2-header::before,
+html body>.w2-header::after,
+html body .w2-header::before,
+html body .w2-header::after{
+ content:none!important;
+ display:none!important;
+ background:none!important;
+ box-shadow:none!important;
+}
+/* Fuerza cada lado por separado para superar command-header y variantes de Reservar. */
+html body .w2-header .w2-nav,
+html body .w2-header.w2-command-header .w2-nav{
+ border-top:1px solid rgba(151,168,181,.52)!important;
+ border-right:1px solid rgba(151,168,181,.52)!important;
+ border-bottom:1px solid rgba(151,168,181,.52)!important;
+ border-left:1px solid rgba(151,168,181,.52)!important;
+}
+
+/* H1C · cuatro bordes globales irrevocables */
+/* Supera variantes tardias de Reservar y command-header sin alterar la geometria validada. */
+:root body.w2-body .w2-header .w2-nav,
+:root body.w2-body .w2-header.w2-command-header .w2-nav,
+html.w2-booking-page body.w2-body .w2-header .w2-nav,
+html.w2-booking-page body.w2-body .w2-header.w2-command-header .w2-nav{
+ border-top-width:1px!important;
+ border-top-style:solid!important;
+ border-top-color:rgba(151,168,181,.52)!important;
+ border-right-width:1px!important;
+ border-right-style:solid!important;
+ border-right-color:rgba(151,168,181,.52)!important;
+ border-bottom-width:1px!important;
+ border-bottom-style:solid!important;
+ border-bottom-color:rgba(151,168,181,.52)!important;
+ border-left-width:1px!important;
+ border-left-style:solid!important;
+ border-left-color:rgba(151,168,181,.52)!important;
+}

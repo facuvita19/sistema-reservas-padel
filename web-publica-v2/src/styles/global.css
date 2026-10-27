@@ -3283,3 +3283,9 @@ body>.site-menu-v59-panel{z-index:1309!important}
 /* correccion-menu-cuenta-sin-capa-global-20261021 */
 body.account-menu-open{overflow-y:auto!important;overflow-x:hidden!important}
 body.account-menu-open::before{content:none!important;display:none!important}
+/* u2c-cierre-cuadro-centrado */
+#cerrarCuadroTorneo.bracket-v41-close{display:grid;place-items:center;width:46px;height:46px;min-width:46px;min-height:46px;padding:0;border-radius:14px;line-height:0}
+#cerrarCuadroTorneo.bracket-v41-close>span{position:relative;display:block;width:16px;height:16px;pointer-events:none}
+#cerrarCuadroTorneo.bracket-v41-close>span::before,#cerrarCuadroTorneo.bracket-v41-close>span::after{content:"";position:absolute;top:50%;left:50%;width:18px;height:2.5px;border-radius:999px;background:currentColor;transform-origin:center}
+#cerrarCuadroTorneo.bracket-v41-close>span::before{transform:translate(-50%,-50%) rotate(45deg)}
+#cerrarCuadroTorneo.bracket-v41-close>span::after{transform:translate(-50%,-50%) rotate(-45deg)}

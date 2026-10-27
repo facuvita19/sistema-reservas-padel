@@ -527,3 +527,79 @@ html[data-theme="light"] :where(#pestanasTorneos,.w2td-tabs,.w2cc-center .f4-gro
 }
 
 /* RENDIMIENTO R1.6 - limpieza importance-aware del centro competitivo 6P */
+
+/* C1D13 - cierre autoritativo de metricas y controles de llave */
+/* Se ubica en la hoja autoritativa de Torneos para ganar a las reglas historicas. */
+@media(min-width:701px){
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts>span:nth-child(1){width:98px!important;min-width:98px!important;max-width:98px!important}
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts>span:nth-child(2){width:128px!important;min-width:128px!important;max-width:128px!important}
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts>span:nth-child(3){width:140px!important;min-width:140px!important;max-width:140px!important}
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts>span{height:44px!important;min-height:44px!important}
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts small{font-size:.65rem!important}
+ .w2-body #detalleTorneoHost .w2cc-center .f4-hero-facts b{font-size:1.18rem!important}
+}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button:hover,
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button:focus-visible,
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button:active{
+ border-color:#ef4051!important;
+ background-color:#211014!important;
+ background:#211014!important;
+ color:#fff!important;
+ outline:0!important;
+ box-shadow:0 0 0 3px rgba(239,64,81,.2),inset 0 1px 0 rgba(255,255,255,.04)!important;
+}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button:active{transform:translateY(1px) scale(.98)!important}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close{
+ position:relative!important;
+ display:block!important;
+ width:38px!important;
+ height:38px!important;
+ min-width:38px!important;
+ min-height:38px!important;
+ place-items:initial!important;
+ padding:0!important;
+ font-size:0!important;
+ line-height:0!important;
+ text-align:center!important;
+}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close>*{display:none!important}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close::before{
+ content:""!important;
+ position:absolute!important;
+ top:50%!important;
+ left:50%!important;
+ display:block!important;
+ width:15px!important;
+ height:2px!important;
+ margin:0!important;
+ border-radius:999px!important;
+ background:currentColor!important;
+ transform:translate(-50%,-50%) rotate(45deg)!important;
+ transform-origin:center!important;
+}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close::after{
+ content:""!important;
+ position:absolute!important;
+ top:50%!important;
+ left:50%!important;
+ display:block!important;
+ width:15px!important;
+ height:2px!important;
+ margin:0!important;
+ border-radius:999px!important;
+ background:currentColor!important;
+ transform:translate(-50%,-50%) rotate(-45deg)!important;
+ transform-origin:center!important;
+}
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close:hover,
+.w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close:focus-visible{
+ border-color:#ef4051!important;
+ background:#211014!important;
+ color:#fff!important;
+ outline:0!important;
+ box-shadow:0 0 0 3px rgba(239,64,81,.2)!important;
+}
+@media(prefers-reduced-motion:reduce){
+ .w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button,
+ .w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close{transition:none!important;transform:none!important}
+}
