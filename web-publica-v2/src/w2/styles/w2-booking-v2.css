@@ -502,3 +502,9 @@ body[data-booking-step="4"]:has(.w2f-transfer-open) .reserve-confirmation-title+
 .w2f-transfer-open .reserve-confirmation-tracking{min-height:58px!important;margin-top:.52rem!important;padding:.48rem .62rem!important}
 @media(max-width:900px){.w2f-transfer-open .reserve-payment-steps>*{grid-template-columns:34px minmax(0,1fr) auto}.w2f-transfer-open .w2f-final-step:after{left:3.9rem!important}.w2f-transfer-open .w2f-final-step [href*="wa.me"],.w2f-transfer-open .w2f-final-step [class*="whatsapp"]{min-width:190px!important}}
 @media(max-width:620px){.w2f-transfer-open .reserve-payment-steps>*{grid-template-columns:32px minmax(0,1fr)!important;row-gap:.4rem!important}.w2f-transfer-open .reserve-payment-steps button,.w2f-transfer-open .reserve-payment-steps a{grid-column:1/-1!important;width:100%!important;max-width:none!important}.w2f-transfer-open .w2f-final-step:after{left:3.7rem!important;top:.28rem!important}}
+
+/* H3 · STICKY RESERVAR AUTORITATIVO */
+html.w2-booking-page .reserve-steps{position:sticky!important;top:calc(var(--w2-header-height,94px) + 3px)!important;z-index:110!important;margin-top:-.45rem!important;margin-bottom:.72rem!important;border-radius:17px!important;border-color:rgba(112,123,129,.30)!important;background:linear-gradient(180deg,rgba(18,22,26,.99),rgba(10,14,17,.99))!important;box-shadow:0 12px 30px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.028)!important;backdrop-filter:none!important;isolation:isolate!important}
+html.w2-booking-page .reserve-steps::before{content:none!important;display:none!important}
+html.w2-booking-page .panel-reserva>[data-paso-ancla],html.w2-booking-page .panel-reserva,html.w2-booking-page [data-paso-ancla]{scroll-margin-top:calc(var(--w2-header-height,94px) + 73px)!important}
+@media(max-width:900px){html.w2-booking-page .reserve-steps{top:calc(var(--w2-header-height,81px) + 3px)!important;border-radius:15px!important}}

@@ -278,3 +278,124 @@ html.w2-booking-page body.w2-body .w2-header.w2-command-header .w2-nav{
  border-left-style:solid!important;
  border-left-color:rgba(151,168,181,.52)!important;
 }
+
+/* H2A · CABECERA W2 PREMIUM 2026 */
+:root{
+ --w2-header-height:94px;
+ --w2-header-control:42px;
+ --w2-header-radius:25px;
+ --w2-header-gap:8px;
+}
+.w2-header{
+ position:sticky!important;
+ top:0!important;
+ z-index:1400!important;
+ height:94px!important;
+ padding:10px 0 8px!important;
+ background:transparent!important;
+ border:0!important;
+ box-shadow:none!important;
+ backdrop-filter:none!important;
+ -webkit-backdrop-filter:none!important;
+ view-transition-name:w2-header;
+}
+.w2-header .w2-nav{
+ position:relative!important;
+ height:76px!important;
+ overflow:visible!important;
+ isolation:isolate!important;
+ border:1px solid rgba(151,168,181,.52)!important;
+ border-radius:var(--w2-header-radius)!important;
+ background:linear-gradient(90deg,rgba(8,10,13,.965),rgba(8,10,13,.92) 54%,rgba(20,25,30,.95))!important;
+ box-shadow:0 18px 48px rgba(0,0,0,.30),inset 0 1px rgba(255,255,255,.035)!important;
+ backdrop-filter:blur(22px) saturate(125%)!important;
+ -webkit-backdrop-filter:blur(22px) saturate(125%)!important;
+ transition:height .24s cubic-bezier(.2,.8,.2,1),border-color .24s ease,box-shadow .24s ease,background .24s ease!important;
+}
+.w2-header .w2-nav::before{
+ content:""!important;display:block!important;position:absolute!important;z-index:-2!important;inset:-1px!important;
+ border-radius:inherit!important;background:linear-gradient(110deg,#ef334c 0,#ef334c 2.5%,rgba(239,51,76,.08) 7%,transparent 16%,transparent 92%,rgba(203,217,226,.46) 100%)!important;opacity:.9!important;pointer-events:none!important;
+}
+.w2-header .w2-nav::after{
+ content:""!important;display:block!important;position:absolute!important;z-index:-1!important;inset:1px!important;border-radius:calc(var(--w2-header-radius) - 2px)!important;
+ background:radial-gradient(circle at 8% 50%,rgba(239,51,76,.055),transparent 18%),radial-gradient(circle at 94% 45%,rgba(210,222,230,.04),transparent 18%)!important;pointer-events:none!important;
+}
+.w2-header .w2-brand{transition:transform .24s cubic-bezier(.2,.8,.2,1),opacity .2s ease!important;transform-origin:left center!important}
+.w2-header .w2-brand-picture>img{filter:drop-shadow(0 5px 9px rgba(0,0,0,.34)) contrast(1.04)!important}
+.w2-header .w2-links{position:relative!important;display:flex!important;align-items:center!important;justify-content:center!important;gap:.15rem!important;min-width:500px!important;height:44px!important}
+.w2-header .w2-links a{position:relative!important;display:flex!important;min-height:40px!important;align-items:center!important;gap:.42rem!important;border:1px solid transparent!important;border-radius:11px!important;background:transparent!important;padding:.5rem .76rem!important;color:#9fa8a4!important;font-size:.71rem!important;font-weight:830!important;letter-spacing:.002em!important;transition:color .16s ease,background .16s ease,border-color .16s ease,transform .16s ease!important}
+.w2-header .w2-links a svg{width:15px!important;height:15px!important;fill:none!important;stroke:currentColor!important;stroke-width:1.75!important;stroke-linecap:round!important;stroke-linejoin:round!important;opacity:.72!important;transition:opacity .16s ease,transform .16s ease!important}
+.w2-header .w2-links a:hover{border-color:rgba(151,168,181,.14)!important;background:linear-gradient(180deg,rgba(255,255,255,.048),rgba(255,255,255,.018))!important;color:#fff!important;transform:translateY(-1px)!important}
+.w2-header .w2-links a:hover svg{opacity:1!important;transform:translateY(-1px)!important}
+.w2-header .w2-links a.active{border-color:rgba(239,51,76,.18)!important;background:linear-gradient(145deg,rgba(77,24,32,.34),rgba(30,17,21,.26))!important;color:#fff!important}
+.w2-header .w2-links a.active svg{color:#ff6476!important;opacity:1!important}
+.w2-header .w2-links a.active::after{content:""!important;position:absolute!important;right:30%!important;bottom:3px!important;left:30%!important;height:3px!important;border-radius:999px!important;background:linear-gradient(90deg,#d7192d,#ff5b6d)!important;box-shadow:0 0 12px rgba(239,51,76,.42)!important}
+.w2-header .w2-theme-toggle,.w2-header .w2-notifications-trigger{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important}
+.w2-header .w2-theme-toggle:hover,.w2-header .w2-notifications-trigger:hover{transform:translateY(-1px)!important}
+.w2-header .w2-cta{display:grid!important;width:125px!important;height:44px!important;grid-template-columns:18px minmax(0,1fr) 12px!important;align-items:center!important;gap:8px!important;border-radius:15px!important;padding:0 12px!important;overflow:hidden!important;isolation:isolate!important;transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important}
+.w2-header .w2-cta::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.18) 48%,transparent 76%);transform:translateX(-120%);transition:transform .55s cubic-bezier(.2,.8,.2,1)}
+.w2-header .w2-cta:hover::before{transform:translateX(120%)}
+.w2-header .w2-cta:hover{transform:translateY(-1px)!important}
+.w2-header .w2-cta svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.w2-header .w2-cta-copy{display:grid;min-width:0;text-align:left;line-height:1.05}
+.w2-header .w2-cta-copy b{font-size:.68rem;font-weight:900}
+.w2-header .w2-cta-copy small{overflow:hidden;font-size:.45rem;font-weight:700;opacity:.74;text-overflow:ellipsis;white-space:nowrap}
+.w2-header .w2-cta>i{font-size:.9rem;font-style:normal;transition:transform .16s ease}
+.w2-header .w2-cta:hover>i{transform:translateX(2px)}
+.w2-header .w2-account-trigger{transition:transform .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important}
+.w2-header .w2-account-trigger:hover{transform:translateY(-1px)}
+.w2-header .w2-account-trigger>svg{transition:transform .18s ease}.w2-header .w2-account-trigger[aria-expanded=true]>svg{transform:rotate(180deg)}
+.w2-header.is-compact{height:84px!important;padding:6px 0!important}
+.w2-header.is-compact .w2-nav{height:72px!important;border-color:rgba(151,168,181,.58)!important;background:linear-gradient(90deg,rgba(7,9,12,.985),rgba(9,12,15,.97) 60%,rgba(18,23,28,.975))!important;box-shadow:0 14px 38px rgba(0,0,0,.38),inset 0 1px rgba(255,255,255,.04)!important}
+.w2-header.is-compact .w2-brand{transform:scale(.965)}
+:root[data-w2-theme="light"] .w2-header .w2-nav{border-color:rgba(105,117,124,.34)!important;background:linear-gradient(110deg,rgba(253,254,254,.985),rgba(235,239,240,.975))!important;box-shadow:0 14px 34px rgba(29,36,40,.13),inset 0 1px #fff!important}
+:root[data-w2-theme="light"] .w2-header .w2-nav::after{background:radial-gradient(circle at 8% 50%,rgba(215,25,45,.045),transparent 18%),radial-gradient(circle at 94% 45%,rgba(55,69,77,.035),transparent 18%)!important}
+:root[data-w2-theme="light"] .w2-header .w2-links a{color:#59635e!important}:root[data-w2-theme="light"] .w2-header .w2-links a:hover,:root[data-w2-theme="light"] .w2-header .w2-links a.active{color:#151b18!important}
+@media(max-width:1250px) and (min-width:1101px){.w2-header .w2-links{min-width:430px!important}.w2-header .w2-links a{gap:.3rem!important;padding-inline:.58rem!important;font-size:.66rem!important}.w2-header .w2-links a svg{width:14px!important;height:14px!important}.w2-header .w2-cta-copy small{display:none}}
+@media(max-width:1100px) and (min-width:901px){.w2-header .w2-links{min-width:390px!important}.w2-header .w2-links a{gap:.28rem!important;padding-inline:.5rem!important;font-size:.64rem!important}.w2-header .w2-links a svg{display:none!important}}
+@media(max-width:900px){:root{--w2-header-height:81px;--w2-header-radius:21px}.w2-header{height:81px!important;padding:7px 0 6px!important}.w2-header.is-compact{height:75px!important;padding:4px 0 3px!important}.w2-header.is-compact .w2-nav{height:68px!important}.w2-header .w2-links,.w2-header .w2-cta,.w2-header .w2-notifications,.w2-header .w2-auth-slot{display:none!important}}
+@media(prefers-reduced-motion:reduce){.w2-header,.w2-header *{animation:none!important;transition:none!important;transform:none!important}.w2-header .w2-cta::before{display:none!important}}
+
+/* H2B · PULIDO VISUAL Y GEOMETRIA ESTABLE */
+/* La caja exterior nunca cambia de altura: solo se compacta la capsula interior. */
+:root{--w2-header-height:94px!important;--w2-header-bottom:102px;--w2-header-gap:8px}
+.w2-header,.w2-header.is-compact{height:94px!important;min-height:94px!important;padding:10px 0 8px!important}
+.w2-header.is-compact .w2-nav{height:72px!important;margin-top:2px!important;margin-bottom:2px!important}
+.w2-header.is-compact .w2-brand{transform:scale(.975)!important}
+/* Metal frio contenido: conserva identidad sin dominar el bloque de acciones. */
+.w2-header .w2-nav::before{background:linear-gradient(110deg,#ef334c 0,#ef334c 2.35%,rgba(239,51,76,.075) 7%,transparent 16%,transparent 93%,rgba(167,181,190,.27) 100%)!important}
+.w2-header .w2-nav::after{background:radial-gradient(circle at 8% 50%,rgba(239,51,76,.05),transparent 18%),radial-gradient(circle at 96% 50%,rgba(178,193,202,.022),transparent 16%)!important}
+/* Navegacion con una escala mas legible y un activo menos recargado. */
+.w2-header .w2-links{gap:.2rem!important}
+.w2-header .w2-links a{gap:.45rem!important;border-color:transparent!important;padding:.5rem .79rem!important;font-size:.735rem!important}
+.w2-header .w2-links a svg{width:16px!important;height:16px!important;opacity:.8!important;stroke-width:1.8!important}
+.w2-header .w2-links a.active{border-color:transparent!important;background:linear-gradient(145deg,rgba(77,24,32,.27),rgba(30,17,21,.19))!important;box-shadow:inset 0 0 0 1px rgba(239,51,76,.10)!important}
+.w2-header .w2-links a.active::after{right:32%!important;left:32%!important;bottom:3px!important}
+/* CTA mas claro: microtexto breve, respiracion interna y brillo discreto. */
+.w2-header .w2-cta{width:128px!important;min-width:128px!important;grid-template-columns:18px minmax(0,1fr) 12px!important;gap:7px!important;padding-inline:12px!important}
+.w2-header .w2-cta-copy small{font-size:.49rem!important;letter-spacing:.005em!important;opacity:.79!important}
+.w2-header .w2-cta-copy small::after{content:""}
+.w2-header .w2-cta-copy small{font-size:0!important}
+.w2-header .w2-cta-copy small::before{content:"Disponibilidad";font-size:.49rem!important}
+/* Acceso invitado semantico y sector derecho mas equilibrado. */
+.w2-header .w2-login>span{display:grid!important;width:25px!important;height:25px!important;place-items:center!important;border:1px solid rgba(239,51,76,.28)!important;background:rgba(239,51,76,.07)!important}
+.w2-header .w2-login>span svg{width:15px;height:15px;fill:none;stroke:#ff5d70;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.w2-header .w2-login b{font-size:.68rem!important}
+@media(min-width:1101px){.w2-header .w2-nav{grid-template-columns:142px minmax(0,1fr) 42px 42px 128px 128px!important;column-gap:15px!important}.w2-header .w2-auth-slot,.w2-header .w2-account-trigger,.w2-header .w2-session-check,.w2-header .w2-login{width:128px!important;min-width:128px!important}.w2-header .w2-account-trigger{padding-right:.55rem!important}}
+@media(max-width:1250px) and (min-width:1101px){.w2-header .w2-links a{gap:.3rem!important;padding-inline:.59rem!important;font-size:.68rem!important}.w2-header .w2-links a svg{width:15px!important;height:15px!important}.w2-header .w2-cta{width:120px!important;min-width:120px!important}.w2-header .w2-cta-copy small{display:none!important}.w2-header .w2-nav{grid-template-columns:142px minmax(0,1fr) 42px 42px 120px 124px!important;column-gap:12px!important}.w2-header .w2-auth-slot,.w2-header .w2-account-trigger,.w2-header .w2-session-check,.w2-header .w2-login{width:124px!important;min-width:124px!important}}
+@media(max-width:900px){:root{--w2-header-height:81px!important;--w2-header-bottom:88px}.w2-header,.w2-header.is-compact{height:81px!important;min-height:81px!important;padding:7px 0 6px!important}.w2-header.is-compact .w2-nav{height:68px!important;margin:0!important}}
+@media(prefers-reduced-motion:reduce){.w2-header.is-compact .w2-brand{transform:none!important}}
+
+/* H3 · CONVERGENCIA AUTORITATIVA CABECERA, STICKY Y CUENTA */
+body.account-menu-open .w2-header{display:block!important;position:sticky!important;top:0!important;z-index:3900!important;visibility:visible!important;opacity:1!important;transform:none!important;contain:none!important;isolation:isolate!important;pointer-events:auto!important}
+body.account-menu-open .w2-header .w2-nav{visibility:visible!important;opacity:1!important;transform:translateX(-50%)!important}
+body.account-menu-open #w2-content{position:relative;z-index:auto!important}
+@media(min-width:901px){
+ body.account-menu-open .w2-header{position:fixed!important;inset:0 0 auto 0!important;width:100%!important;min-width:0!important;height:94px!important;margin:0!important;z-index:3900!important}
+ body.account-menu-open .w2-header .w2-nav{margin-left:50vw!important;transform:translateX(-50%)!important}
+ body.account-menu-open,body.account-menu-open #w2-content{overflow-anchor:none!important}
+ body.account-menu-open{box-sizing:border-box!important;padding-top:0!important;padding-bottom:0!important}
+}
+@media(max-width:900px){body.account-menu-open .w2-header{z-index:1400!important}}
+.w2-header-placeholder{display:block!important;width:100%!important;min-height:var(--w2-header-height,94px)!important;flex:none!important;visibility:hidden!important;pointer-events:none!important;contain:strict!important}
+@media(max-width:900px){.w2-header-placeholder{display:none!important}}

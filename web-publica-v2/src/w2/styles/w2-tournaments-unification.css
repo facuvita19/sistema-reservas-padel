@@ -1116,3 +1116,9 @@ html:not(.w2-home-page) .w2-header .w2-nav>*{
  background:linear-gradient(180deg,rgba(18,22,26,.985),rgba(11,15,18,.985))!important;
  box-shadow:0 14px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.028)!important;
 }
+
+/* H3 · STICKY COMPETITIVO AUTORITATIVO */
+#detalleTorneoHost .w2cc-center>nav.f4-nav,#detalleTorneoHost .f4-center>nav.f4-nav{position:sticky!important;top:calc(var(--w2-header-height,94px) + 3px)!important;z-index:120!important;left:auto!important;right:auto!important;width:min(var(--w2-max),calc(100vw - 40px))!important;max-width:none!important;margin:3px 0 12px calc(50vw - 20px)!important;transform:translateX(-50%)!important;overflow:visible!important;border-radius:17px!important;border-color:rgba(112,123,129,.30)!important;background:linear-gradient(180deg,rgba(18,22,26,.99),rgba(10,14,17,.99))!important;box-shadow:0 12px 30px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.028)!important;backdrop-filter:none!important;isolation:isolate!important}
+#detalleTorneoHost .w2cc-center>nav.f4-nav::before,#detalleTorneoHost .f4-center>nav.f4-nav::before{content:none!important;display:none!important}
+#detalleTorneoHost .w2cc-center .f4-content{scroll-margin-top:calc(var(--w2-header-height,94px) + 73px)!important}
+@media(max-width:900px){#detalleTorneoHost .w2cc-center>nav.f4-nav,#detalleTorneoHost .f4-center>nav.f4-nav{top:calc(var(--w2-header-height,81px) + 3px)!important;width:calc(100vw - 24px)!important;margin-top:3px!important;margin-left:50vw!important;border-radius:15px!important}}

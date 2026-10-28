@@ -55,3 +55,8 @@ body>.w2-account-menu{position:fixed!important;left:var(--account-menu-left)!imp
 body>.w2-account-menu::before,body>.w2-account-menu::after{content:none!important;display:none!important}
 @media (max-width:900px){body>.w2-account-menu{display:none!important}}
 @media (min-width:901px){html[data-session="authenticated"] .w2-account-trigger{min-width:132px}}
+
+/* H3 · MENU DE CUENTA Y ANCLAJE STICKY AUTORITATIVOS */
+body.account-menu-open>.w2-account-menu{position:fixed!important;z-index:4000!important}
+body.account-menu-open .w2-account-trigger{position:relative!important;z-index:1!important}
+@media(min-width:901px){body.account-menu-open [data-account-sticky-anchor]{translate:0 var(--account-sticky-shift,0)!important}}
