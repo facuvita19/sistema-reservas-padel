@@ -21,6 +21,9 @@ import '../scripts/notificaciones';
 
 import { cargarComplejo } from '../../scripts/configuracion-publica';
 cargarComplejo().catch(()=>{});
+const w2Header=document.querySelector<HTMLElement>('[data-w2-header]');
+const syncW2Header=()=>{if(!w2Header)return;const compact=scrollY>28;w2Header.classList.toggle('is-compact',compact);const mobile=matchMedia('(max-width:900px)').matches,stableHeight=mobile?81:94;document.documentElement.style.setProperty('--w2-header-height',stableHeight+'px');document.documentElement.style.setProperty('--w2-header-bottom',(stableHeight+8)+'px')};
+let w2HeaderFrame=0;addEventListener('scroll',()=>{if(w2HeaderFrame)return;w2HeaderFrame=requestAnimationFrame(()=>{syncW2Header();w2HeaderFrame=0})},{passive:true});addEventListener('resize',syncW2Header,{passive:true});if(w2Header)new ResizeObserver(syncW2Header).observe(w2Header);syncW2Header();
 const menuButton=document.querySelector<HTMLButtonElement>('[data-w2-menu]');const menuPanel=document.querySelector<HTMLElement>('#w2Menu');const backdrop=document.querySelector<HTMLElement>('#w2MenuBackdrop');const closeButton=document.querySelector<HTMLButtonElement>('[data-w2-menu-close]');let focusBefore:HTMLElement|null=null;
 if(backdrop&&backdrop.parentElement!==document.body)document.body.appendChild(backdrop);if(menuPanel&&menuPanel.parentElement!==document.body)document.body.appendChild(menuPanel);
 function closeW2Menu(returnFocus=false){const focusInside=Boolean(menuPanel?.contains(document.activeElement));if(focusInside)menuButton?.focus({preventScroll:true});menuPanel?.setAttribute('inert','');menuPanel?.classList.remove('open');backdrop?.classList.remove('open');menuPanel?.setAttribute('aria-hidden','true');menuButton?.setAttribute('aria-expanded','false');document.body.classList.remove('w2-menu-open');document.documentElement.classList.remove('w2-menu-open');if(returnFocus&&!focusInside)focusBefore?.focus({preventScroll:true})}
