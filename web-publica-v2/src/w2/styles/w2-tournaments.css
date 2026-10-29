@@ -603,3 +603,78 @@ html[data-theme="light"] :where(#pestanasTorneos,.w2td-tabs,.w2cc-center .f4-gro
  .w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v48-toolbar button,
  .w2-body #modalCuadroTorneo[data-bracket-version="46"] .bracket-v41-close{transition:none!important;transform:none!important}
 }
+
+/* H3A · SANEAMIENTO CI CABECERA Y TORNEOS */
+.w2-nav,.w2-links{animation-name:none!important}
+.w2-nav{transition-property:border-color,box-shadow,background!important}
+.w2-links{transition-property:none!important}
+@media(max-width:700px){
+ #detalleTorneoHost .w2cc-center>nav.f4-nav,
+ .w2cc-center .f4-round-tabs{
+  box-sizing:border-box!important;
+  left:auto!important;right:auto!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-left:0!important;margin-right:0!important;
+  transform:none!important
+ }
+ #detalleTorneoHost .w2cc-center>nav.f4-nav{padding-left:.35rem!important;padding-right:.35rem!important}
+ .w2cc-center .f4-round-tabs{padding-left:.15rem!important;padding-right:.15rem!important}
+}
+
+/* H3B · GEOMETRIA REAL AUTORITATIVA */
+html body.w2-body .w2-header .w2-nav{
+ transition-property:border-color,box-shadow,background-color,background-image!important;
+ animation-name:none!important
+}
+html body.w2-body .w2-header .w2-links{
+ transition-property:none!important;
+ animation-name:none!important
+}
+@media(max-width:700px){
+ html body.w2-body #detalleTorneoHost .w2cc-center>nav.f4-nav{
+  box-sizing:border-box!important;
+  left:50%!important;right:auto!important;
+  width:calc(100vw - 16px)!important;min-width:0!important;max-width:calc(100vw - 16px)!important;
+  margin-left:0!important;margin-right:0!important;
+  transform:translateX(-50%)!important;
+  contain:paint!important
+ }
+ html body.w2-body #detalleTorneoHost .w2cc-center .f4-round-tabs{
+  box-sizing:border-box!important;
+  position:relative!important;left:auto!important;right:auto!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-left:0!important;margin-right:0!important;
+  transform:none!important;
+  contain:paint!important
+ }
+ html body.w2-body #detalleTorneoHost .w2cc-center,
+ html body.w2-body #detalleTorneoHost .f4-content,
+ html body.w2-body #detalleTorneoHost .f4-rounds{min-width:0!important;max-width:100%!important}
+}
+
+/* H3C · NAVEGACION MOVIL EN FLUJO */
+@media(max-width:700px){
+ html body.w2-body #detalleTorneoHost .w2cc-center>nav.f4-nav{
+  position:sticky!important;
+  inset-inline:auto!important;
+  left:auto!important;right:auto!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-left:0!important;margin-right:0!important;
+  translate:none!important;transform:none!important;
+  contain:layout paint!important;
+  pointer-events:auto!important
+ }
+ html body.w2-body #detalleTorneoHost .w2cc-center>nav.f4-nav>button{
+  position:relative!important;
+  z-index:1!important;
+  pointer-events:auto!important
+ }
+ html body.w2-body #detalleTorneoHost .w2cc-center .f4-round-tabs{
+  inset-inline:auto!important;
+  left:auto!important;right:auto!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  margin-left:0!important;margin-right:0!important;
+  translate:none!important;transform:none!important;
+  contain:layout paint!important
+ }
+}
