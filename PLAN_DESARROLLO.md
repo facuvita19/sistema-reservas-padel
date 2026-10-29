@@ -1,5 +1,41 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
+<!-- W2-CIERRE-C143387-INICIO -->
+## Estado autoritativo · 29 de octubre de 2026
+
+El bloque **Modernizar Mi cuenta y estabilizar cabecera y torneos** quedó publicado en `master` mediante el commit `c143387`. Este estado reemplaza cualquier continuidad anterior dentro de este documento que todavía indique que Mi cuenta está pendiente, que Datos personales o Seguridad redirigen a rutas heredadas, que Torneos sigue únicamente en U1/U2 o que Capacitor constituye la siguiente evolución móvil.
+
+### Cierre funcional y visual
+
+- Mi cuenta converge como centro privado único con **Resumen, Reservas, Datos personales, Seguridad y Perfil deportivo**.
+- Resumen publica próxima reserva, recorrido en el club y accesos coherentes con la identidad W2.
+- Reservas diferencia próximas e historial, conserva detalle profundo en URL y ofrece consulta estable mediante código de seguimiento.
+- Datos personales edita, valida, guarda y descarta cambios dentro de Mi cuenta; aceptar la salida con cambios pendientes restaura el último estado confirmado y cierra el modo edición.
+- Seguridad actualiza la contraseña dentro del mismo centro privado.
+- Los CTA de Reservar y Consultar comparten geometría, profundidad, foco, estados y movimiento reducido; la consulta mantiene la geometría durante la carga.
+- La cabecera H3, el menú de cuenta, el primer frame del tema y la navegación competitiva móvil quedaron estabilizados.
+- Torneos conserva catálogo, detalle, inscripción y centro competitivo; Resumen, Posiciones, Partidos y Cuadro mantienen navegación móvil contenida y accesible.
+
+### Validación confirmada
+
+- Astro Check: **0 errores, 0 advertencias y 0 hints**.
+- Suite focalizada de Mi cuenta: **78 pruebas aprobadas**.
+- Saneamiento de cabecera y Torneos: **148 pruebas aprobadas**, seguido por **3 pruebas focalizadas finales aprobadas**.
+- `git diff --check`: correcto; los avisos LF/CRLF de Windows son informativos.
+- Commit y push completados sobre `master`; repositorio limpio al cierre.
+
+### Continuidad vigente
+
+La prioridad vuelve a la **reconstrucción premium de la web pública de escritorio**. Inicio continúa como referencia visual autoritativa y Mi cuenta queda cerrada en su alcance actual. El próximo frente debe elegirse por impacto visual y funcional entre las rutas públicas aún pendientes de convergencia, sin volver automáticamente a la antigua auditoría integral de rendimiento. La aplicación móvil definitiva será un producto independiente y se evaluará después de estabilizar la web de escritorio.
+<!-- W2-CIERRE-C143387-FIN -->
+
+### Consecuencias para el plan
+
+- W2.4 incorpora ahora el centro privado completo y no solo cuenta, reservas y pagos.
+- Mi cuenta deja de figurar como bloque pendiente en el orden de convergencia.
+- La documentación histórica de R3.3I, PWA y Capacitor se conserva como registro, pero no define la continuidad vigente.
+
+
 <!-- W2-ESTADO-CANONICO-INICIO -->
 ## Estado canónico · 27 de octubre de 2026
 

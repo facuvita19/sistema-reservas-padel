@@ -1,5 +1,42 @@
 # Continuidad del proyecto y método de trabajo
 
+<!-- W2-CIERRE-C143387-INICIO -->
+## Estado autoritativo · 29 de octubre de 2026
+
+El bloque **Modernizar Mi cuenta y estabilizar cabecera y torneos** quedó publicado en `master` mediante el commit `c143387`. Este estado reemplaza cualquier continuidad anterior dentro de este documento que todavía indique que Mi cuenta está pendiente, que Datos personales o Seguridad redirigen a rutas heredadas, que Torneos sigue únicamente en U1/U2 o que Capacitor constituye la siguiente evolución móvil.
+
+### Cierre funcional y visual
+
+- Mi cuenta converge como centro privado único con **Resumen, Reservas, Datos personales, Seguridad y Perfil deportivo**.
+- Resumen publica próxima reserva, recorrido en el club y accesos coherentes con la identidad W2.
+- Reservas diferencia próximas e historial, conserva detalle profundo en URL y ofrece consulta estable mediante código de seguimiento.
+- Datos personales edita, valida, guarda y descarta cambios dentro de Mi cuenta; aceptar la salida con cambios pendientes restaura el último estado confirmado y cierra el modo edición.
+- Seguridad actualiza la contraseña dentro del mismo centro privado.
+- Los CTA de Reservar y Consultar comparten geometría, profundidad, foco, estados y movimiento reducido; la consulta mantiene la geometría durante la carga.
+- La cabecera H3, el menú de cuenta, el primer frame del tema y la navegación competitiva móvil quedaron estabilizados.
+- Torneos conserva catálogo, detalle, inscripción y centro competitivo; Resumen, Posiciones, Partidos y Cuadro mantienen navegación móvil contenida y accesible.
+
+### Validación confirmada
+
+- Astro Check: **0 errores, 0 advertencias y 0 hints**.
+- Suite focalizada de Mi cuenta: **78 pruebas aprobadas**.
+- Saneamiento de cabecera y Torneos: **148 pruebas aprobadas**, seguido por **3 pruebas focalizadas finales aprobadas**.
+- `git diff --check`: correcto; los avisos LF/CRLF de Windows son informativos.
+- Commit y push completados sobre `master`; repositorio limpio al cierre.
+
+### Continuidad vigente
+
+La prioridad vuelve a la **reconstrucción premium de la web pública de escritorio**. Inicio continúa como referencia visual autoritativa y Mi cuenta queda cerrada en su alcance actual. El próximo frente debe elegirse por impacto visual y funcional entre las rutas públicas aún pendientes de convergencia, sin volver automáticamente a la antigua auditoría integral de rendimiento. La aplicación móvil definitiva será un producto independiente y se evaluará después de estabilizar la web de escritorio.
+<!-- W2-CIERRE-C143387-FIN -->
+
+### Punto exacto para retomar
+
+1. Verificar el último workflow asociado a `c143387`.
+2. Mantener Mi cuenta como referencia privada ya cerrada y no reconstruirla de nuevo sin un defecto concreto.
+3. Seleccionar la próxima ruta pública de escritorio utilizando Inicio como referencia.
+4. Aplicar validación proporcional y reservar la suite integral para el siguiente hito.
+
+
 <!-- W2-ESTADO-CANONICO-INICIO -->
 ## Estado canónico · 27 de octubre de 2026
 
