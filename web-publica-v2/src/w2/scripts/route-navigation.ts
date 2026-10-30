@@ -1,52 +1,15 @@
 export {};
-
-const ROOT = document.documentElement;
-const DELAY = 180;
-let timer = 0;
-let navigating = false;
-
-function resetNavigation() {
-  navigating = false;
-  window.clearTimeout(timer);
-  timer = 0;
-  ROOT.removeAttribute('data-w2-navigation');
-  ROOT.removeAttribute('data-w2-navigation-target');
-}
-
-function internalW2Link(anchor: HTMLAnchorElement, event: MouseEvent) {
-  if (event.defaultPrevented || event.button !== 0) return null;
-  if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return null;
-  if (anchor.hasAttribute('download')) return null;
-  if (anchor.target && anchor.target.toLowerCase() !== '_self') return null;
-  if ((anchor.rel || '').split(/\s+/).includes('external')) return null;
-  if (anchor.dataset.w2Transition === 'off') return null;
-  const raw = anchor.getAttribute('href');
-  if (!raw || raw.startsWith('#') || raw.startsWith('mailto:') || raw.startsWith('tel:')) return null;
-  let target: URL;
-  try { target = new URL(anchor.href, location.href); } catch { return null; }
-  if (target.origin !== location.origin || !target.pathname.startsWith('/w2/')) return null;
-  if (target.pathname === location.pathname && target.search === location.search && target.hash) return null;
-  return target;
-}
-
-function beginNavigation(target: URL) {
-  if (navigating) return;
-  navigating = true;
-  ROOT.dataset.w2NavigationTarget = target.pathname;
-  timer = window.setTimeout(() => {
-    if (navigating) ROOT.dataset.w2Navigation = 'pending';
-  }, DELAY);
-}
-
-document.addEventListener('click', event => {
-  const anchor = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[href]');
-  if (!anchor) return;
-  const target = internalW2Link(anchor, event);
-  if (target) beginNavigation(target);
-});
-
-addEventListener('pageshow', resetNavigation);
-addEventListener('pagehide', () => window.clearTimeout(timer));
-addEventListener('beforeunload', () => {
-  if (navigating && !ROOT.hasAttribute('data-w2-navigation')) ROOT.dataset.w2Navigation = 'leaving';
-});
+const ROOT=document.documentElement,DELAY=180,T2A_NAVIGATION_INTENT='w2.navigation.intent.v1';
+type Intent={from:string;to:string;keyboard:boolean;hash:boolean;at:number};let timer=0,navigating=false,lastKeyboardAt=0,focusScheduled=false;
+try{history.scrollRestoration='auto'}catch{}
+function normalizedUrl(value:string){const url=new URL(value,location.origin);if(url.pathname!=='/')url.pathname=url.pathname.replace(/\/+$/,'');return url}
+function routeKey(value:string){const url=normalizedUrl(value);return url.pathname+url.search}
+function intentMatchesLocation(target:string){const expected=normalizedUrl(target),current=normalizedUrl(location.href);if(expected.pathname!==current.pathname)return false;for(const[key,value]of expected.searchParams)if(current.searchParams.get(key)!==value)return false;return true}
+function resetNavigation(){navigating=false;clearTimeout(timer);timer=0;ROOT.removeAttribute('data-w2-navigation');ROOT.removeAttribute('data-w2-navigation-target')}
+function internalW2Link(anchor:HTMLAnchorElement,event:MouseEvent){if(event.defaultPrevented||event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey||anchor.hasAttribute('download'))return null;if(anchor.target&&anchor.target.toLowerCase()!=='_self')return null;if((anchor.rel||'').split(/\s+/).includes('external')||anchor.dataset.w2Transition==='off')return null;const raw=anchor.getAttribute('href');if(!raw||raw.startsWith('#')||raw.startsWith('mailto:')||raw.startsWith('tel:'))return null;let target:URL;try{target=new URL(anchor.href,location.href)}catch{return null}if(target.origin!==location.origin||!target.pathname.startsWith('/w2/'))return null;if(routeKey(target.href)===routeKey(location.href)&&target.hash)return null;return target}
+function remember(target:URL,event:MouseEvent){const intent:Intent={from:routeKey(location.href),to:routeKey(target.href),keyboard:event.detail===0||performance.now()-lastKeyboardAt<900,hash:Boolean(target.hash),at:Date.now()};try{sessionStorage.setItem(T2A_NAVIGATION_INTENT,JSON.stringify(intent))}catch{}}
+function peek(){try{const raw=sessionStorage.getItem(T2A_NAVIGATION_INTENT);return raw?JSON.parse(raw)as Intent:null}catch{return null}}
+function removeIntent(){try{sessionStorage.removeItem(T2A_NAVIGATION_INTENT)}catch{}}
+function beginNavigation(target:URL,event:MouseEvent){if(navigating)return;navigating=true;remember(target,event);ROOT.dataset.w2NavigationTarget=target.pathname;timer=window.setTimeout(()=>{if(navigating)ROOT.dataset.w2Navigation='pending'},DELAY)}
+function scheduleDocumentFocus(){if(focusScheduled)return;const intent=peek();if(!intent)return;if(Date.now()-intent.at>15000||!intentMatchesLocation(intent.to)){removeIntent();return}if(!intent.keyboard||intent.hash){removeIntent();return}focusScheduled=true;removeIntent();requestAnimationFrame(()=>requestAnimationFrame(()=>{document.querySelector<HTMLElement>('[data-w2-route-content]')?.focus({preventScroll:true});focusScheduled=false}))}
+document.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' ')lastKeyboardAt=performance.now()},{capture:true});document.addEventListener('click',event=>{const anchor=(event.target as Element|null)?.closest<HTMLAnchorElement>('a[href]');if(!anchor)return;const target=internalW2Link(anchor,event);if(target)beginNavigation(target,event)});addEventListener('pageshow',event=>{resetNavigation();if(event.persisted){document.querySelectorAll<HTMLElement>('[data-reveal],[data-w2-reveal]').forEach(node=>node.classList.add('revealed'));return}scheduleDocumentFocus()});addEventListener('pagehide',()=>clearTimeout(timer));addEventListener('beforeunload',()=>{if(navigating&&!ROOT.hasAttribute('data-w2-navigation'))ROOT.dataset.w2Navigation='leaving'});scheduleDocumentFocus();
