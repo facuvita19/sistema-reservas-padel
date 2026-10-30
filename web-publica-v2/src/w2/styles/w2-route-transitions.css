@@ -1,0 +1,67 @@
+/* T1A - continuidad nativa entre documentos W2
+   Mantiene la arquitectura MPA y degrada a navegacion normal. */
+@view-transition{navigation:auto}
+
+:root{
+ --w2-route-duration-out:150ms;
+ --w2-route-duration-in:240ms;
+ --w2-route-ease:cubic-bezier(.22,.78,.22,1);
+}
+
+/* El shell no se desplaza ni se funde. La cabecera autoritativa ya declara
+   view-transition-name:w2-header; esta capa consolida su estabilidad. */
+.w2-header{view-transition-name:w2-header}
+[data-w2-route-content]{view-transition-name:w2-route-content}
+[data-w2-route-footer]{view-transition-name:w2-route-footer}
+
+::view-transition-group(root){animation-duration:var(--w2-route-duration-in)}
+::view-transition-old(root),
+::view-transition-new(root){mix-blend-mode:normal}
+
+::view-transition-group(w2-header){
+ z-index:1400;
+ animation-duration:1ms;
+}
+::view-transition-old(w2-header),
+::view-transition-new(w2-header){
+ animation:none!important;
+ mix-blend-mode:normal!important;
+}
+
+::view-transition-old(w2-route-content){
+ animation:w2-route-out var(--w2-route-duration-out) ease both;
+}
+::view-transition-new(w2-route-content){
+ animation:w2-route-in var(--w2-route-duration-in) var(--w2-route-ease) both;
+}
+::view-transition-old(w2-route-footer){
+ animation:w2-route-footer-out 120ms ease both;
+}
+::view-transition-new(w2-route-footer){
+ animation:w2-route-footer-in 210ms var(--w2-route-ease) both;
+}
+
+@keyframes w2-route-out{
+ to{opacity:0;transform:translateY(-3px);filter:blur(1px)}
+}
+@keyframes w2-route-in{
+ from{opacity:0;transform:translateY(9px);filter:blur(2px)}
+ to{opacity:1;transform:none;filter:none}
+}
+@keyframes w2-route-footer-out{to{opacity:0}}
+@keyframes w2-route-footer-in{from{opacity:0}to{opacity:1}}
+
+/* El tema se pinta antes del primer frame. También se fija el color del
+   documento durante la captura de la transición para evitar flashes. */
+html,body{background:var(--page-bg,#07090b)}
+
+@media(prefers-reduced-motion:reduce){
+ ::view-transition-group(*),
+ ::view-transition-old(*),
+ ::view-transition-new(*){
+  animation-duration:1ms!important;
+  animation-delay:0ms!important;
+  transform:none!important;
+  filter:none!important;
+ }
+}
