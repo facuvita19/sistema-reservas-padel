@@ -1,5 +1,25 @@
 # Plan maestro de finalización de Plataforma Deportiva W2
 
+## Actualización de fase · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+La convergencia visual por sectores de escritorio se considera completa en su alcance actual. Los últimos cierres fueron Rankings `18d838b` y Comunidad `010ca8e`.
+
+El trabajo continúa dentro de F8 con **T1 · experiencia transversal de navegación**:
+
+- navegación interna fluida;
+- transiciones con degradación segura;
+- shell, tema y sesión estables;
+- restauración de scroll y foco;
+- historial Atrás/Adelante;
+- estados transitorios sin flashes;
+- movimiento reducido;
+- pruebas proporcionales.
+
+F9 no se inicia como auditoría integral automática. Rendimiento se medirá durante T1 y solo se ampliará ante evidencia. F10 se mantiene posterior a la estabilización transversal.
+
+
 Base: commit `6a0be52`
 Fecha: 25 de octubre de 2026
 

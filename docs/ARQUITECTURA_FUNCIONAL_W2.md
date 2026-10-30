@@ -1,5 +1,18 @@
 # Arquitectura funcional W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Cierre de presentación por rutas
+
+La arquitectura funcional vigente conserva Astro multipágina, API pública independiente y progresive enhancement. La convergencia visual de las rutas principales de escritorio quedó completada en su alcance actual. Rankings se publicó en `18d838b` y Comunidad en `010ca8e`.
+
+### Próxima evolución arquitectónica
+
+El siguiente bloque es transversal y no altera los contratos de dominio: navegación interna fluida entre documentos, View Transitions con degradación segura, persistencia del shell global cuando sea técnicamente apropiado y restauración predecible de scroll y foco. La solución debe preservar URLs canónicas, historial del navegador, accesibilidad, sesión, tema, CSP, carga directa y funcionamiento sin JavaScript mejorado.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 

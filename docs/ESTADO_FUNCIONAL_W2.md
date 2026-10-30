@@ -1,5 +1,20 @@
 # Estado funcional real de Plataforma Deportiva W2
 
+## Actualización autoritativa · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Corrección del estado real
+
+La convergencia visual de escritorio ya recorrió Inicio, Reservar, Torneos, Rankings, Comunidad y Cuenta. Rankings se cerró en `18d838b` y Comunidad en `010ca8e`. Las referencias posteriores que todavía describan estas áreas como pendientes de convergencia deben interpretarse como historial, no como estado vigente.
+
+Persisten como evoluciones de producto, no como defectos de la convergencia cerrada: motor histórico avanzado de Rankings, Mercado Pago productivo, optimización basada en mediciones, PWA transversal y aplicación móvil independiente.
+
+### Próximo bloque
+
+T1 debe evaluar y mejorar navegación interna, transiciones, restauración de scroll, foco, historial, shell global y estados transitorios. La auditoría general de rendimiento solo se abrirá si las mediciones del bloque muestran una necesidad concreta.
+
+
 Fecha de corte: 25 de octubre de 2026
 Commit base auditado: `6a0be52`
 

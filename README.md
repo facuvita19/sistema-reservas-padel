@@ -1,5 +1,24 @@
 # Plataforma Deportiva W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Web pública de escritorio convergida
+
+Las rutas principales de Plataforma Deportiva W2 fueron revisadas y unificadas visualmente en su alcance actual. Inicio continúa como referencia autoritativa; Reservar conserva su carácter operativo; Torneos su lenguaje competitivo; Rankings su carácter analítico; Comunidad su función de descubrimiento; y Mi cuenta su función privada de gestión.
+
+- Rankings quedó unificado y publicado en `18d838b`.
+- Comunidad quedó unificada y publicada en `010ca8e`.
+- Cabecera, navegaciones sticky y menú de cuenta ya comparten el patrón global vigente.
+- El modo oscuro continúa siendo la experiencia principal.
+- La aplicación administrativa permanece separada de la web pública.
+
+### Continuidad inmediata
+
+El próximo bloque no consiste en volver a auditar visualmente cada ruta ni en retomar automáticamente la antigua auditoría integral de rendimiento. La continuidad vigente es la experiencia transversal de navegación interna: transiciones entre rutas W2, conservación de cabecera y scroll, foco, estados transitorios y menor percepción de recarga completa. Después se evaluarán rendimiento real, PWA, Mercado Pago productivo y la aplicación móvil independiente según prioridad y dependencias.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 

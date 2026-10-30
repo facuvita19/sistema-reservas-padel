@@ -1,5 +1,29 @@
 # Dirección visual W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Sistema visual de escritorio convergido
+
+Inicio continúa como referencia visual autoritativa y cada ruta conserva su función propia. Rankings completó su convergencia premium en `18d838b`; Comunidad completó hero, navegación secundaria, turnos, filtros y composición editorial en `010ca8e`.
+
+Patrones globales ya estabilizados:
+
+- cabecera premium y menú de cuenta;
+- navegación secundaria sticky, redondeada y sin superficies laterales;
+- modo oscuro principal;
+- contenedores editoriales alineados;
+- títulos sólidos y contorneados con acento rojo proporcional;
+- estados de carga, vacío, error y contenido real;
+- foco visible, teclado y movimiento reducido;
+- geometría específica por función, sin copiar módulos de Inicio de forma literal.
+
+### Continuidad visual
+
+La siguiente etapa es el movimiento entre rutas: continuidad perceptiva, prevención de flashes, conservación del shell y transiciones sobrias. El movimiento nunca debe ocultar esperas, bloquear interacción, romper foco ni imponerse cuando se solicita movimiento reducido.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 
@@ -364,4 +388,4 @@ El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente e
 - El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
 - La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
 
-La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.
+La continuidad vigente es T1: navegación interna y transiciones W2, tomando Inicio como referencia de fluidez.

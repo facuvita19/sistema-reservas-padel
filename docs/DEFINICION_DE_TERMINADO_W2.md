@@ -1,5 +1,14 @@
 # Definición de terminado de Plataforma Deportiva W2
 
+## Estado de cierre de escritorio · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+La revisión y convergencia visual por sectores fue completada para Inicio, Reservar, Torneos, Rankings, Comunidad y Cuenta. Rankings quedó publicado en `18d838b` y Comunidad en `010ca8e`.
+
+Este cierre no sustituye los criterios transversales pendientes. Para declarar la web completamente terminada aún deben certificarse navegación entre rutas, scroll, foco, historial, estados transitorios, rendimiento medido, PWA/operación aplicable y documentación final. Mercado Pago productivo y la aplicación móvil independiente mantienen sus dependencias y exclusiones ya documentadas.
+
+
 La web solo puede declararse terminada cuando se cumplen todos los puntos siguientes.
 
 ## Producto

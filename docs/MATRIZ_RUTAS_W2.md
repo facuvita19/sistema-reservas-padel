@@ -1,5 +1,14 @@
 # Matriz autoritativa de rutas de Plataforma Deportiva W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+Las rutas W2 principales de escritorio están operativas y visualmente convergidas en su alcance actual. Inicio ya usa datos reales y diseño premium. Rankings quedó unificado en `18d838b` y Comunidad en `010ca8e`.
+
+La continuidad inmediata es transversal: navegación y transiciones entre rutas autoritativas. Las rutas heredadas solo deben conservarse cuando todavía cumplan una función no migrada o una compatibilidad explícita.
+
+
 Fecha: 25 de octubre de 2026
 
 ## Dirección vigente

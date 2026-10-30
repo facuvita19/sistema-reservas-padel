@@ -1,5 +1,32 @@
 # Plan de desarrollo del sistema de reservas de pádel
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Cierre de convergencia visual de escritorio
+
+La revisión por sectores de la web pública quedó completada en su alcance actual. Los cierres más recientes son:
+
+- Rankings premium: `18d838b`.
+- Comunidad premium: `010ca8e`.
+- Repositorio sincronizado en `master` después de ambos cierres.
+
+Inicio, Reservar, Torneos, Rankings, Comunidad y Mi cuenta ya fueron recorridos y unificados con identidad W2. Esto no declara terminadas las evoluciones de producto, pero sí cierra la etapa de convergencia visual sector por sector del escritorio.
+
+### Próximo bloque oficial · T1 Continuidad de navegación W2
+
+1. Inventariar la navegación interna actual y las recargas completas perceptibles.
+2. Extender el patrón fluido de Inicio al resto de las rutas W2.
+3. Preservar cabecera global, tema, sesión y menú de cuenta durante la transición.
+4. Mantener scroll y foco de forma predecible, incluida navegación Atrás/Adelante.
+5. Diseñar estados transitorios breves sin flashes, saltos ni skeletons innecesarios.
+6. Incorporar View Transitions con degradación segura solo cuando aporten continuidad real.
+7. Validar accesibilidad, movimiento reducido y estabilidad con Playwright.
+
+No corresponde abrir todavía una auditoría histórica general de rendimiento. Las mediciones se harán de manera proporcional dentro del bloque transversal y se ampliarán solo si aparece evidencia concreta.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 
@@ -93,7 +120,7 @@ La versión anterior es únicamente una referencia funcional. No es modelo, lím
 2. Reservar está funcional y visualmente cerrado en su alcance actual.
 3. Torneos mantiene su arquitectura completa; U1 unifica escalas, superficies, foco, filtros, desplegables y tarjetas sin modificar dominio ni navegación.
 4. El siguiente trabajo debe continuar por secciones, comparando cada ruta con Inicio y Reservar, con cambios pequeños y validaciones proporcionales.
-5. Después de Torneos, el orden recomendado es Rankings, Comunidad, Mi cuenta y perfiles, salvo que una auditoría detecte un defecto funcional prioritario.
+5. La revisión por sectores quedó completada; la continuidad es transversal y no responde a un nuevo orden de páginas.
 6. La limpieza de CSS histórico se realiza después de fijar la estructura final de cada módulo, nunca antes ni mediante una reescritura ciega.
 
 ### Referencia visual autoritativa: Inicio W2
@@ -143,7 +170,7 @@ Antes de modificar una sección se inspeccionan su Astro, CSS, scripts y E2E. La
 - Modo oscuro: experiencia principal.
 - Modo claro: alternativa real y obligatoria.
 - Torneos: cerrado integralmente.
-- Rankings: cerrado en `40a313e`.
+- Rankings: convergencia visual cerrada en `18d838b`.
 - Perfil público: recorrido R3.2B completado y convergido; el nombre excepcionalmente largo y la actividad móvil quedaron protegidos por contratos E2E.
 - Reserva W2: ruta canónica `/w2/reservar`; `/reservar` queda como puente de redirección preservando query string y hash.
 - Formato de reserva: cuatro jugadores, dos contra dos, sin selector editable.
@@ -276,7 +303,7 @@ Nunca usar “suma máxima”.
 - W2.3: rankings y perfiles públicos estabilizados en su recorrido visual actual; motor avanzado, temporadas, publicaciones históricas, variaciones y Masters siguen como evolución posterior.
 - W2.4: cuenta, reservas y pagos operativos; Torneos cerrado integralmente.
 - W2.5: reserva inteligente operativa en su flujo actual; quedan evoluciones funcionales futuras.
-- W2.6 / R3.3: Comunidad completó R3.3A–R3.3H; queda la convergencia final R3.3I.
+- W2.6 / R3.3: Comunidad completó R3.3A–R3.3H; R3.3I y la convergencia visual están cerradas en el alcance actual.
 - Mercado Pago sandbox: completado.
 - Mercado Pago producción: pendiente de dominio, HTTPS, credenciales productivas, observabilidad y operación controlada.
 
@@ -434,4 +461,4 @@ El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente e
 - El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
 - La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
 
-La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.
+La continuidad vigente es T1: navegación interna y transiciones W2, tomando Inicio como referencia de fluidez.

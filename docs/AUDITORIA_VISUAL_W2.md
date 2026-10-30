@@ -1,5 +1,14 @@
 # Auditoría y dirección visual final de Plataforma Deportiva W2
 
+## Cierre de auditoría por sectores · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+La revisión visual de escritorio alcanzó las rutas principales. Rankings cerró en `18d838b` y Comunidad en `010ca8e`. Los sectores comparten cabecera, contenedores, modo oscuro, navegación secundaria, criterios de foco y lenguaje de estados, conservando la identidad funcional propia de cada ruta.
+
+La siguiente auditoría visual será transversal y observará el paso entre rutas: flashes, pérdida de contexto, saltos de scroll, foco, persistencia del shell y transiciones. No corresponde reiniciar una revisión visual completa de cada página salvo que una regresión concreta lo justifique.
+
+
 Fecha: 25 de octubre de 2026
 
 ## Principio rector

@@ -1,5 +1,28 @@
 # Continuidad del proyecto y método de trabajo
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Punto exacto para retomar
+
+La web pública de escritorio ya fue revisada por sectores. Rankings quedó publicado en `18d838b` y Comunidad en `010ca8e`. Inicio, Reservar, Torneos, Rankings, Comunidad y Mi cuenta están convergidos visualmente en su alcance actual; la cabecera, las navegaciones sticky y el menú de cuenta comparten el sistema global vigente.
+
+La continuidad inmediata es **T1 · navegación interna y transiciones W2**. Debe partir del comportamiento fluido de Inicio y extenderlo a las demás rutas sin convertir la web en una SPA, sin romper URLs, historial, foco, scroll, sesión, tema ni degradación progresiva.
+
+Orden recomendado:
+
+1. mapa de enlaces y navegaciones internas;
+2. transición entre rutas principales;
+3. conservación de shell y estados globales;
+4. scroll, foco y navegación Atrás/Adelante;
+5. carga transitoria y prevención de flashes;
+6. pruebas proporcionales y capturas oscuras por viewport;
+7. documentación y commit de cierre.
+
+No volver automáticamente a Rankings, Comunidad ni a la antigua auditoría integral de rendimiento. Mercado Pago productivo y la aplicación móvil independiente siguen siendo evoluciones posteriores.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 
@@ -64,7 +87,7 @@ La prioridad vuelve a la **reconstrucción premium de la web pública de escrito
 2. Reservar está funcional y visualmente cerrado en su alcance actual.
 3. Torneos mantiene su arquitectura completa; U1 unifica escalas, superficies, foco, filtros, desplegables y tarjetas sin modificar dominio ni navegación.
 4. El siguiente trabajo debe continuar por secciones, comparando cada ruta con Inicio y Reservar, con cambios pequeños y validaciones proporcionales.
-5. Después de Torneos, el orden recomendado es Rankings, Comunidad, Mi cuenta y perfiles, salvo que una auditoría detecte un defecto funcional prioritario.
+5. La revisión por sectores quedó completada; la continuidad es transversal y no responde a un nuevo orden de páginas.
 6. La limpieza de CSS histórico se realiza después de fijar la estructura final de cada módulo, nunca antes ni mediante una reescritura ciega.
 
 ### Lectura obligatoria en otro chat
@@ -698,4 +721,4 @@ El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente e
 - El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
 - La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
 
-La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.
+La continuidad vigente es T1: navegación interna y transiciones W2, tomando Inicio como referencia de fluidez.

@@ -1,5 +1,25 @@
 # Plataforma Deportiva W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Cierre de la etapa visual por sectores
+
+La experiencia web de escritorio fue revisada integralmente por secciones en su alcance actual. Rankings quedó unificado en `18d838b` y Comunidad en `010ca8e`. R3.3I de Comunidad ya no está pendiente: sus contratos funcionales, privacidad, seguridad, concurrencia y convergencia visual se consideran cerrados dentro del alcance vigente.
+
+### Continuidad de producto
+
+El próximo bloque oficial es **T1 · continuidad de navegación y transiciones internas**. Debe mejorar la fluidez percibida entre rutas sin sacrificar arquitectura multipágina, URLs, historial, accesibilidad, privacidad, seguridad ni mantenibilidad.
+
+Evoluciones posteriores, no inmediatas:
+
+- medición y optimización de rendimiento basada en evidencia;
+- PWA y notificaciones como experiencia transversal;
+- Mercado Pago productivo cuando existan dominio, HTTPS, credenciales y operación controlada;
+- aplicación móvil independiente después de estabilizar la web, comparando alternativas con un vertical slice medido.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 
@@ -244,7 +264,7 @@ Comunidad es infraestructura deportiva para descubrir jugadores, formar parejas 
 
 ### Estado real
 
-Comunidad completó R3.4B1–R3.4B5D / R3.3A–R3.3H en su alcance actual; queda R3.3I como convergencia final.
+Comunidad completó R3.4B1–R3.4B5D / R3.3A–R3.3H en su alcance actual; R3.3I y la convergencia visual están cerradas en el alcance actual.
 
 ## 11. Torneos W2: estado real
 
@@ -271,12 +291,12 @@ Torneos conserva su arquitectura funcional completa. Puede recibir evolución tr
 - W2.3: Rankings y perfiles estabilizados en el recorrido actual; motor avanzado pendiente como evolución posterior.
 - W2.4: experiencia deportiva pública en curso; Torneos cerrado.
 - W2.5: reserva W2 operativa, con evoluciones inteligentes futuras.
-- W2.6 / R3.3: Comunidad completó R3.3A–R3.3H; queda R3.3I como convergencia final.
+- W2.6 / R3.3: Comunidad completó R3.3A–R3.3H; R3.3I y la convergencia visual están cerradas en el alcance actual.
 - W2.7: Mercado Pago sandbox, completado.
 - W2.8: Mercado Pago producción, pendiente.
 - W2.9: fundación PWA, Push y aplicación móvil con Capacitor después de R3.3I.
 
-Próximo bloque: convergencia visual gradual de las rutas W2, terminando primero la experiencia web de escritorio.
+Próximo bloque: T1, continuidad de navegación y transiciones internas entre rutas W2.
 
 ## 13. Criterios de aceptación
 
@@ -304,4 +324,4 @@ El catálogo principal de `/w2/torneos` quedó cerrado visual y funcionalmente e
 - El centro competitivo presenta recuperación diseñada para categorías inválidas y errores de carga.
 - La validación focalizada U2C-U2E terminó con 3 pruebas aprobadas; la validación ampliada U1-U2D terminó con 9 pruebas aprobadas; Astro quedó sin errores.
 
-La siguiente continuidad es abrir una categoría válida desde el detalle real y auditar visualmente Resumen, Posiciones, Partidos y Cuadro antes de continuar con Rankings.
+La continuidad vigente es T1: navegación interna y transiciones W2, tomando Inicio como referencia de fluidez.

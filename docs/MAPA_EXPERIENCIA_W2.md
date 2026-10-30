@@ -1,5 +1,25 @@
 # Mapa de experiencia W2
 
+## Estado autoritativo · 30 de octubre de 2026
+
+<!-- W2-ESTADO-ESCRITORIO-2026-10-30 -->
+
+### Estado real de convergencia
+
+Las rutas principales de escritorio ya fueron revisadas y unificadas en su alcance actual:
+
+- Inicio: referencia editorial y de actualización fluida.
+- Reservar: flujo operativo estabilizado.
+- Torneos: catálogo, detalle y centro competitivo convergidos.
+- Rankings: experiencia premium cerrada en `18d838b`.
+- Comunidad: descubrimiento de jugadores, parejas y turnos cerrados visualmente en `010ca8e`.
+- Mi cuenta: centro privado consolidado.
+
+### Próximo recorrido prioritario
+
+El recorrido prioritario deja de ser una página aislada. Es la navegación completa entre Inicio, Reservar, Torneos, Rankings, Comunidad y Cuenta, preservando contexto, foco, scroll, tema, sesión, historial y acceso directo por URL. La referencia de fluidez es Inicio; las demás rutas deben actualizarse sin percibirse como una recarga abrupta siempre que la arquitectura multipágina y la accesibilidad lo permitan.
+
+
 <!-- W2-CIERRE-C143387-INICIO -->
 ## Estado autoritativo · 29 de octubre de 2026
 
