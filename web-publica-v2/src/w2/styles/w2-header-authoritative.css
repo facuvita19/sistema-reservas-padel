@@ -407,3 +407,33 @@ body.account-menu-open #w2-content{position:relative;z-index:auto!important}
  .w2-header-placeholder{display:none!important}
  body.account-menu-open [data-account-sticky-anchor]{translate:none!important}
 }
+
+/* T1D2 - GEOMETRIA ESTABLE AL ABRIR CUENTA */
+@media(min-width:901px){
+ body.account-menu-open .w2-header,
+ body.account-menu-open .w2-header.is-compact{
+  position:sticky!important;
+  top:0!important;
+  right:auto!important;
+  bottom:auto!important;
+  left:auto!important;
+  inset-block-start:0!important;
+  width:auto!important;
+  height:94px!important;
+  min-height:94px!important;
+  margin:0!important;
+  padding:10px 0 8px!important;
+  transform:none!important;
+ }
+ body.account-menu-open .w2-header .w2-nav{
+  margin-top:0!important;
+  margin-bottom:0!important;
+ }
+}
+
+/* T1D3 - LA CABECERA NO CAMBIA AL ABRIR CUENTA */
+@media(min-width:901px){
+ body.account-menu-open .w2-header{position:sticky!important;top:0!important;right:auto!important;bottom:auto!important;left:auto!important;width:auto!important;height:94px!important;min-height:94px!important;margin:0!important;padding:10px 0 8px!important;transform:none!important}
+ body.account-menu-open .w2-header.is-compact{position:sticky!important;top:0!important;height:94px!important;min-height:94px!important;padding:10px 0 8px!important}
+ body.account-menu-open .w2-header.is-compact .w2-nav{margin-top:2px!important;margin-bottom:2px!important}
+}

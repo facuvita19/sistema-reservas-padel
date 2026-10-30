@@ -111,3 +111,34 @@ html[data-session="authenticated"] #menuUsuario,html[data-session="authenticated
 ::view-transition-new(w2-header){z-index:1;animation:w2-header-enter 140ms ease-out both!important;mix-blend-mode:normal!important}
 @keyframes w2-header-hold{0%,99%{opacity:1}100%{opacity:0}}@keyframes w2-header-enter{from{opacity:.98}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){::view-transition-old(w2-header),::view-transition-new(w2-header){animation-duration:1ms!important}}
+
+/* T1D - AUDITORIA POR ENCIMA DE LA CABECERA */
+/* El drawer es una superficie modal global y debe superar el z-index 1400
+   de la cabecera, incluidos sus controles autenticados y de invitado. */
+#w2rAuditDrawer{
+ position:fixed!important;
+ z-index:5200!important;
+ isolation:isolate!important;
+ pointer-events:auto!important;
+}
+#w2rAuditDrawerBackdrop,
+.w2r-audit-backdrop{
+ z-index:5100!important;
+}
+#w2rAuditClose{
+ position:relative!important;
+ z-index:2!important;
+ pointer-events:auto!important;
+ touch-action:manipulation;
+}
+
+/* Defensa de interacción: aunque una futura composición coloque visualmente
+   la cabecera sobre el drawer, nunca puede capturar el cierre modal. */
+body:has(#w2rAuditDrawer:not(.hidden)) .w2-header,
+body:has(#w2rAuditDrawer[aria-hidden="false"]) .w2-header{
+ pointer-events:none!important;
+}
+body:has(#w2rAuditDrawer:not(.hidden)) #w2rAuditDrawer,
+body:has(#w2rAuditDrawer[aria-hidden="false"]) #w2rAuditDrawer{
+ pointer-events:auto!important;
+}

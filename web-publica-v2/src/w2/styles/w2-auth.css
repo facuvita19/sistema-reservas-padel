@@ -80,3 +80,8 @@ body.account-menu-open::before,body.account-menu-open::after{content:none!import
  html[data-session="authenticated"] #menuUsuario.hidden{display:block!important}
  html[data-session="authenticated"] #w2Notifications.hidden{display:block!important}
 }
+
+/* T1D3 - CUENTA SIN NUEVO CONTENEDOR DE SCROLL */
+@media(min-width:901px){
+ body.account-menu-open{overflow:visible!important;overflow-x:visible!important;overflow-y:visible!important;overscroll-behavior:auto!important}
+}
