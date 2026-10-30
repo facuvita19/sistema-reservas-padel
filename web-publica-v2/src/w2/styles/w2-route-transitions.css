@@ -65,3 +65,49 @@ html,body{background:var(--page-bg,#07090b)}
   filter:none!important;
  }
 }
+
+/* T1B - INDICADOR DE NAVEGACION SEGURA */
+:root::after{
+ content:"";
+ position:fixed;
+ z-index:2147483646;
+ top:0;
+ left:0;
+ width:100%;
+ height:2px;
+ opacity:0;
+ pointer-events:none;
+ transform:scaleX(.08);
+ transform-origin:left center;
+ background:linear-gradient(90deg,#e71939 0%,#ff5368 55%,#69d5a0 100%);
+ box-shadow:0 0 14px rgba(231,25,57,.42);
+ transition:opacity 100ms ease;
+}
+:root[data-w2-navigation="pending"]::after{
+ opacity:.92;
+ animation:w2-route-progress 900ms cubic-bezier(.2,.72,.25,1) infinite;
+}
+:root[data-w2-navigation="leaving"]::after{
+ opacity:.72;
+ transform:scaleX(.72);
+ transition:transform 180ms cubic-bezier(.2,.72,.25,1),opacity 100ms ease;
+}
+@keyframes w2-route-progress{
+ 0%{transform:translateX(-15%) scaleX(.12)}
+ 48%{transform:translateX(8%) scaleX(.58)}
+ 100%{transform:translateX(88%) scaleX(.18)}
+}
+@media(prefers-reduced-motion:reduce){
+ :root::after{transition:none!important}
+ :root[data-w2-navigation="pending"]::after{animation:none!important;transform:scaleX(.72)!important}
+}
+
+
+/* T1C2 - CONTINUIDAD DE CONTROLES DE CABECERA */
+html[data-session="authenticated"] #w2SessionCheck{visibility:hidden!important}
+html[data-session="authenticated"] #menuUsuario,html[data-session="authenticated"] #w2Notifications{display:block!important;visibility:visible!important}
+::view-transition-group(w2-header){animation-duration:140ms!important}
+::view-transition-old(w2-header){z-index:2;animation:w2-header-hold 140ms step-end both!important;mix-blend-mode:normal!important}
+::view-transition-new(w2-header){z-index:1;animation:w2-header-enter 140ms ease-out both!important;mix-blend-mode:normal!important}
+@keyframes w2-header-hold{0%,99%{opacity:1}100%{opacity:0}}@keyframes w2-header-enter{from{opacity:.98}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){::view-transition-old(w2-header),::view-transition-new(w2-header){animation-duration:1ms!important}}

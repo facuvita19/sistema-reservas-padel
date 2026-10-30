@@ -1,0 +1,4 @@
+:root{--w2-reveal-distance:28px;--w2-reveal-duration:650ms;--w2-reveal-ease:cubic-bezier(.2,.75,.25,1)}
+[data-reveal],[data-w2-reveal]{opacity:0;transform:translate3d(0,var(--w2-reveal-distance),0);transition:opacity var(--w2-reveal-duration) ease,transform var(--w2-reveal-duration) var(--w2-reveal-ease);transition-delay:var(--reveal-delay,0ms);will-change:opacity,transform}
+[data-reveal].revealed,[data-w2-reveal].revealed{opacity:1;transform:none;will-change:auto}
+@media(prefers-reduced-motion:reduce){[data-reveal],[data-w2-reveal]{opacity:1!important;transform:none!important;transition:none!important;transition-delay:0ms!important;will-change:auto!important}}

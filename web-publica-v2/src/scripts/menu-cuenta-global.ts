@@ -7,62 +7,15 @@ function initAccountMenuH3() {
 
   const trigger = document.getElementById('botonUsuario') as HTMLButtonElement | null;
   const menu = document.getElementById('desplegableUsuario') as HTMLElement | null;
-  const header = document.querySelector<HTMLElement>('[data-w2-header]');
+
   const mobilePanel = document.getElementById('menuMovil') as HTMLElement | null;
   const mobileBackdrop = document.getElementById('fondoMenuMovil') as HTMLElement | null;
   const mobileButton = document.getElementById('abrirMenuMovil') as HTMLButtonElement | null;
 
   if (menu && menu.parentElement !== document.body) document.body.appendChild(menu);
 
-  let headerPlaceholder: HTMLElement | null = null;
-  const anchoredSticky = new Map<HTMLElement, string>();
   const items = () => menu ? [...menu.querySelectorAll<HTMLElement>('[role="menuitem"]')].filter(item => item.offsetParent !== null) : [];
   const desktopOpen = () => Boolean(menu && !menu.classList.contains('hidden'));
-
-  const snapshotSticky = () => {
-    anchoredSticky.clear();
-    document.querySelectorAll<HTMLElement>('body *').forEach(element => {
-      if (element === header || header?.contains(element) || element === menu || menu?.contains(element)) return;
-      const style = getComputedStyle(element);
-      const rect = element.getBoundingClientRect();
-      if (style.position !== 'sticky' || rect.width < 1 || rect.height < 1 || rect.bottom <= 0 || rect.top >= innerHeight) return;
-      anchoredSticky.set(element, element.style.getPropertyValue('--account-sticky-shift'));
-      element.dataset.accountStickyAnchor = String(rect.top);
-    });
-  };
-
-  const alignSticky = () => {
-    anchoredSticky.forEach((_, element) => {
-      const target = Number(element.dataset.accountStickyAnchor);
-      if (!Number.isFinite(target)) return;
-      const current = element.getBoundingClientRect().top;
-      const existing = parseFloat(element.style.getPropertyValue('--account-sticky-shift')) || 0;
-      element.style.setProperty('--account-sticky-shift', (existing + target - current) + 'px');
-    });
-  };
-
-  const restoreSticky = () => {
-    anchoredSticky.forEach((previous, element) => {
-      if (previous) element.style.setProperty('--account-sticky-shift', previous);
-      else element.style.removeProperty('--account-sticky-shift');
-      delete element.dataset.accountStickyAnchor;
-    });
-    anchoredSticky.clear();
-  };
-
-  const ensureHeaderPlaceholder = () => {
-    if (!header || headerPlaceholder) return;
-    headerPlaceholder = document.createElement('div');
-    headerPlaceholder.className = 'w2-header-placeholder';
-    headerPlaceholder.setAttribute('aria-hidden', 'true');
-    headerPlaceholder.style.height = header.getBoundingClientRect().height + 'px';
-    header.parentNode?.insertBefore(headerPlaceholder, header);
-  };
-
-  const removeHeaderPlaceholder = () => {
-    headerPlaceholder?.remove();
-    headerPlaceholder = null;
-  };
 
   const positionDesktop = () => {
     if (!trigger || !menu) return;
@@ -82,8 +35,7 @@ function initAccountMenuH3() {
     menu.setAttribute('aria-hidden', 'true');
     trigger.setAttribute('aria-expanded', 'false');
     document.body.classList.remove('account-menu-open');
-    removeHeaderPlaceholder();
-    restoreSticky();
+
     if (focus && wasOpen) trigger.focus({ preventScroll: true });
   };
 
@@ -91,16 +43,14 @@ function initAccountMenuH3() {
     if (!trigger || !menu) return;
     const y = scrollY;
     const restoreScroll = () => { if (Math.abs(scrollY - y) > .5) scrollTo({ top: y, behavior: 'auto' }); };
-    snapshotSticky();
-    ensureHeaderPlaceholder();
     positionDesktop();
     menu.classList.remove('hidden');
     menu.setAttribute('aria-hidden', 'false');
     trigger.setAttribute('aria-expanded', 'true');
     document.body.classList.add('account-menu-open');
     requestAnimationFrame(() => {
-      restoreScroll(); alignSticky(); positionDesktop(); items()[0]?.focus({ preventScroll: true });
-      requestAnimationFrame(() => { restoreScroll(); alignSticky(); positionDesktop(); });
+      restoreScroll(); positionDesktop(); items()[0]?.focus({ preventScroll: true });
+      requestAnimationFrame(() => { restoreScroll(); positionDesktop(); });
     });
   };
 

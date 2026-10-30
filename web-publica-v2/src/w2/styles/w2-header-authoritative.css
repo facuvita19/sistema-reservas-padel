@@ -399,3 +399,11 @@ body.account-menu-open #w2-content{position:relative;z-index:auto!important}
 @media(max-width:900px){body.account-menu-open .w2-header{z-index:1400!important}}
 .w2-header-placeholder{display:block!important;width:100%!important;min-height:var(--w2-header-height,94px)!important;flex:none!important;visibility:hidden!important;pointer-events:none!important;contain:strict!important}
 @media(max-width:900px){.w2-header-placeholder{display:none!important}}
+
+/* T1C - MENU SUPERPUESTO SIN CAMBIO DE GEOMETRIA */
+@media(min-width:901px){
+ body.account-menu-open .w2-header{position:sticky!important;inset:auto!important;width:auto!important;margin:0!important}
+ body.account-menu-open #w2-content{transform:none!important;margin-top:0!important;padding-top:0!important}
+ .w2-header-placeholder{display:none!important}
+ body.account-menu-open [data-account-sticky-anchor]{translate:none!important}
+}
