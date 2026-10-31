@@ -74,6 +74,18 @@ test.describe('T2C1B continuidad interna de Rankings', () => {
     await expect(page.locator('[data-profile-id="9101"]').first()).toBeFocused();
   });
 
+  test('auditoria vacia sobre categoria vacia completa aunque se restaure dos veces', async ({ page }) => {
+    await page.goto('/w2/rankings?categoria=161');
+    await page.locator('[data-audit-profile="9101"]').click();
+    await expect(page.locator('.w2r-audit-item')).toHaveCount(12);
+    await page.keyboard.press('Escape');
+    await page.goto('/w2/rankings?categoria=163&auditoria=9199&auditoriaNombre=Facundo%20Vitale&auditoriaIniciales=FV&auditoriaCategoria=163&auditoriaCategoriaNombre=7.%C2%AA%20%C2%B7%20Sin%20resultados');
+    await expect(page.locator('#w2rAuditDrawer')).toBeVisible();
+    await expect(page.locator('#w2rAuditLoading')).toBeHidden();
+    await expect(page.locator('#w2rAuditEmpty')).toBeVisible();
+    await expect(page.locator('#w2rAuditError')).toBeHidden();
+  });
+
   test('auditoria directa no duplica consulta al restaurar', async ({ page }) => {
     let calls = 0;
     page.on('request', request => {
