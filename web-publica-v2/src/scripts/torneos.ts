@@ -4,7 +4,7 @@ import { normalizarBusquedaTorneo, ramaPublica, textoFormato } from './torneos/d
 import { crearEstadoCatalogoTorneos, type EstadoCatalogoTorneos } from './torneos/estado-catalogo-torneos';
 import { adaptarResumenTorneo } from './torneos/adaptador-catalogo-torneos';
 import { crearDatosTorneos } from './torneos/datos-torneos';
-import { capturarRetornoCatalogo, restaurarRetornoCatalogo } from './torneos/retorno-catalogo-torneos';
+import { capturarRetornoCatalogo, restaurarRetornoCatalogo, restaurarFocoCatalogo } from './torneos/retorno-catalogo-torneos';
 import { poblarSelectCatalogo, renderCatalogoTorneos, renderPortadaCatalogoTorneos } from './torneos/presentacion-catalogo-torneos';
 import { crearInteraccionCatalogoTorneos } from './torneos/interaccion-catalogo-torneos';
 import { crearInscripcionParejaTorneos } from './torneos/inscripcion-pareja-torneos';
@@ -91,6 +91,7 @@ crearIntegracionNavegacionTorneos({
  abrirCentro:abrirCentroCompetitivo,
  manejarDetalleClick:target=>detalleTorneo.manejarClick(target),
  capturarRetorno:capturarRetornoCatalogo,
+  restaurarFocoCatalogo,
  abrirTorneo,
  volverCatalogo,
  centroActivo,
